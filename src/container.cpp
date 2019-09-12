@@ -54,7 +54,6 @@ Container::~Container()
 {
 	if (getID() == ITEM_BROWSEFIELD) {
 		g_game.browseFields.erase(getTile());
-
 		for (Item* item : itemlist) {
 			item->setParent(parent);
 		}
@@ -144,8 +143,9 @@ bool Container::unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, 
 void Container::updateItemWeight(int32_t diff)
 {
 	totalWeight += diff;
-	if (Container* parentContainer = getParentContainer()) {
-		parentContainer->updateItemWeight(diff);
+	Container* parentContainer = this;
+	while ((parentContainer = parentContainer->getParentContainer()) != nullptr) {
+		parentContainer->totalWeight += diff;
 	}
 }
 
@@ -338,10 +338,8 @@ ReturnValue Container::queryMaxCount(int32_t index, const Thing& thing, uint32_t
 	}
 
 	int32_t freeSlots = std::max<int32_t>(capacity() - size(), 0);
-
 	if (item->isStackable()) {
 		uint32_t n = 0;
-
 		if (index == INDEX_WHEREEVER) {
 			//Iterate through every item and check how much free stackable slots there is.
 			uint32_t slotIndex = 0;
@@ -712,7 +710,6 @@ void ContainerIterator::advance()
 	}
 
 	++cur;
-
 	if (cur == over.front()->itemlist.end()) {
 		over.pop_front();
 		if (!over.empty()) {
