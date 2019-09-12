@@ -512,17 +512,17 @@ bool MoveEvent::configureEvent(const pugi::xml_node& node)
 	}
 
 	std::string tmpStr = asLowerCaseString(eventAttr.as_string());
-	if (tmpStr == "stepin") {
+	if (!tfs_strcmp(tmpStr.c_str(), "stepin")) {
 		eventType = MOVE_EVENT_STEP_IN;
-	} else if (tmpStr == "stepout") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "stepout")) {
 		eventType = MOVE_EVENT_STEP_OUT;
-	} else if (tmpStr == "equip") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "equip")) {
 		eventType = MOVE_EVENT_EQUIP;
-	} else if (tmpStr == "deequip") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "deequip")) {
 		eventType = MOVE_EVENT_DEEQUIP;
-	} else if (tmpStr == "additem") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "additem")) {
 		eventType = MOVE_EVENT_ADD_ITEM;
-	} else if (tmpStr == "removeitem") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "removeitem")) {
 		eventType = MOVE_EVENT_REMOVE_ITEM;
 	} else {
 		std::cout << "Error: [MoveEvent::configureMoveEvent] No valid event name " << eventAttr.as_string() << std::endl;
@@ -533,27 +533,27 @@ bool MoveEvent::configureEvent(const pugi::xml_node& node)
 		pugi::xml_attribute slotAttribute = node.attribute("slot");
 		if (slotAttribute) {
 			tmpStr = asLowerCaseString(slotAttribute.as_string());
-			if (tmpStr == "head") {
+			if (!tfs_strcmp(tmpStr.c_str(), "head")) {
 				slot = SLOTP_HEAD;
-			} else if (tmpStr == "necklace") {
+			} else if (!tfs_strcmp(tmpStr.c_str(), "necklace")) {
 				slot = SLOTP_NECKLACE;
-			} else if (tmpStr == "backpack") {
+			} else if (!tfs_strcmp(tmpStr.c_str(), "backpack")) {
 				slot = SLOTP_BACKPACK;
-			} else if (tmpStr == "armor") {
+			} else if (!tfs_strcmp(tmpStr.c_str(), "armor")) {
 				slot = SLOTP_ARMOR;
-			} else if (tmpStr == "right-hand") {
+			} else if (!tfs_strcmp(tmpStr.c_str(), "right-hand")) {
 				slot = SLOTP_RIGHT;
-			} else if (tmpStr == "left-hand") {
+			} else if (!tfs_strcmp(tmpStr.c_str(), "left-hand")) {
 				slot = SLOTP_LEFT;
-			} else if (tmpStr == "hand" || tmpStr == "shield") {
+			} else if (!tfs_strcmp(tmpStr.c_str(), "hand") || !tfs_strcmp(tmpStr.c_str(), "shield")) {
 				slot = SLOTP_RIGHT | SLOTP_LEFT;
-			} else if (tmpStr == "legs") {
+			} else if (!tfs_strcmp(tmpStr.c_str(), "legs")) {
 				slot = SLOTP_LEGS;
-			} else if (tmpStr == "feet") {
+			} else if (!tfs_strcmp(tmpStr.c_str(), "feet")) {
 				slot = SLOTP_FEET;
-			} else if (tmpStr == "ring") {
+			} else if (!tfs_strcmp(tmpStr.c_str(), "ring")) {
 				slot = SLOTP_RING;
-			} else if (tmpStr == "ammo") {
+			} else if (!tfs_strcmp(tmpStr.c_str(), "ammo")) {
 				slot = SLOTP_AMMO;
 			} else {
 				std::cout << "[Warning - MoveEvent::configureMoveEvent] Unknown slot type: " << slotAttribute.as_string() << std::endl;

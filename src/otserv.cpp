@@ -237,11 +237,11 @@ void mainLoader(int, char*[], ServiceManager* services)
 
 	std::cout << ">> Checking world type... " << std::flush;
 	std::string worldType = asLowerCaseString(g_config.getString(ConfigManager::WORLD_TYPE));
-	if (worldType == "pvp") {
+	if (!tfs_strcmp(worldType.c_str(), "pvp")) {
 		g_game.setWorldType(WORLD_TYPE_PVP);
-	} else if (worldType == "no-pvp") {
+	} else if (!tfs_strcmp(worldType.c_str(), "no-pvp")) {
 		g_game.setWorldType(WORLD_TYPE_NO_PVP);
-	} else if (worldType == "pvp-enforced") {
+	} else if (!tfs_strcmp(worldType.c_str(), "pvp-enforced")) {
 		g_game.setWorldType(WORLD_TYPE_PVP_ENFORCED);
 	} else {
 		std::cout << std::endl;
@@ -274,14 +274,13 @@ void mainLoader(int, char*[], ServiceManager* services)
 
 	RentPeriod_t rentPeriod;
 	std::string strRentPeriod = asLowerCaseString(g_config.getString(ConfigManager::HOUSE_RENT_PERIOD));
-
-	if (strRentPeriod == "yearly") {
+	if (!tfs_strcmp(strRentPeriod.c_str(), "yearly")) {
 		rentPeriod = RENTPERIOD_YEARLY;
-	} else if (strRentPeriod == "weekly") {
+	} else if (!tfs_strcmp(strRentPeriod.c_str(), "weekly")) {
 		rentPeriod = RENTPERIOD_WEEKLY;
-	} else if (strRentPeriod == "monthly") {
+	} else if (!tfs_strcmp(strRentPeriod.c_str(), "monthly")) {
 		rentPeriod = RENTPERIOD_MONTHLY;
-	} else if (strRentPeriod == "daily") {
+	} else if (!tfs_strcmp(strRentPeriod.c_str(), "daily")) {
 		rentPeriod = RENTPERIOD_DAILY;
 	} else {
 		rentPeriod = RENTPERIOD_NEVER;

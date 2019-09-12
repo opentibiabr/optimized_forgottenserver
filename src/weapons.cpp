@@ -910,17 +910,17 @@ bool WeaponWand::configureEvent(const pugi::xml_node& node)
 	}
 
 	std::string tmpStrValue = asLowerCaseString(attr.as_string());
-	if (tmpStrValue == "earth") {
+	if (!tfs_strcmp(tmpStrValue.c_str(), "earth")) {
 		params.combatType = COMBAT_EARTHDAMAGE;
-	} else if (tmpStrValue == "ice") {
+	} else if (!tfs_strcmp(tmpStrValue.c_str(), "ice")) {
 		params.combatType = COMBAT_ICEDAMAGE;
-	} else if (tmpStrValue == "energy") {
+	} else if (!tfs_strcmp(tmpStrValue.c_str(), "energy")) {
 		params.combatType = COMBAT_ENERGYDAMAGE;
-	} else if (tmpStrValue == "fire") {
+	} else if (!tfs_strcmp(tmpStrValue.c_str(), "fire")) {
 		params.combatType = COMBAT_FIREDAMAGE;
-	} else if (tmpStrValue == "death") {
+	} else if (!tfs_strcmp(tmpStrValue.c_str(), "death")) {
 		params.combatType = COMBAT_DEATHDAMAGE;
-	} else if (tmpStrValue == "holy") {
+	} else if (!tfs_strcmp(tmpStrValue.c_str(), "holy")) {
 		params.combatType = COMBAT_HOLYDAMAGE;
 	} else {
 		std::cout << "[Warning - WeaponWand::configureEvent] Type \"" << attr.as_string() << "\" does not exist." << std::endl;

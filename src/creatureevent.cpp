@@ -180,29 +180,29 @@ bool CreatureEvent::configureEvent(const pugi::xml_node& node)
 	}
 
 	std::string tmpStr = asLowerCaseString(typeAttribute.as_string());
-	if (tmpStr == "login") {
+	if (!tfs_strcmp(tmpStr.c_str(), "login")) {
 		type = CREATURE_EVENT_LOGIN;
-	} else if (tmpStr == "logout") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "logout")) {
 		type = CREATURE_EVENT_LOGOUT;
-	} else if (tmpStr == "think") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "think")) {
 		type = CREATURE_EVENT_THINK;
-	} else if (tmpStr == "preparedeath") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "preparedeath")) {
 		type = CREATURE_EVENT_PREPAREDEATH;
-	} else if (tmpStr == "death") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "death")) {
 		type = CREATURE_EVENT_DEATH;
-	} else if (tmpStr == "kill") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "kill")) {
 		type = CREATURE_EVENT_KILL;
-	} else if (tmpStr == "advance") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "advance")) {
 		type = CREATURE_EVENT_ADVANCE;
-	} else if (tmpStr == "modalwindow") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "modalwindow")) {
 		type = CREATURE_EVENT_MODALWINDOW;
-	} else if (tmpStr == "textedit") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "textedit")) {
 		type = CREATURE_EVENT_TEXTEDIT;
-	} else if (tmpStr == "healthchange") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "healthchange")) {
 		type = CREATURE_EVENT_HEALTHCHANGE;
-	} else if (tmpStr == "manachange") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "manachange")) {
 		type = CREATURE_EVENT_MANACHANGE;
-	} else if (tmpStr == "extendedopcode") {
+	} else if (!tfs_strcmp(tmpStr.c_str(), "extendedopcode")) {
 		type = CREATURE_EVENT_EXTENDED_OPCODE;
 	} else {
 		std::cout << "[Error - CreatureEvent::configureEvent] Invalid type for creature event: " << eventName << std::endl;

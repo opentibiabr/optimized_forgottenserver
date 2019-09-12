@@ -3000,19 +3000,19 @@ void LuaScriptInterface::registerClass(const std::string& className, const std::
 	lua_rawseti(luaState, metatable, 'p');
 
 	// className.metatable['t'] = type
-	if (className == "Item") {
+	if (!tfs_strcmp(className.c_str(), "Item")) {
 		lua_pushnumber(luaState, LuaData_Item);
-	} else if (className == "Container") {
+	} else if (!tfs_strcmp(className.c_str(), "Container")) {
 		lua_pushnumber(luaState, LuaData_Container);
-	} else if (className == "Teleport") {
+	} else if (!tfs_strcmp(className.c_str(), "Teleport")) {
 		lua_pushnumber(luaState, LuaData_Teleport);
-	} else if (className == "Player") {
+	} else if (!tfs_strcmp(className.c_str(), "Player")) {
 		lua_pushnumber(luaState, LuaData_Player);
-	} else if (className == "Monster") {
+	} else if (!tfs_strcmp(className.c_str(), "Monster")) {
 		lua_pushnumber(luaState, LuaData_Monster);
-	} else if (className == "Npc") {
+	} else if (!tfs_strcmp(className.c_str(), "Npc")) {
 		lua_pushnumber(luaState, LuaData_Npc);
-	} else if (className == "Tile") {
+	} else if (!tfs_strcmp(className.c_str(), "Tile")) {
 		lua_pushnumber(luaState, LuaData_Tile);
 	} else {
 		lua_pushnumber(luaState, LuaData_Unknown);
@@ -12518,34 +12518,34 @@ int LuaScriptInterface::luaMonsterTypeCombatImmunities(lua_State* L)
 			lua_pushnumber(L, monsterType->info.damageImmunities);
 		} else {
 			std::string immunity = getString(L, 2);
-			if (immunity == "physical") {
+			if (!tfs_strcmp(immunity.c_str(), "physical")) {
 				monsterType->info.damageImmunities |= COMBAT_PHYSICALDAMAGE;
 				pushBoolean(L, true);
-			} else if (immunity == "energy") {
+			} else if (!tfs_strcmp(immunity.c_str(), "energy")) {
 				monsterType->info.damageImmunities |= COMBAT_ENERGYDAMAGE;
 				pushBoolean(L, true);
-			} else if (immunity == "fire") {
+			} else if (!tfs_strcmp(immunity.c_str(), "fire")) {
 				monsterType->info.damageImmunities |= COMBAT_FIREDAMAGE;
 				pushBoolean(L, true);
-			} else if (immunity == "poison" || immunity == "earth") {
+			} else if (!tfs_strcmp(immunity.c_str(), "poison") || !tfs_strcmp(immunity.c_str(), "earth")) {
 				monsterType->info.damageImmunities |= COMBAT_EARTHDAMAGE;
 				pushBoolean(L, true);
-			} else if (immunity == "drown") {
+			} else if (!tfs_strcmp(immunity.c_str(), "drown")) {
 				monsterType->info.damageImmunities |= COMBAT_DROWNDAMAGE;
 				pushBoolean(L, true);
-			} else if (immunity == "ice") {
+			} else if (!tfs_strcmp(immunity.c_str(), "ice")) {
 				monsterType->info.damageImmunities |= COMBAT_ICEDAMAGE;
 				pushBoolean(L, true);
-			} else if (immunity == "holy") {
+			} else if (!tfs_strcmp(immunity.c_str(), "holy")) {
 				monsterType->info.damageImmunities |= COMBAT_HOLYDAMAGE;
 				pushBoolean(L, true);
-			} else if (immunity == "death") {
+			} else if (!tfs_strcmp(immunity.c_str(), "death")) {
 				monsterType->info.damageImmunities |= COMBAT_DEATHDAMAGE;
 				pushBoolean(L, true);
-			} else if (immunity == "lifedrain") {
+			} else if (!tfs_strcmp(immunity.c_str(), "lifedrain")) {
 				monsterType->info.damageImmunities |= COMBAT_LIFEDRAIN;
 				pushBoolean(L, true);
-			} else if (immunity == "manadrain") {
+			} else if (!tfs_strcmp(immunity.c_str(), "manadrain")) {
 				monsterType->info.damageImmunities |= COMBAT_MANADRAIN;
 				pushBoolean(L, true);
 			} else {
@@ -12568,43 +12568,43 @@ int LuaScriptInterface::luaMonsterTypeConditionImmunities(lua_State* L)
 			lua_pushnumber(L, monsterType->info.conditionImmunities);
 		} else {
 			std::string immunity = getString(L, 2);
-			if (immunity == "physical") {
+			if (!tfs_strcmp(immunity.c_str(), "physical")) {
 				monsterType->info.conditionImmunities |= CONDITION_BLEEDING;
 				pushBoolean(L, true);
-			} else if (immunity == "energy") {
+			} else if (!tfs_strcmp(immunity.c_str(), "energy")) {
 				monsterType->info.conditionImmunities |= CONDITION_ENERGY;
 				pushBoolean(L, true);
-			} else if (immunity == "fire") {
+			} else if (!tfs_strcmp(immunity.c_str(), "fire")) {
 				monsterType->info.conditionImmunities |= CONDITION_FIRE;
 				pushBoolean(L, true);
-			} else if (immunity == "poison" || immunity == "earth") {
+			} else if (!tfs_strcmp(immunity.c_str(), "poison") || !tfs_strcmp(immunity.c_str(), "earth")) {
 				monsterType->info.conditionImmunities |= CONDITION_POISON;
 				pushBoolean(L, true);
-			} else if (immunity == "drown") {
+			} else if (!tfs_strcmp(immunity.c_str(), "drown")) {
 				monsterType->info.conditionImmunities |= CONDITION_DROWN;
 				pushBoolean(L, true);
-			} else if (immunity == "ice") {
+			} else if (!tfs_strcmp(immunity.c_str(), "ice")) {
 				monsterType->info.conditionImmunities |= CONDITION_FREEZING;
 				pushBoolean(L, true);
-			} else if (immunity == "holy") {
+			} else if (!tfs_strcmp(immunity.c_str(), "holy")) {
 				monsterType->info.conditionImmunities |= CONDITION_DAZZLED;
 				pushBoolean(L, true);
-			} else if (immunity == "death") {
+			} else if (!tfs_strcmp(immunity.c_str(), "death")) {
 				monsterType->info.conditionImmunities |= CONDITION_CURSED;
 				pushBoolean(L, true);
-			} else if (immunity == "paralyze") {
+			} else if (!tfs_strcmp(immunity.c_str(), "paralyze")) {
 				monsterType->info.conditionImmunities |= CONDITION_PARALYZE;
 				pushBoolean(L, true);
-			} else if (immunity == "outfit") {
+			} else if (!tfs_strcmp(immunity.c_str(), "outfit")) {
 				monsterType->info.conditionImmunities |= CONDITION_OUTFIT;
 				pushBoolean(L, true);
-			} else if (immunity == "drunk") {
+			} else if (!tfs_strcmp(immunity.c_str(), "drunk")) {
 				monsterType->info.conditionImmunities |= CONDITION_DRUNK;
 				pushBoolean(L, true);
-			} else if (immunity == "invisible" || immunity == "invisibility") {
+			} else if (!tfs_strcmp(immunity.c_str(), "invisible") || !tfs_strcmp(immunity.c_str(), "invisibility")) {
 				monsterType->info.conditionImmunities |= CONDITION_INVISIBLE;
 				pushBoolean(L, true);
-			} else if (immunity == "bleed") {
+			} else if (!tfs_strcmp(immunity.c_str(), "bleed")) {
 				monsterType->info.conditionImmunities |= CONDITION_BLEEDING;
 				pushBoolean(L, true);
 			} else {
@@ -13007,15 +13007,15 @@ int LuaScriptInterface::luaMonsterTypeRace(lua_State* L)
 		if (lua_gettop(L) == 1) {
 			lua_pushnumber(L, monsterType->info.race);
 		} else {
-			if (race == "venom") {
+			if (!tfs_strcmp(race.c_str(), "venom")) {
 				monsterType->info.race = RACE_VENOM;
-			} else if (race == "blood") {
+			} else if (!tfs_strcmp(race.c_str(), "blood")) {
 				monsterType->info.race = RACE_BLOOD;
-			} else if (race == "undead") {
+			} else if (!tfs_strcmp(race.c_str(), "undead")) {
 				monsterType->info.race = RACE_UNDEAD;
-			} else if (race == "fire") {
+			} else if (!tfs_strcmp(race.c_str(), "fire")) {
 				monsterType->info.race = RACE_FIRE;
-			} else if (race == "energy") {
+			} else if (!tfs_strcmp(race.c_str(), "energy")) {
 				monsterType->info.race = RACE_ENERGY;
 			} else {
 				std::cout << "[Warning - Monsters::loadMonster] Unknown race type " << race << "." << std::endl;
@@ -13850,9 +13850,9 @@ int LuaScriptInterface::luaSpellCreate(lua_State* L)
 
 	if (isString(L, 2)) {
 		std::string tmp = asLowerCaseString(getString(L, 2));
-		if (tmp == "instant") {
+		if (!tfs_strcmp(tmp.c_str(), "instant")) {
 			type = SPELL_INSTANT;
-		} else if (tmp == "rune") {
+		} else if (!tfs_strcmp(tmp.c_str(), "rune")) {
 			type = SPELL_RUNE;
 		}
 	}
@@ -14378,7 +14378,7 @@ int LuaScriptInterface::luaSpellVocation(lua_State* L)
 					std::vector<std::string> vocList = explodeString(getString(L, 2 + i), ";");
 					int32_t vocationId = g_vocations.getVocationId(vocList[0]);
 					if (vocList.size() > 0) {
-						if (vocList[1] == "true") {
+						if (!tfs_strcmp(vocList[1].c_str(), "true")) {
 							spell->addVocMap(vocationId, true);
 						} else {
 							spell->addVocMap(vocationId, false);
@@ -14899,29 +14899,29 @@ int LuaScriptInterface::luaCreatureEventType(lua_State* L)
 	if (creature) {
 		std::string typeName = getString(L, 2);
 		std::string tmpStr = asLowerCaseString(typeName);
-		if (tmpStr == "login") {
+		if (!tfs_strcmp(tmpStr.c_str(), "login")) {
 			creature->setEventType(CREATURE_EVENT_LOGIN);
-		} else if (tmpStr == "logout") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "logout")) {
 			creature->setEventType(CREATURE_EVENT_LOGOUT);
-		} else if (tmpStr == "think") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "think")) {
 			creature->setEventType(CREATURE_EVENT_THINK);
-		} else if (tmpStr == "preparedeath") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "preparedeath")) {
 			creature->setEventType(CREATURE_EVENT_PREPAREDEATH);
-		} else if (tmpStr == "death") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "death")) {
 			creature->setEventType(CREATURE_EVENT_DEATH);
-		} else if (tmpStr == "kill") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "kill")) {
 			creature->setEventType(CREATURE_EVENT_KILL);
-		} else if (tmpStr == "advance") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "advance")) {
 			creature->setEventType(CREATURE_EVENT_ADVANCE);
-		} else if (tmpStr == "modalwindow") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "modalwindow")) {
 			creature->setEventType(CREATURE_EVENT_MODALWINDOW);
-		} else if (tmpStr == "textedit") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "textedit")) {
 			creature->setEventType(CREATURE_EVENT_TEXTEDIT);
-		} else if (tmpStr == "healthchange") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "healthchange")) {
 			creature->setEventType(CREATURE_EVENT_HEALTHCHANGE);
-		} else if (tmpStr == "manachange") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "manachange")) {
 			creature->setEventType(CREATURE_EVENT_MANACHANGE);
-		} else if (tmpStr == "extendedopcode") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "extendedopcode")) {
 			creature->setEventType(CREATURE_EVENT_EXTENDED_OPCODE);
 		} else {
 			std::cout << "[Error - CreatureEvent::configureLuaEvent] Invalid type for creature event: " << typeName << std::endl;
@@ -14988,22 +14988,22 @@ int LuaScriptInterface::luaMoveEventType(lua_State* L)
 	if (moveevent) {
 		std::string typeName = getString(L, 2);
 		std::string tmpStr = asLowerCaseString(typeName);
-		if (tmpStr == "stepin") {
+		if (!tfs_strcmp(tmpStr.c_str(), "stepin")) {
 			moveevent->setEventType(MOVE_EVENT_STEP_IN);
 			moveevent->stepFunction = moveevent->StepInField;
-		} else if (tmpStr == "stepout") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "stepout")) {
 			moveevent->setEventType(MOVE_EVENT_STEP_OUT);
 			moveevent->stepFunction = moveevent->StepOutField;
-		} else if (tmpStr == "equip") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "equip")) {
 			moveevent->setEventType(MOVE_EVENT_EQUIP);
 			moveevent->equipFunction = moveevent->EquipItem;
-		} else if (tmpStr == "deequip") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "deequip")) {
 			moveevent->setEventType(MOVE_EVENT_DEEQUIP);
 			moveevent->equipFunction = moveevent->DeEquipItem;
-		} else if (tmpStr == "additem") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "additem")) {
 			moveevent->setEventType(MOVE_EVENT_ADD_ITEM_ITEMTILE);
 			moveevent->moveFunction = moveevent->AddItemField;
-		} else if (tmpStr == "removeitem") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "removeitem")) {
 			moveevent->setEventType(MOVE_EVENT_REMOVE_ITEM_ITEMTILE);
 			moveevent->moveFunction = moveevent->RemoveItemField;
 		} else {
@@ -15063,27 +15063,27 @@ int LuaScriptInterface::luaMoveEventSlot(lua_State* L)
 				std::string slotName = getString(L, 2);
 				std::string tmpStr = asLowerCaseString(slotName);
 				tmpStr = asLowerCaseString(moveevent->getSlotName());
-				if (tmpStr == "head") {
+				if (!tfs_strcmp(tmpStr.c_str(), "head")) {
 					moveevent->setSlot(SLOTP_HEAD);
-				} else if (tmpStr == "necklace") {
+				} else if (!tfs_strcmp(tmpStr.c_str(), "necklace")) {
 					moveevent->setSlot(SLOTP_NECKLACE);
-				} else if (tmpStr == "backpack") {
+				} else if (!tfs_strcmp(tmpStr.c_str(), "backpack")) {
 					moveevent->setSlot(SLOTP_BACKPACK);
-				} else if (tmpStr == "armor" || tmpStr == "body") {
+				} else if (!tfs_strcmp(tmpStr.c_str(), "armor") || !tfs_strcmp(tmpStr.c_str(), "body")) {
 					moveevent->setSlot(SLOTP_ARMOR);
-				} else if (tmpStr == "right-hand") {
+				} else if (!tfs_strcmp(tmpStr.c_str(), "right-hand")) {
 					moveevent->setSlot(SLOTP_RIGHT);
-				} else if (tmpStr == "left-hand") {
+				} else if (!tfs_strcmp(tmpStr.c_str(), "left-hand")) {
 					moveevent->setSlot(SLOTP_LEFT);
-				} else if (tmpStr == "hand" || tmpStr == "shield") {
+				} else if (!tfs_strcmp(tmpStr.c_str(), "hand") || !tfs_strcmp(tmpStr.c_str(), "shield")) {
 					moveevent->setSlot(SLOTP_RIGHT | SLOTP_LEFT);
-				} else if (tmpStr == "legs") {
+				} else if (!tfs_strcmp(tmpStr.c_str(), "legs")) {
 					moveevent->setSlot(SLOTP_LEGS);
-				} else if (tmpStr == "feet") {
+				} else if (!tfs_strcmp(tmpStr.c_str(), "feet")) {
 					moveevent->setSlot(SLOTP_FEET);
-				} else if (tmpStr == "ring") {
+				} else if (!tfs_strcmp(tmpStr.c_str(), "ring")) {
 					moveevent->setSlot(SLOTP_RING);
-				} else if (tmpStr == "ammo") {
+				} else if (!tfs_strcmp(tmpStr.c_str(), "ammo")) {
 					moveevent->setSlot(SLOTP_AMMO);
 				} else {
 					std::cout << "[Warning - MoveEvent::configureMoveEvent] Unknown slot type: " << moveevent->getSlotName() << std::endl;
@@ -15282,11 +15282,11 @@ int LuaScriptInterface::luaGlobalEventType(lua_State* L)
 	if (global) {
 		std::string typeName = getString(L, 2);
 		std::string tmpStr = asLowerCaseString(typeName);
-		if (tmpStr == "startup") {
+		if (!tfs_strcmp(tmpStr.c_str(), "startup")) {
 			global->setEventType(GLOBALEVENT_STARTUP);
-		} else if (tmpStr == "shutdown") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "shutdown")) {
 			global->setEventType(GLOBALEVENT_SHUTDOWN);
-		} else if (tmpStr == "record") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "record")) {
 			global->setEventType(GLOBALEVENT_RECORD);
 		} else {
 			std::cout << "[Error - CreatureEvent::configureLuaEvent] Invalid type for global event: " << typeName << std::endl;
@@ -15459,11 +15459,11 @@ int LuaScriptInterface::luaWeaponAction(lua_State* L)
 	if (weapon) {
 		std::string typeName = getString(L, 2);
 		std::string tmpStr = asLowerCaseString(typeName);
-		if (tmpStr == "removecount") {
+		if (!tfs_strcmp(tmpStr.c_str(), "removecount")) {
 			weapon->action = WEAPONACTION_REMOVECOUNT;
-		} else if (tmpStr == "removecharge") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "removecharge")) {
 			weapon->action = WEAPONACTION_REMOVECHARGE;
-		} else if (tmpStr == "move") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "move")) {
 			weapon->action = WEAPONACTION_MOVE;
 		} else {
 			std::cout << "Error: [Weapon::action] No valid action " << typeName << std::endl;
@@ -15669,17 +15669,17 @@ int LuaScriptInterface::luaWeaponElement(lua_State* L)
 		if (!getNumber<CombatType_t>(L, 2)) {
 			std::string element = getString(L, 2);
 			std::string tmpStrValue = asLowerCaseString(element);
-			if (tmpStrValue == "earth") {
+			if (!tfs_strcmp(tmpStrValue.c_str(), "earth")) {
 				weapon->params.combatType = COMBAT_EARTHDAMAGE;
-			} else if (tmpStrValue == "ice") {
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "ice")) {
 				weapon->params.combatType = COMBAT_ICEDAMAGE;
-			} else if (tmpStrValue == "energy") {
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "energy")) {
 				weapon->params.combatType = COMBAT_ENERGYDAMAGE;
-			} else if (tmpStrValue == "fire") {
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "fire")) {
 				weapon->params.combatType = COMBAT_FIREDAMAGE;
-			} else if (tmpStrValue == "death") {
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "death")) {
 				weapon->params.combatType = COMBAT_DEATHDAMAGE;
-			} else if (tmpStrValue == "holy") {
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "holy")) {
 				weapon->params.combatType = COMBAT_HOLYDAMAGE;
 			} else {
 				std::cout << "[Warning - weapon:element] Type \"" << element << "\" does not exist." << std::endl;
@@ -15911,7 +15911,7 @@ int LuaScriptInterface::luaWeaponSlotType(lua_State* L)
 		ItemType& it = Item::items.getItemType(id);
 		std::string slot = getString(L, 2);
 
-		if (slot == "two-handed") {
+		if (!tfs_strcmp(slot.c_str(), "two-handed")) {
 			it.slotPosition |= SLOTP_TWO_HAND;
 		} else {
 			it.slotPosition |= SLOTP_HAND;
@@ -15932,9 +15932,9 @@ int LuaScriptInterface::luaWeaponAmmoType(lua_State* L)
 		ItemType& it = Item::items.getItemType(id);
 		std::string type = getString(L, 2);
 
-		if (type == "arrow") {
+		if (!tfs_strcmp(type.c_str(), "arrow")) {
 			it.ammoType = AMMO_ARROW;
-		} else if (type == "bolt"){
+		} else if (!tfs_strcmp(type.c_str(), "bolt")) {
 			it.ammoType = AMMO_BOLT;
 		} else {
 			std::cout << "[Warning - weapon:ammoType] Type \"" << type << "\" does not exist." << std::endl;
@@ -15990,17 +15990,17 @@ int LuaScriptInterface::luaWeaponExtraElement(lua_State* L)
 		if (!getNumber<CombatType_t>(L, 3)) {
 			std::string element = getString(L, 3);
 			std::string tmpStrValue = asLowerCaseString(element);
-			if (tmpStrValue == "earth") {
+			if (!tfs_strcmp(tmpStrValue.c_str(), "earth")) {
 				it.abilities.get()->elementType = COMBAT_EARTHDAMAGE;
-			} else if (tmpStrValue == "ice") {
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "ice")) {
 				it.abilities.get()->elementType = COMBAT_ICEDAMAGE;
-			} else if (tmpStrValue == "energy") {
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "energy")) {
 				it.abilities.get()->elementType = COMBAT_ENERGYDAMAGE;
-			} else if (tmpStrValue == "fire") {
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "fire")) {
 				it.abilities.get()->elementType = COMBAT_FIREDAMAGE;
-			} else if (tmpStrValue == "death") {
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "death")) {
 				it.abilities.get()->elementType = COMBAT_DEATHDAMAGE;
-			} else if (tmpStrValue == "holy") {
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "holy")) {
 				it.abilities.get()->elementType = COMBAT_HOLYDAMAGE;
 			} else {
 				std::cout << "[Warning - weapon:extraElement] Type \"" << element << "\" does not exist." << std::endl;

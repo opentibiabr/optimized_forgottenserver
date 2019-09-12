@@ -61,66 +61,66 @@ bool Events::load()
 
 		const std::string& methodName = eventNode.attribute("method").as_string();
 		const int32_t event = scriptInterface.getMetaEvent(className, methodName);
-		if (className == "Creature") {
-			if (methodName == "onChangeOutfit") {
+		if (!tfs_strcmp(className.c_str(), "Creature")) {
+			if (!tfs_strcmp(methodName.c_str(), "onChangeOutfit")) {
 				info.creatureOnChangeOutfit = event;
-			} else if (methodName == "onAreaCombat") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onAreaCombat")) {
 				info.creatureOnAreaCombat = event;
-			} else if (methodName == "onTargetCombat") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onTargetCombat")) {
 				info.creatureOnTargetCombat = event;
 			} else {
 				std::cout << "[Warning - Events::load] Unknown creature method: " << methodName << std::endl;
 			}
-		} else if (className == "Party") {
-			if (methodName == "onJoin") {
+		} else if (!tfs_strcmp(className.c_str(), "Party")) {
+			if (!tfs_strcmp(methodName.c_str(), "onJoin")) {
 				info.partyOnJoin = event;
-			} else if (methodName == "onLeave") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onLeave")) {
 				info.partyOnLeave = event;
-			} else if (methodName == "onDisband") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onDisband")) {
 				info.partyOnDisband = event;
-			} else if (methodName == "onShareExperience") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onShareExperience")) {
 				info.partyOnShareExperience = event;
 			} else {
 				std::cout << "[Warning - Events::load] Unknown party method: " << methodName << std::endl;
 			}
-		} else if (className == "Player") {
-			if (methodName == "onBrowseField") {
+		} else if (!tfs_strcmp(className.c_str(), "Player")) {
+			if (!tfs_strcmp(methodName.c_str(), "onBrowseField")) {
 				info.playerOnBrowseField = event;
-			} else if (methodName == "onLook") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onLook")) {
 				info.playerOnLook = event;
-			} else if (methodName == "onLookInBattleList") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onLookInBattleList")) {
 				info.playerOnLookInBattleList = event;
-			} else if (methodName == "onLookInTrade") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onLookInTrade")) {
 				info.playerOnLookInTrade = event;
-			} else if (methodName == "onLookInShop") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onLookInShop")) {
 				info.playerOnLookInShop = event;
-			} else if (methodName == "onTradeRequest") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onTradeRequest")) {
 				info.playerOnTradeRequest = event;
-			} else if (methodName == "onTradeAccept") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onTradeAccept")) {
 				info.playerOnTradeAccept = event;
-			} else if (methodName == "onMoveItem") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onMoveItem")) {
 				info.playerOnMoveItem = event;
-			} else if (methodName == "onItemMoved") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onItemMoved")) {
 				info.playerOnItemMoved = event;
-			} else if (methodName == "onMoveCreature") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onMoveCreature")) {
 				info.playerOnMoveCreature = event;
-			} else if (methodName == "onReportRuleViolation") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onReportRuleViolation")) {
 				info.playerOnReportRuleViolation = event;
-			} else if (methodName == "onReportBug") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onReportBug")) {
 				info.playerOnReportBug = event;
-			} else if (methodName == "onTurn") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onTurn")) {
 				info.playerOnTurn = event;
-			} else if (methodName == "onGainExperience") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onGainExperience")) {
 				info.playerOnGainExperience = event;
-			} else if (methodName == "onLoseExperience") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onLoseExperience")) {
 				info.playerOnLoseExperience = event;
-			} else if (methodName == "onGainSkillTries") {
+			} else if (!tfs_strcmp(methodName.c_str(), "onGainSkillTries")) {
 				info.playerOnGainSkillTries = event;
 			} else {
 				std::cout << "[Warning - Events::load] Unknown player method: " << methodName << std::endl;
 			}
-		} else if (className == "Monster") {
-			if (methodName == "onDropLoot") {
+		} else if (!tfs_strcmp(className.c_str(), "Monster")) {
+			if (!tfs_strcmp(methodName.c_str(), "onDropLoot")) {
 				info.monsterOnDropLoot = event;
 			} else {
 				std::cout << "[Warning - Events::load] Unknown monster method: " << methodName << std::endl;

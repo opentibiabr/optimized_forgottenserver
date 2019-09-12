@@ -60,7 +60,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage& msg)
 	switch (msg.getByte()) {
 		//XML info protocol
 		case 0xFF: {
-			if (msg.getString(4) == "info") {
+			if (!tfs_strcmp(msg.getString(4).c_str(), "info")) {
 				g_dispatcher.addTask(createTask(std::bind(&ProtocolStatus::sendStatusString,
 									  std::static_pointer_cast<ProtocolStatus>(shared_from_this()))));
 				return;

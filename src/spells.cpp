@@ -444,15 +444,15 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 
 	if ((attr = node.attribute("group"))) {
 		std::string tmpStr = asLowerCaseString(attr.as_string());
-		if (tmpStr == "none" || tmpStr == "0") {
+		if (!tfs_strcmp(tmpStr.c_str(), "none") || !tfs_strcmp(tmpStr.c_str(), "0")) {
 			group = SPELLGROUP_NONE;
-		} else if (tmpStr == "attack" || tmpStr == "1") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "attack") || !tfs_strcmp(tmpStr.c_str(), "1")) {
 			group = SPELLGROUP_ATTACK;
-		} else if (tmpStr == "healing" || tmpStr == "2") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "healing") || !tfs_strcmp(tmpStr.c_str(), "2")) {
 			group = SPELLGROUP_HEALING;
-		} else if (tmpStr == "support" || tmpStr == "3") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "support") || !tfs_strcmp(tmpStr.c_str(), "3")) {
 			group = SPELLGROUP_SUPPORT;
-		} else if (tmpStr == "special" || tmpStr == "4") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "special") || !tfs_strcmp(tmpStr.c_str(), "4")) {
 			group = SPELLGROUP_SPECIAL;
 		} else {
 			std::cout << "[Warning - Spell::configureSpell] Unknown group: " << attr.as_string() << std::endl;
@@ -465,15 +465,15 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 
 	if ((attr = node.attribute("secondarygroup"))) {
 		std::string tmpStr = asLowerCaseString(attr.as_string());
-		if (tmpStr == "none" || tmpStr == "0") {
+		if (!tfs_strcmp(tmpStr.c_str(), "none") || !tfs_strcmp(tmpStr.c_str(), "0")) {
 			secondaryGroup = SPELLGROUP_NONE;
-		} else if (tmpStr == "attack" || tmpStr == "1") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "attack") || !tfs_strcmp(tmpStr.c_str(), "1")) {
 			secondaryGroup = SPELLGROUP_ATTACK;
-		} else if (tmpStr == "healing" || tmpStr == "2") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "healing") || !tfs_strcmp(tmpStr.c_str(), "2")) {
 			secondaryGroup = SPELLGROUP_HEALING;
-		} else if (tmpStr == "support" || tmpStr == "3") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "support") || !tfs_strcmp(tmpStr.c_str(), "3")) {
 			secondaryGroup = SPELLGROUP_SUPPORT;
-		} else if (tmpStr == "special" || tmpStr == "4") {
+		} else if (!tfs_strcmp(tmpStr.c_str(), "special") || !tfs_strcmp(tmpStr.c_str(), "4")) {
 			secondaryGroup = SPELLGROUP_SPECIAL;
 		} else {
 			std::cout << "[Warning - Spell::configureSpell] Unknown secondarygroup: " << attr.as_string() << std::endl;
@@ -543,12 +543,12 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 
 	if ((attr = node.attribute("blocktype"))) {
 		std::string tmpStrValue = asLowerCaseString(attr.as_string());
-		if (tmpStrValue == "all") {
+		if (!tfs_strcmp(tmpStrValue.c_str(), "all")) {
 			blockingSolid = true;
 			blockingCreature = true;
-		} else if (tmpStrValue == "solid") {
+		} else if (!tfs_strcmp(tmpStrValue.c_str(), "solid")) {
 			blockingSolid = true;
-		} else if (tmpStrValue == "creature") {
+		} else if (!tfs_strcmp(tmpStrValue.c_str(), "creature")) {
 			blockingCreature = true;
 		} else {
 			std::cout << "[Warning - Spell::configureSpell] Blocktype \"" << attr.as_string() << "\" does not exist." << std::endl;
