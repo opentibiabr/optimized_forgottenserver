@@ -14410,7 +14410,7 @@ int LuaScriptInterface::luaSpellWords(lua_State* L)
 
 		if (lua_gettop(L) == 1) {
 			pushString(L, spell->getWords());
-			pushString(L, spell->getSeparator());
+			pushString(L, std::string(1, spell->getSeparator()));
 			return 2;
 		} else {
 			std::string sep = "";
@@ -14418,7 +14418,7 @@ int LuaScriptInterface::luaSpellWords(lua_State* L)
 				sep = getString(L, 3);
 			}
 			spell->setWords(getString(L, 2));
-			spell->setSeparator(sep);
+			spell->setSeparator((sep.empty() ? '"' : sep[0]));
 			pushBoolean(L, true);
 		}
 	} else {
@@ -14868,7 +14868,8 @@ int LuaScriptInterface::luaTalkactionSeparator(lua_State* L)
 	// talkAction:separator(sep)
 	TalkAction* talk = getUserdata<TalkAction>(L, 1);
 	if (talk) {
-		talk->setSeparator(getString(L, 2).c_str());
+		std::string sep = getString(L, 2);
+		talk->setSeparator((sep.empty() ? '"' : sep[0]));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
