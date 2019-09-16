@@ -170,6 +170,7 @@ class Container : public Item, public Cylinder
 
 		friend class ContainerIterator;
 		friend class IOMapSerialize;
+		friend class IOLoginData;
 };
 
 #endif

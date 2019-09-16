@@ -38,17 +38,6 @@ class Database
 		Database& operator=(const Database&) = delete;
 
 		/**
-		 * Singleton implementation.
-		 *
-		 * @return database connection handler singleton
-		 */
-		static Database& getInstance()
-		{
-			static Database instance;
-			return instance;
-		}
-
-		/**
 		 * Connects to the database
 		 *
 		 * @return true on successful connection, false on error
@@ -189,12 +178,13 @@ class DBResult
 class DBInsert
 {
 	public:
-		explicit DBInsert(std::string query);
+		explicit DBInsert(Database* dtb, std::string query);
 		bool addRow(const std::string& row);
 		bool addRow(std::ostringstream& row);
 		bool execute();
 
 	private:
+		Database* dtb;
 		std::string query;
 		std::string values;
 		size_t length;
@@ -203,11 +193,12 @@ class DBInsert
 class DBTransaction
 {
 	public:
-		constexpr DBTransaction() = default;
-
+		explicit DBTransaction(Database* dtb) {
+			this->dtb = dtb;
+		}
 		~DBTransaction() {
 			if (state == STATE_START) {
-				Database::getInstance().rollback();
+				dtb->rollback();
 			}
 		}
 
@@ -217,7 +208,7 @@ class DBTransaction
 
 		bool begin() {
 			state = STATE_START;
-			return Database::getInstance().beginTransaction();
+			return dtb->beginTransaction();
 		}
 
 		bool commit() {
@@ -226,7 +217,7 @@ class DBTransaction
 			}
 
 			state = STATE_COMMIT;
-			return Database::getInstance().commit();
+			return dtb->commit();
 		}
 
 	private:
@@ -236,7 +227,10 @@ class DBTransaction
 			STATE_COMMIT,
 		};
 
+		Database* dtb;
 		TransactionStates_t state = STATE_NO_START;
 };
+
+extern Database g_database;
 
 #endif

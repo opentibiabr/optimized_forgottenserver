@@ -245,8 +245,9 @@ bool DBResult::next()
 	return row != nullptr;
 }
 
-DBInsert::DBInsert(std::string query) : query(std::move(query))
+DBInsert::DBInsert(Database* dtb, std::string query) : query(std::move(query))
 {
+	this->dtb = dtb;
 	this->length = this->query.length();
 }
 
@@ -255,7 +256,7 @@ bool DBInsert::addRow(const std::string& row)
 	// adds new row to buffer
 	const size_t rowLength = row.length();
 	length += rowLength;
-	if (length > Database::getInstance().getMaxPacketSize() && !execute()) {
+	if (length > dtb->getMaxPacketSize() && !execute()) {
 		return false;
 	}
 
@@ -288,7 +289,7 @@ bool DBInsert::execute()
 	}
 
 	// executes buffer
-	bool res = Database::getInstance().executeQuery(query + values);
+	bool res = dtb->executeQuery(query + values);
 	values.clear();
 	length = query.length();
 	return res;

@@ -37,6 +37,7 @@
 #include "script.h"
 #include <fstream>
 
+Database g_database;
 DatabaseTasks g_databaseTasks;
 Dispatcher g_dispatcher;
 Scheduler g_scheduler;
@@ -163,13 +164,17 @@ void mainLoader(int, char*[], ServiceManager* services)
 	g_RSA.setKey(n, d);
 
 	std::cout << ">> Establishing database connection..." << std::flush;
-
-	if (!Database::getInstance().connect()) {
+	if (!g_database.connect()) {
 		startupErrorMessage("Failed to connect to database.");
 		return;
 	}
 
 	std::cout << " MySQL " << Database::getClientVersion() << std::endl;
+	if (g_database.getMaxPacketSize() < 104857600) {
+		std::cout << "> Max MYSQL Query size below 100MB might generate undefined behaviour." << std::endl;
+		std::cout << "> Do you want to continue? Press enter to continue." << std::endl;
+		getchar();
+	}
 
 	// run database manager
 	std::cout << ">> Running database manager" << std::endl;
@@ -181,7 +186,6 @@ void mainLoader(int, char*[], ServiceManager* services)
 	g_databaseTasks.start();
 
 	DatabaseManager::updateDatabase();
-
 	if (g_config.getBoolean(ConfigManager::OPTIMIZE_DATABASE) && !DatabaseManager::optimizeTables()) {
 		std::cout << "> No tables were optimized." << std::endl;
 	}

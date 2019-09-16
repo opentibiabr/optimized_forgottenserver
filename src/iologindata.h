@@ -24,7 +24,7 @@
 #include "player.h"
 #include "database.h"
 
-using ItemBlockList = std::list<std::pair<int32_t, Item*>>;
+using ItemBlockList = std::vector<std::pair<int32_t, Item*>>;
 
 class IOLoginData
 {
@@ -60,10 +60,10 @@ class IOLoginData
 		static void removePremiumDays(uint32_t accountId, int32_t removeDays);
 
 	private:
-		using ItemMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;
-
-		static void loadItems(ItemMap& itemMap, DBResult_ptr result);
-		static bool saveItems(const Player* player, const ItemBlockList& itemList, DBInsert& query_insert, PropWriteStream& propWriteStream);
+		static bool loadContainer(PropStream& propStream, Container* container);
+		static void loadItems(ItemBlockList& itemMap, DBResult_ptr result, PropStream& stream);
+		static void saveItem(PropWriteStream& stream, const Item* item);
+		static bool saveItems(const Player* player, const ItemBlockList& itemList, std::ostringstream& query, PropWriteStream& stream, const std::string& table);
 };
 
 #endif
