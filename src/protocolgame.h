@@ -73,6 +73,8 @@ class ProtocolGame final : public Protocol
 			return version;
 		}
 
+		static NetworkMessage playermsg;
+
 	private:
 		ProtocolGame_ptr getThis() {
 			return std::static_pointer_cast<ProtocolGame>(shared_from_this());
@@ -272,31 +274,29 @@ class ProtocolGame final : public Protocol
 		//Help functions
 
 		// translate a tile to clientreadable format
-		void GetTileDescription(const Tile* tile, NetworkMessage& msg);
+		void GetTileDescription(const Tile* tile);
 
 		// translate a floor to clientreadable format
-		void GetFloorDescription(NetworkMessage& msg, int32_t x, int32_t y, int32_t z,
-		                         int32_t width, int32_t height, int32_t offset, int32_t& skip);
+		void GetFloorDescription(int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, int32_t offset, int32_t& skip);
 
 		// translate a map area to clientreadable format
-		void GetMapDescription(int32_t x, int32_t y, int32_t z,
-		                       int32_t width, int32_t height, NetworkMessage& msg);
+		void GetMapDescription(int32_t x, int32_t y, int32_t z, int32_t width, int32_t height);
 
-		void AddCreature(NetworkMessage& msg, const Creature* creature, bool known, uint32_t remove);
-		void AddPlayerStats(NetworkMessage& msg);
-		void AddOutfit(NetworkMessage& msg, const Outfit_t& outfit);
-		void AddPlayerSkills(NetworkMessage& msg);
-		void AddWorldLight(NetworkMessage& msg, LightInfo lightInfo);
-		void AddCreatureLight(NetworkMessage& msg, const Creature* creature);
+		void AddCreature(const Creature* creature, bool known, uint32_t remove);
+		void AddPlayerStats();
+		void AddOutfit(const Outfit_t& outfit);
+		void AddPlayerSkills();
+		void AddWorldLight(LightInfo lightInfo);
+		void AddCreatureLight(const Creature* creature);
 
 		//tiles
-		static void RemoveTileThing(NetworkMessage& msg, const Position& pos, uint32_t stackpos);
+		void RemoveTileThing(const Position& pos, uint32_t stackpos);
 
-		void MoveUpCreature(NetworkMessage& msg, const Creature* creature, const Position& newPos, const Position& oldPos);
-		void MoveDownCreature(NetworkMessage& msg, const Creature* creature, const Position& newPos, const Position& oldPos);
+		void MoveUpCreature(const Creature* creature, const Position& newPos, const Position& oldPos);
+		void MoveDownCreature(const Creature* creature, const Position& newPos, const Position& oldPos);
 
 		//shop
-		void AddShopItem(NetworkMessage& msg, const ShopInfo& item);
+		void AddShopItem(const ShopInfo& item);
 
 		//otclient
 		void parseExtendedOpcode(NetworkMessage& msg);

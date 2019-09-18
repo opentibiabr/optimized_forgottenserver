@@ -83,7 +83,7 @@ void BedItem::serializeAttr(PropWriteStream& propWriteStream) const
 
 BedItem* BedItem::getNextBedItem() const
 {
-	Direction dir = Item::items[id].bedPartnerDir;
+	Direction dir = Item::items[getID()].bedPartnerDir;
 	Position targetPos = getNextPosition(dir, getPosition());
 
 	Tile* tile = g_game.map.getTile(targetPos);
@@ -125,7 +125,7 @@ bool BedItem::trySleep(Player* player)
 	}
 
 	if (sleeperGUID != 0) {
-		if (Item::items[id].transformToFree != 0 && house->getOwner() == player->getGUID()) {
+		if (Item::items[getID()].transformToFree != 0 && house->getOwner() == player->getGUID()) {
 			wakeUp(nullptr);
 		}
 
@@ -244,7 +244,7 @@ void BedItem::regeneratePlayer(Player* player) const
 
 void BedItem::updateAppearance(const Player* player)
 {
-	const ItemType& it = Item::items[id];
+	const ItemType& it = Item::items[getID()];
 	if (it.type == ITEM_TYPE_BED) {
 		if (player && it.transformToOnUse[player->getSex()] != 0) {
 			const ItemType& newType = Item::items[it.transformToOnUse[player->getSex()]];

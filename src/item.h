@@ -338,7 +338,7 @@ class ItemAttributes
 
 	private:
 		bool hasAttribute(itemAttrTypes type) const {
-			return (type & attributeBits) != 0;
+			return (type & static_cast<itemAttrTypes>(attributeBits)) != 0;
 		}
 		void removeAttribute(itemAttrTypes type);
 
@@ -358,7 +358,11 @@ class ItemAttributes
 			} value;
 			itemAttrTypes type;
 
-			explicit Attribute(itemAttrTypes type) : type(type) {
+			//non-copyable
+			Attribute& operator=(const Attribute& other) = delete;
+			Attribute& operator=(Attribute&& other) = default;
+
+			Attribute(itemAttrTypes type) : type(type) {
 				memset(&value, 0, sizeof(value));
 			}
 			Attribute(const Attribute& i) {
@@ -384,35 +388,10 @@ class ItemAttributes
 					delete value.custom;
 				}
 			}
-			Attribute& operator=(Attribute other) {
-				Attribute::swap(*this, other);
-				return *this;
-			}
-			Attribute& operator=(Attribute&& other) {
-				if (this != &other) {
-					if (ItemAttributes::isStrAttrType(type)) {
-						delete value.string;
-					} else if (ItemAttributes::isCustomAttrType(type)) {
-						delete value.custom;
-					}
-
-					value = other.value;
-					type = other.type;
-
-					memset(&other.value, 0, sizeof(value));
-					other.type = ITEM_ATTRIBUTE_NONE;
-				}
-				return *this;
-			}
-
-			static void swap(Attribute& first, Attribute& second) {
-				std::swap(first.value, second.value);
-				std::swap(first.type, second.type);
-			}
 		};
 
-		std::forward_list<Attribute> attributes;
-		uint32_t attributeBits = 0;
+		std::vector<Attribute> attributes;
+		std::underlying_type<itemAttrTypes>::type attributeBits = 0;
 
 		const std::string& getStrAttr(itemAttrTypes type) const;
 		void setStrAttr(itemAttrTypes type, const std::string& value);
@@ -497,16 +476,40 @@ class ItemAttributes
 
 	public:
 		static bool isIntAttrType(itemAttrTypes type) {
-			return (type & 0x7FFE13) != 0;
+			std::underlying_type<itemAttrTypes>::type checkTypes = ITEM_ATTRIBUTE_ACTIONID;
+			checkTypes |= ITEM_ATTRIBUTE_UNIQUEID;
+			checkTypes |= ITEM_ATTRIBUTE_DATE;
+			checkTypes |= ITEM_ATTRIBUTE_WEIGHT;
+			checkTypes |= ITEM_ATTRIBUTE_ATTACK;
+			checkTypes |= ITEM_ATTRIBUTE_DEFENSE;
+			checkTypes |= ITEM_ATTRIBUTE_EXTRADEFENSE;
+			checkTypes |= ITEM_ATTRIBUTE_ARMOR;
+			checkTypes |= ITEM_ATTRIBUTE_HITCHANCE;
+			checkTypes |= ITEM_ATTRIBUTE_SHOOTRANGE;
+			checkTypes |= ITEM_ATTRIBUTE_OWNER;
+			checkTypes |= ITEM_ATTRIBUTE_DURATION;
+			checkTypes |= ITEM_ATTRIBUTE_DECAYSTATE;
+			checkTypes |= ITEM_ATTRIBUTE_CORPSEOWNER;
+			checkTypes |= ITEM_ATTRIBUTE_CHARGES;
+			checkTypes |= ITEM_ATTRIBUTE_FLUIDTYPE;
+			checkTypes |= ITEM_ATTRIBUTE_DOORID;
+			return (type & static_cast<itemAttrTypes>(checkTypes)) != 0;
 		}
 		static bool isStrAttrType(itemAttrTypes type) {
-			return (type & 0x1EC) != 0;
+			std::underlying_type<itemAttrTypes>::type checkTypes = ITEM_ATTRIBUTE_DESCRIPTION;
+			checkTypes |= ITEM_ATTRIBUTE_TEXT;
+			checkTypes |= ITEM_ATTRIBUTE_WRITER;
+			checkTypes |= ITEM_ATTRIBUTE_NAME;
+			checkTypes |= ITEM_ATTRIBUTE_ARTICLE;
+			checkTypes |= ITEM_ATTRIBUTE_PLURALNAME;
+			return (type & static_cast<itemAttrTypes>(checkTypes)) != 0;
 		}
 		inline static bool isCustomAttrType(itemAttrTypes type) {
-			return (type & 0x80000000) != 0;
+			std::underlying_type<itemAttrTypes>::type checkTypes = ITEM_ATTRIBUTE_CUSTOM;
+			return (type & static_cast<itemAttrTypes>(checkTypes)) != 0;
 		}
 
-		const std::forward_list<Attribute>& getList() const {
+		const std::vector<Attribute>& getList() const {
 			return attributes;
 		}
 
@@ -992,8 +995,6 @@ class Item : virtual public Thing
 	protected:
 		Cylinder* parent = nullptr;
 
-		uint16_t id;  // the same id as in ItemType
-
 	private:
 		std::string getWeightDescription(uint32_t weight) const;
 
@@ -1001,6 +1002,7 @@ class Item : virtual public Thing
 
 		uint32_t referenceCounter = 0;
 
+		uint16_t id;  // the same id as in ItemType
 		uint8_t count = 1; // number of stacked items
 
 		bool loadedFromMap = false;

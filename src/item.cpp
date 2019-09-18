@@ -1613,17 +1613,10 @@ void ItemAttributes::removeAttribute(itemAttrTypes type)
 		return;
 	}
 
-	auto prev_it = attributes.cbegin();
-	if ((*prev_it).type == type) {
-		attributes.pop_front();
-	} else {
-		auto it = prev_it, end = attributes.cend();
-		while (++it != end) {
-			if ((*it).type == type) {
-				attributes.erase_after(prev_it);
-				break;
-			}
-			prev_it = it;
+	for (auto it = attributes.begin(), end = attributes.end(); it != end; ++it) {
+		if ((*it).type == type) {
+			attributes.erase(it);
+			break;
 		}
 	}
 	attributeBits &= ~type;
@@ -1683,8 +1676,8 @@ ItemAttributes::Attribute& ItemAttributes::getAttr(itemAttrTypes type)
 	}
 
 	attributeBits |= type;
-	attributes.emplace_front(type);
-	return attributes.front();
+	attributes.emplace_back(type);
+	return attributes.back();
 }
 
 void Item::startDecaying()
@@ -1694,7 +1687,7 @@ void Item::startDecaying()
 
 bool Item::hasMarketAttributes() const
 {
-	if (attributes == nullptr) {
+	if (!attributes) {
 		return true;
 	}
 

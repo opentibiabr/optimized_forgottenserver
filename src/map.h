@@ -226,6 +226,9 @@ class Map
 
 		void moveCreature(Creature& creature, Tile& newTile, bool forceTeleport = false);
 
+
+		std::vector<Tile*> getFloorTiles(int32_t x, int32_t y, int32_t width, int32_t height, int32_t z);
+
 		void getSpectators(SpectatorHashSet& spectators, const Position& centerPos, bool multifloor = false, bool onlyPlayers = false,
 		                   int32_t minRangeX = 0, int32_t maxRangeX = 0,
 		                   int32_t minRangeY = 0, int32_t maxRangeY = 0);

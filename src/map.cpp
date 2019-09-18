@@ -299,6 +299,61 @@ void Map::moveCreature(Creature& creature, Tile& newTile, bool forceTeleport/* =
 	newTile.postAddNotification(&creature, &oldTile, 0);
 }
 
+std::vector<Tile*> Map::getFloorTiles(int32_t x, int32_t y, int32_t width, int32_t height, int32_t z)
+{
+	std::vector<Tile*> tileVector;
+	tileVector.resize(width*height, NULL);
+
+	int32_t x1 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, x));
+	int32_t y1 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, y));
+	int32_t x2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (x + width)));
+	int32_t y2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (y + height)));
+
+	int32_t startx1 = x1 - (x1 % FLOOR_SIZE);
+	int32_t starty1 = y1 - (y1 % FLOOR_SIZE);
+	int32_t endx2 = x2 - (x2 % FLOOR_SIZE);
+	int32_t endy2 = y2 - (y2 % FLOOR_SIZE);
+
+	const QTreeLeafNode* startLeaf = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, starty1);
+	const QTreeLeafNode* leafS = startLeaf;
+	const QTreeLeafNode* leafE;
+	for (int32_t ny = starty1; ny <= endy2; ny += FLOOR_SIZE) {
+		leafE = leafS;
+		for (int32_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
+			if (leafE) {
+				Floor* floor = leafE->getFloor(z);
+				if (floor) {
+					int32_t tx = nx;
+					for (auto& row : floor->tiles) {
+						if (static_cast<uint32_t>(tx - x) < static_cast<uint32_t>(width)) {
+							int32_t ty = ny;
+							uint32_t index = ((tx - x) * height) + (ty - y);
+							for (auto tile : row) {
+								if (static_cast<uint32_t>(ty - y) < static_cast<uint32_t>(height)) {
+									tileVector[index] = tile;
+								}
+								++index;
+								++ty;
+							}
+						}
+						++tx;
+					}
+				}
+				leafE = leafE->leafE;
+			} else {
+				leafE = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, nx + FLOOR_SIZE, ny);
+			}
+		}
+
+		if (leafS) {
+			leafS = leafS->leafS;
+		} else {
+			leafS = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, ny + FLOOR_SIZE);
+		}
+	}
+	return tileVector;
+}
+
 void Map::getSpectatorsInternal(SpectatorHashSet& spectators, const Position& centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const
 {
 	int32_t min_y = centerPos.y - minRangeY;
@@ -326,9 +381,9 @@ void Map::getSpectatorsInternal(SpectatorHashSet& spectators, const Position& ce
 	const QTreeLeafNode* startLeaf = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, starty1);
 	const QTreeLeafNode* leafS = startLeaf;
 	const QTreeLeafNode* leafE;
-	for (int_fast32_t ny = starty1; ny <= endy2; ny += FLOOR_SIZE) {
+	for (int32_t ny = starty1; ny <= endy2; ny += FLOOR_SIZE) {
 		leafE = leafS;
-		for (int_fast32_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
+		for (int32_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
 			if (leafE) {
 				const CreatureVector& node_list = (onlyPlayers ? leafE->player_list : leafE->creature_list);
 				for (auto it = node_list.begin(), end = node_list.end(); it != end; ++it) {
@@ -1179,7 +1234,7 @@ void QTreeLeafNode::removeCreature(Creature* c)
 uint32_t Map::clean() const
 {
 	uint64_t start = OTSYS_TIME();
-	size_t count = 0, tiles = 0;
+	size_t tiles = 0;
 
 	if (g_game.getGameState() == GAME_STATE_NORMAL) {
 		g_game.setGameState(GAME_STATE_MAINTAIN);
@@ -1212,17 +1267,12 @@ uint32_t Map::clean() const
 						}
 
 						++tiles;
-						for (Item* item : *itemList) {
+						for (auto it = itemList->getBeginDownItem(), end = itemList->getEndDownItem(); it != end; ++it) {
+							Item* item = (*it);
 							if (item->isCleanable()) {
 								toRemove.push_back(item);
 							}
 						}
-
-						for (Item* item : toRemove) {
-							g_game.internalRemoveItem(item, -1);
-						}
-						count += toRemove.size();
-						toRemove.clear();
 					}
 				}
 			}
@@ -1234,6 +1284,12 @@ uint32_t Map::clean() const
 			}
 		}
 	} while (!nodes.empty());
+
+	size_t count = toRemove.size();
+	for (Item* item : toRemove) {
+		g_game.internalRemoveItem(item, -1);
+	}
+	toRemove.clear();
 
 	if (g_game.getGameState() == GAME_STATE_MAINTAIN) {
 		g_game.setGameState(GAME_STATE_NORMAL);

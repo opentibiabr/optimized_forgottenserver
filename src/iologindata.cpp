@@ -652,7 +652,6 @@ void IOLoginData::saveItem(PropWriteStream& stream, const Item* item)
 	}
 }
 
-
 bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList, std::ostringstream& query, PropWriteStream& propWriteStream, const std::string& table)
 {
 	for (const auto& it : itemList) {
