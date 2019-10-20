@@ -521,12 +521,8 @@ void ProtocolGame::GetTileDescription(const Tile* tile)
 	if (items) {
 		for (auto it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
 			playermsg.addItem(*it);
-
-			++count;
-			if (count == 9 && tile->getPosition() == player->getPosition()) {
+			if (++count == 10) {
 				break;
-			} else if (count == 10) {
-				return;
 			}
 		}
 	}
@@ -534,31 +530,37 @@ void ProtocolGame::GetTileDescription(const Tile* tile)
 	const CreatureVector* creatures = tile->getCreatures();
 	if (creatures) {
 		bool playerAdded = false;
-		for (auto it = creatures->rbegin(), end = creatures->rend(); it != end; ++it) {
-			const Creature* creature = (*it);
-			if (!player->canSeeCreature(creature)) {
-				continue;
-			}
+		if (count < 10) {
+			for (auto it = creatures->rbegin(), end = creatures->rend(); it != end; ++it) {
+				const Creature* creature = (*it);
+				if (!player->canSeeCreature(creature)) {
+					continue;
+				}
 
-			if (count == 9 && !playerAdded && tile->getPosition() == player->getPosition()) {
-				creature = player;
-			}
+				if (creature->getID() == player->getID()) {
+					playerAdded = true;
+				}
 
-			if (creature->getID() == player->getID()) {
-				playerAdded = true;
+				bool known;
+				uint32_t removedKnown;
+				checkCreatureAsKnown(creature->getID(), known, removedKnown);
+				AddCreature(creature, known, removedKnown);
+				if (++count == 10) {
+					break;
+				}
 			}
+		}
+		if (!playerAdded && tile->getPosition() == player->getPosition()) {
+			const Creature* creature = player;
 
 			bool known;
 			uint32_t removedKnown;
 			checkCreatureAsKnown(creature->getID(), known, removedKnown);
 			AddCreature(creature, known, removedKnown);
-			if (++count == 10) {
-				return;
-			}
 		}
 	}
 
-	if (items) {
+	if (items && count < 10) {
 		for (auto it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
 			playermsg.addItem(*it);
 			if (++count == 10) {
