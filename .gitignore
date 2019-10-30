@@ -176,3 +176,6 @@ pip-log.txt
 ## TFS / OT
 #############
 config.lua
+libmysql.dll
+lua51.dll
+theforgottenserver-AVX2.exe

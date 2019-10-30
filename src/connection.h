@@ -66,9 +66,11 @@ class Connection : public std::enable_shared_from_this<Connection>
 		Connection(const Connection&) = delete;
 		Connection& operator=(const Connection&) = delete;
 
-		enum ConnectionState_t {
+		enum ConnectionState_t : uint8_t {
 			CONNECTION_STATE_OPEN,
-			CONNECTION_STATE_CLOSED,
+			CONNECTION_STATE_IDENTIFYING,
+			CONNECTION_STATE_READINGS,
+			CONNECTION_STATE_CLOSED
 		};
 
 		enum { FORCE_CLOSE = true };
@@ -94,6 +96,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 		uint32_t getIP();
 
 	private:
+		void parseProxyIdentification(const boost::system::error_code& error);
 		void parseHeader(const boost::system::error_code& error);
 		void parsePacket(const boost::system::error_code& error);
 
@@ -126,7 +129,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 		time_t timeConnected;
 		uint32_t packetsSent = 0;
 
-		bool connectionState = CONNECTION_STATE_OPEN;
+		std::underlying_type<ConnectionState_t>::type connectionState = CONNECTION_STATE_OPEN;
 		bool receivedFirst = false;
 };
 

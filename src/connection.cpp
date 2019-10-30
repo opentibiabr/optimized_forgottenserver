@@ -67,7 +67,7 @@ void Connection::close(bool force)
 	ConnectionManager::getInstance().releaseConnection(shared_from_this());
 
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
-	if (connectionState != CONNECTION_STATE_OPEN) {
+	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
 	connectionState = CONNECTION_STATE_CLOSED;
@@ -106,10 +106,24 @@ Connection::~Connection()
 
 void Connection::accept(Protocol_ptr protocol)
 {
+	this->connectionState = CONNECTION_STATE_IDENTIFYING;
 	this->protocol = protocol;
 	g_dispatcher.addTask(createTask(std::bind(&Protocol::onConnect, protocol)));
 
-	accept();
+	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	try {
+		readTimer.expires_from_now(boost::posix_time::seconds(CONNECTION_READ_TIMEOUT));
+		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
+
+		// Read header bytes to identify if it is proxy identification
+		boost::asio::async_read(socket,
+								boost::asio::buffer(msg.getBuffer(), NetworkMessage::HEADER_LENGTH),
+								std::bind(&Connection::parseProxyIdentification, shared_from_this(), std::placeholders::_1));
+	}
+	catch (boost::system::system_error& e) {
+		std::cout << "[Network error - Connection::accept] " << e.what() << std::endl;
+		close(FORCE_CLOSE);
+	}
 }
 
 void Connection::accept()
@@ -129,6 +143,71 @@ void Connection::accept()
 	}
 }
 
+void Connection::parseProxyIdentification(const boost::system::error_code& error)
+{
+	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	readTimer.cancel();
+
+	if (error) {
+		close(FORCE_CLOSE);
+		return;
+	} else if (connectionState == CONNECTION_STATE_CLOSED) {
+		return;
+	}
+
+	uint8_t* msgBuffer = msg.getBuffer();
+	std::string serverName = g_config.getString(ConfigManager::SERVER_NAME) + "\n";
+	if (connectionState == CONNECTION_STATE_IDENTIFYING) {
+		if (msgBuffer[1] == 0x00 || strncasecmp(reinterpret_cast<char*>(msgBuffer), &serverName[0], 2) != 0) {
+			//Probably not proxy identification so let's try standard parsing method
+			connectionState = CONNECTION_STATE_OPEN;
+			parseHeader(error);
+			return;
+		} else {
+			size_t remainder = serverName.length()-2;
+			if (remainder > 0) {
+				connectionState = CONNECTION_STATE_READINGS;
+				try {
+					readTimer.expires_from_now(boost::posix_time::seconds(CONNECTION_READ_TIMEOUT));
+					readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
+
+					// Read the remainder of proxy identification
+					boost::asio::async_read(socket, boost::asio::buffer(msg.getBuffer(), remainder),
+											std::bind(&Connection::parseProxyIdentification, shared_from_this(), std::placeholders::_1));
+				}
+				catch (boost::system::system_error& e) {
+					std::cout << "[Network error - Connection::parseProxyIdentification] " << e.what() << std::endl;
+					close(FORCE_CLOSE);
+				}
+				return;
+			} else {
+				connectionState = CONNECTION_STATE_OPEN;
+			}
+		}
+	} else if (connectionState == CONNECTION_STATE_READINGS) {
+		size_t remainder = serverName.length()-2;
+		if (strncasecmp(reinterpret_cast<char*>(msgBuffer), &serverName[2], remainder) == 0) {
+			connectionState = CONNECTION_STATE_OPEN;
+		} else {
+			close(FORCE_CLOSE);
+			return;
+		}
+	}
+
+	try {
+		readTimer.expires_from_now(boost::posix_time::seconds(CONNECTION_READ_TIMEOUT));
+		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
+
+		// Wait to the next packet
+		boost::asio::async_read(socket,
+		                        boost::asio::buffer(msg.getBuffer(), NetworkMessage::HEADER_LENGTH),
+		                        std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
+	} catch (boost::system::system_error& e) {
+		std::cout << "[Network error - Connection::parseProxyIdentification] " << e.what() << std::endl;
+		close(FORCE_CLOSE);
+	}
+}
+
 void Connection::parseHeader(const boost::system::error_code& error)
 {
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
@@ -137,7 +216,7 @@ void Connection::parseHeader(const boost::system::error_code& error)
 	if (error) {
 		close(FORCE_CLOSE);
 		return;
-	} else if (connectionState != CONNECTION_STATE_OPEN) {
+	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
 
@@ -161,12 +240,12 @@ void Connection::parseHeader(const boost::system::error_code& error)
 
 	try {
 		readTimer.expires_from_now(boost::posix_time::seconds(CONNECTION_READ_TIMEOUT));
-		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()),
-		                                    std::placeholders::_1));
+		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
 		// Read packet content
 		msg.setLength(size + NetworkMessage::HEADER_LENGTH);
-		boost::asio::async_read(socket, boost::asio::buffer(msg.getBodyBuffer(), size),
+		boost::asio::async_read(socket,
+								boost::asio::buffer(msg.getBodyBuffer(), size),
 		                        std::bind(&Connection::parsePacket, shared_from_this(), std::placeholders::_1));
 	} catch (boost::system::system_error& e) {
 		std::cout << "[Network error - Connection::parseHeader] " << e.what() << std::endl;
@@ -182,23 +261,8 @@ void Connection::parsePacket(const boost::system::error_code& error)
 	if (error) {
 		close(FORCE_CLOSE);
 		return;
-	} else if (connectionState != CONNECTION_STATE_OPEN) {
+	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
-	}
-
-	//Check packet checksum
-	uint32_t checksum;
-	int32_t len = msg.getLength() - msg.getBufferPosition() - NetworkMessage::CHECKSUM_LENGTH;
-	if (len > 0) {
-		checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition() + NetworkMessage::CHECKSUM_LENGTH, len);
-	} else {
-		checksum = 0;
-	}
-
-	uint32_t recvChecksum = msg.get<uint32_t>();
-	if (recvChecksum != checksum) {
-		// it might not have been the checksum, step back
-		msg.skipBytes(-NetworkMessage::CHECKSUM_LENGTH);
 	}
 
 	if (!receivedFirst) {
@@ -206,6 +270,21 @@ void Connection::parsePacket(const boost::system::error_code& error)
 		receivedFirst = true;
 
 		if (!protocol) {
+			//Check packet checksum
+			uint32_t checksum;
+			int32_t len = msg.getLength() - msg.getBufferPosition() - NetworkMessage::CHECKSUM_LENGTH;
+			if (len > 0) {
+				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition() + NetworkMessage::CHECKSUM_LENGTH, len);
+			} else {
+				checksum = 0;
+			}
+
+			uint32_t recvChecksum = msg.get<uint32_t>();
+			if (recvChecksum != checksum) {
+				// it might not have been the checksum, step back
+				msg.skipBytes(-NetworkMessage::CHECKSUM_LENGTH);
+			}
+
 			// Game protocol has already been created at this point
 			protocol = service_port->make_protocol(recvChecksum == checksum, msg, shared_from_this());
 			if (!protocol) {
@@ -213,6 +292,7 @@ void Connection::parsePacket(const boost::system::error_code& error)
 				return;
 			}
 		} else {
+			msg.get<uint32_t>();
 			msg.skipBytes(1);    // Skip protocol ID
 		}
 
@@ -223,8 +303,7 @@ void Connection::parsePacket(const boost::system::error_code& error)
 
 	try {
 		readTimer.expires_from_now(boost::posix_time::seconds(CONNECTION_READ_TIMEOUT));
-		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()),
-		                                    std::placeholders::_1));
+		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
 		// Wait to the next packet
 		boost::asio::async_read(socket,
@@ -239,7 +318,7 @@ void Connection::parsePacket(const boost::system::error_code& error)
 void Connection::send(const OutputMessage_ptr& msg)
 {
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
-	if (connectionState != CONNECTION_STATE_OPEN) {
+	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
 	}
 
@@ -255,8 +334,7 @@ void Connection::internalSend(const OutputMessage_ptr& msg)
 	protocol->onSendMessage(msg);
 	try {
 		writeTimer.expires_from_now(boost::posix_time::seconds(CONNECTION_WRITE_TIMEOUT));
-		writeTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()),
-		                                     std::placeholders::_1));
+		writeTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
 		boost::asio::async_write(socket,
 		                         boost::asio::buffer(msg->getOutputBuffer(), msg->getLength()),

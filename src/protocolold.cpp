@@ -63,8 +63,8 @@ void ProtocolOld::onRecvFirstMessage(NetworkMessage& msg)
 	enableXTEAEncryption();
 	setXTEAKey(key);
 
-	if (version <= 822) {
-		disableChecksum();
+	if (version >= 830) {
+		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 	}
 
 	std::ostringstream ss;

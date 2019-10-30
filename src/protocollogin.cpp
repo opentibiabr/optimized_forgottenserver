@@ -154,6 +154,10 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 	enableXTEAEncryption();
 	setXTEAKey(key);
 
+	if (version >= 830) {
+		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
+	}
+
 	if (version < CLIENT_VERSION_MIN || version > CLIENT_VERSION_MAX) {
 		std::ostringstream ss;
 		ss << "Only clients with protocol " << CLIENT_VERSION_STR << " allowed!";

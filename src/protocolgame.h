@@ -196,6 +196,9 @@ class ProtocolGame final : public Protocol
 		void sendCreatureOutfit(const Creature* creature, const Outfit_t& outfit);
 		void sendStats();
 		void sendBasicData();
+		void sendBlessStatus();
+		void sendClientCheck();
+		void sendGameNews();
 		void sendTextMessage(const TextMessage& message);
 		void sendReLoginWindow(uint8_t unfairFightReduction);
 
@@ -297,6 +300,10 @@ class ProtocolGame final : public Protocol
 
 		//shop
 		void AddShopItem(const ShopInfo& item);
+
+		//items
+		void AddItem(uint16_t id, uint8_t count);
+		void AddItem(const Item* item);
 
 		//otclient
 		void parseExtendedOpcode(NetworkMessage& msg);

@@ -25,20 +25,34 @@
 
 extern RSA g_RSA;
 
-void Protocol::onSendMessage(const OutputMessage_ptr& msg) const
+void Protocol::onSendMessage(const OutputMessage_ptr& msg)
 {
 	if (!rawMessages) {
 		msg->writeMessageLength();
 
 		if (encryptionEnabled) {
 			XTEA_encrypt(*msg);
-			msg->addCryptoHeader(checksumEnabled);
+			if (checksumMethod == CHECKSUM_METHOD_NONE) {
+				msg->addCryptoHeader(false, 0);
+			} else if (checksumMethod == CHECKSUM_METHOD_ADLER32) {
+				msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()));
+			} else if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
+				if (sequenceNumber >= 2147483647) {
+					sequenceNumber = 0;
+				} else {
+					++sequenceNumber;
+				}
+				msg->addCryptoHeader(true, sequenceNumber);
+			}
 		}
 	}
 }
 
 void Protocol::onRecvMessage(NetworkMessage& msg)
 {
+	if (checksumMethod != CHECKSUM_METHOD_NONE) {
+		msg.get<uint32_t>();
+	}
 	if (encryptionEnabled && !XTEA_decrypt(msg)) {
 		return;
 	}
