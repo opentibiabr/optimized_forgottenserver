@@ -172,7 +172,8 @@ void Connection::parseProxyIdentification(const boost::system::error_code& error
 					readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
 					// Read the remainder of proxy identification
-					boost::asio::async_read(socket, boost::asio::buffer(msg.getBuffer(), remainder),
+					boost::asio::async_read(socket,
+											boost::asio::buffer(msg.getBuffer(), remainder),
 											std::bind(&Connection::parseProxyIdentification, shared_from_this(), std::placeholders::_1));
 				}
 				catch (boost::system::system_error& e) {

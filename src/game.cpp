@@ -4625,7 +4625,6 @@ void Game::updateCreatureType(Creature* creature)
 {
 	const Player* masterPlayer = nullptr;
 
-	uint32_t creatureId = creature->getID();
 	CreatureType_t creatureType = creature->getType();
 	if (creatureType == CREATURETYPE_MONSTER) {
 		const Creature* master = creature->getMaster();
@@ -4645,14 +4644,14 @@ void Game::updateCreatureType(Creature* creature)
 		for (Creature* spectator : spectators) {
 			Player* player = spectator->getPlayer();
 			if (masterPlayer == player) {
-				player->sendCreatureType(creatureId, CREATURETYPE_SUMMON_OWN);
+				player->sendCreatureType(creature, CREATURETYPE_SUMMON_OWN);
 			} else {
-				player->sendCreatureType(creatureId, creatureType);
+				player->sendCreatureType(creature, creatureType);
 			}
 		}
 	} else {
 		for (Creature* spectator : spectators) {
-			spectator->getPlayer()->sendCreatureType(creatureId, creatureType);
+			spectator->getPlayer()->sendCreatureType(creature, creatureType);
 		}
 	}
 }

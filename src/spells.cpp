@@ -173,6 +173,19 @@ bool Spells::registerRuneLuaEvent(RuneSpell* event)
 	return false;
 }
 
+std::vector<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId)
+{
+	std::vector<uint16_t> spells;
+	spells.reserve(30);
+	for (const auto& it : instants) {
+		VocSpellMap map = it.second.getVocMap();
+		if (map.find(vocationId)->second) {
+			spells.emplace_back(it.second.getId());
+		}
+	}
+	return spells;
+}
+
 Spell* Spells::getSpellByName(const std::string& name)
 {
 	Spell* spell = getRuneSpellByName(name);

@@ -37,12 +37,8 @@ void Protocol::onSendMessage(const OutputMessage_ptr& msg)
 			} else if (checksumMethod == CHECKSUM_METHOD_ADLER32) {
 				msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()));
 			} else if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
-				if (sequenceNumber >= 2147483647) {
-					sequenceNumber = 0;
-				} else {
-					++sequenceNumber;
-				}
-				msg->addCryptoHeader(true, sequenceNumber);
+				msg->addCryptoHeader(true, sequenceNumber++);
+				sequenceNumber &= 0x7FFFFFFF;
 			}
 		}
 	}

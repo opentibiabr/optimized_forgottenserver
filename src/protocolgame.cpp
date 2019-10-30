@@ -33,11 +33,13 @@
 #include "waitlist.h"
 #include "ban.h"
 #include "scheduler.h"
+#include "spells.h"
 
 extern ConfigManager g_config;
 extern Actions actions;
 extern CreatureEvents* g_creatureEvents;
 extern Chat* g_chat;
+extern Spells* g_spells;
 
 NetworkMessage ProtocolGame::playermsg;
 
@@ -250,7 +252,15 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 	}
 
-	msg.skipBytes(7); // U32 client version, U8 client type, U16 dat revision
+	uint32_t clientVersion = msg.get<uint32_t>();
+	msg.skipBytes(3); // U8 client type, U16 dat revision
+
+	if (clientVersion >= 1149 && clientVersion < 1200) {
+		if(msg.getLength() - msg.getBufferPosition() > 128) {
+			addExivaRestrictions = true;
+			msg.skipBytes(1);
+		}
+	}
 
 	if (!Protocol::RSA_decrypt(msg)) {
 		disconnect();
@@ -770,6 +780,11 @@ void ProtocolGame::parseAutoWalk(NetworkMessage& msg)
 
 void ProtocolGame::parseSetOutfit(NetworkMessage& msg)
 {
+	uint8_t outfitType = 0;
+	if (version >= 1220) {//Maybe some versions before? but I don't have executable to check
+		outfitType = msg.getByte();
+	}
+
 	Outfit_t newOutfit;
 	newOutfit.lookType = msg.get<uint16_t>();
 	newOutfit.lookHead = msg.getByte();
@@ -777,7 +792,14 @@ void ProtocolGame::parseSetOutfit(NetworkMessage& msg)
 	newOutfit.lookLegs = msg.getByte();
 	newOutfit.lookFeet = msg.getByte();
 	newOutfit.lookAddons = msg.getByte();
-	newOutfit.lookMount = msg.get<uint16_t>();
+	if (outfitType == 0) {
+		newOutfit.lookMount = msg.get<uint16_t>();
+	} else if (outfitType == 1) {
+		//This value probably has something to do with try outfit variable inside outfit window dialog
+		//if try outfit is set to 2 it expects uint32_t value after mounted and disable mounts from outfit window dialog
+		newOutfit.lookMount = 0;
+		msg.get<uint32_t>();
+	}
 	addGameTask(&Game::playerChangeOutfit, player->getID(), newOutfit);
 }
 
@@ -1254,12 +1276,27 @@ void ProtocolGame::sendCreatureSkull(const Creature* creature)
 	writeToOutputBuffer(playermsg);
 }
 
-void ProtocolGame::sendCreatureType(uint32_t creatureId, uint8_t creatureType)
+void ProtocolGame::sendCreatureType(const Creature* creature, uint8_t creatureType)
 {
 	playermsg.reset();
 	playermsg.addByte(0x95);
-	playermsg.add<uint32_t>(creatureId);
-	playermsg.addByte(creatureType);
+	playermsg.add<uint32_t>(creature->getID());
+	if (version >= 1120) {
+		if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
+			creatureType = CREATURETYPE_SUMMON_OWN;
+		}
+		playermsg.addByte(creatureType);
+		if (creatureType == CREATURETYPE_SUMMON_OWN) {
+			const Creature* master = creature->getMaster();
+			if (master) {
+				playermsg.add<uint32_t>(master->getID());
+			} else {
+				playermsg.add<uint32_t>(0);
+			}
+		}
+	} else {
+		playermsg.addByte(creatureType);
+	}
 	writeToOutputBuffer(playermsg);
 }
 
@@ -1340,21 +1377,41 @@ void ProtocolGame::sendBasicData()
 	}
 	playermsg.addByte(player->getVocation()->getClientId());
 	if (version >= 1100) {
-		playermsg.addByte(((player->getVocation()->getId() != 0) ? 1 : 0));
+		playermsg.addByte(((player->getVocation()->getId() != 0) ? 0x01 : 0x00));
 	}
-	playermsg.add<uint16_t>(0/*0xFF*/); // number of known spells
-	/*for (uint8_t spellId = 0x00; spellId < 0xFF; spellId++) {
+
+	std::vector<uint16_t> spells = g_spells->getSpellsByVocation(player->getVocationId());
+	playermsg.add<uint16_t>(spells.size());
+	for (auto spellId : spells) {
 		playermsg.addByte(spellId);
-	}*/
+	}
 	writeToOutputBuffer(playermsg);
 }
 
 void ProtocolGame::sendBlessStatus()
 {
+	uint16_t haveBlesses = 0;
+	uint8_t blessings = (version >= 1130 ? 8 : 6);
+	for (uint8_t i = 1; i < blessings; i++) {
+		if (player->hasBlessing(i)) {
+			haveBlesses++;
+		}
+	}
+
 	playermsg.reset();
 	playermsg.addByte(0x9C);
-	playermsg.add<uint16_t>(0x01);
-	playermsg.addByte(1);
+	if (haveBlesses >= 5) {
+		if (version >= 1120) {
+			playermsg.add<uint16_t>((static_cast<uint16_t>(1) << haveBlesses) - 1);
+		} else {
+			playermsg.add<uint16_t>(0x01);
+		}
+	} else {
+		playermsg.add<uint16_t>(0x00);
+	}
+	if (version >= 1120) {
+		playermsg.addByte((haveBlesses >= 5 ? 2 : 1));
+	}
 	writeToOutputBuffer(playermsg);
 }
 
@@ -1518,6 +1575,10 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool h
 	playermsg.addByte(container->capacity());
 
 	playermsg.addByte(hasParent ? 0x01 : 0x00);
+	if (version >= 1220) {
+		//can use depot search
+		playermsg.addByte(0x00);
+	}
 
 	playermsg.addByte(container->isUnlocked() ? 0x01 : 0x00); // Drag and drop
 	playermsg.addByte(container->hasPagination() ? 0x01 : 0x00); // Pagination
@@ -2486,7 +2547,7 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	playermsg.add<uint16_t>(0x00); // URL (string) to ingame store images
 	playermsg.add<uint16_t>(25); // premium coin package size
 
-	if (version >= 1150/* || shouldAddExivaRestrictions*/) {
+	if (version >= 1150 || addExivaRestrictions) {
 		playermsg.addByte(0x00); // exiva button enabled
 	}
 
@@ -2509,7 +2570,7 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 
 	sendStats();
 	sendSkills();
-	//sendBlessStatus();
+	sendBlessStatus();
 	//sendPremiumTrigger();
 	//sendStoreHighlight();
 
@@ -2723,9 +2784,11 @@ void ProtocolGame::sendOutfitWindow()
 	playermsg.reset();
 	playermsg.addByte(0xC8);
 
+	bool mounted = false;
 	Outfit_t currentOutfit = player->getDefaultOutfit();
 	Mount* currentMount = g_game.mounts.getMountByID(player->getCurrentMount());
 	if (currentMount) {
+		mounted = (currentOutfit.lookMount == currentMount->clientId);
 		currentOutfit.lookMount = currentMount->clientId;
 	}
 
@@ -2733,8 +2796,14 @@ void ProtocolGame::sendOutfitWindow()
 
 	std::vector<ProtocolOutfit> protocolOutfits;
 	if (player->isAccessPlayer()) {
-		static const std::string gamemasterOutfitName = "Gamemaster";
-		protocolOutfits.emplace_back(gamemasterOutfitName, 75, 0);
+		static const std::string gmOutfitName = "Gamemaster";
+		protocolOutfits.emplace_back(gmOutfitName, 75, 0);
+
+		static const std::string csOutfitName = "Customer Support";
+		protocolOutfits.emplace_back(csOutfitName, 266, 0);
+
+		static const std::string cmOutfitName = "Community Manager";
+		protocolOutfits.emplace_back(cmOutfitName, 302, 0);
 	}
 
 	const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
@@ -2746,16 +2815,24 @@ void ProtocolGame::sendOutfitWindow()
 		}
 
 		protocolOutfits.emplace_back(outfit.name, outfit.lookType, addons);
-		if (protocolOutfits.size() == 100) { // Game client doesn't allow more than 100 outfits
+		if (protocolOutfits.size() == 150 && version < 1185) {
 			break;
 		}
 	}
 
-	playermsg.addByte(protocolOutfits.size());
+	if (version >= 1185) {
+		playermsg.add<uint16_t>(protocolOutfits.size());
+	} else {
+		playermsg.addByte(protocolOutfits.size());
+	}
+
 	for (const ProtocolOutfit& outfit : protocolOutfits) {
 		playermsg.add<uint16_t>(outfit.lookType);
 		playermsg.addString(outfit.name);
 		playermsg.addByte(outfit.addons);
+		if (version >= 1185) {
+			playermsg.addByte(0x00);
+		}
 	}
 
 	std::vector<const Mount*> mounts;
@@ -2765,10 +2842,23 @@ void ProtocolGame::sendOutfitWindow()
 		}
 	}
 
-	playermsg.addByte(mounts.size());
+	if (version >= 1185) {
+		playermsg.add<uint16_t>(mounts.size());
+	} else {
+		playermsg.addByte(mounts.size());
+	}
+
 	for (const Mount* mount : mounts) {
 		playermsg.add<uint16_t>(mount->clientId);
 		playermsg.addString(mount->name);
+		if (version >= 1185) {
+			playermsg.addByte(0x00);
+		}
+	}
+
+	if (version >= 1185) {
+		playermsg.addByte(0x00);//Try outfit
+		playermsg.addByte(mounted ? 0x01 : 0x00);
 	}
 
 	writeToOutputBuffer(playermsg);
@@ -2920,8 +3010,11 @@ void ProtocolGame::AddCreature(const Creature* creature, bool known, uint32_t re
 		}
 	}
 
-	playermsg.addByte(creatureType); // Type (for summons)
 	if (version >= 1120) {
+		if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
+			creatureType = CREATURETYPE_SUMMON_OWN;
+		}
+		playermsg.addByte(creatureType);
 		if (creatureType == CREATURETYPE_SUMMON_OWN) {
 			const Creature* master = creature->getMaster();
 			if (master) {
@@ -2930,6 +3023,8 @@ void ProtocolGame::AddCreature(const Creature* creature, bool known, uint32_t re
 				playermsg.add<uint32_t>(0);
 			}
 		}
+	} else {
+		playermsg.addByte(creatureType); // Type (for summons)
 	}
 	if (version >= 1220 && creatureType == CREATURETYPE_PLAYER) {
 		playermsg.addByte(0);

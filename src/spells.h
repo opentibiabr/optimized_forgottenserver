@@ -44,6 +44,7 @@ class Spells final : public BaseEvents
 		Spells(const Spells&) = delete;
 		Spells& operator=(const Spells&) = delete;
 
+		std::vector<uint16_t> getSpellsByVocation(uint16_t vocationId);
 		Spell* getSpellByName(const std::string& name);
 		RuneSpell* getRuneSpell(uint32_t id);
 		RuneSpell* getRuneSpellByName(const std::string& name);
