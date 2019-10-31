@@ -2315,6 +2315,92 @@ void Game::playerRotateItem(uint32_t playerId, const Position& pos, uint8_t stac
 	}
 }
 
+void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	Thing* thing = internalGetThing(player, pos, stackPos, 0, STACKPOS_TOPDOWN_ITEM);
+	if (!thing) {
+		return;
+	}
+
+	Item* item = thing->getItem();
+	if (!item || item->getClientID() != spriteId || (!item->isWrapable() && item->getID() != ITEM_DECORATION_KIT) || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	Tile* tile = map.getTile(pos);
+	if (!tile) {
+		player->sendCancelMessage("Put the construction kit on the floor first.");
+		return;
+	}
+
+	HouseTile* houseTile = dynamic_cast<HouseTile*>(tile);
+	if (!houseTile || !houseTile->getHouse() || !houseTile->getHouse()->isInvited(player)) {
+		player->sendCancelMessage("You may construct this only inside a house.");
+		return;
+	}
+
+	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
+		std::vector<Direction> listDir;
+		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
+			g_dispatcher.addTask(createTask(std::bind(&Game::playerAutoWalk,
+			                                this, player->getID(), listDir)));
+
+			SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerWrapableItem, this,
+			                      playerId, pos, stackPos, spriteId));
+			player->setNextWalkActionTask(task);
+		} else {
+			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
+		}
+		return;
+	}
+
+	const Container* container = item->getContainer();
+	if (container && !container->empty()) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	uint16_t itemId = item->getID();
+	uint16_t newId = Item::items[itemId].wrapableTo;
+	std::string itemName = item->getName();
+	if (newId != 0 && itemId != ITEM_DECORATION_KIT) {
+		uint16_t charges = item->getSubType();
+		Item* newItem = transformItem(item, newId);
+		if (newItem) {
+			if (internalMoveItem(newItem->getParent(), player, INDEX_WHEREEVER, newItem, newItem->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
+				newItem->setActionId(itemId);
+				newItem->setDate(charges);
+				newItem->setSpecialDescription("Unwrap it in your own house to create a " + itemName + ".");
+				addMagicEffect(pos, CONST_ME_POFF);
+				newItem->startDecaying();
+			} else {
+				player->sendCancelMessage("Make sure you have enough space in your backpack.");
+				transformItem(newItem, itemId);
+			}
+		}
+	} else if (newId == 0 && item->getActionId() != 0) {
+		uint16_t charges = static_cast<uint16_t>(item->getDate());
+		newId = item->getActionId();
+		Item* newItem = transformItem(item, newId);
+		if (newItem) {
+			if (charges > 0) {
+				newItem->setSubType(charges);
+			}
+			newItem->removeAttribute(ITEM_ATTRIBUTE_ACTIONID);
+			newItem->removeAttribute(ITEM_ATTRIBUTE_DATE);
+			newItem->removeAttribute(ITEM_ATTRIBUTE_DESCRIPTION);
+			addMagicEffect(pos, CONST_ME_POFF);
+			newItem->startDecaying();
+		}
+	}
+}
+
 void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::string& text)
 {
 	Player* player = getPlayerByID(playerId);

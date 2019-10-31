@@ -476,7 +476,8 @@ class ItemAttributes
 
 	public:
 		static bool isIntAttrType(itemAttrTypes type) {
-			std::underlying_type<itemAttrTypes>::type checkTypes = ITEM_ATTRIBUTE_ACTIONID;
+			std::underlying_type<itemAttrTypes>::type checkTypes = 0;
+			checkTypes |= ITEM_ATTRIBUTE_ACTIONID;
 			checkTypes |= ITEM_ATTRIBUTE_UNIQUEID;
 			checkTypes |= ITEM_ATTRIBUTE_DATE;
 			checkTypes |= ITEM_ATTRIBUTE_WEIGHT;
@@ -496,7 +497,8 @@ class ItemAttributes
 			return (type & static_cast<itemAttrTypes>(checkTypes)) != 0;
 		}
 		static bool isStrAttrType(itemAttrTypes type) {
-			std::underlying_type<itemAttrTypes>::type checkTypes = ITEM_ATTRIBUTE_DESCRIPTION;
+			std::underlying_type<itemAttrTypes>::type checkTypes = 0;
+			checkTypes |= ITEM_ATTRIBUTE_DESCRIPTION;
 			checkTypes |= ITEM_ATTRIBUTE_TEXT;
 			checkTypes |= ITEM_ATTRIBUTE_WRITER;
 			checkTypes |= ITEM_ATTRIBUTE_NAME;
@@ -505,8 +507,7 @@ class ItemAttributes
 			return (type & static_cast<itemAttrTypes>(checkTypes)) != 0;
 		}
 		inline static bool isCustomAttrType(itemAttrTypes type) {
-			std::underlying_type<itemAttrTypes>::type checkTypes = ITEM_ATTRIBUTE_CUSTOM;
-			return (type & static_cast<itemAttrTypes>(checkTypes)) != 0;
+			return (type & ITEM_ATTRIBUTE_CUSTOM) != 0;
 		}
 
 		const std::vector<Attribute>& getList() const {
@@ -882,6 +883,9 @@ class Item : virtual public Thing
 		bool isRotatable() const {
 			const ItemType& it = items[id];
 			return it.rotatable && it.rotateTo;
+		}
+		bool isWrapable() const {
+			return (items[id].wrapableTo != 0);
 		}
 		bool hasWalkStack() const {
 			return items[id].walkStack;

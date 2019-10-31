@@ -100,6 +100,7 @@ class ProtocolGame final : public Protocol
 		void parseAutoWalk(NetworkMessage& msg);
 		void parseSetOutfit(NetworkMessage& msg);
 		void parseSay(NetworkMessage& msg);
+		void parseWrapableItem(NetworkMessage& msg);
 		void parseLookAt(NetworkMessage& msg);
 		void parseLookInBattleList(NetworkMessage& msg);
 		void parseFightModes(NetworkMessage& msg);

@@ -68,6 +68,7 @@ enum ItemParseAttributes_t {
 	ITEM_PARSE_EXTRADEF,
 	ITEM_PARSE_ATTACK,
 	ITEM_PARSE_ROTATETO,
+	ITEM_PARSE_WRAPABLETO,
 	ITEM_PARSE_MOVEABLE,
 	ITEM_PARSE_BLOCKPROJECTILE,
 	ITEM_PARSE_PICKUPABLE,
@@ -318,12 +319,13 @@ class ItemType
 		int32_t defense = 0;
 		int32_t extraDefense = 0;
 		int32_t armor = 0;
-		uint16_t rotateTo = 0;
 		int32_t runeMagLevel = 0;
 		int32_t runeLevel = 0;
 
 		CombatType_t combatType = COMBAT_NONE;
 
+		uint16_t rotateTo = 0;
+		uint16_t wrapableTo = 0;
 		uint16_t transformToOnUse[2] = {0, 0};
 		uint16_t transformToFree = 0;
 		uint16_t destroyTo = 0;
