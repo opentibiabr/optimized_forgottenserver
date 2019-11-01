@@ -1242,6 +1242,19 @@ void ProtocolGame::sendWorldLight(LightInfo lightInfo)
 	writeToOutputBuffer(playermsg);
 }
 
+void ProtocolGame::sendTibiaTime(int32_t time)
+{
+	if (version < 1121) {
+		return;
+	}
+
+	playermsg.reset();
+	playermsg.addByte(0xEF);
+	playermsg.addByte(time / 60);
+	playermsg.addByte(time % 60);
+	writeToOutputBuffer(playermsg);
+}
+
 void ProtocolGame::sendCreatureWalkthrough(const Creature* creature, bool walkthrough)
 {
 	if (!canSee(creature)) {
@@ -2583,8 +2596,9 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	//sendPremiumTrigger();
 	//sendStoreHighlight();
 
-	//gameworld light-settings
+	//gameworld settings
 	sendWorldLight(g_game.getWorldLightInfo());
+	sendTibiaTime(g_game.getLightHour());
 
 	//player light level
 	sendCreatureLight(creature);
