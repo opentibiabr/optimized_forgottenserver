@@ -20,8 +20,6 @@
 #ifndef FS_TILE_H_96C7EE7CF8CD48E59D5D554A181F0C56
 #define FS_TILE_H_96C7EE7CF8CD48E59D5D554A181F0C56
 
-#include <unordered_set>
-
 #include "cylinder.h"
 #include "item.h"
 #include "tools.h"
@@ -36,7 +34,6 @@ class BedItem;
 
 using CreatureVector = std::vector<Creature*>;
 using ItemVector = std::vector<Item*>;
-using SpectatorHashSet = std::unordered_set<Creature*>;
 
 enum tileflags_t : uint32_t {
 	TILESTATE_NONE = 0,
@@ -75,6 +72,43 @@ enum ZoneType_t {
 	ZONE_PVP,
 	ZONE_NOLOGOUT,
 	ZONE_NORMAL,
+};
+
+class SpectatorVector : public CreatureVector
+{
+	public:
+		void mergeSpectators(const SpectatorVector& spectators) {
+			size_t it = 0, end = spectators.size();
+			while (it < end) {
+				Creature* spectator = spectators[it];
+
+				size_t cit = 0, cend = size();
+				while (cit < cend) {
+					if (operator[](cit) == spectator) {
+						goto Skip_Duplicate;
+					} else {
+						++cit;
+					}
+				}
+
+				emplace_back(spectator);
+				Skip_Duplicate:
+				++it;
+			}
+		}
+
+		void erase(Creature* spectator) {
+			size_t it = 0, end = size();
+			while (it < end) {
+				if (operator[](it) == spectator) {
+					std::swap(operator[](it), back());
+					pop_back();
+					return;
+				} else {
+					++it;
+				}
+			}
+		}
 };
 
 class TileItemVector : private ItemVector
@@ -287,8 +321,8 @@ class Tile : public Cylinder
 	private:
 		void onAddTileItem(Item* item);
 		void onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newItem, const ItemType& newType);
-		void onRemoveTileItem(const SpectatorHashSet& spectators, const std::vector<int32_t>& oldStackPosVector, Item* item);
-		void onUpdateTile(const SpectatorHashSet& spectators);
+		void onRemoveTileItem(const SpectatorVector& spectators, const std::vector<int32_t>& oldStackPosVector, Item* item);
+		void onUpdateTile(const SpectatorVector& spectators);
 
 		void setTileFlags(const Item* item);
 		void resetTileFlags(const Item* item);
