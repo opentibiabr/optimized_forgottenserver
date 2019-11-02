@@ -1421,14 +1421,13 @@ void ProtocolGame::sendMonsterCyclopedia()
 
 void ProtocolGame::sendCyclopediaMonsters()
 {
-	// it is weird that there aren't progress
 	playermsg.reset();
 	playermsg.addByte(0xD6);
 	playermsg.addString("Undead"); // racename
 	playermsg.add<uint16_t>(1); // monsters
 	playermsg.add<uint16_t>(78); // monsterid
-	playermsg.addByte(1); // known
-	// if known
+	playermsg.addByte(4); // progress
+	// if progress > 0
 	playermsg.addByte(3); // occurence
 	writeToOutputBuffer(playermsg);
 }
@@ -1439,15 +1438,15 @@ void ProtocolGame::sendCyclopediaRace()
 	playermsg.addByte(0xD7);
 	playermsg.add<uint16_t>(78); // monsterid
 	playermsg.addString("Banshee"); // ??
-	playermsg.addByte(4); // progress
+	playermsg.addByte(3); // progress
 	playermsg.add<uint32_t>(100); // total kills
 	playermsg.add<uint16_t>(20); // kills to progress 1
 	playermsg.add<uint16_t>(50); // kills to progress 2
 	playermsg.add<uint16_t>(100); // kills to progress 3
 
 	// if progress == 1
-	playermsg.addByte(1); // difficulty
-	playermsg.addByte(0); // occurence
+	playermsg.addByte(4); // difficulty
+	playermsg.addByte(3); // occurence
 	playermsg.addByte(1); // items
 	playermsg.add<uint16_t>(3103); // itemid
 	playermsg.addByte(0); // rarity
@@ -1473,12 +1472,12 @@ void ProtocolGame::sendCyclopediaRace()
 	playermsg.addString("ghostlands"); // location
 
 	// if progress == 4
-	playermsg.addByte(1); // have charm
+	//playermsg.addByte(1); // have charm
 	//if have charm
-	playermsg.addByte(10); // ??
-	playermsg.add<uint32_t>(100); // ??
+	//playermsg.addByte(20); // ??
+	//playermsg.add<uint32_t>(20); // ??
 	//else
-	//playermsg.addByte(0); // ??
+	//playermsg.addByte(10); // ??
 	writeToOutputBuffer(playermsg);
 }
 

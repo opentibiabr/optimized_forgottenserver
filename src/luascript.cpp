@@ -77,6 +77,7 @@ void ScriptEnvironment::resetEnv()
 	callbackId = 0;
 	timerEvent = false;
 	interface = nullptr;
+	lastUID = std::numeric_limits<uint16_t>::max();
 	localMap.clear();
 	tempResults.clear();
 
