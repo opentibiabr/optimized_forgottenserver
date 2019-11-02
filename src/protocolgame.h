@@ -108,6 +108,8 @@ class ProtocolGame final : public Protocol
 		void parseFollow(NetworkMessage& msg);
 		void parseEquipObject(NetworkMessage& msg);
 
+		void parseCyclopediaMonsters(NetworkMessage& msg);
+		void parseCyclopediaRace(NetworkMessage& msg);
 		void parseCyclopediaCharacterInfo(NetworkMessage& msg);
 
 		void parseBugReport(NetworkMessage& msg);
@@ -209,6 +211,9 @@ class ProtocolGame final : public Protocol
 		void sendTutorial(uint8_t tutorialId);
 		void sendAddMarker(const Position& pos, uint8_t markType, const std::string& desc);
 
+		void sendMonsterCyclopedia();
+		void sendCyclopediaMonsters();
+		void sendCyclopediaRace();
 		void sendCyclopediaCharacterBaseInformation();
 		void sendCyclopediaCharacterGeneralStats();
 		void sendCyclopediaCharacterCombatStats();

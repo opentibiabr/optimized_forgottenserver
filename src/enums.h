@@ -544,6 +544,20 @@ enum CyclopediaCharacterInfo_OutfitType_t : uint8_t {
 	CYCLOPEDIA_CHARACTERINFO_OUTFITTYPE_STORE = 2
 };
 
+enum Bestiary_Rarity_t : uint8_t {
+	BESTIARY_RARITY_COMMON = 0,
+	BESTIARY_RARITY_UNCOMMON = 1,
+	BESTIARY_RARITY_SEMIRARE = 2,
+	BESTIARY_RARITY_RARE = 3,
+	BESTIARY_RARITY_VERYRARE = 4
+};
+
+enum Bestiary_AttackType_t : uint8_t {
+	BESTIARY_ATTACKTYPE_MELEE = 0,
+	BESTIARY_ATTACKTYPE_DISTANCE = 1,
+	BESTIARY_ATTACKTYPE_NONE = 2
+};
+
 struct Outfit_t {
 	uint16_t lookType = 0;
 	uint16_t lookTypeEx = 0;

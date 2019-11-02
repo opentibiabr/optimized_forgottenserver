@@ -498,6 +498,9 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		case 0xDC: parseAddVip(msg); break;
 		case 0xDD: parseRemoveVip(msg); break;
 		case 0xDE: parseEditVip(msg); break;
+		case 0xE1: addGameTask(&Game::playerMonsterCyclopedia, player->getID()); break;
+		case 0xE2: parseCyclopediaMonsters(msg); break;
+		case 0xE3: parseCyclopediaRace(msg); break;
 		case 0xE5: parseCyclopediaCharacterInfo(msg); break;
 		case 0xE6: parseBugReport(msg); break;
 		case 0xE7: /* thank you */ break;
@@ -1068,6 +1071,28 @@ void ProtocolGame::parseRuleViolationReport(NetworkMessage& msg)
 	addGameTask(&Game::playerReportRuleViolation, player->getID(), targetName, reportType, reportReason, comment, translation);
 }
 
+void ProtocolGame::parseCyclopediaMonsters(NetworkMessage& msg)
+{
+	std::string race;
+	if (version >= 1215) {
+		uint8_t type = msg.getByte();
+		if(type != 0)
+			return;
+
+		race = msg.getString();
+	} else {
+		race = msg.getString();
+	}
+
+	addGameTask(&Game::playerCyclopediaMonsters, player->getID(), race);
+}
+
+void ProtocolGame::parseCyclopediaRace(NetworkMessage& msg)
+{
+	uint16_t monsterId = msg.get<uint16_t>();
+	addGameTask(&Game::playerCyclopediaRace, player->getID(), monsterId);
+}
+
 void ProtocolGame::parseCyclopediaCharacterInfo(NetworkMessage& msg)
 {
 	CyclopediaCharacterInfoType_t characterInfoType;
@@ -1383,6 +1408,80 @@ void ProtocolGame::sendAddMarker(const Position& pos, uint8_t markType, const st
 	writeToOutputBuffer(playermsg);
 }
 
+void ProtocolGame::sendMonsterCyclopedia()
+{
+	playermsg.reset();
+	playermsg.addByte(0xD5);
+	playermsg.add<uint16_t>(1); // races
+	playermsg.addString("Undead"); // racename
+	playermsg.add<uint16_t>(9); // total monsters
+	playermsg.add<uint16_t>(0); // known monsters
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendCyclopediaMonsters()
+{
+	// it is weird that there aren't progress
+	playermsg.reset();
+	playermsg.addByte(0xD6);
+	playermsg.addString("Undead"); // racename
+	playermsg.add<uint16_t>(1); // monsters
+	playermsg.add<uint16_t>(78); // monsterid
+	playermsg.addByte(1); // known
+	// if known
+	playermsg.addByte(3); // occurence
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendCyclopediaRace()
+{
+	playermsg.reset();
+	playermsg.addByte(0xD7);
+	playermsg.add<uint16_t>(78); // monsterid
+	playermsg.addString("Banshee"); // ??
+	playermsg.addByte(4); // progress
+	playermsg.add<uint32_t>(100); // total kills
+	playermsg.add<uint16_t>(20); // kills to progress 1
+	playermsg.add<uint16_t>(50); // kills to progress 2
+	playermsg.add<uint16_t>(100); // kills to progress 3
+
+	// if progress == 1
+	playermsg.addByte(1); // difficulty
+	playermsg.addByte(0); // occurence
+	playermsg.addByte(1); // items
+	playermsg.add<uint16_t>(3103); // itemid
+	playermsg.addByte(0); // rarity
+	playermsg.addByte(0); // special event item
+	// if itemid != 0 - 0 indicate "?"
+	playermsg.addString("Test1"); // itemname
+	playermsg.addByte(1); // one plus itemcount
+
+	// if progress == 2
+	playermsg.add<uint16_t>(100); // charm points
+	playermsg.addByte(BESTIARY_ATTACKTYPE_DISTANCE); // attack type
+	playermsg.addByte(0x01); // casts spells
+	playermsg.add<uint32_t>(1000); // hit points
+	playermsg.add<uint32_t>(2000); // experience
+	playermsg.add<uint16_t>(500); // speed
+	playermsg.add<uint16_t>(800); // armor
+
+	// if progress == 3
+	playermsg.addByte(1); // combats
+	playermsg.addByte(1); // combat type
+	playermsg.add<int16_t>(250); // combat value
+	playermsg.add<uint16_t>(1); // locations
+	playermsg.addString("ghostlands"); // location
+
+	// if progress == 4
+	playermsg.addByte(1); // have charm
+	//if have charm
+	playermsg.addByte(10); // ??
+	playermsg.add<uint32_t>(100); // ??
+	//else
+	//playermsg.addByte(0); // ??
+	writeToOutputBuffer(playermsg);
+}
+
 void ProtocolGame::sendCyclopediaCharacterBaseInformation()
 {
 	playermsg.reset();
@@ -1674,7 +1773,13 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 			playermsg.addString(inventoryItem->getName());
 			AddItem(inventoryItem);
 			playermsg.addByte(0); // imbuements
-			playermsg.addByte(0); // item descriptions
+
+			auto descriptions = Item::getDescriptions(Item::items[inventoryItem->getID()], inventoryItem);
+			playermsg.addByte(descriptions.size());
+			for (const auto& description : descriptions) {
+				playermsg.addString(description.first);
+				playermsg.addString(description.second);
+			}
 		}
 	}
 	playermsg.addString(player->getName());

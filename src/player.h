@@ -1092,6 +1092,21 @@ class Player final : public Creature, public Cylinder
 				client->sendAddMarker(pos, markType, desc);
 			}
 		}
+		void sendMonsterCyclopedia() {
+			if (client) {
+				client->sendMonsterCyclopedia();
+			}
+		}
+		void sendCyclopediaMonsters() {
+			if (client) {
+				client->sendCyclopediaMonsters();
+			}
+		}
+		void sendCyclopediaRace() {
+			if (client) {
+				client->sendCyclopediaRace();
+			}
+		}
 		void sendCyclopediaCharacterBaseInformation() {
 			if (client) {
 				client->sendCyclopediaCharacterBaseInformation();

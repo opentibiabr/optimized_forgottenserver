@@ -5087,6 +5087,36 @@ void Game::playerReportRuleViolation(uint32_t playerId, const std::string& targe
 	g_events->eventPlayerOnReportRuleViolation(player, targetName, reportType, reportReason, comment, translation);
 }
 
+void Game::playerMonsterCyclopedia(uint32_t playerId)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	player->sendMonsterCyclopedia();
+}
+
+void Game::playerCyclopediaMonsters(uint32_t playerId, const std::string& race)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	player->sendCyclopediaMonsters();
+}
+
+void Game::playerCyclopediaRace(uint32_t playerId, uint16_t monsterId)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	player->sendCyclopediaRace();
+}
+
 void Game::playerCyclopediaCharacterInfo(uint32_t playerId, CyclopediaCharacterInfoType_t characterInfoType)
 {
 	Player* player = getPlayerByID(playerId);
