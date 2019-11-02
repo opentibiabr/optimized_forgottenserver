@@ -30,8 +30,8 @@ extern Events* g_events;
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
-//805306368
-uint32_t Monster::monsterAutoID = 0x40000000;
+
+uint32_t Monster::monsterAutoID = 0x80000000;
 
 Monster* Monster::createMonster(const std::string& name)
 {

@@ -65,13 +65,13 @@ void ProtocolGame::login(const std::string& name, uint32_t accountId, OperatingS
 		player->setName(name);
 
 		player->incrementReferenceCounter();
-		player->setID();
 
 		if (!IOLoginData::preloadPlayer(player, name)) {
 			disconnectClient("Your character could not be loaded.");
 			return;
 		}
 
+		player->setID();
 		if (IOBan::isPlayerNamelocked(player->getGUID())) {
 			disconnectClient("Your character has been namelocked.");
 			return;
