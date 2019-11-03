@@ -1099,14 +1099,19 @@ class Player final : public Creature, public Cylinder
 				client->sendMonsterCyclopedia();
 			}
 		}
-		void sendCyclopediaMonsters() {
+		void sendCyclopediaMonsters(const std::string& race) {
 			if (client) {
-				client->sendCyclopediaMonsters();
+				client->sendCyclopediaMonsters(race);
 			}
 		}
-		void sendCyclopediaRace() {
+		void sendCyclopediaRace(uint16_t monsterId) {
 			if (client) {
-				client->sendCyclopediaRace();
+				client->sendCyclopediaRace(monsterId);
+			}
+		}
+		void sendCyclopediaBonusEffects() {
+			if (client) {
+				client->sendCyclopediaBonusEffects();
 			}
 		}
 		void sendCyclopediaCharacterBaseInformation() {

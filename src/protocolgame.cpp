@@ -24,6 +24,7 @@
 #include "outputmessage.h"
 
 #include "player.h"
+#include "monsters.h"
 
 #include "configmanager.h"
 #include "actions.h"
@@ -40,6 +41,7 @@ extern Actions actions;
 extern CreatureEvents* g_creatureEvents;
 extern Chat* g_chat;
 extern Spells* g_spells;
+extern Monsters g_monsters;
 
 NetworkMessage ProtocolGame::playermsg;
 
@@ -1402,6 +1404,9 @@ void ProtocolGame::sendAddMarker(const Position& pos, uint8_t markType, const st
 {
 	playermsg.reset();
 	playermsg.addByte(0xDD);
+	if (version >= 1200) {
+		playermsg.addByte(0x00);
+	}
 	playermsg.addPosition(pos);
 	playermsg.addByte(markType);
 	playermsg.addString(desc);
@@ -1412,72 +1417,215 @@ void ProtocolGame::sendMonsterCyclopedia()
 {
 	playermsg.reset();
 	playermsg.addByte(0xD5);
-	playermsg.add<uint16_t>(1); // races
-	playermsg.addString("Undead"); // racename
-	playermsg.add<uint16_t>(9); // total monsters
-	playermsg.add<uint16_t>(0); // known monsters
+
+	auto races = g_monsters.getRaces();
+	auto monsterRaces = g_monsters.getMonsterRaces();
+
+	playermsg.add<uint16_t>(races.size());
+	for (const auto& race : races) {
+		playermsg.addString(race.first);
+
+		auto it = monsterRaces.find(race.second);
+		if (it != monsterRaces.end()) {
+			playermsg.add<uint16_t>(it->second.size());
+			playermsg.add<uint16_t>(it->second.size());
+		} else {
+			playermsg.add<uint16_t>(0);
+			playermsg.add<uint16_t>(0);
+		}
+	}
 	writeToOutputBuffer(playermsg);
 }
 
-void ProtocolGame::sendCyclopediaMonsters()
+void ProtocolGame::sendCyclopediaMonsters(const std::string& race)
 {
 	playermsg.reset();
 	playermsg.addByte(0xD6);
-	playermsg.addString("Undead"); // racename
-	playermsg.add<uint16_t>(1); // monsters
-	playermsg.add<uint16_t>(78); // monsterid
-	playermsg.addByte(4); // progress
-	// if progress > 0
-	playermsg.addByte(3); // occurence
+
+	auto races = g_monsters.getRaces();
+	auto monsterRaces = g_monsters.getMonsterRaces();
+	playermsg.addString(race);
+
+	auto it = races.find(race);
+	if (it != races.end()) {
+		auto it2 = monsterRaces.find(it->second);
+		if (it2 != monsterRaces.end()) {
+			playermsg.add<uint16_t>(it2->second.size());
+			for (const auto& monster : it2->second) {
+				uint8_t monsterProgress = BESTIARY_PROGRESS_COMPLETED;
+
+				playermsg.add<uint16_t>(monster.first);
+				playermsg.addByte(monsterProgress);
+				if (monsterProgress != BESTIARY_PROGRESS_NONE) {
+					playermsg.addByte(BESTIARY_OCCURENCE_COMMON);
+				}
+			}
+		} else {
+			playermsg.add<uint16_t>(0);
+		}
+	} else {
+		playermsg.add<uint16_t>(0);
+	}
 	writeToOutputBuffer(playermsg);
 }
 
-void ProtocolGame::sendCyclopediaRace()
+void ProtocolGame::sendCyclopediaRace(uint16_t monsterId)
 {
 	playermsg.reset();
 	playermsg.addByte(0xD7);
-	playermsg.add<uint16_t>(78); // monsterid
-	playermsg.addString("Banshee"); // ??
-	playermsg.addByte(3); // progress
-	playermsg.add<uint32_t>(100); // total kills
-	playermsg.add<uint16_t>(20); // kills to progress 1
-	playermsg.add<uint16_t>(50); // kills to progress 2
-	playermsg.add<uint16_t>(100); // kills to progress 3
 
-	// if progress == 1
-	playermsg.addByte(4); // difficulty
-	playermsg.addByte(3); // occurence
-	playermsg.addByte(1); // items
-	playermsg.add<uint16_t>(3103); // itemid
-	playermsg.addByte(0); // rarity
-	playermsg.addByte(0); // special event item
-	// if itemid != 0 - 0 indicate "?"
-	playermsg.addString("Test1"); // itemname
-	playermsg.addByte(1); // one plus itemcount
+	auto monsterRaces = g_monsters.getMonsterRaces();
+	for (const auto& race : monsterRaces) {
+		auto it = race.second.find(monsterId);
+		if (it != race.second.end()) {
+			MonsterType* monsterType = g_monsters.getMonsterType(it->second);
+			if (monsterType) {
+				uint8_t monsterProgress = BESTIARY_PROGRESS_COMPLETED;
 
-	// if progress == 2
-	playermsg.add<uint16_t>(100); // charm points
-	playermsg.addByte(BESTIARY_ATTACKTYPE_DISTANCE); // attack type
-	playermsg.addByte(0x01); // casts spells
-	playermsg.add<uint32_t>(1000); // hit points
-	playermsg.add<uint32_t>(2000); // experience
-	playermsg.add<uint16_t>(500); // speed
-	playermsg.add<uint16_t>(800); // armor
+				playermsg.add<uint16_t>(monsterId);
+				playermsg.addString(g_monsters.getRaceName(race.first));
+				playermsg.addByte(monsterProgress);
+				playermsg.add<uint32_t>(0); // total kills
+				playermsg.add<uint16_t>(0); // kills to progress 1
+				playermsg.add<uint16_t>(0); // kills to progress 2
+				playermsg.add<uint16_t>(0); // kills to progress 3
+				if (monsterProgress >= BESTIARY_PROGRESS_FIRST) {
+					playermsg.addByte(BESTIARY_DIFFICULTY_HARMLESS);
+					playermsg.addByte(BESTIARY_OCCURENCE_COMMON);
 
-	// if progress == 3
-	playermsg.addByte(1); // combats
-	playermsg.addByte(1); // combat type
-	playermsg.add<int16_t>(250); // combat value
-	playermsg.add<uint16_t>(1); // locations
-	playermsg.addString("ghostlands"); // location
+					std::vector<const std::vector<LootBlock>*> lootBlocks{ &monsterType->info.lootItems };
+					uint8_t lootSize = 0;
+					uint16_t startLoot = playermsg.getBufferPosition();
+					playermsg.addByte(lootSize);
+					for (std::vector<const std::vector<LootBlock>*>::iterator lit = lootBlocks.begin(); lit != lootBlocks.end(); lit++) {
+						const std::vector<LootBlock>* lootVector = (*lit);
+						for (const auto& lootBlock : *lootVector) {
+							if (!lootBlock.childLoot.empty()) {
+								lootBlocks.push_back(&lootBlock.childLoot);
+							} else {
+								uint16_t itemId = lootBlock.id;
 
-	// if progress == 4
-	//playermsg.addByte(1); // have charm
-	//if have charm
-	//playermsg.addByte(20); // ??
-	//playermsg.add<uint32_t>(20); // ??
-	//else
-	//playermsg.addByte(10); // ??
+								const ItemType& item = Item::items[itemId];
+								playermsg.add<uint16_t>(item.clientId);
+								if (lootBlock.chance >= 25000) {
+									playermsg.addByte(BESTIARY_RARITY_COMMON);
+								} else if (lootBlock.chance >= 5000) {
+									playermsg.addByte(BESTIARY_RARITY_UNCOMMON);
+								} else if (lootBlock.chance >= 1000) {
+									playermsg.addByte(BESTIARY_RARITY_SEMIRARE);
+								} else if (lootBlock.chance >= 500) {
+									playermsg.addByte(BESTIARY_RARITY_RARE);
+								} else {
+									playermsg.addByte(BESTIARY_RARITY_VERYRARE);
+								}
+								playermsg.addByte(0x00); // special event item
+								if (itemId != 0) { // 0 indicate hidden item
+									playermsg.addString(item.name);
+									playermsg.addByte((lootBlock.countmax > 1) ? 0x01 : 0x00);
+								}
+
+								if (++lootSize == 0xFF) {
+									goto EndLoot;
+								}
+							}
+						}
+					}
+
+					EndLoot:
+					uint16_t returnTo = playermsg.getBufferPosition();
+					playermsg.setBufferPosition(startLoot);
+					playermsg.addByte(lootSize);
+					playermsg.setLength(playermsg.getLength() - 1); // decrease one extra bytes we made
+					playermsg.setBufferPosition(returnTo);
+				}
+				if (monsterProgress >= BESTIARY_PROGRESS_SECOND) {
+					playermsg.add<uint16_t>(0); // charm points
+					if (!monsterType->info.isHostile) {
+						playermsg.addByte(BESTIARY_ATTACKTYPE_NONE);
+					} else if (monsterType->info.targetDistance > 1) {
+						playermsg.addByte(BESTIARY_ATTACKTYPE_DISTANCE);
+					} else {
+						playermsg.addByte(BESTIARY_ATTACKTYPE_MELEE);
+					}
+					if (!monsterType->info.attackSpells.empty() || !monsterType->info.defenseSpells.empty()) {
+						playermsg.addByte(0x01); // casts spells
+					} else {
+						playermsg.addByte(0x00); // casts spells
+					}
+					playermsg.add<uint32_t>(static_cast<uint32_t>(monsterType->info.healthMax));
+					playermsg.add<uint32_t>(static_cast<uint32_t>(monsterType->info.experience));
+					playermsg.add<uint16_t>(static_cast<uint16_t>(monsterType->info.baseSpeed / 2));
+					playermsg.add<uint16_t>(static_cast<uint16_t>(monsterType->info.armor));
+				}
+				if (monsterProgress >= BESTIARY_PROGRESS_THIRD) {
+					playermsg.addByte(8); // combats
+
+					static const CombatType_t combats[] = {COMBAT_PHYSICALDAMAGE, COMBAT_FIREDAMAGE, COMBAT_EARTHDAMAGE, COMBAT_ENERGYDAMAGE, COMBAT_ICEDAMAGE, COMBAT_HOLYDAMAGE, COMBAT_DEATHDAMAGE, COMBAT_HEALING};
+					for (std::underlying_type<Cipbia_Elementals_t>::type i = CIPBIA_ELEMENTAL_PHYSICAL; i <= CIPBIA_ELEMENTAL_HEALING; i++) {
+						playermsg.addByte(i);
+
+						auto combat = combats[i];
+						if (monsterType->info.damageImmunities & combat) {
+							playermsg.add<int16_t>(0);
+						} else {
+							auto combatDmg = monsterType->info.elementMap.find(combats[i]);
+							if (combatDmg != monsterType->info.elementMap.end()) {
+								playermsg.add<int16_t>(100-combatDmg->second);
+							} else {
+								playermsg.add<int16_t>(100);
+							}
+						}
+					}
+
+					playermsg.add<uint16_t>(1); // locations
+					playermsg.addString(""); // location - TODO
+				}
+				if (monsterProgress >= BESTIARY_PROGRESS_COMPLETED) {
+					bool monsterHaveActiveCharm = false;
+					playermsg.addByte((monsterHaveActiveCharm ? 0x01 : 0x00));
+					if (monsterHaveActiveCharm) {
+						playermsg.addByte(0); // ??
+						playermsg.add<uint32_t>(0); // ??
+					} else {
+						playermsg.addByte(0); // ??
+					}
+				}
+				writeToOutputBuffer(playermsg);
+				return;
+			}
+		}
+	}
+
+	playermsg.add<uint16_t>(monsterId);
+	playermsg.addString("Extra Dimensional");
+	playermsg.addByte(BESTIARY_PROGRESS_NONE);
+	playermsg.add<uint32_t>(0); // total kills
+	playermsg.add<uint16_t>(0); // kills to progress 1
+	playermsg.add<uint16_t>(0); // kills to progress 2
+	playermsg.add<uint16_t>(0); // kills to progress 3
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendCyclopediaBonusEffects()
+{
+	playermsg.reset();
+	playermsg.addByte(0xD8);
+	playermsg.add<int32_t>(0); // charm points
+	playermsg.addByte(0); // charms
+	//playermsg.addByte(10); // charmid
+	//playermsg.addString("Cripple"); // charmname
+	//playermsg.addString("something"); // charmdescription
+	//playermsg.addByte(0); // ??
+	//playermsg.add<uint16_t>(500); // charm price
+	//playermsg.addByte(0); // unlocked
+	//playermsg.addByte(1); // activated
+	// if activated
+	//playermsg.add<uint16_t>(78); // monster id
+	//playermsg.add<uint32_t>(1000); // clear price
+
+	playermsg.addByte(0); // remaining assignable charms
+	playermsg.add<uint16_t>(0); // assignable monsters
+	//playermsg.add<uint16_t>(78); // monster id
 	writeToOutputBuffer(playermsg);
 }
 

@@ -212,8 +212,9 @@ class ProtocolGame final : public Protocol
 		void sendAddMarker(const Position& pos, uint8_t markType, const std::string& desc);
 
 		void sendMonsterCyclopedia();
-		void sendCyclopediaMonsters();
-		void sendCyclopediaRace();
+		void sendCyclopediaMonsters(const std::string& race);
+		void sendCyclopediaRace(uint16_t monsterId);
+		void sendCyclopediaBonusEffects();
 		void sendCyclopediaCharacterBaseInformation();
 		void sendCyclopediaCharacterGeneralStats();
 		void sendCyclopediaCharacterCombatStats();

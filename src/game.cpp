@@ -5095,6 +5095,7 @@ void Game::playerMonsterCyclopedia(uint32_t playerId)
 	}
 
 	player->sendMonsterCyclopedia();
+	player->sendCyclopediaBonusEffects();
 }
 
 void Game::playerCyclopediaMonsters(uint32_t playerId, const std::string& race)
@@ -5104,7 +5105,7 @@ void Game::playerCyclopediaMonsters(uint32_t playerId, const std::string& race)
 		return;
 	}
 
-	player->sendCyclopediaMonsters();
+	player->sendCyclopediaMonsters(race);
 }
 
 void Game::playerCyclopediaRace(uint32_t playerId, uint16_t monsterId)
@@ -5114,7 +5115,7 @@ void Game::playerCyclopediaRace(uint32_t playerId, uint16_t monsterId)
 		return;
 	}
 
-	player->sendCyclopediaRace();
+	player->sendCyclopediaRace(monsterId);
 }
 
 void Game::playerCyclopediaCharacterInfo(uint32_t playerId, CyclopediaCharacterInfoType_t characterInfoType)
