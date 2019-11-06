@@ -1,7 +1,7 @@
 forgottenserver
 ===============
 
-The Forgotten Server is a free and open-source MMORPG server emulator written in C++. It is a fork of the [OpenTibia Server](https://github.com/opentibia/server) project. To connect to the server, you can use [OTClient](https://github.com/edubart/otclient), [OpenTibiaUnity](https://github.com/slavidodo/OpenTibia-Unity) or The Forgotten Client(work in progress).
+The Forgotten Server is a free and open-source MMORPG server emulator written in C++. It is a fork of the [OpenTibia Server](https://github.com/opentibia/server) project. To connect to the server, you can use [OTClient](https://github.com/edubart/otclient), [OpenTibiaUnity](https://github.com/slavidodo/OpenTibia-Unity) or [The Forgotten Client](https://github.com/SaiyansKing/The-Forgotten-Client)(work in progress).
 
 ### Getting Started
 
