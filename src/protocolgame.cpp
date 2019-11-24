@@ -490,6 +490,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		case 0xAB: parseChannelInvite(msg); break;
 		case 0xAC: parseChannelExclude(msg); break;
 		case 0xBE: addGameTask(&Game::playerCancelAttackAndFollow, player->getID()); break;
+		case 0xC7: parseTournamentLeaderboard(msg); break;
 		case 0xC9: /* update tile */ break;
 		case 0xCA: parseUpdateContainer(msg); break;
 		case 0xCB: parseBrowseField(msg); break;
@@ -1106,6 +1107,29 @@ void ProtocolGame::parseCyclopediaCharacterInfo(NetworkMessage& msg)
 	}
 
 	addGameTask(&Game::playerCyclopediaCharacterInfo, player->getID(), characterInfoType);
+}
+
+void ProtocolGame::parseTournamentLeaderboard(NetworkMessage& msg)
+{
+	uint8_t ledaerboardType = msg.getByte();
+	if(ledaerboardType == 0)
+	{
+		const std::string worldName = msg.getString();
+		uint16_t currentPage = msg.get<uint16_t>();
+		(void)worldName;
+		(void)currentPage;
+	}
+	else if(ledaerboardType == 1)
+	{
+		const std::string worldName = msg.getString();
+		const std::string characterName = msg.getString();
+		(void)worldName;
+		(void)characterName;
+	}
+	uint8_t elementsPerPage = msg.getByte();
+	(void)elementsPerPage;
+
+	addGameTask(&Game::playerTournamentLeaderboard, player->getID(), ledaerboardType);
 }
 
 void ProtocolGame::parseBugReport(NetworkMessage& msg)
@@ -1980,6 +2004,15 @@ void ProtocolGame::sendCyclopediaCharacterTitles()
 	writeToOutputBuffer(playermsg);
 }
 
+void ProtocolGame::sendTournamentLeaderboard()
+{
+	playermsg.reset();
+	playermsg.addByte(0xC5);
+	playermsg.addByte(0);
+	playermsg.addByte(0x01); // No data available
+	writeToOutputBuffer(playermsg);
+}
+
 void ProtocolGame::sendReLoginWindow(uint8_t unfairFightReduction)
 {
 	playermsg.reset();
@@ -2189,14 +2222,14 @@ void ProtocolGame::sendChannelMessage(const std::string& author, const std::stri
 	writeToOutputBuffer(playermsg);
 }
 
-void ProtocolGame::sendIcons(uint16_t icons)
+void ProtocolGame::sendIcons(uint32_t icons)
 {
 	playermsg.reset();
 	playermsg.addByte(0xA2);
 	if (version >= 1140) {
 		playermsg.add<uint32_t>(icons);
 	} else {
-		playermsg.add<uint16_t>(icons);
+		playermsg.add<uint16_t>(static_cast<uint16_t>(icons));
 	}
 	writeToOutputBuffer(playermsg);
 }
@@ -2848,7 +2881,7 @@ void ProtocolGame::sendCreatureTurn(const Creature* creature, uint32_t stackPos)
 	if (!canSee(creature)) {
 		return;
 	}
-
+	
 	playermsg.reset();
 	playermsg.addByte(0x6B);
 	playermsg.addPosition(creature->getPosition());
@@ -3671,7 +3704,7 @@ void ProtocolGame::AddCreature(const Creature* creature, bool known, uint32_t re
 		playermsg.addByte(creatureType); // Type (for summons)
 	}
 	if (version >= 1220 && creatureType == CREATURETYPE_PLAYER) {
-		playermsg.addByte(0);
+		playermsg.addByte(creature->getPlayer()->getVocation()->getClientId());
 	}
 
 	playermsg.addByte(creature->getSpeechBubble());

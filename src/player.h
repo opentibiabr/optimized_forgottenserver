@@ -251,7 +251,7 @@ class Player final : public Creature, public Cylinder
 			return inbox;
 		}
 
-		uint16_t getClientIcons() const;
+		uint32_t getClientIcons() const;
 
 		const GuildWarVector& getGuildWarVector() const {
 			return guildWarVector;
@@ -1172,6 +1172,11 @@ class Player final : public Creature, public Cylinder
 		void sendCyclopediaCharacterTitles() {
 			if (client) {
 				client->sendCyclopediaCharacterTitles();
+			}
+		}
+		void sendTournamentLeaderboard() {
+			if (client) {
+				client->sendTournamentLeaderboard();
 			}
 		}
 		void sendQuestLog() {

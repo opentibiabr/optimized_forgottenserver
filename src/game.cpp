@@ -5141,6 +5141,16 @@ void Game::playerCyclopediaCharacterInfo(uint32_t playerId, CyclopediaCharacterI
 	}
 }
 
+void Game::playerTournamentLeaderboard(uint32_t playerId, uint8_t leaderboardType)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player || leaderboardType > 1) {
+		return;
+	}
+
+	player->sendTournamentLeaderboard();
+}
+
 void Game::playerReportBug(uint32_t playerId, const std::string& message, const Position& position, uint8_t category)
 {
 	Player* player = getPlayerByID(playerId);

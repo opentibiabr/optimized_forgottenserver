@@ -324,6 +324,8 @@ class Game
 		void playerCyclopediaRace(uint32_t playerId, uint16_t monsterId);
 		void playerCyclopediaCharacterInfo(uint32_t playerId, CyclopediaCharacterInfoType_t characterInfoType);
 
+		void playerTournamentLeaderboard(uint32_t playerId, uint8_t leaderboardType);
+
 		bool internalStartTrade(Player* player, Player* tradePartner, Item* tradeItem);
 		void internalCloseTrade(Player* player);
 		bool playerBroadcastMessage(Player* player, const std::string& text) const;

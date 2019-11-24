@@ -112,6 +112,8 @@ class ProtocolGame final : public Protocol
 		void parseCyclopediaRace(NetworkMessage& msg);
 		void parseCyclopediaCharacterInfo(NetworkMessage& msg);
 
+		void parseTournamentLeaderboard(NetworkMessage& msg);
+
 		void parseBugReport(NetworkMessage& msg);
 		void parseDebugAssert(NetworkMessage& msg);
 		void parseRuleViolationReport(NetworkMessage& msg);
@@ -180,7 +182,7 @@ class ProtocolGame final : public Protocol
 		void sendOpenPrivateChannel(const std::string& receiver);
 		void sendToChannel(const Creature* creature, SpeakClasses type, const std::string& text, uint16_t channelId);
 		void sendPrivateMessage(const Player* speaker, SpeakClasses type, const std::string& text);
-		void sendIcons(uint16_t icons);
+		void sendIcons(uint32_t icons);
 		void sendFYIBox(const std::string& message);
 
 		void sendDistanceShoot(const Position& from, const Position& to, uint8_t type);
@@ -227,6 +229,8 @@ class ProtocolGame final : public Protocol
 		void sendCyclopediaCharacterInspection();
 		void sendCyclopediaCharacterBadges();
 		void sendCyclopediaCharacterTitles();
+
+		void sendTournamentLeaderboard();
 
 		void sendCreatureWalkthrough(const Creature* creature, bool walkthrough);
 		void sendCreatureShield(const Creature* creature);
