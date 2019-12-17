@@ -392,8 +392,6 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 		"dazzlecondition"
 	};
 
-	//static size_t size = sizeof(reservedList) / sizeof(const char*);
-	//for (size_t i = 0; i < size; ++i) {
 	for (const char* reserved : reservedList) {
 		if (strcasecmp(reserved, name.c_str()) == 0) {
 			std::cout << "[Error - Spell::configureSpell] Spell is using a reserved name: " << reserved << std::endl;
@@ -803,17 +801,12 @@ void Spell::postCastSpell(Player* player, uint32_t manaCost, uint32_t soulCost)
 
 uint32_t Spell::getManaCost(const Player* player) const
 {
-	if (mana != 0) {
-		return mana;
-	}
-
+	uint32_t manaCost = mana;
 	if (manaPercent != 0) {
-		uint32_t maxMana = player->getMaxMana();
-		uint32_t manaCost = (maxMana * manaPercent) / 100;
-		return manaCost;
+		manaCost += (player->getMaxMana() * manaPercent) / 100;
 	}
 
-	return 0;
+	return manaCost;
 }
 
 std::string InstantSpell::getScriptEventName() const

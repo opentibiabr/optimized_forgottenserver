@@ -261,9 +261,6 @@ class ProtocolGame final : public Protocol
 		void sendVIP(uint32_t guid, const std::string& name, const std::string& description, uint32_t icon, bool notify, VipStatus_t status);
 		void sendVIPEntries();
 
-		void sendPendingStateEntered();
-		void sendEnterWorld();
-
 		void sendFightModes();
 
 		void sendCreatureLight(const Creature* creature);

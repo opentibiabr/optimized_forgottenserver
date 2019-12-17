@@ -315,7 +315,6 @@ class Spell : public BaseSpell
 		bool needTarget = false;
 
 	private:
-
 		uint32_t mana = 0;
 		uint32_t manaPercent = 0;
 		uint32_t soul = 0;

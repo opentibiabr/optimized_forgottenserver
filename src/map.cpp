@@ -332,10 +332,10 @@ std::vector<Tile*> Map::getFloorTiles(int32_t x, int32_t y, int32_t width, int32
 	int32_t x2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (x + width)));
 	int32_t y2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (y + height)));
 
-	int32_t startx1 = x1 - (x1 % FLOOR_SIZE);
-	int32_t starty1 = y1 - (y1 % FLOOR_SIZE);
-	int32_t endx2 = x2 - (x2 % FLOOR_SIZE);
-	int32_t endy2 = y2 - (y2 % FLOOR_SIZE);
+	int32_t startx1 = x1 - (x1 & FLOOR_MASK);
+	int32_t starty1 = y1 - (y1 & FLOOR_MASK);
+	int32_t endx2 = x2 - (x2 & FLOOR_MASK);
+	int32_t endy2 = y2 - (y2 & FLOOR_MASK);
 
 	const QTreeLeafNode* startLeaf = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, starty1);
 	const QTreeLeafNode* leafS = startLeaf;
@@ -396,10 +396,10 @@ void Map::getSpectatorsInternal(SpectatorVector& spectators, const Position& cen
 	int32_t x2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (max_x + maxoffset)));
 	int32_t y2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (max_y + maxoffset)));
 
-	int32_t startx1 = x1 - (x1 % FLOOR_SIZE);
-	int32_t starty1 = y1 - (y1 % FLOOR_SIZE);
-	int32_t endx2 = x2 - (x2 % FLOOR_SIZE);
-	int32_t endy2 = y2 - (y2 % FLOOR_SIZE);
+	int32_t startx1 = x1 - (x1 & FLOOR_MASK);
+	int32_t starty1 = y1 - (y1 & FLOOR_MASK);
+	int32_t endx2 = x2 - (x2 & FLOOR_MASK);
+	int32_t endy2 = y2 - (y2 & FLOOR_MASK);
 
 	const QTreeLeafNode* startLeaf = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, starty1);
 	const QTreeLeafNode* leafS = startLeaf;
@@ -1186,10 +1186,8 @@ void AStarNodes::openNode(AStarNode* node)
 	#if defined(__SSE2__)
 	calculatedNodes[index] = nodes[index].f + nodes[index].g;
 	#endif
-	if (!openNodes[index]) {
-		openNodes[index] = true;
-		--closedNodes;
-	}
+	closedNodes -= (openNodes[index] ? 0 : 1);
+	openNodes[index] = true;
 }
 
 int32_t AStarNodes::getClosedNodes() const

@@ -3149,20 +3149,6 @@ void ProtocolGame::sendUpdateTile(const Tile* tile, const Position& pos)
 	writeToOutputBuffer(playermsg);
 }
 
-void ProtocolGame::sendPendingStateEntered()
-{
-	playermsg.reset();
-	playermsg.addByte(0x0A);
-	writeToOutputBuffer(playermsg);
-}
-
-void ProtocolGame::sendEnterWorld()
-{
-	playermsg.reset();
-	playermsg.addByte(0x0F);
-	writeToOutputBuffer(playermsg);
-}
-
 void ProtocolGame::sendFightModes()
 {
 	playermsg.reset();
@@ -3201,6 +3187,7 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	}
 
 	playermsg.reset();
+
 	playermsg.addByte(0x17);
 
 	playermsg.add<uint32_t>(player->getID());
@@ -3224,17 +3211,22 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	playermsg.add<uint16_t>(25); // premium coin package size
 
 	if (version >= 1150 || addExivaRestrictions) {
-		playermsg.addByte(0x00); // exiva button enabled
+		playermsg.addByte(0x01); // exiva button enabled
 	}
 
 	if (version >= 1215) {
 		playermsg.addByte(0x00); // tournament button enabled
 	}
 
+	playermsg.addByte(0x0A); // sendPendingStateEntered
+	playermsg.addByte(0x0F); // sendEnterWorld
+
+	//gameworld settings
+	AddWorldLight(g_game.getWorldLightInfo());
+
 	writeToOutputBuffer(playermsg);
 
-	sendPendingStateEntered();
-	sendEnterWorld();
+	sendTibiaTime(g_game.getLightHour());
 	sendMapDescription(pos);
 	if (isLogin) {
 		sendMagicEffect(pos, CONST_ME_TELEPORT);
@@ -3249,10 +3241,6 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	sendBlessStatus();
 	sendPremiumTrigger();
 	//sendStoreHighlight();
-
-	//gameworld settings
-	sendWorldLight(g_game.getWorldLightInfo());
-	sendTibiaTime(g_game.getLightHour());
 
 	//player light level
 	sendCreatureLight(creature);
