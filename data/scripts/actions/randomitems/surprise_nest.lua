@@ -39,5 +39,5 @@ function surprise.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	return false
 end
 
-surprise:id(16093)
+surprise:id(16102)
 surprise:register()
