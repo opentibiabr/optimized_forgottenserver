@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,8 +41,6 @@
 #if defined(__ARM_NEON__) || defined(__ARM_FEATURE_SIMD32)
 #define __NEON__ 1
 #include <arm_neon.h>
-#else
-#include <intrin.h>
 #endif
 #if defined(__SSE__)
 #include <xmmintrin.h>
@@ -68,6 +66,7 @@
 #endif
 
 #ifdef _MSC_VER
+#include <intrin.h>
 __forceinline unsigned int _mm_ctz(unsigned int value)
 {
 	unsigned long i = 0;

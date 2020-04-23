@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -293,6 +293,8 @@ void Connection::parsePacket(const boost::system::error_code& error)
 				return;
 			}
 		} else {
+			// It is rather hard to detect if we have checksum or sequence method here so let's skip checksum check
+			// it doesn't generate any problem because olders protocol don't use 'server sends first' feature
 			msg.get<uint32_t>();
 			msg.skipBytes(1);    // Skip protocol ID
 		}

@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,18 @@
 #ifndef FS_CONST_H_0A49B5996F074465BF44B90F4F780E8B
 #define FS_CONST_H_0A49B5996F074465BF44B90F4F780E8B
 
+static constexpr size_t NETWORKMESSAGE_PLAYERNAME_MAXLENGTH = 30;
+#if CLIENT_VERSION >= 1057
+static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 65550;
+#elif CLIENT_VERSION >= 940
 static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 24590;
+#elif CLIENT_VERSION >= 870
+static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 16398;
+#elif CLIENT_VERSION >= 780
+static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 16390;
+#else
+static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 16382;
+#endif
 
 enum MagicEffectClasses : uint8_t {
 	CONST_ME_NONE,
@@ -177,51 +188,68 @@ enum ShootType_t : uint8_t {
 };
 
 enum SpeakClasses : uint8_t {
-	TALKTYPE_SAY = 1,
-	TALKTYPE_WHISPER = 2,
-	TALKTYPE_YELL = 3,
-	TALKTYPE_PRIVATE_FROM = 4,
-	TALKTYPE_PRIVATE_TO = 5,
-	TALKTYPE_CHANNEL_Y = 7,
-	TALKTYPE_CHANNEL_O = 8,
-	TALKTYPE_PRIVATE_NP = 10,
-	TALKTYPE_PRIVATE_PN = 12,
-	TALKTYPE_BROADCAST = 13,
-	TALKTYPE_CHANNEL_R1 = 14, //red - #c text
-	TALKTYPE_PRIVATE_RED_FROM = 15, //@name@text
-	TALKTYPE_PRIVATE_RED_TO = 16, //@name@text
-	TALKTYPE_MONSTER_SAY = 36,
-	TALKTYPE_MONSTER_YELL = 37,
-
-	TALKTYPE_CHANNEL_R2 = 0xFF, //#d
+	TALKTYPE_NONE = 0x00,
+	TALKTYPE_SAY,
+	TALKTYPE_WHISPER,
+	TALKTYPE_YELL,
+	TALKTYPE_PRIVATE_FROM,
+	TALKTYPE_PRIVATE_TO,
+	TALKTYPE_CHANNEL_M,
+	TALKTYPE_CHANNEL_Y,
+	TALKTYPE_CHANNEL_O,
+	TALKTYPE_RVR_CHANNEL,
+	TALKTYPE_RVR_ANSWER,
+	TALKTYPE_RVR_CONTINUE,
+	TALKTYPE_SPELL,
+	TALKTYPE_PRIVATE_NP,
+	TALKTYPE_PRIVATE_PN,
+	TALKTYPE_BROADCAST,
+	TALKTYPE_CHANNEL_R1, //red - #c text
+	TALKTYPE_PRIVATE_RED_FROM, //@name@text
+	TALKTYPE_PRIVATE_RED_TO, //@name@text
+	TALKTYPE_MONSTER_SAY,
+	TALKTYPE_MONSTER_YELL,
+	TALKTYPE_CHANNEL_R2, //#d
+	TALKTYPE_BOOSTED_CREATURE,
 };
 
 enum MessageClasses : uint8_t {
-	MESSAGE_STATUS_CONSOLE_BLUE = 4, /*FIXME Blue message in the console*/
-
-	MESSAGE_STATUS_CONSOLE_RED = 13, /*Red message in the console*/
-
-	MESSAGE_STATUS_DEFAULT = 17, /*White message at the bottom of the game window and in the console*/
-	MESSAGE_STATUS_WARNING = 18, /*Red message in game window and in the console*/
-	MESSAGE_EVENT_ADVANCE = 19, /*White message in game window and in the console*/
-
-	MESSAGE_STATUS_SMALL = 21, /*White message at the bottom of the game window"*/
-	MESSAGE_INFO_DESCR = 22, /*Green message in game window and in the console*/
-	MESSAGE_DAMAGE_DEALT = 23,
-	MESSAGE_DAMAGE_RECEIVED = 24,
-	MESSAGE_HEALED = 25,
-	MESSAGE_EXPERIENCE = 26,
-	MESSAGE_DAMAGE_OTHERS = 27,
-	MESSAGE_HEALED_OTHERS = 28,
-	MESSAGE_EXPERIENCE_OTHERS = 29,
-	MESSAGE_EVENT_DEFAULT = 30, /*White message at the bottom of the game window and in the console*/
-	MESSAGE_LOOT = 31,
-
-	MESSAGE_GUILD = 33, /*White message in channel (+ channelId)*/
-	MESSAGE_PARTY_MANAGEMENT = 34, /*White message in channel (+ channelId)*/
-	MESSAGE_PARTY = 35, /*White message in channel (+ channelId)*/
-	MESSAGE_EVENT_ORANGE = 36, /*Orange message in the console*/
-	MESSAGE_STATUS_CONSOLE_ORANGE = 37,  /*Orange message in the console*/
+	MESSAGE_NONE = 0,
+	MESSAGE_STATUS_CONSOLE_BLUE, //Blue message in the console
+	MESSAGE_STATUS_CONSOLE_RED, //Red message in the console
+	MESSAGE_STATUS_DEFAULT, //White message at the bottom of the game window and in the console
+	MESSAGE_STATUS_WARNING, //Red message in game window and in the console
+	MESSAGE_EVENT_ADVANCE, //White message in game window and in the console
+	MESSAGE_STATUS_SMALL, //White message at the bottom of the game window
+	MESSAGE_INFO_DESCR, //Green message in game window and in the console
+	MESSAGE_EVENT_DEFAULT, //White message at the bottom of the game window and in the console
+	MESSAGE_GUILD, //White message in channel (+ channelId)
+	MESSAGE_PARTY_MANAGEMENT, //White message in channel (+ channelId)
+	MESSAGE_PARTY, //White message in channel (+ channelId)
+	MESSAGE_EVENT_ORANGE, //Orange message in the console
+	MESSAGE_STATUS_CONSOLE_ORANGE, //Orange message in the console
+	MESSAGE_DAMAGE_DEALT,
+	MESSAGE_DAMAGE_RECEIVED,
+	MESSAGE_MANA,
+	MESSAGE_HEALED,
+	MESSAGE_EXPERIENCE,
+	MESSAGE_DAMAGE_OTHERS,
+	MESSAGE_HEALED_OTHERS,
+	MESSAGE_EXPERIENCE_OTHERS,
+	MESSAGE_LOOT,
+	MESSAGE_LOGIN,
+	MESSAGE_WARNING,
+	MESSAGE_GAME,
+	MESSAGE_GAME_HIGHLIGHT,
+	MESSAGE_FAILURE,
+	MESSAGE_LOOK,
+	MESSAGE_STATUS,
+	MESSAGE_TRADENPC,
+	MESSAGE_REPORT,
+	MESSAGE_HOTKEY,
+	MESSAGE_TUTORIAL,
+	MESSAGE_THANKYOU,
+	MESSAGE_MARKET,
 };
 
 enum FluidColors_t : uint8_t {
@@ -481,6 +509,7 @@ enum item_t : uint16_t {
 	ITEM_SMALLSPLASH = 2019,
 
 	ITEM_PARCEL = 2595,
+	ITEM_PARCEL_STAMPED = 2596,
 	ITEM_LETTER = 2597,
 	ITEM_LETTER_STAMPED = 2598,
 	ITEM_LABEL = 2599,

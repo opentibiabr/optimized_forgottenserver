@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -199,7 +199,7 @@ void mainLoader(int, char*[], ServiceManager* services)
 
 	// load item data
 	std::cout << ">> Loading items" << std::endl;
-	if (!Item::items.loadFromOtb("data/items/items.otb")) {
+	if (!Item::items.loadFromOtb("data/items/" + std::to_string(CLIENT_VERSION) + "/items.otb")) {
 		startupErrorMessage("Unable to load items (OTB)!");
 		return;
 	}
@@ -292,8 +292,10 @@ void mainLoader(int, char*[], ServiceManager* services)
 
 	g_game.map.houses.payHouses(rentPeriod);
 
+#if GAME_FEATURE_MARKET > 0
 	IOMarket::checkExpiredOffers();
 	IOMarket::getInstance().updateStatistics();
+#endif
 
 	std::cout << ">> Loaded all modules, server starting up..." << std::endl;
 

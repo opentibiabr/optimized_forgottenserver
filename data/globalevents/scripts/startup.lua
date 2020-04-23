@@ -1,6 +1,4 @@
 function onStartup()
-	math.randomseed(os.mtime())
-
 	db.query("TRUNCATE TABLE `players_online`")
 	db.asyncQuery("DELETE FROM `guild_wars` WHERE `status` = 0")
 	db.asyncQuery("DELETE FROM `players` WHERE `deletion` != 0 AND `deletion` < " .. os.time())

@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,9 @@ void Party::disband()
 	currentLeader->setParty(nullptr);
 	currentLeader->sendClosePrivate(CHANNEL_PARTY);
 	g_game.updatePlayerShield(currentLeader);
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	g_game.updatePlayerHelpers(*currentLeader);
+	#endif
 	currentLeader->sendCreatureSkull(currentLeader);
 	currentLeader->sendTextMessage(MESSAGE_INFO_DESCR, "Your party has been disbanded.");
 
@@ -70,7 +72,9 @@ void Party::disband()
 
 		member->sendCreatureSkull(currentLeader);
 		currentLeader->sendCreatureSkull(member);
+		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 		g_game.updatePlayerHelpers(*member);
+		#endif
 	}
 	memberList.clear();
 	delete this;
@@ -112,12 +116,16 @@ bool Party::leaveParty(Player* player)
 	player->setParty(nullptr);
 	player->sendClosePrivate(CHANNEL_PARTY);
 	g_game.updatePlayerShield(player);
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	g_game.updatePlayerHelpers(*player);
+	#endif
 
 	for (Player* member : memberList) {
 		member->sendCreatureSkull(player);
 		player->sendPlayerPartyIcons(member);
+		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 		g_game.updatePlayerHelpers(*member);
+		#endif
 	}
 
 	leader->sendCreatureSkull(player);
@@ -213,7 +221,9 @@ bool Party::joinParty(Player& player)
 
 	memberList.push_back(&player);
 
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	g_game.updatePlayerHelpers(player);
+	#endif
 
 	player.removePartyInvitation(this);
 	updateSharedExperience();
@@ -244,13 +254,16 @@ bool Party::removeInvite(Player& player, bool removeFromPlayer/* = true*/)
 
 	if (empty()) {
 		disband();
-	} else {
+	}
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+	else {
 		for (Player* member : memberList) {
 			g_game.updatePlayerHelpers(*member);
 		}
 
 		g_game.updatePlayerHelpers(*leader);
 	}
+	#endif
 
 	return true;
 }
@@ -287,10 +300,12 @@ bool Party::invitePlayer(Player& player)
 
 	inviteList.push_back(&player);
 
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	for (Player* member : memberList) {
 		g_game.updatePlayerHelpers(*member);
 	}
 	g_game.updatePlayerHelpers(*leader);
+	#endif
 
 	leader->sendCreatureShield(&player);
 	player.sendCreatureShield(leader);

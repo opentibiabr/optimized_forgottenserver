@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #include "iomapserialize.h"
 #include "combat.h"
 #include "creature.h"
+#include "monster.h"
 #include "game.h"
 
 extern Game g_game;
@@ -994,10 +995,12 @@ bool Map::getPathMatchingCond(const Creature& creature, const Position& targetPo
 // AStarNodes
 AStarNodes::AStarNodes(uint32_t x, uint32_t y, int_fast32_t extraCost): nodes(), openNodes()
 {
+	#if defined(__SSE2__)
 	uint32_t defaultCost = std::numeric_limits<int32_t>::max();
 	for (int32_t i = 0; i < 512; ++i) {
 		memcpy(&calculatedNodes[i], &defaultCost, sizeof(calculatedNodes[0]));
 	}
+	#endif
 
 	curNode = 1;
 	closedNodes = 0;
@@ -1256,7 +1259,7 @@ inline int_fast32_t AStarNodes::getTileWalkCost(const Creature& creature, const 
 	}
 	if (const MagicField* field = tile->getFieldItem()) {
 		CombatType_t combatType = field->getCombatType();
-		if (!creature.isImmune(combatType) && !creature.hasCondition(Combat::DamageToConditionType(combatType))) {
+		if (!creature.isImmune(combatType) && !creature.hasCondition(Combat::DamageToConditionType(combatType)) && (creature.getMonster() && !creature.getMonster()->canWalkOnFieldType(combatType))) {
 			cost += MAP_NORMALWALKCOST * 18;
 		}
 	}

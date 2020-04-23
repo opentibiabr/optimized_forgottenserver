@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,12 +50,12 @@ TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words, co
 	if (instantWords.size() >= 4 && instantWords.front() != '"') {
 		size_t param_find = instantWords.find('"');
 		if (param_find != std::string::npos && instantWords[param_find - 1] == ' ') {
-			if (instantWords.back() == '"') {
-				instantWords.pop_back();
-			}
 			param = instantWords.substr(param_find + 1);
 			instantWords = instantWords.substr(0, param_find);
 			trim_right(instantWords, ' ');
+			if (!param.empty() && param.back() == '"') {
+				param.pop_back();
+			}
 		}
 	}
 

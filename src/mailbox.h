@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ class Mailbox final : public Item, public Cylinder
 		void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, cylinderlink_t link = LINK_OWNER) override;
 
 	private:
-		bool getReceiver(Item* item, std::string& name) const;
+		bool getReceiver(Item* item, std::string& name, uint32_t& depotId) const;
 		bool sendItem(Item* item) const;
 
 		static bool canSend(const Item* item);

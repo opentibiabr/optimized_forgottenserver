@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -242,8 +242,6 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 
 void IOMapSerialize::saveItem(PropWriteStream& stream, const Item* item)
 {
-	//Reserve a little space before to avoid massive reallocations
-	std::vector<std::pair<const Container*, ItemDeque::const_reverse_iterator>> savingContainers; savingContainers.reserve(100);
 	const Container* container = item->getContainer();
 	if (!container) {
 		// Write ID & props
@@ -251,18 +249,19 @@ void IOMapSerialize::saveItem(PropWriteStream& stream, const Item* item)
 		item->serializeAttr(stream);
 		stream.write<uint8_t>(0x00); // attr end
 		return;
-	} else {
-		// Write ID & props
-		stream.write<uint16_t>(item->getID());
-		item->serializeAttr(stream);
-
-		// Hack our way into the attributes
-		stream.write<uint8_t>(ATTR_CONTAINER_ITEMS);
-		stream.write<uint32_t>(container->size());
-
-		savingContainers.emplace_back(container, container->getReversedItems());
 	}
 
+	// Write ID & props
+	stream.write<uint16_t>(item->getID());
+	item->serializeAttr(stream);
+
+	// Hack our way into the attributes
+	stream.write<uint8_t>(ATTR_CONTAINER_ITEMS);
+	stream.write<uint32_t>(container->size());
+
+	//Reserve a little space before to avoid massive reallocations
+	std::vector<std::pair<const Container*, ItemDeque::const_reverse_iterator>> savingContainers; savingContainers.reserve(100);
+	savingContainers.emplace_back(container, container->getReversedItems());
 	while (!savingContainers.empty()) {
 		StartSavingContainers:
 		container = savingContainers.back().first;
@@ -385,7 +384,6 @@ bool IOMapSerialize::saveHouseInfo()
 	}
 
 	DBInsert stmt(&g_database, "INSERT INTO `house_lists` (`house_id` , `listid` , `list`) VALUES ");
-
 	for (const auto& it : g_game.map.houses.getHouses()) {
 		House* house = it.second;
 

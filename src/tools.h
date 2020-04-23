@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ constexpr bool hasBitSet(uint32_t flag, uint32_t flags) {
 
 std::mt19937& getRandomGenerator();
 int32_t uniform_random(int32_t minNumber, int32_t maxNumber);
+double uniform_random();
 int32_t normal_random(int32_t minNumber, int32_t maxNumber);
 bool boolean_random(double probability = 0.5);
 
@@ -57,7 +58,7 @@ Direction getDirection(const std::string& string);
 Position getNextPosition(Direction direction, Position pos);
 Direction getDirectionTo(const Position& from, const Position& to);
 
-std::string getFirstLine(const std::string& str);
+void getMailDetails(const std::string& str, std::string& playerName, std::string& townName);
 
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);

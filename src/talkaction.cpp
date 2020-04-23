@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@ TalkActionResult_t TalkActions::playerSaySpell(Player* player, SpeakClasses type
 		if (param_find != std::string::npos) {
 			param = instantWords.substr(param_find + 1);
 			instantWords = instantWords.substr(0, param_find);
-			trim_left(param, ' ');
+			trim_right(instantWords, ' ');
 		}
 	}
 

@@ -29,3 +29,23 @@ end
 function Item.isTile(self)
 	return false
 end
+
+function Item.managedAddItem(self, itemId, itemCount)
+	local parent = self:getParent()
+	if(parent and parent:isContainer()) then
+		local newitem = parent:addItem(itemId, itemCount)
+		if(not newitem) then
+			parent = self:getTopParent()
+			if(parent) then
+				newitem = parent:addItem(itemId, itemCount)
+				if(newitem) then
+					return
+				end
+			end
+		else
+			return
+		end
+	end
+
+	Game.createItem(itemId, itemCount, self:getPosition())
+end

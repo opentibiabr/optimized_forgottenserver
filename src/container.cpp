@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ Container::Container(uint16_t type, uint16_t size, bool unlocked /*= true*/, boo
 	pagination(pagination)
 {}
 
+#if GAME_FEATURE_BROWSEFIELD > 0
 Container::Container(Tile* tile) : Container(ITEM_BROWSEFIELD, 30, false, true)
 {
 	TileItemVector* itemVector = tile->getItemList();
@@ -49,9 +50,11 @@ Container::Container(Tile* tile) : Container(ITEM_BROWSEFIELD, 30, false, true)
 
 	setParent(tile);
 }
+#endif
 
 Container::~Container()
 {
+	#if GAME_FEATURE_BROWSEFIELD > 0
 	if (getID() == ITEM_BROWSEFIELD) {
 		g_game.browseFields.erase(getTile());
 		for (Item* item : itemlist) {
@@ -63,6 +66,12 @@ Container::~Container()
 			item->decrementReferenceCounter();
 		}
 	}
+	#else
+	for (Item* item : itemlist) {
+		item->setParent(nullptr);
+		item->decrementReferenceCounter();
+	}
+	#endif
 }
 
 Item* Container::clone() const
@@ -86,7 +95,11 @@ Container* Container::getParentContainer()
 
 bool Container::hasParent() const
 {
+	#if GAME_FEATURE_BROWSEFIELD > 0
 	return getID() != ITEM_BROWSEFIELD && dynamic_cast<const Player*>(getParent()) == nullptr;
+	#else
+	return dynamic_cast<const Container*>(getParent()) != nullptr;
+	#endif
 }
 
 void Container::addItem(Item* item)
@@ -106,9 +119,9 @@ Attr_ReadValue Container::readAttr(AttrTypes_t attr, PropStream& propStream)
 	return Item::readAttr(attr, propStream);
 }
 
-bool Container::unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream)
+bool Container::unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream, bool _legacy)
 {
-	bool ret = Item::unserializeItemNode(loader, node, propStream);
+	bool ret = Item::unserializeItemNode(loader, node, propStream, _legacy);
 	if (!ret) {
 		return false;
 	}
@@ -125,12 +138,12 @@ bool Container::unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, 
 			return false;
 		}
 
-		Item* item = Item::CreateItem(itemPropStream);
+		Item* item = (_legacy ? Item::CreateItem_legacy(itemPropStream) : Item::CreateItem(itemPropStream));
 		if (!item) {
 			return false;
 		}
 
-		if (!item->unserializeItemNode(loader, itemNode, itemPropStream)) {
+		if (!item->unserializeItemNode(loader, itemNode, itemPropStream, _legacy)) {
 			return false;
 		}
 
@@ -177,7 +190,11 @@ std::ostringstream& Container::getContentDescription(std::ostringstream& os) con
 			os << ", ";
 		}
 
+		#if CLIENT_VERSION >= 1200
+		os << "{" << item->getClientID() << "|" << item->getNameDescription() << "}";
+		#else
 		os << item->getNameDescription();
+		#endif
 	}
 
 	if (firstitem) {

@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -227,8 +227,37 @@ class ItemAttributes
 				value = v;
 			}
 
-			template<typename T>
-			const T& get();
+			const std::string& getString() const {
+				if (value.type() == typeid(std::string)) {
+					return boost::get<std::string>(value);
+				}
+
+				return emptyString;
+			}
+
+			const int64_t& getInt() const {
+				if (value.type() == typeid(int64_t)) {
+					return boost::get<int64_t>(value);
+				}
+
+				return emptyInt;
+			}
+
+			const double& getDouble() const {
+				if (value.type() == typeid(double)) {
+					return boost::get<double>(value);
+				}
+
+				return emptyDouble;
+			}
+
+			const bool& getBool() const {
+				if (value.type() == typeid(bool)) {
+					return boost::get<bool>(value);
+				}
+
+				return emptyBool;
+			}
 
 			struct PushLuaVisitor : public boost::static_visitor<> {
 				lua_State* L;
@@ -524,6 +553,7 @@ class Item : virtual public Thing
 		static Item* CreateItem(const uint16_t type, uint16_t count = 0);
 		static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
 		static Item* CreateItem(PropStream& propStream);
+		static Item* CreateItem_legacy(PropStream& propStream);
 		static Items items;
 
 		// Constructor for items
@@ -625,20 +655,32 @@ class Item : virtual public Thing
 			getAttributes()->setCustomAttribute(key, value);
 		}
 		
-		const ItemAttributes::CustomAttribute* getCustomAttribute(int64_t key) {
-			return getAttributes()->getCustomAttribute(key);
+		const ItemAttributes::CustomAttribute* getCustomAttribute(int64_t key) const {
+			if (!attributes) {
+				return nullptr;
+			}
+			return attributes->getCustomAttribute(key);
 		}
 
-		const ItemAttributes::CustomAttribute* getCustomAttribute(const std::string& key) {
-			return getAttributes()->getCustomAttribute(key);
+		const ItemAttributes::CustomAttribute* getCustomAttribute(const std::string& key) const {
+			if (!attributes) {
+				return nullptr;
+			}
+			return attributes->getCustomAttribute(key);
 		}
 
 		bool removeCustomAttribute(int64_t key) {
-			return getAttributes()->removeCustomAttribute(key);
+			if (!attributes) {
+				return false;
+			}
+			return attributes->removeCustomAttribute(key);
 		}
 
 		bool removeCustomAttribute(const std::string& key) {
-			return getAttributes()->removeCustomAttribute(key);
+			if (!attributes) {
+				return false;
+			}
+			return attributes->removeCustomAttribute(key);
 		}
 
 		void setSpecialDescription(const std::string& desc) {
@@ -774,7 +816,7 @@ class Item : virtual public Thing
 		//serialization
 		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
 		bool unserializeAttr(PropStream& propStream);
-		virtual bool unserializeItemNode(OTB::Loader&, const OTB::Node&, PropStream& propStream);
+		virtual bool unserializeItemNode(OTB::Loader&, const OTB::Node&, PropStream& propStream, bool _legacy);
 
 		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
 

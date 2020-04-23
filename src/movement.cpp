@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -980,7 +980,7 @@ uint32_t MoveEvent::fireAddRemItem(Item* item, Item* tileItem, const Position& p
 
 bool MoveEvent::executeAddRemItem(Item* item, Item* tileItem, const Position& pos)
 {
-	//onaddItem(moveitem, tileitem, pos)
+	//onAddItem(moveitem, tileitem, pos)
 	//onRemoveItem(moveitem, tileitem, pos)
 	if (!scriptInterface->reserveScriptEnv()) {
 		std::cout << "[Error - MoveEvent::executeAddRemItem] Call stack overflow" << std::endl;

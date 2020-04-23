@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,45 +91,72 @@ void Mailbox::postRemoveNotification(Thing* thing, const Cylinder* newParent, in
 bool Mailbox::sendItem(Item* item) const
 {
 	std::string receiver;
-	if (!getReceiver(item, receiver)) {
+	uint32_t depotId = 0;
+	if (!getReceiver(item, receiver, depotId)) {
 		return false;
 	}
 
 	/**No need to continue if its still empty**/
-	if (receiver.empty()) {
+	#if GAME_FEATURE_MARKET > 0
+	if (receiver.empty() || receiver.size() > NETWORKMESSAGE_PLAYERNAME_MAXLENGTH) {
 		return false;
 	}
+	#else
+	if (receiver.empty() || receiver.size() > NETWORKMESSAGE_PLAYERNAME_MAXLENGTH || depotId == 0) {
+		return false;
+	}
+	#endif
 
 	Player* player = g_game.getPlayerByName(receiver);
 	if (player) {
-		if (g_game.internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER,
-		                            item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
+		#if GAME_FEATURE_MARKET > 0
+		if (g_game.internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
 			g_game.transformItem(item, item->getID() + 1);
 			player->onReceiveMail();
 			return true;
 		}
+		#else
+		DepotLocker* depotLocker = player->getDepotLocker(depotId);
+		if (depotLocker) {
+			if (g_game.internalMoveItem(item->getParent(), depotLocker, INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
+				g_game.transformItem(item, item->getID() + 1);
+				player->onReceiveMail();
+				return true;
+			}
+		}
+		#endif
 	} else {
 		Player tmpPlayer(nullptr);
 		if (!IOLoginData::loadPlayerByName(&tmpPlayer, receiver)) {
 			return false;
 		}
 
-		if (g_game.internalMoveItem(item->getParent(), tmpPlayer.getInbox(), INDEX_WHEREEVER,
-		                            item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
+		#if GAME_FEATURE_MARKET > 0
+		if (g_game.internalMoveItem(item->getParent(), tmpPlayer.getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
 			g_game.transformItem(item, item->getID() + 1);
 			IOLoginData::savePlayer(&tmpPlayer);
 			return true;
 		}
+		#else
+		DepotLocker* depotLocker = tmpPlayer.getDepotLocker(depotId);
+		if (depotLocker) {
+			if (g_game.internalMoveItem(item->getParent(), depotLocker, INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
+				g_game.transformItem(item, item->getID() + 1);
+				IOLoginData::savePlayer(&tmpPlayer);
+				return true;
+			}
+		}
+		#endif
 	}
 	return false;
 }
 
-bool Mailbox::getReceiver(Item* item, std::string& name) const
+bool Mailbox::getReceiver(Item* item, std::string& name, uint32_t& depotId) const
 {
 	const Container* container = item->getContainer();
 	if (container) {
 		for (Item* containerItem : container->getItemList()) {
-			if (containerItem->getID() == ITEM_LABEL && getReceiver(containerItem, name)) {
+			if (containerItem->getID() == ITEM_LABEL && getReceiver(containerItem, name, depotId)) {
 				return true;
 			}
 		}
@@ -141,9 +168,24 @@ bool Mailbox::getReceiver(Item* item, std::string& name) const
 		return false;
 	}
 
-	name = getFirstLine(text);
+	std::string playerName; playerName.reserve(text.length());
+	std::string townName; townName.reserve(text.length());
+	getMailDetails(text, playerName, townName);
+
+	name = std::move(playerName);
 	trimString(name);
+
+	#if GAME_FEATURE_MARKET > 0
+	(void)townName;
 	return true;
+	#else
+	Town* town = g_game.map.towns.getTown(townName);
+	if (town) {
+		depotId = town->getID();
+		return true;
+	}
+	return false;
+	#endif
 }
 
 bool Mailbox::canSend(const Item* item)

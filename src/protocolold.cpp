@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,10 @@
 
 extern Game g_game;
 
-void ProtocolOld::disconnectClient(const std::string& message)
+void ProtocolOld::disconnectClient(const std::string& message, uint16_t version)
 {
 	auto output = OutputMessagePool::getOutputMessage();
-	output->addByte(0x0A);
+	output->addByte(version >= 1076 ? 0x0B : 0x0A);
 	output->addString(message);
 	send(output);
 
@@ -45,12 +45,16 @@ void ProtocolOld::onRecvFirstMessage(NetworkMessage& msg)
 
 	/*uint16_t clientOS =*/ msg.get<uint16_t>();
 	uint16_t version = msg.get<uint16_t>();
-	msg.skipBytes(12);
+	if (version >= 971) {
+		msg.skipBytes(17);
+	} else {
+		msg.skipBytes(12);
+	}
 
 	if (version <= 760) {
 		std::ostringstream ss;
-		ss << "Only clients with protocol " << CLIENT_VERSION_STR << " allowed!";
-		disconnectClient(ss.str());
+		ss << "Only clients with protocol " << CLIENT_VERSION_UPPER << "." << CLIENT_VERSION_LOWER << " allowed!";
+		disconnectClient(ss.str(), version);
 		return;
 	}
 
@@ -68,6 +72,6 @@ void ProtocolOld::onRecvFirstMessage(NetworkMessage& msg)
 	}
 
 	std::ostringstream ss;
-	ss << "Only clients with protocol " << CLIENT_VERSION_STR << " allowed!";
-	disconnectClient(ss.str());
+	ss << "Only clients with protocol " << CLIENT_VERSION_UPPER << "." << CLIENT_VERSION_LOWER << " allowed!";
+	disconnectClient(ss.str(), version);
 }

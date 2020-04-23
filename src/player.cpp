@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020 Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,11 +47,17 @@ MuteCountMap Player::muteCountMap;
 
 uint32_t Player::playerAutoID = 0x10000000;
 
+#if GAME_FEATURE_MARKET > 0
 Player::Player(ProtocolGame_ptr p) :
 	Creature(), lastPing(OTSYS_TIME()), lastPong(lastPing), inbox(new Inbox(ITEM_INBOX)), client(std::move(p))
 {
 	inbox->incrementReferenceCounter();
 }
+#else
+Player::Player(ProtocolGame_ptr p) :
+	Creature(), lastPing(OTSYS_TIME()), lastPong(lastPing), client(std::move(p))
+{}
+#endif
 
 Player::~Player()
 {
@@ -63,11 +69,15 @@ Player::~Player()
 	}
 
 	for (const auto& it : depotLockerMap) {
+		#if GAME_FEATURE_MARKET > 0
 		it.second->removeInbox(inbox);
+		#endif
 		it.second->decrementReferenceCounter();
 	}
 
+	#if GAME_FEATURE_MARKET > 0
 	inbox->decrementReferenceCounter();
+	#endif
 
 	setWriteItem(nullptr);
 	setEditHouse(nullptr);
@@ -88,6 +98,9 @@ bool Player::setVocation(uint16_t vocId)
 		condition->setParam(CONDITION_PARAM_MANAGAIN, vocation->getManaGainAmount());
 		condition->setParam(CONDITION_PARAM_MANATICKS, vocation->getManaGainTicks() * 1000);
 	}
+	#if CLIENT_VERSION >= 950
+	sendBasicData();
+	#endif
 	return true;
 }
 
@@ -532,24 +545,32 @@ void Player::addContainer(uint8_t cid, Container* container)
 		return;
 	}
 
+	#if GAME_FEATURE_BROWSEFIELD > 0
 	if (container->getID() == ITEM_BROWSEFIELD) {
 		container->incrementReferenceCounter();
 	}
+	#endif
 
 	auto it = openContainers.find(cid);
 	if (it != openContainers.end()) {
 		OpenContainer& openContainer = it->second;
+		#if GAME_FEATURE_BROWSEFIELD > 0
 		Container* oldContainer = openContainer.container;
 		if (oldContainer->getID() == ITEM_BROWSEFIELD) {
 			oldContainer->decrementReferenceCounter();
 		}
+		#endif
 
 		openContainer.container = container;
+		#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 		openContainer.index = 0;
+		#endif
 	} else {
 		OpenContainer openContainer;
 		openContainer.container = container;
+		#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 		openContainer.index = 0;
+		#endif
 		openContainers[cid] = openContainer;
 	}
 }
@@ -560,16 +581,21 @@ void Player::closeContainer(uint8_t cid)
 	if (it == openContainers.end()) {
 		return;
 	}
-
+	
+	#if GAME_FEATURE_BROWSEFIELD > 0
 	OpenContainer openContainer = it->second;
 	Container* container = openContainer.container;
+	#endif
 	openContainers.erase(it);
 
+	#if GAME_FEATURE_BROWSEFIELD > 0
 	if (container && container->getID() == ITEM_BROWSEFIELD) {
 		container->decrementReferenceCounter();
 	}
+	#endif
 }
 
+#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 void Player::setContainerIndex(uint8_t cid, uint16_t index)
 {
 	auto it = openContainers.find(cid);
@@ -578,6 +604,7 @@ void Player::setContainerIndex(uint8_t cid, uint16_t index)
 	}
 	it->second.index = index;
 }
+#endif
 
 Container* Player::getContainerByID(uint8_t cid)
 {
@@ -598,6 +625,7 @@ int8_t Player::getContainerID(const Container* container) const
 	return -1;
 }
 
+#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 uint16_t Player::getContainerIndex(uint8_t cid) const
 {
 	auto it = openContainers.find(cid);
@@ -606,6 +634,7 @@ uint16_t Player::getContainerIndex(uint8_t cid) const
 	}
 	return it->second.index;
 }
+#endif
 
 bool Player::canOpenCorpse(uint32_t ownerId) const
 {
@@ -694,6 +723,7 @@ bool Player::canSeeCreature(const Creature* creature) const
 
 bool Player::canWalkthrough(const Creature* creature) const
 {
+	#if CLIENT_VERSION >= 854
 	if (group->access || creature->isInGhostMode()) {
 		return true;
 	}
@@ -726,10 +756,15 @@ bool Player::canWalkthrough(const Creature* creature) const
 
 	thisPlayer->setLastWalkthroughPosition(creature->getPosition());
 	return true;
+	#else
+	(void)creature;
+	return false;
+	#endif
 }
 
 bool Player::canWalkthroughEx(const Creature* creature) const
 {
+	#if CLIENT_VERSION >= 854
 	if (group->access) {
 		return true;
 	}
@@ -741,6 +776,10 @@ bool Player::canWalkthroughEx(const Creature* creature) const
 
 	const Tile* playerTile = player->getTile();
 	return playerTile && (playerTile->hasFlag(TILESTATE_PROTECTIONZONE) || player->getLevel() <= static_cast<uint32_t>(g_config.getNumber(ConfigManager::PROTECTION_LEVEL)));
+	#else
+	(void)creature;
+	return false;
+	#endif
 }
 
 void Player::onReceiveMail() const
@@ -790,14 +829,18 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 {
 	auto it = depotLockerMap.find(depotId);
 	if (it != depotLockerMap.end()) {
+		#if GAME_FEATURE_MARKET > 0
 		inbox->setParent(it->second);
+		#endif
 		return it->second;
 	}
 
 	DepotLocker* depotLocker = new DepotLocker(ITEM_LOCKER1);
 	depotLocker->setDepotId(depotId);
+	#if GAME_FEATURE_MARKET > 0
 	depotLocker->internalAddThing(Item::CreateItem(ITEM_MARKET));
 	depotLocker->internalAddThing(inbox);
+	#endif
 	depotLocker->internalAddThing(getDepotChest(depotId, true));
 	depotLockerMap[depotId] = depotLocker;
 	return depotLocker;
@@ -856,7 +899,6 @@ Item* Player::getWriteItem(uint32_t& windowTextId, uint16_t& maxWriteLen)
 void Player::setWriteItem(Item* item, uint16_t maxWriteLen /*= 0*/)
 {
 	windowTextId++;
-
 	if (writeItem) {
 		writeItem->decrementReferenceCounter();
 	}
@@ -910,6 +952,7 @@ void Player::sendAddContainerItem(const Container* container, const Item* item)
 			continue;
 		}
 
+		#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 		uint16_t slot = openContainer.index;
 		if (container->getID() == ITEM_BROWSEFIELD) {
 			uint16_t containerSize = container->size() - 1;
@@ -924,10 +967,17 @@ void Player::sendAddContainerItem(const Container* container, const Item* item)
 			item = container->getItemByIndex(openContainer.index - 1);
 		}
 		client->sendAddContainerItem(it.first, slot, item);
+		#else
+		client->sendAddContainerItem(it.first, item);
+		#endif
 	}
 }
 
+#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 void Player::sendUpdateContainerItem(const Container* container, uint16_t slot, const Item* newItem)
+#else
+void Player::sendUpdateContainerItem(const Container* container, uint8_t slot, const Item* newItem)
+#endif
 {
 	if (!client) {
 		return;
@@ -939,6 +989,7 @@ void Player::sendUpdateContainerItem(const Container* container, uint16_t slot, 
 			continue;
 		}
 
+		#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 		if (slot < openContainer.index) {
 			continue;
 		}
@@ -949,10 +1000,17 @@ void Player::sendUpdateContainerItem(const Container* container, uint16_t slot, 
 		}
 
 		client->sendUpdateContainerItem(it.first, slot, newItem);
+		#else
+		client->sendUpdateContainerItem(it.first, slot, newItem);
+		#endif
 	}
 }
 
+#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 void Player::sendRemoveContainerItem(const Container* container, uint16_t slot)
+#else
+void Player::sendRemoveContainerItem(const Container* container, uint8_t slot)
+#endif
 {
 	if (!client) {
 		return;
@@ -964,6 +1022,7 @@ void Player::sendRemoveContainerItem(const Container* container, uint16_t slot)
 			continue;
 		}
 
+		#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 		uint16_t& firstIndex = openContainer.index;
 		if (firstIndex > 0 && firstIndex >= container->size() - 1) {
 			firstIndex -= container->capacity();
@@ -971,6 +1030,9 @@ void Player::sendRemoveContainerItem(const Container* container, uint16_t slot)
 		}
 
 		client->sendRemoveContainerItem(it.first, std::max<uint16_t>(slot, firstIndex), container->getItemByIndex(container->capacity() + firstIndex));
+		#else
+		client->sendRemoveContainerItem(it.first, slot);
+		#endif
 	}
 }
 
@@ -1084,19 +1146,26 @@ void Player::onChangeZone(ZoneType_t zone)
 			onAttackedCreatureDisappear(false);
 		}
 
+		#if GAME_FEATURE_MOUNTS > 0
 		if (!group->access && isMounted()) {
 			dismount();
 			g_game.internalCreatureChangeOutfit(this, defaultOutfit);
 			wasMounted = true;
 		}
-	} else {
+		#endif
+	}
+	#if GAME_FEATURE_MOUNTS > 0
+	else {
 		if (wasMounted) {
 			toggleMount(true);
 			wasMounted = false;
 		}
 	}
+	#endif
 
+	#if CLIENT_VERSION >= 854
 	g_game.updateCreatureWalkthrough(this);
+	#endif
 	sendIcons();
 }
 
@@ -1250,10 +1319,12 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 		modalWindows.clear();
 	}
 
+	#if GAME_FEATURE_MARKET > 0
 	// leave market
 	if (inMarket) {
 		inMarket = false;
 	}
+	#endif
 
 	if (party) {
 		party->updateSharedExperience();
@@ -1322,7 +1393,11 @@ void Player::onSendContainer(const Container* container)
 	for (const auto& it : openContainers) {
 		const OpenContainer& openContainer = it.second;
 		if (openContainer.container == container) {
+			#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 			client->sendContainer(it.first, container, hasParent, openContainer.index);
+			#else
+			client->sendContainer(it.first, container, hasParent);
+			#endif
 		}
 	}
 }
@@ -2176,7 +2251,11 @@ bool Player::addVIP(uint32_t vipGuid, const std::string& vipName, VipStatus_t st
 
 	IOLoginData::addVIPEntry(accountNumber, vipGuid, "", 0, false);
 	if (client) {
+		#if GAME_FEATURE_ADDITIONAL_VIPINFO > 0
 		client->sendVIP(vipGuid, vipName, "", 0, false, status);
+		#else
+		client->sendVIP(vipGuid, vipName, status);
+		#endif
 	}
 	return true;
 }
@@ -3276,9 +3355,11 @@ void Player::onAddCondition(ConditionType_t type)
 {
 	Creature::onAddCondition(type);
 
+	#if GAME_FEATURE_MOUNTS > 0
 	if (type == CONDITION_OUTFIT && isMounted()) {
 		dismount();
 	}
+	#endif
 
 	sendIcons();
 }
@@ -3931,7 +4012,9 @@ bool Player::isPremium() const
 void Player::setPremiumDays(int32_t v)
 {
 	premiumDays = v;
+	#if CLIENT_VERSION >= 950
 	sendBasicData();
+	#endif
 }
 
 PartyShields_t Player::getPartyShield(const Player* player) const
@@ -4069,6 +4152,7 @@ GuildEmblems_t Player::getGuildEmblem(const Player* player) const
 	return GUILDEMBLEM_NEUTRAL;
 }
 
+#if GAME_FEATURE_MOUNTS > 0
 uint8_t Player::getCurrentMount() const
 {
 	int32_t value;
@@ -4228,6 +4312,7 @@ void Player::dismount()
 
 	defaultOutfit.lookMount = 0;
 }
+#endif
 
 bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 {
@@ -4368,7 +4453,10 @@ bool Player::hasModalWindowOpen(uint32_t modalWindowId) const
 
 void Player::onModalWindowHandled(uint32_t modalWindowId)
 {
-	modalWindows.remove(modalWindowId);
+	auto it = std::find(modalWindows.begin(), modalWindows.end(), modalWindowId);
+	if (it != modalWindows.end()) {
+		modalWindows.erase(it);
+	}
 }
 
 void Player::sendModalWindow(const ModalWindow& modalWindow)
@@ -4377,8 +4465,17 @@ void Player::sendModalWindow(const ModalWindow& modalWindow)
 		return;
 	}
 
-	modalWindows.push_front(modalWindow.id);
+	if (modalWindows.size() >= 10) {
+		// Avoid memory leak - it is possible to leak memory here
+		clearModalWindows();
+	}
+
+	#if CLIENT_VERSION >= 960
+	modalWindows.push_back(modalWindow.id);
 	client->sendModalWindow(modalWindow);
+	#else
+	(void)modalWindow;
+	#endif
 }
 
 void Player::clearModalWindows()

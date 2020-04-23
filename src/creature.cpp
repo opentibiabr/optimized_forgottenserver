@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -587,7 +587,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			if ((creature == followCreature) && listWalkDir.empty()) {
 				//This should make monsters more responsive without needing to decrease creature think interval
 				isUpdatingPath = false;
-				goToFollowCreature();
+				g_dispatcher.addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game, getID())), true);
 			} else {
 				isUpdatingPath = true;
 			}
@@ -780,7 +780,6 @@ void Creature::gainHealth(Creature* healer, int32_t healthGain)
 void Creature::drainHealth(Creature* attacker, int32_t damage)
 {
 	changeHealth(-damage, false);
-
 	if (attacker) {
 		attacker->onAttackedCreatureDrainHealth(this, damage);
 	}
@@ -941,7 +940,7 @@ bool Creature::setFollowCreature(Creature* creature)
 		followCreature = creature;
 		if (getMonster()) {
 			isUpdatingPath = false;
-			goToFollowCreature();
+			g_dispatcher.addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game, getID())), true);
 		} else {
 			isUpdatingPath = true;
 		}
@@ -1358,9 +1357,9 @@ int64_t Creature::getStepDuration() const
 		return 0;
 	}
 
+	#if GAME_FEATURE_NEWSPEED_LAW > 0
 	uint32_t calculatedStepSpeed;
 	uint32_t groundSpeed;
-
 	int32_t stepSpeed = getStepSpeed();
 	if (stepSpeed > -Creature::speedB) {
 		calculatedStepSpeed = floor((Creature::speedA * log((stepSpeed / 2) + Creature::speedB) + Creature::speedC) + 0.5);
@@ -1390,6 +1389,25 @@ int64_t Creature::getStepDuration() const
 	}
 
 	return stepDuration;
+	#else
+	uint32_t groundSpeed;
+	int32_t stepSpeed = getStepSpeed();
+	if (!stepSpeed) {
+		stepSpeed = 250;
+	}
+
+	Item* ground = tile->getGround();
+	if (ground) {
+		groundSpeed = Item::items[ground->getID()].speed;
+		if (groundSpeed == 0) {
+			groundSpeed = 150;
+		}
+	} else {
+		groundSpeed = 150;
+	}
+
+	return ((1000 * groundSpeed) / stepSpeed);
+	#endif
 }
 
 int64_t Creature::getEventStepTicks(bool onlyDelay) const
@@ -1411,7 +1429,8 @@ LightInfo Creature::getCreatureLight() const
 	return internalLight;
 }
 
-void Creature::setCreatureLight(LightInfo lightInfo) {
+void Creature::setCreatureLight(LightInfo lightInfo)
+{
 	internalLight = std::move(lightInfo);
 }
 

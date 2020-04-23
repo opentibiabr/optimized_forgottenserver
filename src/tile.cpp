@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
  */
 
 #include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
 
 #include "tile.h"
 
@@ -372,6 +370,7 @@ Thing* Tile::getTopVisibleThing(const Creature* creature)
 
 void Tile::onAddTileItem(Item* item)
 {
+	#if GAME_FEATURE_BROWSEFIELD > 0
 	if (item->hasProperty(CONST_PROP_MOVEABLE) || item->getContainer()) {
 		auto it = g_game.browseFields.find(this);
 		if (it != g_game.browseFields.end()) {
@@ -379,6 +378,7 @@ void Tile::onAddTileItem(Item* item)
 			item->setParent(this);
 		}
 	}
+	#endif
 
 	setTileFlags(item);
 
@@ -402,6 +402,7 @@ void Tile::onAddTileItem(Item* item)
 
 void Tile::onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newItem, const ItemType& newType)
 {
+	#if GAME_FEATURE_BROWSEFIELD > 0
 	if (newItem->hasProperty(CONST_PROP_MOVEABLE) || newItem->getContainer()) {
 		auto it = g_game.browseFields.find(this);
 		if (it != g_game.browseFields.end()) {
@@ -419,6 +420,7 @@ void Tile::onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newIte
 			oldItem->setParent(oldParent);
 		}
 	}
+	#endif
 
 	const Position& cylinderMapPos = getPosition();
 
@@ -440,12 +442,14 @@ void Tile::onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newIte
 
 void Tile::onRemoveTileItem(const SpectatorVector& spectators, const std::vector<int32_t>& oldStackPosVector, Item* item)
 {
+	#if GAME_FEATURE_BROWSEFIELD > 0
 	if (item->hasProperty(CONST_PROP_MOVEABLE) || item->getContainer()) {
 		auto it = g_game.browseFields.find(this);
 		if (it != g_game.browseFields.end()) {
 			it->second->removeThing(item, item->getItemCount());
 		}
 	}
+	#endif
 
 	resetTileFlags(item);
 
@@ -832,7 +836,11 @@ void Tile::addThing(int32_t, Thing* thing)
 		g_game.map.clearSpectatorCache(creature->getPlayer());
 		creature->setParent(this);
 		CreatureVector* creatures = makeCreatures();
+		#if CLIENT_VERSION >= 853
 		creatures->insert(creatures->begin(), creature);
+		#else
+		creatures->push_back(creature);
+		#endif
 	} else {
 		Item* item = thing->getItem();
 		if (item == nullptr) {
@@ -1188,7 +1196,8 @@ int32_t Tile::getClientIndexOfCreature(const Player* player, const Creature* cre
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (const Creature* c : boost::adaptors::reverse(*creatures)) {
+		for (auto it = creatures->rbegin(), end = creatures->rend(); it != end; ++it) {
+			const Creature* c = (*it);
 			if (c == creature) {
 				return n;
 			} else if (player->canSeeCreature(c)) {
@@ -1217,7 +1226,8 @@ int32_t Tile::getStackposOfCreature(const Player* player, const Creature* creatu
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (const Creature* c : boost::adaptors::reverse(*creatures)) {
+		for (auto it = creatures->rbegin(), end = creatures->rend(); it != end; ++it) {
+			const Creature* c = (*it);
 			if (c == creature) {
 				return n;
 			} else if (player->canSeeCreature(c)) {
@@ -1433,7 +1443,11 @@ void Tile::internalAddThing(uint32_t, Thing* thing)
 	if (creature) {
 		g_game.map.clearSpectatorCache(creature->getPlayer());
 		CreatureVector* creatures = makeCreatures();
+		#if CLIENT_VERSION >= 853
 		creatures->insert(creatures->begin(), creature);
+		#else
+		creatures->push_back(creature);
+		#endif
 	} else {
 		Item* item = thing->getItem();
 		if (item == nullptr) {

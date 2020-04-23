@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,15 +21,15 @@
 #define FS_DEFINITIONS_H_877452FEC245450C9F96B8FD268D8963
 
 static constexpr auto STATUS_SERVER_NAME = "The Forgotten Server";
-static constexpr auto STATUS_SERVER_VERSION = "1.3";
-static constexpr auto STATUS_SERVER_DEVELOPERS = "Mark Samman";
-
-static constexpr auto CLIENT_VERSION_MIN = 1097;
-static constexpr auto CLIENT_VERSION_MAX = 1235;
-static constexpr auto CLIENT_VERSION_STR = "10.98";
+static constexpr auto STATUS_SERVER_VERSION = "1.0.0 Immortal Phoenix";
+static constexpr auto STATUS_SERVER_DEVELOPERS = "Mark Samman and Saiyans King";
 
 static constexpr auto AUTHENTICATOR_DIGITS = 6U;
 static constexpr auto AUTHENTICATOR_PERIOD = 30U;
+
+#define CLIENT_VERSION 1231
+#define CLIENT_VERSION_UPPER (CLIENT_VERSION / 100)
+#define CLIENT_VERSION_LOWER (CLIENT_VERSION % 100)
 
 #ifndef __FUNCTION__
 #define __FUNCTION__ __func__

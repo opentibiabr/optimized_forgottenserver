@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -563,6 +563,12 @@ int32_t uniform_random(int32_t minNumber, int32_t maxNumber)
 		std::swap(minNumber, maxNumber);
 	}
 	return uniformRand(getRandomGenerator(), std::uniform_int_distribution<int32_t>::param_type(minNumber, maxNumber));
+}
+
+double uniform_random()
+{
+	static std::uniform_real_distribution<double> uniformRand(0.0, 1.0);
+	return uniformRand(getRandomGenerator());
 }
 
 int32_t normal_random(int32_t minNumber, int32_t maxNumber)
@@ -1399,17 +1405,20 @@ itemAttrTypes stringToItemAttribute(const std::string& str)
 	return ITEM_ATTRIBUTE_NONE;
 }
 
-std::string getFirstLine(const std::string& str)
+void getMailDetails(const std::string& str, std::string& playerName, std::string& townName)
 {
-	std::string firstLine;
-	firstLine.reserve(str.length());
+	std::string* currentLine = &playerName;
 	for (const char c : str) {
 		if (c == '\n') {
-			break;
+			if (currentLine == &townName) {
+				break;
+			} else {
+				currentLine = &townName;
+				continue;
+			}
 		}
-		firstLine.push_back(c);
+		currentLine->push_back(c);
 	}
-	return firstLine;
 }
 
 const char* getReturnMessage(ReturnValue value)

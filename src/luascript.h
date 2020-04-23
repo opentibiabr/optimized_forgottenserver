@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -523,6 +523,11 @@ class LuaScriptInterface
 		// os
 		static int luaSystemTime(lua_State* L);
 
+		// math
+		static int luaMathUniformRandom(lua_State* L);
+		static int luaMathNormalRandom(lua_State* L);
+		static int luaMathBoolRandom(lua_State* L);
+
 		// table
 		static int luaTableCreate(lua_State* L);
 
@@ -841,8 +846,11 @@ class LuaScriptInterface
 
 		static int luaPlayerGetFreeCapacity(lua_State* L);
 
+		static int luaPlayerGetDepotLocker(lua_State* L);
 		static int luaPlayerGetDepotChest(lua_State* L);
+		#if GAME_FEATURE_MARKET > 0
 		static int luaPlayerGetInbox(lua_State* L);
+		#endif
 
 		static int luaPlayerGetSkullTime(lua_State* L);
 		static int luaPlayerSetSkullTime(lua_State* L);
@@ -947,9 +955,11 @@ class LuaScriptInterface
 		static int luaPlayerHasOutfit(lua_State* L);
 		static int luaPlayerSendOutfitWindow(lua_State* L);
 
+		#if GAME_FEATURE_MOUNTS > 0
 		static int luaPlayerAddMount(lua_State* L);
 		static int luaPlayerRemoveMount(lua_State* L);
 		static int luaPlayerHasMount(lua_State* L);
+		#endif
 
 		static int luaPlayerGetPremiumDays(lua_State* L);
 		static int luaPlayerAddPremiumDays(lua_State* L);
@@ -982,7 +992,9 @@ class LuaScriptInterface
 
 		static int luaPlayerGetContainerId(lua_State* L);
 		static int luaPlayerGetContainerById(lua_State* L);
+		#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 		static int luaPlayerGetContainerIndex(lua_State* L);
+		#endif
 
 		static int luaPlayerGetInstantSpells(lua_State* L);
 		static int luaPlayerCanCast(lua_State* L);

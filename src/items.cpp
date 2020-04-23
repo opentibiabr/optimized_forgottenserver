@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -167,7 +167,7 @@ bool Items::reload()
 	clear();
 	items.reserve(30000);
 	reverseItemMap.reserve(30000);
-	loadFromOtb("data/items/items.otb");
+	loadFromOtb("data/items/" + std::to_string(CLIENT_VERSION) + "/items.otb");
 	if (!loadFromXml()) {
 		return false;
 	}
@@ -226,9 +226,6 @@ bool Items::loadFromOtb(const std::string& file)
 		std::cout << "[Warning - Items::loadFromOtb] items.otb using generic client version." << std::endl;
 	} else if (majorVersion != 3) {
 		std::cout << "Old version detected, a newer version of items.otb is required." << std::endl;
-		return false;
-	} else if (minorVersion < CLIENT_VERSION_1098) {
-		std::cout << "A newer version of items.otb is required." << std::endl;
 		return false;
 	}
 
@@ -420,7 +417,7 @@ bool Items::loadFromOtb(const std::string& file)
 bool Items::loadFromXml()
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/items/items.xml");
+	pugi::xml_parse_result result = doc.load_file(("data/items/" + std::to_string(CLIENT_VERSION) + "/items.xml").c_str());
 	if (!result) {
 		printXMLError("Error - Items::loadFromXml", "data/items/items.xml", result);
 		return false;

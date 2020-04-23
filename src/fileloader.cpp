@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,7 @@
 
 #include "otpch.h"
 
-#include <stack>
 #include "fileloader.h"
-
 
 namespace OTB {
 
@@ -42,12 +40,12 @@ Loader::Loader(const std::string& fileName, const Identifier& acceptedIdentifier
 	}
 }
 
-using NodeStack = std::stack<Node*, std::vector<Node*>>;
+using NodeStack = std::vector<Node*>;
 static Node& getCurrentNode(const NodeStack& nodeStack) {
 	if (nodeStack.empty()) {
 		throw InvalidOTBFormat{};
 	}
-	return *nodeStack.top();
+	return *nodeStack.back();
 }
 
 const Node& Loader::parseTree()
@@ -59,41 +57,32 @@ const Node& Loader::parseTree()
 	root.type = *(++it);
 	root.propsBegin = ++it;
 	NodeStack parseStack;
-	parseStack.push(&root);
+	parseStack.push_back(&root);
 
-	for (; it != fileContents.end(); ++it) {
-		switch(static_cast<uint8_t>(*it)) {
-			case Node::START: {
-				auto& currentNode = getCurrentNode(parseStack);
-				if (currentNode.children.empty()) {
-					currentNode.propsEnd = it;
-				}
-				currentNode.children.emplace_back();
-				auto& child = currentNode.children.back();
-				if (++it == fileContents.end()) {
-					throw InvalidOTBFormat{};
-				}
-				child.type = *it;
-				child.propsBegin = it + sizeof(Node::type);
-				parseStack.push(&child);
-				break;
+	for (auto end = fileContents.end(); it != end; ++it) {
+		uint8_t nodeType = static_cast<uint8_t>(*it);
+		if (nodeType == Node::START) {
+			auto& currentNode = getCurrentNode(parseStack);
+			if (currentNode.children.empty()) {
+				currentNode.propsEnd = it;
 			}
-			case Node::END: {
-				auto& currentNode = getCurrentNode(parseStack);
-				if (currentNode.children.empty()) {
-					currentNode.propsEnd = it;
-				}
-				parseStack.pop();
-				break;
+			currentNode.children.emplace_back();
+			auto& child = currentNode.children.back();
+			if (++it == fileContents.end()) {
+				throw InvalidOTBFormat{};
 			}
-			case Node::ESCAPE: {
-				if (++it == fileContents.end()) {
-					throw InvalidOTBFormat{};
-				}
-				break;
+			child.type = *it;
+			child.propsBegin = it + sizeof(Node::type);
+			parseStack.push_back(&child);
+		} else if (nodeType == Node::END) {
+			auto& currentNode = getCurrentNode(parseStack);
+			if (currentNode.children.empty()) {
+				currentNode.propsEnd = it;
 			}
-			default: {
-				break;
+			parseStack.pop_back();
+		} else if (nodeType == Node::ESCAPE) {
+			if (++it == fileContents.end()) {
+				throw InvalidOTBFormat{};
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -770,7 +770,9 @@ Position LuaScriptInterface::getPosition(lua_State* L, int32_t arg)
 Outfit_t LuaScriptInterface::getOutfit(lua_State* L, int32_t arg)
 {
 	Outfit_t outfit;
+	#if GAME_FEATURE_MOUNTS > 0
 	outfit.lookMount = getField<uint16_t>(L, arg, "lookMount");
+	#endif
 	outfit.lookAddons = getField<uint8_t>(L, arg, "lookAddons");
 
 	outfit.lookFeet = getField<uint8_t>(L, arg, "lookFeet");
@@ -779,9 +781,17 @@ Outfit_t LuaScriptInterface::getOutfit(lua_State* L, int32_t arg)
 	outfit.lookHead = getField<uint8_t>(L, arg, "lookHead");
 
 	outfit.lookTypeEx = getField<uint16_t>(L, arg, "lookTypeEx");
+	#if GAME_FEATURE_LOOKTYPE_U16 > 0
 	outfit.lookType = getField<uint16_t>(L, arg, "lookType");
-
+	#else
+	outfit.lookType = getField<uint8_t>(L, arg, "lookType");
+	#endif
+	
+	#if GAME_FEATURE_MOUNTS > 0
 	lua_pop(L, 8);
+	#else
+	lua_pop(L, 7);
+	#endif
 	return outfit;
 }
 
@@ -938,7 +948,11 @@ void LuaScriptInterface::pushPosition(lua_State* L, const Position& position, in
 
 void LuaScriptInterface::pushOutfit(lua_State* L, const Outfit_t& outfit)
 {
+	#if GAME_FEATURE_MOUNTS > 0
 	lua_createtable(L, 0, 8);
+	#else
+	lua_createtable(L, 0, 7);
+	#endif
 	setField(L, "lookType", outfit.lookType);
 	setField(L, "lookTypeEx", outfit.lookTypeEx);
 	setField(L, "lookHead", outfit.lookHead);
@@ -946,7 +960,9 @@ void LuaScriptInterface::pushOutfit(lua_State* L, const Outfit_t& outfit)
 	setField(L, "lookLegs", outfit.lookLegs);
 	setField(L, "lookFeet", outfit.lookFeet);
 	setField(L, "lookAddons", outfit.lookAddons);
+	#if GAME_FEATURE_MOUNTS > 0
 	setField(L, "lookMount", outfit.lookMount);
+	#endif
 }
 
 void LuaScriptInterface::pushLoot(lua_State* L, const std::vector<LootBlock>& lootList)
@@ -1092,6 +1108,8 @@ void LuaScriptInterface::registerFunctions()
 	//registerEnumIn(tableName, value)
 
 	// Enums
+	registerEnum(CLIENT_VERSION)
+
 	registerEnum(ACCOUNT_TYPE_NORMAL)
 	registerEnum(ACCOUNT_TYPE_TUTOR)
 	registerEnum(ACCOUNT_TYPE_SENIORTUTOR)
@@ -1426,7 +1444,8 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(GAME_STATE_SHUTDOWN)
 	registerEnum(GAME_STATE_CLOSING)
 	registerEnum(GAME_STATE_MAINTAIN)
-
+		
+	registerEnum(MESSAGE_NONE)
 	registerEnum(MESSAGE_STATUS_CONSOLE_BLUE)
 	registerEnum(MESSAGE_STATUS_CONSOLE_RED)
 	registerEnum(MESSAGE_STATUS_DEFAULT)
@@ -1434,20 +1453,34 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(MESSAGE_EVENT_ADVANCE)
 	registerEnum(MESSAGE_STATUS_SMALL)
 	registerEnum(MESSAGE_INFO_DESCR)
-	registerEnum(MESSAGE_DAMAGE_DEALT)
-	registerEnum(MESSAGE_DAMAGE_RECEIVED)
-	registerEnum(MESSAGE_HEALED)
-	registerEnum(MESSAGE_EXPERIENCE)
-	registerEnum(MESSAGE_DAMAGE_OTHERS)
-	registerEnum(MESSAGE_HEALED_OTHERS)
-	registerEnum(MESSAGE_EXPERIENCE_OTHERS)
 	registerEnum(MESSAGE_EVENT_DEFAULT)
 	registerEnum(MESSAGE_GUILD)
 	registerEnum(MESSAGE_PARTY_MANAGEMENT)
 	registerEnum(MESSAGE_PARTY)
 	registerEnum(MESSAGE_EVENT_ORANGE)
 	registerEnum(MESSAGE_STATUS_CONSOLE_ORANGE)
+	registerEnum(MESSAGE_DAMAGE_DEALT)
+	registerEnum(MESSAGE_DAMAGE_RECEIVED)
+	registerEnum(MESSAGE_MANA)
+	registerEnum(MESSAGE_HEALED)
+	registerEnum(MESSAGE_EXPERIENCE)
+	registerEnum(MESSAGE_DAMAGE_OTHERS)
+	registerEnum(MESSAGE_HEALED_OTHERS)
+	registerEnum(MESSAGE_EXPERIENCE_OTHERS)
 	registerEnum(MESSAGE_LOOT)
+	registerEnum(MESSAGE_LOGIN)
+	registerEnum(MESSAGE_WARNING)
+	registerEnum(MESSAGE_GAME)
+	registerEnum(MESSAGE_GAME_HIGHLIGHT)
+	registerEnum(MESSAGE_FAILURE)
+	registerEnum(MESSAGE_LOOK)
+	registerEnum(MESSAGE_STATUS)
+	registerEnum(MESSAGE_TRADENPC)
+	registerEnum(MESSAGE_REPORT)
+	registerEnum(MESSAGE_HOTKEY)
+	registerEnum(MESSAGE_TUTORIAL)
+	registerEnum(MESSAGE_THANKYOU)
+	registerEnum(MESSAGE_MARKET)
 
 	registerEnum(CREATURETYPE_PLAYER)
 	registerEnum(CREATURETYPE_MONSTER)
@@ -1458,9 +1491,25 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CLIENTOS_LINUX)
 	registerEnum(CLIENTOS_WINDOWS)
 	registerEnum(CLIENTOS_FLASH)
+	registerEnum(CLIENTOS_NEW_LINUX)
+	registerEnum(CLIENTOS_NEW_WINDOWS)
+	registerEnum(CLIENTOS_NEW_MACOS)
 	registerEnum(CLIENTOS_OTCLIENT_LINUX)
 	registerEnum(CLIENTOS_OTCLIENT_WINDOWS)
 	registerEnum(CLIENTOS_OTCLIENT_MAC)
+	registerEnum(CLIENTOS_TFC_ANDROID)
+	registerEnum(CLIENTOS_TFC_IPHONEOS)
+	registerEnum(CLIENTOS_TFC_MACOSX)
+	registerEnum(CLIENTOS_TFC_WIZ)
+	registerEnum(CLIENTOS_TFC_PANDORA)
+	registerEnum(CLIENTOS_TFC_PSP)
+	registerEnum(CLIENTOS_TFC_WINDOWS)
+	registerEnum(CLIENTOS_TFC_WINDOWSRT)
+	registerEnum(CLIENTOS_TFC_HAIKU)
+	registerEnum(CLIENTOS_TFC_NACL)
+	registerEnum(CLIENTOS_TFC_EMSCRIPTEN)
+	registerEnum(CLIENTOS_TFC_RASPBERRYPI)
+	registerEnum(CLIENTOS_TFC_UNIX)
 
 	registerEnum(FIGHTMODE_ATTACK)
 	registerEnum(FIGHTMODE_BALANCED)
@@ -1623,14 +1672,20 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(SKULL_RED)
 	registerEnum(SKULL_BLACK)
 	registerEnum(SKULL_ORANGE)
-
+		
+	registerEnum(TALKTYPE_NONE)
 	registerEnum(TALKTYPE_SAY)
 	registerEnum(TALKTYPE_WHISPER)
 	registerEnum(TALKTYPE_YELL)
 	registerEnum(TALKTYPE_PRIVATE_FROM)
 	registerEnum(TALKTYPE_PRIVATE_TO)
+	registerEnum(TALKTYPE_CHANNEL_M)
 	registerEnum(TALKTYPE_CHANNEL_Y)
 	registerEnum(TALKTYPE_CHANNEL_O)
+	registerEnum(TALKTYPE_RVR_CHANNEL)
+	registerEnum(TALKTYPE_RVR_ANSWER)
+	registerEnum(TALKTYPE_RVR_CONTINUE)
+	registerEnum(TALKTYPE_SPELL)
 	registerEnum(TALKTYPE_PRIVATE_NP)
 	registerEnum(TALKTYPE_PRIVATE_PN)
 	registerEnum(TALKTYPE_BROADCAST)
@@ -1640,6 +1695,7 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(TALKTYPE_MONSTER_SAY)
 	registerEnum(TALKTYPE_MONSTER_YELL)
 	registerEnum(TALKTYPE_CHANNEL_R2)
+	registerEnum(TALKTYPE_BOOSTED_CREATURE)
 
 	registerEnum(TEXTCOLOR_BLUE)
 	registerEnum(TEXTCOLOR_LIGHTGREEN)
@@ -1950,6 +2006,12 @@ void LuaScriptInterface::registerFunctions()
 	// os
 	registerMethod("os", "mtime", LuaScriptInterface::luaSystemTime);
 
+	// math
+	registerMethod("math", "random", LuaScriptInterface::luaMathUniformRandom); // overwrite standard random function to our uniform_random
+	registerMethod("math", "uniform_random", LuaScriptInterface::luaMathUniformRandom);
+	registerMethod("math", "normal_random", LuaScriptInterface::luaMathNormalRandom);
+	registerMethod("math", "boolean_random", LuaScriptInterface::luaMathBoolRandom);
+	
 	// table
 	registerMethod("table", "create", LuaScriptInterface::luaTableCreate);
 
@@ -2280,8 +2342,11 @@ void LuaScriptInterface::registerFunctions()
 
 	registerMethod("Player", "getFreeCapacity", LuaScriptInterface::luaPlayerGetFreeCapacity);
 
+	registerMethod("Player", "getDepotLocker", LuaScriptInterface::luaPlayerGetDepotLocker);
 	registerMethod("Player", "getDepotChest", LuaScriptInterface::luaPlayerGetDepotChest);
+	#if GAME_FEATURE_MARKET > 0
 	registerMethod("Player", "getInbox", LuaScriptInterface::luaPlayerGetInbox);
+	#endif
 
 	registerMethod("Player", "getSkullTime", LuaScriptInterface::luaPlayerGetSkullTime);
 	registerMethod("Player", "setSkullTime", LuaScriptInterface::luaPlayerSetSkullTime);
@@ -2385,9 +2450,11 @@ void LuaScriptInterface::registerFunctions()
 	registerMethod("Player", "hasOutfit", LuaScriptInterface::luaPlayerHasOutfit);
 	registerMethod("Player", "sendOutfitWindow", LuaScriptInterface::luaPlayerSendOutfitWindow);
 
+	#if GAME_FEATURE_MOUNTS > 0
 	registerMethod("Player", "addMount", LuaScriptInterface::luaPlayerAddMount);
 	registerMethod("Player", "removeMount", LuaScriptInterface::luaPlayerRemoveMount);
 	registerMethod("Player", "hasMount", LuaScriptInterface::luaPlayerHasMount);
+	#endif
 
 	registerMethod("Player", "getPremiumDays", LuaScriptInterface::luaPlayerGetPremiumDays);
 	registerMethod("Player", "addPremiumDays", LuaScriptInterface::luaPlayerAddPremiumDays);
@@ -2420,7 +2487,9 @@ void LuaScriptInterface::registerFunctions()
 
 	registerMethod("Player", "getContainerId", LuaScriptInterface::luaPlayerGetContainerId);
 	registerMethod("Player", "getContainerById", LuaScriptInterface::luaPlayerGetContainerById);
+	#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 	registerMethod("Player", "getContainerIndex", LuaScriptInterface::luaPlayerGetContainerIndex);
+	#endif
 
 	registerMethod("Player", "getInstantSpells", LuaScriptInterface::luaPlayerGetInstantSpells);
 	registerMethod("Player", "canCast", LuaScriptInterface::luaPlayerCanCast);
@@ -4196,6 +4265,49 @@ int LuaScriptInterface::luaSystemTime(lua_State* L)
 	return 1;
 }
 
+// math
+int LuaScriptInterface::luaMathUniformRandom(lua_State* L)
+{
+	// math.uniform_random([{minNumber/maxNumber}[, maxNumber]])
+	int parameters = lua_gettop(L);
+	if (parameters >= 2) {
+		int32_t minNumber = getNumber<int32_t>(L, 1);
+		int32_t maxNumber = getNumber<int32_t>(L, 2);
+		lua_pushnumber(L, uniform_random(minNumber, maxNumber));
+	} else if (parameters >= 1) {
+		int32_t maxNumber = getNumber<int32_t>(L, 1);
+		lua_pushnumber(L, uniform_random(1, maxNumber));
+	} else {
+		lua_pushnumber(L, uniform_random());
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaMathNormalRandom(lua_State* L)
+{
+	// math.normal_random([{minNumber/maxNumber}[, maxNumber]])
+	int parameters = lua_gettop(L);
+	if (parameters >= 2) {
+		int32_t minNumber = getNumber<int32_t>(L, 1);
+		int32_t maxNumber = getNumber<int32_t>(L, 2);
+		lua_pushnumber(L, normal_random(minNumber, maxNumber));
+	} else if (parameters >= 1) {
+		int32_t maxNumber = getNumber<int32_t>(L, 1);
+		lua_pushnumber(L, normal_random(1, maxNumber));
+	} else {
+		lua_pushnumber(L, 0);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaMathBoolRandom(lua_State* L)
+{
+	// math.boolean_random([probability = 0.5])
+	double probability = getNumber<double>(L, 1, 0.5);
+	pushBoolean(L, boolean_random(probability));
+	return 1;
+}
+
 // table
 int LuaScriptInterface::luaTableCreate(lua_State* L)
 {
@@ -4573,9 +4685,9 @@ int LuaScriptInterface::luaGameGetClientVersion(lua_State* L)
 {
 	// Game.getClientVersion()
 	lua_createtable(L, 0, 3);
-	setField(L, "min", CLIENT_VERSION_MIN);
-	setField(L, "max", CLIENT_VERSION_MAX);
-	setField(L, "string", CLIENT_VERSION_STR);
+	setField(L, "min", CLIENT_VERSION);
+	setField(L, "max", CLIENT_VERSION);
+	setField(L, "string", std::to_string(CLIENT_VERSION_UPPER) + "." + std::to_string(CLIENT_VERSION_LOWER));
 	return 1;
 }
 
@@ -7235,7 +7347,9 @@ int LuaScriptInterface::luaCreatureSetMaster(lua_State* L)
 	}
 
 	pushBoolean(L, creature->setMaster(getCreature(L, 2)));
+	#if CLIENT_VERSION >= 910
 	g_game.updateCreatureType(creature);
+	#endif
 	return 1;
 }
 
@@ -7483,8 +7597,15 @@ int LuaScriptInterface::luaCreatureSetHiddenHealth(lua_State* L)
 	// creature:setHiddenHealth(hide)
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (creature) {
+		bool oldHiddenHealth = creature->isHealthHidden();
 		creature->setHiddenHealth(getBoolean(L, 2));
-		g_game.addCreatureHealth(creature);
+		if (oldHiddenHealth != creature->isHealthHidden()) {
+			#if CLIENT_VERSION >= 1121
+			g_game.updateCreatureData(creature);
+			#else
+			g_game.addCreatureHealth(creature);
+			#endif
+		}
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -8035,6 +8156,27 @@ int LuaScriptInterface::luaPlayerGetFreeCapacity(lua_State* L)
 	return 1;
 }
 
+int LuaScriptInterface::luaPlayerGetDepotLocker(lua_State* L)
+{
+	// player:getDepotLocker(depotId)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint32_t depotId = getNumber<uint32_t>(L, 2);
+	DepotLocker* depotLocker = player->getDepotLocker(depotId);
+	if (depotLocker) {
+		player->setLastDepotId(depotId); // FIXME: workaround for #2251
+		pushUserdata<Item>(L, depotLocker);
+		setItemMetatable(L, -1, depotLocker);
+	} else {
+		pushBoolean(L, false);
+	}
+	return 1;
+}
+
 int LuaScriptInterface::luaPlayerGetDepotChest(lua_State* L)
 {
 	// player:getDepotChest(depotId[, autoCreate = false])
@@ -8057,6 +8199,7 @@ int LuaScriptInterface::luaPlayerGetDepotChest(lua_State* L)
 	return 1;
 }
 
+#if GAME_FEATURE_MARKET > 0
 int LuaScriptInterface::luaPlayerGetInbox(lua_State* L)
 {
 	// player:getInbox()
@@ -8075,6 +8218,7 @@ int LuaScriptInterface::luaPlayerGetInbox(lua_State* L)
 	}
 	return 1;
 }
+#endif
 
 int LuaScriptInterface::luaPlayerGetSkullTime(lua_State* L)
 {
@@ -9400,6 +9544,7 @@ int LuaScriptInterface::luaPlayerSendOutfitWindow(lua_State* L)
 	return 1;
 }
 
+#if GAME_FEATURE_MOUNTS > 0
 int LuaScriptInterface::luaPlayerAddMount(lua_State* L) {
 	// player:addMount(mountId or mountName)
 	Player* player = getUserdata<Player>(L, 1);
@@ -9468,6 +9613,7 @@ int LuaScriptInterface::luaPlayerHasMount(lua_State* L) {
 	}
 	return 1;
 }
+#endif
 
 int LuaScriptInterface::luaPlayerGetPremiumDays(lua_State* L)
 {
@@ -9889,6 +10035,7 @@ int LuaScriptInterface::luaPlayerGetContainerById(lua_State* L)
 	return 1;
 }
 
+#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 int LuaScriptInterface::luaPlayerGetContainerIndex(lua_State* L)
 {
 	// player:getContainerIndex(id)
@@ -9900,6 +10047,7 @@ int LuaScriptInterface::luaPlayerGetContainerIndex(lua_State* L)
 	}
 	return 1;
 }
+#endif
 
 int LuaScriptInterface::luaPlayerGetInstantSpells(lua_State* L)
 {
@@ -12244,13 +12392,19 @@ int LuaScriptInterface::luaConditionSetOutfit(lua_State* L)
 	if (isTable(L, 2)) {
 		outfit = getOutfit(L, 2);
 	} else {
+		#if GAME_FEATURE_MOUNTS > 0
 		outfit.lookMount = getNumber<uint16_t>(L, 9, outfit.lookMount);
+		#endif
 		outfit.lookAddons = getNumber<uint8_t>(L, 8, outfit.lookAddons);
 		outfit.lookFeet = getNumber<uint8_t>(L, 7);
 		outfit.lookLegs = getNumber<uint8_t>(L, 6);
 		outfit.lookBody = getNumber<uint8_t>(L, 5);
 		outfit.lookHead = getNumber<uint8_t>(L, 4);
+		#if GAME_FEATURE_LOOKTYPE_U16 > 0
 		outfit.lookType = getNumber<uint16_t>(L, 3);
+		#else
+		outfit.lookType = getNumber<uint8_t>(L, 3);
+		#endif
 		outfit.lookTypeEx = getNumber<uint16_t>(L, 2);
 	}
 
@@ -15566,7 +15720,7 @@ int LuaScriptInterface::luaWeaponOnUseWeapon(lua_State* L)
 
 int LuaScriptInterface::luaWeaponUnproperly(lua_State* L)
 {
-	// weapon:wieldedUnproperly(bool)
+	// weapon:wieldUnproperly(bool)
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
 		weapon->setWieldUnproperly(getBoolean(L, 2));

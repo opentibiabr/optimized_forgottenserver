@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,9 +55,11 @@ void PrivateChatChannel::invitePlayer(const Player& player, Player& invitePlayer
 	ss << invitePlayer.getName() << " has been invited.";
 	player.sendTextMessage(MESSAGE_INFO_DESCR, ss.str());
 
+	#if GAME_FEATURE_CHAT_PLAYERLIST > 0
 	for (const auto& it : users) {
 		it.second->sendChannelEvent(id, invitePlayer.getName(), CHANNELEVENT_INVITE);
 	}
+	#endif
 }
 
 void PrivateChatChannel::excludePlayer(const Player& player, Player& excludePlayer)
@@ -74,9 +76,11 @@ void PrivateChatChannel::excludePlayer(const Player& player, Player& excludePlay
 
 	excludePlayer.sendClosePrivate(id);
 
+	#if GAME_FEATURE_CHAT_PLAYERLIST > 0
 	for (const auto& it : users) {
 		it.second->sendChannelEvent(id, excludePlayer.getName(), CHANNELEVENT_EXCLUDE);
 	}
+	#endif
 }
 
 void PrivateChatChannel::closeChannel() const
@@ -104,11 +108,13 @@ bool ChatChannel::addUser(Player& player)
 		}
 	}
 
+	#if GAME_FEATURE_CHAT_PLAYERLIST > 0
 	if (!publicChannel) {
 		for (const auto& it : users) {
 			it.second->sendChannelEvent(id, player.getName(), CHANNELEVENT_JOIN);
 		}
 	}
+	#endif
 
 	users[player.getID()] = &player;
 	return true;
@@ -123,11 +129,13 @@ bool ChatChannel::removeUser(const Player& player)
 
 	users.erase(iter);
 
+	#if GAME_FEATURE_CHAT_PLAYERLIST > 0
 	if (!publicChannel) {
 		for (const auto& it : users) {
 			it.second->sendChannelEvent(id, player.getName(), CHANNELEVENT_LEAVE);
 		}
 	}
+	#endif
 
 	executeOnLeaveEvent(player);
 	return true;
@@ -513,6 +521,29 @@ bool Chat::talkToChannel(const Player& player, SpeakClasses type, const std::str
 	}
 
 	return channel->talk(player, type, text);
+}
+
+void Chat::openChannelsByServer(Player* player)
+{
+	const ChannelList& list = getChannelList(*player);
+	for (ChatChannel* channel : list) {
+		if (channel->hasUser(*player)) {
+			PrivateChatChannel* privateChannel = dynamic_cast<PrivateChatChannel*>(channel);
+			if (privateChannel && privateChannel->getOwner() == player->getGUID()) {
+				player->sendCreatePrivateChannel(channel->getId(), channel->getName());
+			} else {
+				const InvitedMap* invitedUsers = channel->getInvitedUsers();
+				const UsersMap* users;
+				if (!channel->isPublicChannel()) {
+					users = &channel->getUsers();
+				} else {
+					users = nullptr;
+				}
+
+				player->sendChannel(channel->getId(), channel->getName(), users, invitedUsers);
+			}
+		}
+	}
 }
 
 ChannelList Chat::getChannelList(const Player& player)

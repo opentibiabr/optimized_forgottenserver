@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,7 +120,9 @@ void Game::setGameState(GameState_t newState)
 			raids.startup();
 
 			quests.loadFromXml();
+			#if GAME_FEATURE_MOUNTS > 0
 			mounts.loadFromXml();
+			#endif
 
 			loadMotdNum();
 			loadPlayersRecord();
@@ -142,8 +144,7 @@ void Game::setGameState(GameState_t newState)
 			saveMotdNum();
 			saveGameState();
 
-			g_dispatcher.addTask(
-				createTask(std::bind(&Game::shutdown, this)));
+			g_dispatcher.addTask(createTask(std::bind(&Game::shutdown, this)));
 
 			g_scheduler.stop();
 			g_databaseTasks.stop();
@@ -296,6 +297,7 @@ Thing* Game::internalGetThing(Player* player, const Position& pos, int32_t index
 			return nullptr;
 		}
 
+		#if GAME_FEATURE_BROWSEFIELD > 0
 		if (parentContainer->getID() == ITEM_BROWSEFIELD) {
 			Tile* tile = parentContainer->getTile();
 			if (tile && tile->hasFlag(TILESTATE_SUPPORTS_HANGABLE)) {
@@ -310,9 +312,14 @@ Thing* Game::internalGetThing(Player* player, const Position& pos, int32_t index
 				}
 			}
 		}
+		#endif
 
 		uint8_t slot = pos.z;
+		#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 		return parentContainer->getItemByIndex(player->getContainerIndex(fromCid) + slot);
+		#else
+		return parentContainer->getItemByIndex(slot);
+		#endif
 	} else if (pos.y == 0 && pos.z == 0) {
 		const ItemType& it = Item::items.getItemIdByClientId(spriteId);
 		if (it.id == 0) {
@@ -1043,6 +1050,7 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index,
                                    Item* item, uint32_t count, Item** _moveItem, uint32_t flags /*= 0*/, Creature* actor/* = nullptr*/, Item* tradeItem/* = nullptr*/)
 {
+	#if GAME_FEATURE_BROWSEFIELD > 0
 	Tile* fromTile = fromCylinder->getTile();
 	if (fromTile) {
 		auto it = browseFields.find(fromTile);
@@ -1050,6 +1058,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 			fromCylinder = fromTile;
 		}
 	}
+	#endif
 
 	Item* toItem = nullptr;
 
@@ -1306,6 +1315,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
+	#if GAME_FEATURE_BROWSEFIELD > 0
 	Tile* fromTile = cylinder->getTile();
 	if (fromTile) {
 		auto it = browseFields.find(fromTile);
@@ -1313,6 +1323,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 			cylinder = fromTile;
 		}
 	}
+	#endif
 
 	if (count == -1) {
 		count = item->getItemCount();
@@ -1545,6 +1556,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 		return nullptr;
 	}
 
+	#if GAME_FEATURE_BROWSEFIELD > 0
 	Tile* fromTile = cylinder->getTile();
 	if (fromTile) {
 		auto it = browseFields.find(fromTile);
@@ -1552,6 +1564,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 			cylinder = fromTile;
 		}
 	}
+	#endif
 
 	int32_t itemIndex = cylinder->getThingIndex(item);
 	if (itemIndex == -1) {
@@ -1764,6 +1777,21 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t spriteId)
 		internalMoveItem(equipItem->getParent(), player, slot, equipItem, equipItem->getItemCount(), nullptr);
 	}
 }
+
+#if CLIENT_VERSION >= 1150
+void Game::playerTeleport(uint32_t playerId, const Position& position)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player || !player->isAccessPlayer()) {
+		return;
+	}
+
+	ReturnValue ret = g_game.internalTeleport(player, position, false, FLAG_NOLIMIT);
+	if (ret != RETURNVALUE_NOERROR) {
+		player->sendCancelMessage(ret);
+	}
+}
+#endif
 
 void Game::playerMove(uint32_t playerId, Direction direction)
 {
@@ -2241,6 +2269,7 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid)
 
 	Container* parentContainer = dynamic_cast<Container*>(container->getRealParent());
 	if (!parentContainer) {
+		#if GAME_FEATURE_BROWSEFIELD > 0
 		Tile* tile = container->getTile();
 		if (!tile) {
 			return;
@@ -2255,10 +2284,17 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid)
 		} else {
 			parentContainer = it->second;
 		}
+		#else
+		return;
+		#endif
 	}
 
 	player->addContainer(cid, parentContainer);
+	#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 	player->sendContainer(cid, parentContainer, parentContainer->hasParent(), player->getContainerIndex(cid));
+	#else
+	player->sendContainer(cid, parentContainer, parentContainer->hasParent());
+	#endif
 }
 
 void Game::playerUpdateContainer(uint32_t playerId, uint8_t cid)
@@ -2273,7 +2309,11 @@ void Game::playerUpdateContainer(uint32_t playerId, uint8_t cid)
 		return;
 	}
 
+	#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 	player->sendContainer(cid, container, container->hasParent(), player->getContainerIndex(cid));
+	#else
+	player->sendContainer(cid, container, container->hasParent());
+	#endif
 }
 
 void Game::playerRotateItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId)
@@ -2315,6 +2355,7 @@ void Game::playerRotateItem(uint32_t playerId, const Position& pos, uint8_t stac
 	}
 }
 
+#if CLIENT_VERSION >= 1092
 void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId)
 {
 	Player* player = getPlayerByID(playerId);
@@ -2400,6 +2441,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		}
 	}
 }
+#endif
 
 void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::string& text)
 {
@@ -2461,6 +2503,7 @@ void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::
 	player->setWriteItem(nullptr);
 }
 
+#if GAME_FEATURE_BROWSEFIELD > 0
 void Game::playerBrowseField(uint32_t playerId, const Position& pos)
 {
 	Player* player = getPlayerByID(playerId);
@@ -2520,7 +2563,9 @@ void Game::playerBrowseField(uint32_t playerId, const Position& pos)
 		player->sendContainer(dummyContainerId, container, false, 0);
 	}
 }
+#endif
 
+#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index)
 {
 	Player* player = getPlayerByID(playerId);
@@ -2540,6 +2585,7 @@ void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_
 	player->setContainerIndex(containerId, index);
 	player->sendContainer(containerId, container, container->hasParent(), index);
 }
+#endif
 
 void Game::playerUpdateHouseWindow(uint32_t playerId, uint8_t listId, uint32_t windowTextId, const std::string& text)
 {
@@ -3282,6 +3328,7 @@ void Game::playerRequestOutfit(uint32_t playerId)
 	player->sendOutfitWindow();
 }
 
+#if GAME_FEATURE_MOUNTS > 0
 void Game::playerToggleMount(uint32_t playerId, bool mount)
 {
 	Player* player = getPlayerByID(playerId);
@@ -3291,6 +3338,7 @@ void Game::playerToggleMount(uint32_t playerId, bool mount)
 
 	player->toggleMount(mount);
 }
+#endif
 
 void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
 {
@@ -3302,7 +3350,8 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
 	if (!player) {
 		return;
 	}
-
+	
+	#if GAME_FEATURE_MOUNTS > 0
 	const Outfit* playerOutfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
 	if (!playerOutfit) {
 		outfit.lookMount = 0;
@@ -3332,6 +3381,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
 	} else if (player->isMounted()) {
 		player->dismount();
 	}
+	#endif
 
 	if (player->canWear(outfit.lookType, outfit.lookAddons)) {
 		player->defaultOutfit = outfit;
@@ -3451,7 +3501,7 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string& 
 	result = g_spells->playerSaySpell(player, words, lowerWords);
 	if (result == TALKACTION_BREAK) {
 		if (!g_config.getBoolean(ConfigManager::EMOTE_SPELLS)) {
-			return internalCreatureSay(player, TALKTYPE_SAY, words, false);
+			return internalCreatureSay(player, TALKTYPE_SPELL, words, false);
 		} else {
 			return internalCreatureSay(player, TALKTYPE_MONSTER_SAY, words, false);
 		}
@@ -4259,6 +4309,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					return false;
 				}
 			}
+
+			//Dispatch creature death event to the first safe cpu cycle
+			g_dispatcher.addTask(createTask(std::bind(&Game::checkCreatureDeath, this, target->getID())), true);
 		}
 
 		target->drainHealth(attacker, realDamage);
@@ -4477,6 +4530,15 @@ void Game::addDistanceEffect(const SpectatorVector& spectators, const Position& 
 	}
 }
 
+#if CLIENT_VERSION >= 1121
+void Game::updateCreatureData(const Creature* creature)
+{
+	for (const auto& it : players) {
+		it.second->updateCreatureData(creature);
+	}
+}
+#endif
+
 void Game::startDecay(Item* item)
 {
 	if (!item || !item->canDecay()) {
@@ -4610,13 +4672,18 @@ void Game::checkLight()
 
 		for (const auto& it : players) {
 			it.second->sendWorldLight(lightInfo);
+			#if CLIENT_VERSION >= 1121
 			it.second->sendTibiaTime(lightHour);
+			#endif
 		}
-	} else {
+	}
+	#if CLIENT_VERSION >= 1121
+	else {
 		for (const auto& it : players) {
 			it.second->sendTibiaTime(lightHour);
 		}
 	}
+	#endif
 }
 
 LightInfo Game::getWorldLightInfo() const
@@ -4687,6 +4754,7 @@ void Game::broadcastMessage(const std::string& text, MessageClasses type) const
 	}
 }
 
+#if CLIENT_VERSION >= 854
 void Game::updateCreatureWalkthrough(const Creature* creature)
 {
 	//send to clients
@@ -4697,6 +4765,7 @@ void Game::updateCreatureWalkthrough(const Creature* creature)
 		tmpPlayer->sendCreatureWalkthrough(creature, tmpPlayer->canWalkthroughEx(creature));
 	}
 }
+#endif
 
 void Game::updateCreatureSkull(const Creature* creature)
 {
@@ -4720,6 +4789,7 @@ void Game::updatePlayerShield(Player* player)
 	}
 }
 
+#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 void Game::updatePlayerHelpers(const Player& player)
 {
 	uint32_t creatureId = player.getID();
@@ -4731,7 +4801,9 @@ void Game::updatePlayerHelpers(const Player& player)
 		spectator->getPlayer()->sendCreatureHelpers(creatureId, helpers);
 	}
 }
+#endif
 
+#if CLIENT_VERSION >= 910
 void Game::updateCreatureType(Creature* creature)
 {
 	const Player* masterPlayer = nullptr;
@@ -4766,6 +4838,7 @@ void Game::updateCreatureType(Creature* creature)
 		}
 	}
 }
+#endif
 
 void Game::updatePremium(Account& account)
 {
@@ -5177,6 +5250,7 @@ void Game::playerDebugAssert(uint32_t playerId, const std::string& assertLine, c
 	}
 }
 
+#if GAME_FEATURE_MARKET > 0
 void Game::playerLeaveMarket(uint32_t playerId)
 {
 	Player* player = getPlayerByID(playerId);
@@ -5320,7 +5394,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 				uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
 				tmpAmount -= removeCount;
 				internalRemoveItem(item, removeCount);
-
 				if (tmpAmount == 0) {
 					break;
 				}
@@ -5481,7 +5554,6 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		player->bankBalance += totalPrice;
-
 		if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -5523,7 +5595,6 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		player->bankBalance -= totalPrice;
-
 		if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -5570,7 +5641,6 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	IOMarket::appendHistory(offer.playerId, offer.type, offer.itemId, amount, offer.price, offer.timestamp + marketOfferDuration, OFFERSTATE_ACCEPTED);
 
 	offer.amount -= amount;
-
 	if (offer.amount == 0) {
 		IOMarket::deleteOffer(offer.id);
 	} else {
@@ -5582,24 +5652,12 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	player->sendMarketAcceptOffer(offer);
 }
 
-void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer)
-{
-	Player* player = getPlayerByID(playerId);
-	if (!player) {
-		return;
-	}
-
-	for (CreatureEvent* creatureEvent : player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE)) {
-		creatureEvent->executeExtendedOpcode(player, opcode, buffer);
-	}
-}
-
 std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotChest* depotChest, Inbox* inbox)
 {
 	std::forward_list<Item*> itemList;
 	uint16_t count = 0;
 
-	std::list<Container*> containers { depotChest, inbox };
+	std::list<Container*> containers{ depotChest, inbox };
 	do {
 		Container* container = containers.front();
 		containers.pop_front();
@@ -5633,6 +5691,19 @@ std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t suffi
 		}
 	} while (!containers.empty());
 	return std::forward_list<Item*>();
+}
+#endif
+
+void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	for (CreatureEvent* creatureEvent : player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE)) {
+		creatureEvent->executeExtendedOpcode(player, opcode, buffer);
+	}
 }
 
 void Game::forceAddCondition(uint32_t creatureId, Condition* condition)
@@ -5702,6 +5773,18 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 	}
 }
 
+void Game::checkCreatureDeath(uint32_t creatureId)
+{
+	Creature* creature = getCreatureByID(creatureId);
+	if (!creature) {
+		return;
+	}
+
+	if (creature->getHealth() <= 0) {
+		creature->onDeath();
+	}
+}
+
 void Game::addPlayer(Player* player)
 {
 	const std::string& lowercase_name = asLowerCaseString(player->getName());
@@ -5757,6 +5840,7 @@ void Game::removeGuild(uint32_t guildId)
 	guilds.erase(guildId);
 }
 
+#if GAME_FEATURE_BROWSEFIELD > 0
 void Game::decreaseBrowseFieldRef(const Position& pos)
 {
 	Tile* tile = map.getTile(pos.x, pos.y, pos.z);
@@ -5769,6 +5853,7 @@ void Game::decreaseBrowseFieldRef(const Position& pos)
 		it->second->decrementReferenceCounter();
 	}
 }
+#endif
 
 void Game::internalRemoveItems(std::vector<Item*> itemList, uint32_t amount, bool stackable)
 {
@@ -5848,7 +5933,12 @@ bool Game::reload(ReloadTypes_t reloadType)
 		case RELOAD_TYPE_GLOBALEVENTS: return g_globalEvents->reload();
 		case RELOAD_TYPE_ITEMS: return Item::items.reload();
 		case RELOAD_TYPE_MONSTERS: return g_monsters.reload();
-		case RELOAD_TYPE_MOUNTS: return mounts.reload();
+		case RELOAD_TYPE_MOUNTS:
+		#if GAME_FEATURE_MOUNTS > 0
+			return mounts.reload();
+		#else
+			return false;
+		#endif
 		case RELOAD_TYPE_MOVEMENTS: return g_moveEvents->reload();
 		case RELOAD_TYPE_NPCS: {
 			Npcs::reload();
@@ -5923,7 +6013,9 @@ bool Game::reload(ReloadTypes_t reloadType)
 			g_weapons->clear(true);
 			g_weapons->loadDefaults();
 			quests.reload();
+			#if GAME_FEATURE_MOUNTS > 0
 			mounts.reload();
+			#endif
 			g_globalEvents->reload();
 			g_events->load();
 			g_chat->load();

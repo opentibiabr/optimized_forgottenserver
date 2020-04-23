@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,11 @@ class IOLoginData
 		static bool saveAccount(const Account& acc);
 
 		static bool loginserverAuthentication(const std::string& name, const std::string& password, Account& account);
+		#if GAME_FEATURE_SESSIONKEY > 0
 		static uint32_t gameworldAuthentication(const std::string& accountName, const std::string& password, std::string& characterName, std::string& token, uint32_t tokenTime);
+		#else
+		static uint32_t gameworldAuthentication(const std::string& accountName, const std::string& password, std::string& characterName);
+		#endif
 
 		static AccountType_t getAccountType(uint32_t accountId);
 		static void setAccountType(uint32_t accountId, AccountType_t accountType);
@@ -51,7 +55,6 @@ class IOLoginData
 		static void increaseBankBalance(uint32_t guid, uint64_t bankBalance);
 		static bool hasBiddedOnHouse(uint32_t guid);
 
-		static std::forward_list<VIPEntry> getVIPEntries(uint32_t accountId);
 		static void addVIPEntry(uint32_t accountId, uint32_t guid, const std::string& description, uint32_t icon, bool notify);
 		static void editVIPEntry(uint32_t accountId, uint32_t guid, const std::string& description, uint32_t icon, bool notify);
 		static void removeVIPEntry(uint32_t accountId, uint32_t guid);

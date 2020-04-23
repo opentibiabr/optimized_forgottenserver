@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1641,12 +1641,16 @@ void ConditionSpellCooldown::addCondition(Creature* creature, const Condition* c
 	if (updateCondition(condition)) {
 		setTicks(condition->getTicks());
 
+		#if CLIENT_VERSION >= 870
 		if (subId != 0 && ticks > 0) {
 			Player* player = creature->getPlayer();
 			if (player) {
 				player->sendSpellCooldown(subId, ticks);
 			}
 		}
+		#else
+		(void)creature;
+		#endif
 	}
 }
 
@@ -1656,12 +1660,16 @@ bool ConditionSpellCooldown::startCondition(Creature* creature)
 		return false;
 	}
 
+	#if CLIENT_VERSION >= 870
 	if (subId != 0 && ticks > 0) {
 		Player* player = creature->getPlayer();
 		if (player) {
 			player->sendSpellCooldown(subId, ticks);
 		}
 	}
+	#else
+	(void)creature;
+	#endif
 	return true;
 }
 
@@ -1670,12 +1678,16 @@ void ConditionSpellGroupCooldown::addCondition(Creature* creature, const Conditi
 	if (updateCondition(condition)) {
 		setTicks(condition->getTicks());
 
+		#if CLIENT_VERSION >= 870
 		if (subId != 0 && ticks > 0) {
 			Player* player = creature->getPlayer();
 			if (player) {
 				player->sendSpellGroupCooldown(static_cast<SpellGroup_t>(subId), ticks);
 			}
 		}
+		#else
+		(void)creature;
+		#endif
 	}
 }
 
@@ -1685,11 +1697,15 @@ bool ConditionSpellGroupCooldown::startCondition(Creature* creature)
 		return false;
 	}
 
+	#if CLIENT_VERSION >= 870
 	if (subId != 0 && ticks > 0) {
 		Player* player = creature->getPlayer();
 		if (player) {
 			player->sendSpellGroupCooldown(static_cast<SpellGroup_t>(subId), ticks);
 		}
 	}
+	#else
+	(void)creature;
+	#endif
 	return true;
 }

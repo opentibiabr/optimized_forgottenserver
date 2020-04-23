@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,11 @@ class ProtocolOld final : public Protocol
 		// static protocol information
 		enum {server_sends_first = false};
 		enum {protocol_identifier = 0x01};
+		#if GAME_FEATURE_ADLER32_CHECKSUM > 0
 		enum {use_checksum = false};
+		#else
+		enum {use_checksum = true};
+		#endif
 		static const char* protocol_name() {
 			return "old login protocol";
 		}
@@ -40,7 +44,7 @@ class ProtocolOld final : public Protocol
 		void onRecvFirstMessage(NetworkMessage& msg) override;
 
 	private:
-		void disconnectClient(const std::string& message);
+		void disconnectClient(const std::string& message, uint16_t version);
 };
 
 #endif

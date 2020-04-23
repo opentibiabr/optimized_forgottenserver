@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2018  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,7 +102,8 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 
 		const ConnectionWeak_ptr connection;
 		uint32_t key[4] = {};
-		uint32_t sequenceNumber = 0;
+		uint32_t serverSequenceNumber = 0;
+		uint32_t clientSequenceNumber = 0;
 		bool encryptionEnabled = false;
 		std::underlying_type<ChecksumMethods_t>::type checksumMethod = CHECKSUM_METHOD_NONE;
 		bool rawMessages = false;

@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -206,7 +206,9 @@ bool Npc::loadFromXml()
 		} else if ((attr = lookNode.attribute("typeex"))) {
 			defaultOutfit.lookTypeEx = pugi::cast<uint16_t>(attr.value());
 		}
+		#if GAME_FEATURE_MOUNTS > 0
 		defaultOutfit.lookMount = pugi::cast<uint16_t>(lookNode.attribute("mount").value());
+		#endif
 
 		currentOutfit = defaultOutfit;
 	}

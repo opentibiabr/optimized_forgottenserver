@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,6 +131,7 @@ enum CreatureType_t : uint8_t {
 	CREATURETYPE_NPC = 2,
 	CREATURETYPE_SUMMON_OWN = 3,
 	CREATURETYPE_SUMMON_OTHERS = 4,
+	CREATURETYPE_HIDDEN = 5,
 };
 
 enum OperatingSystem_t : uint8_t {
@@ -140,9 +141,27 @@ enum OperatingSystem_t : uint8_t {
 	CLIENTOS_WINDOWS = 2,
 	CLIENTOS_FLASH = 3,
 
+	CLIENTOS_NEW_LINUX = 4,
+	CLIENTOS_NEW_WINDOWS = 5,
+	CLIENTOS_NEW_MACOS = 6,
+
 	CLIENTOS_OTCLIENT_LINUX = 10,
 	CLIENTOS_OTCLIENT_WINDOWS = 11,
 	CLIENTOS_OTCLIENT_MAC = 12,
+
+	CLIENTOS_TFC_ANDROID = 100,
+	CLIENTOS_TFC_IPHONEOS = 101,
+	CLIENTOS_TFC_MACOSX = 102,
+	CLIENTOS_TFC_WIZ = 103,
+	CLIENTOS_TFC_PANDORA = 104,
+	CLIENTOS_TFC_PSP = 105,
+	CLIENTOS_TFC_WINDOWS = 106,
+	CLIENTOS_TFC_WINDOWSRT = 107,
+	CLIENTOS_TFC_HAIKU = 108,
+	CLIENTOS_TFC_NACL = 109,
+	CLIENTOS_TFC_EMSCRIPTEN = 110,
+	CLIENTOS_TFC_RASPBERRYPI = 111,
+	CLIENTOS_TFC_UNIX = 112,
 };
 
 enum SpellGroup_t : uint8_t {
@@ -593,9 +612,15 @@ enum Cipbia_Elementals_t : uint8_t {
 };
 
 struct Outfit_t {
-	uint16_t lookType = 0;
 	uint16_t lookTypeEx = 0;
+	#if GAME_FEATURE_MOUNTS > 0
 	uint16_t lookMount = 0;
+	#endif
+	#if GAME_FEATURE_LOOKTYPE_U16 > 0
+	uint16_t lookType = 0;
+	#else
+	uint8_t lookType = 0;
+	#endif
 	uint8_t lookHead = 0;
 	uint8_t lookBody = 0;
 	uint8_t lookLegs = 0;

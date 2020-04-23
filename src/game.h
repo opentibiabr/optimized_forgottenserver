@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -318,6 +318,7 @@ class Game
 		void playerDebugAssert(uint32_t playerId, const std::string& assertLine, const std::string& date, const std::string& description, const std::string& comment);
 		void playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, uint8_t button, uint8_t choice);
 		void playerReportRuleViolation(uint32_t playerId, const std::string& targetName, uint8_t reportType, uint8_t reportReason, const std::string& comment, const std::string& translation);
+		void checkCreatureDeath(uint32_t creatureId);
 
 		void playerMonsterCyclopedia(uint32_t playerId);
 		void playerCyclopediaMonsters(uint32_t playerId, const std::string& race);
@@ -340,6 +341,9 @@ class Game
 		void playerMoveItem(Player* player, const Position& fromPos,
 		                    uint16_t spriteId, uint8_t fromStackPos, const Position& toPos, uint8_t count, Item* item, Cylinder* toCylinder);
 		void playerEquipItem(uint32_t playerId, uint16_t spriteId);
+		#if CLIENT_VERSION >= 1150
+		void playerTeleport(uint32_t playerId, const Position& position);
+		#endif
 		void playerMove(uint32_t playerId, Direction direction);
 		void playerCreatePrivateChannel(uint32_t playerId);
 		void playerChannelInvite(uint32_t playerId, const std::string& name);
@@ -361,10 +365,16 @@ class Game
 		void playerMoveUpContainer(uint32_t playerId, uint8_t cid);
 		void playerUpdateContainer(uint32_t playerId, uint8_t cid);
 		void playerRotateItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId);
+		#if CLIENT_VERSION >= 1092
 		void playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId);
+		#endif
 		void playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::string& text);
+		#if GAME_FEATURE_BROWSEFIELD > 0
 		void playerBrowseField(uint32_t playerId, const Position& pos);
+		#endif
+		#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 		void playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index);
+		#endif
 		void playerUpdateHouseWindow(uint32_t playerId, uint8_t listId, uint32_t windowTextId, const std::string& text);
 		void playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t stackPos,
 		                        uint32_t tradePlayerId, uint16_t spriteId);
@@ -399,7 +409,10 @@ class Game
 		void playerPassPartyLeadership(uint32_t playerId, uint32_t newLeaderId);
 		void playerLeaveParty(uint32_t playerId);
 		void playerEnableSharedPartyExperience(uint32_t playerId, bool sharedExpActive);
+		#if GAME_FEATURE_MOUNTS > 0
 		void playerToggleMount(uint32_t playerId, bool mount);
+		#endif
+		#if GAME_FEATURE_MARKET > 0
 		void playerLeaveMarket(uint32_t playerId);
 		void playerBrowseMarket(uint32_t playerId, uint16_t spriteId);
 		void playerBrowseMarketOwnOffers(uint32_t playerId);
@@ -407,10 +420,10 @@ class Game
 		void playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spriteId, uint16_t amount, uint32_t price, bool anonymous);
 		void playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter);
 		void playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount);
+		std::forward_list<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotChest* depotChest, Inbox* inbox);
+		#endif
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
-
-		std::forward_list<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotChest* depotChest, Inbox* inbox);
 
 		static void updatePremium(Account& account);
 
@@ -429,9 +442,15 @@ class Game
 		void changeLight(const Creature* creature);
 		void updateCreatureSkull(const Creature* creature);
 		void updatePlayerShield(Player* player);
+		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 		void updatePlayerHelpers(const Player& player);
+		#endif
+		#if CLIENT_VERSION >= 910
 		void updateCreatureType(Creature* creature);
+		#endif
+		#if CLIENT_VERSION >= 854
 		void updateCreatureWalkthrough(const Creature* creature);
+		#endif
 
 		GameState_t getGameState() const;
 		void setGameState(GameState_t newState);
@@ -458,6 +477,10 @@ class Game
 		static void addMagicEffect(const SpectatorVector& spectators, const Position& pos, uint8_t effect);
 		void addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect);
 		static void addDistanceEffect(const SpectatorVector& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
+
+		#if CLIENT_VERSION >= 1121
+		void updateCreatureData(const Creature* creature);
+		#endif
 
 		void startDecay(Item* item);
 		int32_t getLightHour() const {
@@ -490,9 +513,11 @@ class Game
 		Guild* getGuild(uint32_t id) const;
 		void addGuild(Guild* guild);
 		void removeGuild(uint32_t guildId);
-		void decreaseBrowseFieldRef(const Position& pos);
 
+		#if GAME_FEATURE_BROWSEFIELD > 0
+		void decreaseBrowseFieldRef(const Position& pos);
 		std::unordered_map<Tile*, Container*> browseFields;
+		#endif
 
 		void internalRemoveItems(std::vector<Item*> itemList, uint32_t amount, bool stackable);
 

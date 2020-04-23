@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,39 +109,45 @@ Item* Item::CreateItem(PropStream& propStream)
 	}
 
 	switch (id) {
-		case ITEM_FIREFIELD_PVP_FULL:
-			id = ITEM_FIREFIELD_PERSISTENT_FULL;
-			break;
-
-		case ITEM_FIREFIELD_PVP_MEDIUM:
-			id = ITEM_FIREFIELD_PERSISTENT_MEDIUM;
-			break;
-
-		case ITEM_FIREFIELD_PVP_SMALL:
-			id = ITEM_FIREFIELD_PERSISTENT_SMALL;
-			break;
-
-		case ITEM_ENERGYFIELD_PVP:
-			id = ITEM_ENERGYFIELD_PERSISTENT;
-			break;
-
-		case ITEM_POISONFIELD_PVP:
-			id = ITEM_POISONFIELD_PERSISTENT;
-			break;
-
-		case ITEM_MAGICWALL:
-			id = ITEM_MAGICWALL_PERSISTENT;
-			break;
-
-		case ITEM_WILDGROWTH:
-			id = ITEM_WILDGROWTH_PERSISTENT;
-			break;
-
-		default:
-			break;
+		case ITEM_FIREFIELD_PVP_FULL: id = ITEM_FIREFIELD_PERSISTENT_FULL; break;
+		case ITEM_FIREFIELD_PVP_MEDIUM: id = ITEM_FIREFIELD_PERSISTENT_MEDIUM; break;
+		case ITEM_FIREFIELD_PVP_SMALL: id = ITEM_FIREFIELD_PERSISTENT_SMALL; break;
+		case ITEM_ENERGYFIELD_PVP: id = ITEM_ENERGYFIELD_PERSISTENT; break;
+		case ITEM_POISONFIELD_PVP: id = ITEM_POISONFIELD_PERSISTENT; break;
+		case ITEM_MAGICWALL: id = ITEM_MAGICWALL_PERSISTENT; break;
+		case ITEM_WILDGROWTH: id = ITEM_WILDGROWTH_PERSISTENT; break;
+		default: break;
 	}
 
 	return Item::CreateItem(id, 0);
+}
+
+Item* Item::CreateItem_legacy(PropStream& propStream)
+{
+	uint16_t id;
+	if (!propStream.read<uint16_t>(id)) {
+		return nullptr;
+	}
+
+	switch (id) {
+		case ITEM_FIREFIELD_PVP_FULL: id = ITEM_FIREFIELD_PERSISTENT_FULL; break;
+		case ITEM_FIREFIELD_PVP_MEDIUM: id = ITEM_FIREFIELD_PERSISTENT_MEDIUM; break;
+		case ITEM_FIREFIELD_PVP_SMALL: id = ITEM_FIREFIELD_PERSISTENT_SMALL; break;
+		case ITEM_ENERGYFIELD_PVP: id = ITEM_ENERGYFIELD_PERSISTENT; break;
+		case ITEM_POISONFIELD_PVP: id = ITEM_POISONFIELD_PERSISTENT; break;
+		case ITEM_MAGICWALL: id = ITEM_MAGICWALL_PERSISTENT; break;
+		case ITEM_WILDGROWTH: id = ITEM_WILDGROWTH_PERSISTENT; break;
+		default: break;
+	}
+
+	const ItemType& iType = Item::items[id];
+	uint8_t count = 0;
+	if (iType.stackable || iType.isSplash() || iType.isFluidContainer()) {
+		if (!propStream.read<uint8_t>(count)) {
+			return nullptr;
+		}
+	}
+	return Item::CreateItem(id, count);
 }
 
 Item::Item(const uint16_t type, uint16_t count /*= 0*/) :
@@ -191,8 +197,8 @@ bool Item::equals(const Item* otherItem) const
 		return false;
 	}
 
-	if (!attributes) {
-		return !otherItem->attributes;
+	if (!attributes || attributes->attributeBits == 0) {
+		return (!otherItem->attributes || otherItem->attributes->attributeBits == 0);
 	}
 
 	const auto& otherAttributes = otherItem->attributes;
@@ -662,7 +668,7 @@ bool Item::unserializeAttr(PropStream& propStream)
 	return true;
 }
 
-bool Item::unserializeItemNode(OTB::Loader&, const OTB::Node&, PropStream& propStream)
+bool Item::unserializeItemNode(OTB::Loader&, const OTB::Node&, PropStream& propStream, bool)
 {
 	return unserializeAttr(propStream);
 }
@@ -2154,7 +2160,7 @@ void Item::startDecaying()
 
 bool Item::hasMarketAttributes() const
 {
-	if (!attributes) {
+	if (!attributes || attributes->attributeBits == 0) {
 		return true;
 	}
 
@@ -2174,40 +2180,4 @@ bool Item::hasMarketAttributes() const
 		}
 	}
 	return true;
-}
-
-template<>
-const std::string& ItemAttributes::CustomAttribute::get<std::string>() {
-	if (value.type() == typeid(std::string)) {
-		return boost::get<std::string>(value);
-	}
-
-	return emptyString;
-}
-
-template<>
-const int64_t& ItemAttributes::CustomAttribute::get<int64_t>() {
-	if (value.type() == typeid(int64_t)) {
-		return boost::get<int64_t>(value);
-	}
-
-	return emptyInt;
-}
-
-template<>
-const double& ItemAttributes::CustomAttribute::get<double>() {
-	if (value.type() == typeid(double)) {
-		return boost::get<double>(value);
-	}
-
-	return emptyDouble;
-}
-
-template<>
-const bool& ItemAttributes::CustomAttribute::get<bool>() {
-	if (value.type() == typeid(bool)) {
-		return boost::get<bool>(value);
-	}
-
-	return emptyBool;
 }

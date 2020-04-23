@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<charms>
+	<charm id="1" requiredPoints="500" name="Adrenaline Burst" description="Bursts of adrenaline enhance your reflexes with a certain chance after you get hit and let you move faster for 10 seconds." />
+	<charm id="1" requiredPoints="500" name="Cripple" description="Cripples the creature with a certain chance and paralyses it for 10 seconds." />
+	<charm id="1" requiredPoints="500" name="Numb" description="Numbs the creature with a certain chance after its attack and paralyses the creature for 10 seconds." />
+	<charm id="1" requiredPoints="600" name="Dodge" description="Dodges and ttack with a certain chance without taking any damage at all." />
+	<charm id="1" requiredPoints="600" name="Poison" description="Triggers on a creature with a certain chance and deals 5% of its initial hit points as earth damage once." />
+	<charm id="1" requiredPoints="600" name="Wound" description="Triggers on a creature with a certain chance and deals 5% of its initial hit points as physical damage once." />
+	<charm id="1" requiredPoints="700" name="Cleanse" description="Cleanses you from within with a certain chance after you get hit and removes one random active negative status effect and temporarily makes you immune against it." />
+	<charm id="1" requiredPoints="800" name="Freeze" description="Triggers on a creature with a certain chance and deals 5% of its initial hit points as ice damage once." />
+	<charm id="1" requiredPoints="800" name="Zap" description="Triggers on a creature with a certain chance and deals 5% of its initial hit points as energy damage once." />
+	<charm id="1" requiredPoints="900" name="Curse" description="Triggers on a creature with a certain chance and deals 5% of its initial hit points as death damage once." />
+	<charm id="1" requiredPoints="1000" name="Enflame" description="Triggers on a creature with a certain chance and deals 5% of its initial hit points as fire damage once." />
+	<charm id="1" requiredPoints="1000" name="Parry" description="Any damage taken is reflected to the aggressor with a certain chance." />
+	<charm id="1" requiredPoints="1500" name="Scavenge" description="Enhances your chances to successfully skin/dust a skinnable/dustable creature." />
+	<charm id="1" requiredPoints="2000" name="Bless" description="Blesses you and reduces skill and experience loss by 3% when killed by the chosen creature." />
+	<charm id="1" requiredPoints="2000" name="Gut" description="Gutting the creature yields 10% more creature products." />
+	<charm id="1" requiredPoints="2000" name="Low Blow" description="Adds 3% critical hit chance to attacks with critical hit weapons." />
+</charms>

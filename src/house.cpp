@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -255,8 +255,44 @@ bool House::transferToDepot(Player* player) const
 		}
 	}
 
-	for (Item* item : moveItemList) {
-		g_game.internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT);
+	if (!moveItemList.empty()) {
+		Item* newItem = Item::CreateItem(ITEM_PARCEL_STAMPED);
+		if (newItem) {
+			Container* parcel = newItem->getContainer();
+			if (parcel) {
+				for (Item* item : moveItemList) {
+					g_game.internalMoveItem(item->getParent(), parcel, INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT);
+				}
+
+				Item* label = Item::CreateItem(ITEM_LABEL);
+				if (label) {
+					label->setText("You have forgot your items.");
+					if (g_game.internalAddItem(parcel, label, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
+						delete label;
+					}
+				}
+
+				#if GAME_FEATURE_MARKET > 0
+				g_game.internalAddItem(player->getInbox(), parcel, INDEX_WHEREEVER, FLAG_NOLIMIT);
+				#else
+				g_game.internalAddItem(player->getDepotLocker(townId), parcel, INDEX_WHEREEVER, FLAG_NOLIMIT);
+				#endif
+				return true;
+			} else {
+				delete newItem;
+			}
+		}
+
+		#if GAME_FEATURE_MARKET > 0
+		for (Item* item : moveItemList) {
+			g_game.internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT);
+		}
+		#else
+		DepotLocker* depot = player->getDepotLocker(townId);
+		for (Item* item : moveItemList) {
+			g_game.internalMoveItem(item->getParent(), depot, INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT);
+		}
+		#endif
 	}
 	return true;
 }
@@ -739,9 +775,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const
 			if (house->getPayRentWarnings() < 7) {
 				int32_t daysLeft = 7 - house->getPayRentWarnings();
 
-				Item* letter = Item::CreateItem(ITEM_LETTER_STAMPED);
 				std::string period;
-
 				switch (rentPeriod) {
 					case RENTPERIOD_DAILY:
 						period = "daily";
@@ -763,10 +797,24 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const
 						break;
 				}
 
-				std::ostringstream ss;
-				ss << "Warning! \nThe " << period << " rent of " << house->getRent() << " gold for your house \"" << house->getName() << "\" is payable. Have it within " << daysLeft << " days or you will lose this house.";
-				letter->setText(ss.str());
-				g_game.internalAddItem(player.getInbox(), letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
+				Item* letter = Item::CreateItem(ITEM_LETTER_STAMPED);
+				if (letter) {
+					std::ostringstream ss;
+					ss << "Warning! \nThe " << period << " rent of " << house->getRent() << " gold for your house \"" << house->getName() << "\" is payable. Have it within " << daysLeft << " days or you will lose this house.";
+					letter->setText(ss.str());
+					#if GAME_FEATURE_MARKET > 0
+					if (g_game.internalAddItem(player.getInbox(), letter, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
+						delete letter;
+					}
+					#else
+					DepotLocker* depot = player.getDepotLocker(town->getID());
+					if (depot) {
+						if (g_game.internalAddItem(depot, letter, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
+							delete letter;
+						}
+					}
+					#endif
+				}
 				house->setPayRentWarnings(house->getPayRentWarnings() + 1);
 			} else {
 				house->setOwner(0, true, &player);

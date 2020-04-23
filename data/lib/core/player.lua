@@ -66,6 +66,10 @@ function Player.sendCancelMessage(self, message)
 	return self:sendTextMessage(MESSAGE_STATUS_SMALL, message)
 end
 
+function Player.isUsingTFC(self)
+	return self:getClient().os >= CLIENTOS_TFC_ANDROID
+end
+
 function Player.isUsingOtClient(self)
 	return self:getClient().os >= CLIENTOS_OTCLIENT_LINUX
 end

@@ -1,6 +1,6 @@
 /**
  * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Copyright (C) 2020  Mark Samman <mark.samman@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ class NetworkMessage
 		enum { CHECKSUM_LENGTH = 4 };
 		enum { XTEA_MULTIPLE = 8 };
 		enum { MAX_BODY_LENGTH = NETWORKMESSAGE_MAXSIZE - HEADER_LENGTH - CHECKSUM_LENGTH - XTEA_MULTIPLE };
-		enum { MAX_PROTOCOL_BODY_LENGTH = MAX_BODY_LENGTH - 10 };
+		enum { MAX_PROTOCOL_BODY_LENGTH = MAX_BODY_LENGTH - XTEA_MULTIPLE };
 
 		NetworkMessage() = default;
 
