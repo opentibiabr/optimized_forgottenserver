@@ -61,6 +61,7 @@ void Protocol::onRecvMessage(NetworkMessage& msg)
 			if (clientSequenceNumber >= 0x7FFFFFFF) {
 				clientSequenceNumber = 0;
 			}
+
 			if (recvChecksum != checksum) {
 				// incorrect packet - skip it
 				return;

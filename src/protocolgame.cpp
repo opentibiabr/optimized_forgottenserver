@@ -3593,6 +3593,7 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 
 	#if GAME_FEATURE_LOGIN_PENDING > 0
 	playermsg.addByte(0x0A); // sendPendingStateEntered
+	playermsg.addByte(0x0F); // sendWorldEnter
 	#endif
 
 	//gameworld settings
