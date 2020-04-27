@@ -259,6 +259,9 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 
 	#if GAME_FEATURE_CLIENT_VERSION > 0
 	uint32_t clientVersion = msg.get<uint32_t>();
+	if (clientVersion == 1120 && operatingSystem >= CLIENTOS_NEW_LINUX && operatingSystem < CLIENTOS_OTCLIENT_LINUX) {
+		clientVersion = 1121;
+	}
 	#endif
 	#if GAME_FEATURE_CONTENT_REVISION > 0
 	msg.skipBytes(2);

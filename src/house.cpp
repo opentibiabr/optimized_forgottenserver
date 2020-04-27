@@ -443,17 +443,13 @@ void AccessList::parseList(const std::string& list)
 {
 	playerList.clear();
 	guildRankList.clear();
-	expressionList.clear();
-	regExList.clear();
 	this->list = list;
 	if (list.empty()) {
 		return;
 	}
 
-	std::istringstream listStream(list);
-	std::string line;
-
-	while (getline(listStream, line)) {
+	auto lines = explodeString(list, "\n", 100);
+	for (auto& line : lines) {
 		trimString(line);
 		trim_left(line, '\t');
 		trim_right(line, '\t');
@@ -472,9 +468,10 @@ void AccessList::parseList(const std::string& list)
 			} else {
 				addGuildRank(line.substr(0, at_pos - 1), line.substr(at_pos + 1));
 			}
-		} else if (line.find("!") != std::string::npos || line.find("*") != std::string::npos || line.find("?") != std::string::npos) {
-			addExpression(line);
-		} else {
+		} else if (line.find_first_of("!*?") != std::string::npos) {
+			// Remove regular expressions since they don't make much sense in houses
+			continue;
+		} else if (line.length() <= NETWORKMESSAGE_PLAYERNAME_MAXLENGTH) {
 			addPlayer(line);
 		}
 	}
@@ -533,52 +530,8 @@ void AccessList::addGuildRank(const std::string& name, const std::string& rankNa
 	}
 }
 
-void AccessList::addExpression(const std::string& expression)
-{
-	if (std::find(expressionList.begin(), expressionList.end(), expression) != expressionList.end()) {
-		return;
-	}
-
-	std::string outExp;
-	outExp.reserve(expression.length());
-
-	std::string metachars = ".[{}()\\+|^$";
-	for (const char c : expression) {
-		if (metachars.find(c) != std::string::npos) {
-			outExp.push_back('\\');
-		}
-		outExp.push_back(c);
-	}
-
-	replaceString(outExp, "*", ".*");
-	replaceString(outExp, "?", ".?");
-
-	try {
-		if (!outExp.empty()) {
-			expressionList.push_back(outExp);
-
-			if (outExp.front() == '!') {
-				if (outExp.length() > 1) {
-					regExList.emplace_front(std::regex(outExp.substr(1)), false);
-				}
-			} else {
-				regExList.emplace_back(std::regex(outExp), true);
-			}
-		}
-	} catch (...) {}
-}
-
 bool AccessList::isInList(const Player* player)
 {
-	std::string name = asLowerCaseString(player->getName());
-	std::cmatch what;
-
-	for (const auto& it : regExList) {
-		if (std::regex_match(name.c_str(), what, it.first)) {
-			return it.second;
-		}
-	}
-
 	auto playerIt = playerList.find(player->getGUID());
 	if (playerIt != playerList.end()) {
 		return true;

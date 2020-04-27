@@ -73,8 +73,7 @@ void Connection::close(bool force)
 	connectionState = CONNECTION_STATE_CLOSED;
 
 	if (protocol) {
-		g_dispatcher.addTask(
-			createTask(std::bind(&Protocol::release, protocol)));
+		g_dispatcher.addTask(createTask(std::bind(&Protocol::release, protocol)));
 	}
 
 	if (messageQueue.empty() || force) {
