@@ -44,6 +44,20 @@ bool Modules::load()
 
 	std::map<std::string, int32_t> scripts;
 	for (auto eventNode : doc.child("modules").children()) {
+		pugi::xml_attribute attr;
+		if ((attr = eventNode.attribute("versionmin"))) {
+			uint32_t versionMin = pugi::cast<uint32_t>(attr.value());
+			uint32_t versionMax = pugi::cast<uint32_t>(eventNode.attribute("versionmax").value());
+			if (CLIENT_VERSION < versionMin || CLIENT_VERSION > versionMax) {
+				continue;
+			}
+		} else if ((attr = eventNode.attribute("version"))) {
+			uint32_t version = pugi::cast<uint32_t>(attr.value());
+			if (CLIENT_VERSION < version) {
+				continue;
+			}
+		}
+
 		const std::string& scriptName = eventNode.attribute("script").as_string();
 		const std::string& lowercase = asLowerCaseString(scriptName);
 
