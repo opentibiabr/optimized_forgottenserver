@@ -242,10 +242,11 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
 		Guild* guild = g_game.getGuild(guildId);
 		if (!guild) {
 			guild = IOGuild::loadGuild(guildId);
-			g_game.addGuild(guild);
 		}
 
 		if (guild) {
+			g_game.addGuild(guild);
+
 			player->guild = guild;
 			const GuildRank* rank = guild->getRankById(playerRankId);
 			if (!rank) {

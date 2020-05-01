@@ -392,22 +392,11 @@ class ProtocolGame final : public Protocol
 		void parseExtendedOpcode(NetworkMessage& msg);
 
 		//translations
-		SpeakClasses ProtocolGame::translateSpeakClassFromClient(uint8_t talkType);
-		uint8_t ProtocolGame::translateSpeakClassToClient(SpeakClasses talkType);
-		uint8_t ProtocolGame::translateMessageClassToClient(MessageClasses messageType);
+		SpeakClasses translateSpeakClassFromClient(uint8_t talkType);
+		uint8_t translateSpeakClassToClient(SpeakClasses talkType);
+		uint8_t translateMessageClassToClient(MessageClasses messageType);
 
 		friend class Player;
-
-		// Helpers so we don't need to bind every time
-		template <typename Callable, typename... Args>
-		void addGameTask(Callable function, Args&&... args) {
-			g_dispatcher.addTask(createTask(std::bind(function, &g_game, std::forward<Args>(args)...)));
-		}
-
-		template <typename Callable, typename... Args>
-		void addGameTaskTimed(uint32_t delay, Callable function, Args&&... args) {
-			g_dispatcher.addTask(createTask(delay, std::bind(function, &g_game, std::forward<Args>(args)...)));
-		}
 
 		std::unordered_set<uint32_t> knownCreatureSet;
 		Player* player = nullptr;

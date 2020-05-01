@@ -18,6 +18,7 @@
  */
 
 #include "otpch.h"
+#include "tasks.h"
 
 #include "protocol.h"
 #include "outputmessage.h"
@@ -54,6 +55,7 @@ void Protocol::onRecvMessage(NetworkMessage& msg)
 			if (recvChecksum == 0) {
 				// checksum 0 indicate that the packet should be connection ping - 0x1C packet header
 				// since we don't need that packet skip it
+				getConnection()->resumeWork();
 				return;
 			}
 
@@ -64,6 +66,7 @@ void Protocol::onRecvMessage(NetworkMessage& msg)
 
 			if (recvChecksum != checksum) {
 				// incorrect packet - skip it
+				getConnection()->resumeWork();
 				return;
 			}
 		} else {
@@ -77,15 +80,28 @@ void Protocol::onRecvMessage(NetworkMessage& msg)
 
 			if (recvChecksum != checksum) {
 				// incorrect packet - skip it
+				getConnection()->resumeWork();
 				return;
 			}
 		}
 	}
 	if (encryptionEnabled && !XTEA_decrypt(msg)) {
+		getConnection()->resumeWork();
 		return;
 	}
 
-	parsePacket(msg);
+	using ProtocolWeak_ptr = std::weak_ptr<Protocol>;
+	ProtocolWeak_ptr protocolWeak = std::weak_ptr<Protocol>(shared_from_this());
+
+	std::function<void (void)> callback = [protocolWeak, &msg]() {
+		if (auto protocol = protocolWeak.lock()) {
+			if (auto connection = protocol->getConnection()) {
+				protocol->parsePacket(msg);
+				connection->resumeWork();
+			}
+		}
+	};
+	g_dispatcher.addTask(createTask(callback));
 }
 
 OutputMessage_ptr Protocol::getOutputBuffer(int32_t size)

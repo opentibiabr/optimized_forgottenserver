@@ -85,7 +85,7 @@ class TalkActions final : public BaseEvents
 		Event_ptr getEvent(const std::string& nodeName) override;
 		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
 
-		std::unordered_map<std::string, TalkAction> talkActions;
+		std::unordered_map<std::string, TalkAction_ptr> talkActions;
 
 		LuaScriptInterface scriptInterface;
 };

@@ -8,6 +8,5 @@ function onSay(player, words, param)
 	end
 
 	player:setHiddenHealth(not player:isHealthHidden())
-	player:sendTextMessage(MESSAGE_STATUS_SMALL, "/hide")
 	return false
 end

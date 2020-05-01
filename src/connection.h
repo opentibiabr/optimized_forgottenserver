@@ -91,6 +91,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 		void accept(Protocol_ptr protocol);
 		void accept();
 
+		void resumeWork();
 		void send(const OutputMessage_ptr& msg);
 
 		uint32_t getIP();
@@ -105,6 +106,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 		static void handleTimeout(ConnectionWeak_ptr connectionWeak, const boost::system::error_code& error);
 
 		void closeSocket();
+		void internalWorker();
 		void internalSend(const OutputMessage_ptr& msg);
 
 		boost::asio::ip::tcp::socket& getSocket() {

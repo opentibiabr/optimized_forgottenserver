@@ -1902,6 +1902,7 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(RELOAD_TYPE_GLOBALEVENTS)
 	registerEnum(RELOAD_TYPE_ITEMS)
 	registerEnum(RELOAD_TYPE_MONSTERS)
+	registerEnum(RELOAD_TYPE_MODULES)
 	registerEnum(RELOAD_TYPE_MOUNTS)
 	registerEnum(RELOAD_TYPE_MOVEMENTS)
 	registerEnum(RELOAD_TYPE_NPCS)
@@ -9506,7 +9507,7 @@ int LuaScriptInterface::luaPlayerOpenChannel(lua_State* L)
 	uint16_t channelId = getNumber<uint16_t>(L, 2);
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		g_game.playerOpenChannel(player->getID(), channelId);
+		g_game.playerOpenChannel(player, channelId);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -10157,8 +10158,8 @@ int LuaScriptInterface::luaPlayerGetInstantSpells(lua_State* L)
 
 	std::vector<const InstantSpell*> spells;
 	for (auto& spell : g_spells->getInstantSpells()) {
-		if (spell.second.canCast(player)) {
-			spells.push_back(&spell.second);
+		if (spell.second->canCast(player)) {
+			spells.push_back(spell.second.get());
 		}
 	}
 
