@@ -601,7 +601,11 @@ function doPlayerPopupFYI(cid, message) local p = Player(cid) return p and p:pop
 function doSendTutorial(cid, tutorialId) local p = Player(cid) return p and p:sendTutorial(tutorialId) or false end
 function doAddMapMark(cid, pos, type, description) local p = Player(cid) return p and p:addMapMark(pos, type, description or "") or false end
 function doPlayerSendTextMessage(cid, type, text, ...) local p = Player(cid) return p and p:sendTextMessage(type, text, ...) or false end
+if(CLIENT_VERSION < 900) then
+function doSendAnimatedText(pos, text, color, player) Game.sendAnimatedText(text, pos, color, player) return true end
+else
 function doSendAnimatedText() debugPrint("Deprecated function.") return true end
+end
 function doPlayerAddExp(cid, exp, useMult, ...)
 	local player = Player(cid)
 	if player == nil then
@@ -1279,19 +1283,27 @@ function createFunctions(class)
 	local exclude = {[2] = {"is"}, [3] = {"get", "set", "add", "can"}, [4] = {"need"}}
 	local temp = {}
 	for name, func in pairs(class) do
+		local add = true
 		for strLen, strTable in pairs(exclude) do
-			if not table.contains(strTable, name:sub(1,strLen)) then
-				local str = name:sub(1,1):upper()..name:sub(2)
-				local getFunc = function(self) return func(self) end
-				local setFunc = function(self, ...) return func(self, ...) end
-				local get = "get".. str
-				local set = "set".. str
+			if table.contains(strTable, name:sub(1, strLen)) then
+				add = false
+			end
+		end
+		if add then
+			local str = name:sub(1, 1):upper() .. name:sub(2)
+			local getFunc = function(self) return func(self) end
+			local setFunc = function(self, ...) return func(self, ...) end
+			local get = "get" .. str
+			local set = "set" .. str
+			if not (rawget(class, get) and rawget(class, set)) then
 				table.insert(temp, {set, setFunc, get, getFunc})
 			end
 		end
 	end
-	for _,func in ipairs(temp) do
+	for _, func in ipairs(temp) do
 		rawset(class, func[1], func[2])
 		rawset(class, func[3], func[4])
 	end
 end
+
+function doPlayerTakeItem(cid, itemid, count) local p = Player(cid) return p and p:removeItem(itemid, count) end
