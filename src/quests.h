@@ -65,6 +65,7 @@ class Mission
 			return endValue;
 		}
 
+		std::vector<std::pair<int32_t, uint32_t>> states;
 		std::map<int32_t, std::string> descriptions;
 		std::string mainDescription;
 

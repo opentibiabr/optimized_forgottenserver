@@ -127,6 +127,7 @@ void mainLoader(int, char*[], ServiceManager* services)
 
 	std::cout << "A server developed by " << STATUS_SERVER_DEVELOPERS << std::endl;
 	std::cout << "Visit our forum for updates, support, and resources: http://otland.net/." << std::endl;
+	std::cout << "Server protocol: " << CLIENT_VERSION_UPPER << "." << CLIENT_VERSION_LOWER << std::endl;
 	std::cout << std::endl;
 
 	// check if config.lua or config.lua.dist exist

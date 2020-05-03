@@ -680,10 +680,12 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 				sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your questlog has been updated.");
 			}
 			#if GAME_FEATURE_QUEST_TRACKER > 0
-			auto missions = g_game.quests.getMissions(key);
-			for (auto mission : missions) {
-				if (hasTrackingQuest(mission->getMissionId())) {
-					sendUpdateTrackedQuest(mission);
+			if (!trackedQuests.empty()) {
+				auto missions = g_game.quests.getMissions(key);
+				for (auto mission : missions) {
+					if (hasTrackingQuest(mission->getMissionId())) {
+						sendUpdateTrackedQuest(mission);
+					}
 				}
 			}
 			#endif
