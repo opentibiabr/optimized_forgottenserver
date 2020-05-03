@@ -53,6 +53,10 @@ struct TextMessage
 	TextMessage(MessageClasses type, std::string text) : type(type), text(std::move(text)) {}
 };
 
+#if GAME_FEATURE_QUEST_TRACKER > 0
+class Mission;
+#endif
+
 class ProtocolGame final : public Protocol
 {
 	public:
@@ -105,6 +109,9 @@ class ProtocolGame final : public Protocol
 		void onConnect() override;
 
 		//Parse methods
+		#if GAME_FEATURE_QUEST_TRACKER > 0
+		void parseTrackedQuestFlags(NetworkMessage& msg);
+		#endif
 		void parseAutoWalk(NetworkMessage& msg);
 		void parseSetOutfit(NetworkMessage& msg);
 		void parseSay(NetworkMessage& msg);
@@ -221,6 +228,10 @@ class ProtocolGame final : public Protocol
 
 		void sendQuestLog();
 		void sendQuestLine(const Quest* quest);
+		#if GAME_FEATURE_QUEST_TRACKER > 0
+		void sendTrackedQuests(uint8_t remainingQuests, std::vector<const Mission*>& quests);
+		void sendUpdateTrackedQuest(const Mission* mission);
+		#endif
 
 		void sendCancelWalk();
 		void sendChangeSpeed(const Creature* creature, uint32_t speed);

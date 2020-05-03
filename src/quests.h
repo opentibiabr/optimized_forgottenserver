@@ -26,8 +26,8 @@
 class Mission;
 class Quest;
 
-using MissionsList = std::list<Mission>;
-using QuestsList = std::list<Quest>;
+using MissionsList = std::vector<Mission>;
+using QuestsList = std::vector<Quest>;
 
 class Mission
 {
@@ -39,6 +39,21 @@ class Mission
 		bool isStarted(Player* player) const;
 		std::string getName(Player* player) const;
 		std::string getDescription(Player* player) const;
+
+		#if GAME_FEATURE_QUEST_TRACKER > 0
+		void setQuestId(uint16_t id) {
+			questId = id;
+		}
+		uint16_t getQuestId() const {
+			return questId;
+		}
+		void setMissionId(uint16_t id) {
+			missionId = id;
+		}
+		uint16_t getMissionId() const {
+			return missionId;
+		}
+		#endif
 
 		uint32_t getStorageId() const {
 			return storageID;
@@ -57,6 +72,10 @@ class Mission
 		std::string name;
 		uint32_t storageID;
 		int32_t startValue, endValue;
+		#if GAME_FEATURE_QUEST_TRACKER > 0
+		uint16_t questId;
+		uint16_t missionId;
+		#endif
 		bool ignoreEndValue;
 };
 
@@ -107,6 +126,12 @@ class Quests
 		}
 
 		bool loadFromXml();
+		void makeCache();
+
+		#if GAME_FEATURE_QUEST_TRACKER > 0
+		std::vector<const Mission*>& getMissions(uint32_t key);
+		const Mission* getMissionByID(uint16_t id);
+		#endif
 		Quest* getQuestByID(uint16_t id);
 		bool isQuestStorage(const uint32_t key, const int32_t value, const int32_t oldValue) const;
 		uint16_t getQuestsCount(Player* player) const;
@@ -114,6 +139,11 @@ class Quests
 
 	private:
 		QuestsList quests;
+		std::map<uint32_t, std::vector<const Quest*>> cachedLogQuests;
+		std::map<uint32_t, std::vector<const Mission*>> cachedLogMissions;
+		#if GAME_FEATURE_QUEST_TRACKER > 0
+		std::map<uint16_t, const Mission*> cachedMissions;
+		#endif
 };
 
 #endif

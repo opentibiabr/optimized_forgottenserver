@@ -679,6 +679,14 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 				lastQuestlogUpdate = currentFrameTime;
 				sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your questlog has been updated.");
 			}
+			#if GAME_FEATURE_QUEST_TRACKER > 0
+			auto missions = g_game.quests.getMissions(key);
+			for (auto mission : missions) {
+				if (hasTrackingQuest(mission->getMissionId())) {
+					sendUpdateTrackedQuest(mission);
+				}
+			}
+			#endif
 		}
 	} else {
 		storageMap.erase(key);
@@ -696,6 +704,42 @@ bool Player::getStorageValue(const uint32_t key, int32_t& value) const
 	value = it->second;
 	return true;
 }
+
+#if GAME_FEATURE_QUEST_TRACKER > 0
+size_t Player::getAllowedTrackedQuestCount() const
+{
+	if(isPremium())
+		return g_config.getNumber(ConfigManager::MAX_TRACKED_QUESTS_PREMIUM);
+
+	return g_config.getNumber(ConfigManager::MAX_TRACKED_QUESTS);
+}
+
+bool Player::hasTrackingQuest(uint16_t missionId) const
+{
+	for (const Mission* mission : trackedQuests) {
+		if (mission->getMissionId() == missionId) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Player::resetTrackedQuests(std::vector<uint16_t>& quests)
+{
+	size_t maxAllowed = getAllowedTrackedQuestCount();
+	trackedQuests.clear();
+	for (size_t i = 0, end = quests.size(); i < end; ++i) {
+		const Mission* mission = g_game.quests.getMissionByID(quests[i]);
+		if (mission && mission->isStarted(this)) {
+			trackedQuests.emplace_back(mission);
+			if (trackedQuests.size() >= maxAllowed) {
+				break;
+			}
+		}
+	}
+	sendTrackedQuests(static_cast<uint8_t>(maxAllowed - trackedQuests.size()), trackedQuests);
+}
+#endif
 
 bool Player::canSee(const Position& pos) const
 {

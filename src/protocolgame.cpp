@@ -565,6 +565,9 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 		case 0xCC: parseSeekInContainer(msg); break;
 		#endif
+		#if GAME_FEATURE_QUEST_TRACKER > 0
+		case 0xD0: parseTrackedQuestFlags(msg); break;
+		#endif
 		case 0xD2: g_game.playerRequestOutfit(player); break;
 		case 0xD3: parseSetOutfit(msg); break;
 		#if GAME_FEATURE_MOUNTS > 0
@@ -843,6 +846,18 @@ void ProtocolGame::parseOpenPrivateChannel(NetworkMessage& msg)
 		g_game.playerOpenPrivateChannel(player, receiver);
 	}
 }
+
+#if GAME_FEATURE_QUEST_TRACKER > 0
+void ProtocolGame::parseTrackedQuestFlags(NetworkMessage& msg)
+{
+	std::vector<uint16_t> quests;
+	uint8_t missions = msg.getByte();
+	for (uint8_t i = 0; i < missions; ++i) {
+		quests.emplace_back(msg.get<uint16_t>());
+	}
+	g_game.playerResetTrackedQuests(player, quests);
+}
+#endif
 
 void ProtocolGame::parseAutoWalk(NetworkMessage& msg)
 {
@@ -3117,7 +3132,6 @@ void ProtocolGame::sendQuestLog()
 			playermsg.addByte(quest.isCompleted(player));
 		}
 	}
-
 	writeToOutputBuffer(playermsg);
 }
 
@@ -3129,16 +3143,45 @@ void ProtocolGame::sendQuestLine(const Quest* quest)
 	playermsg.addByte(quest->getMissionsCount(player));
 	for (const Mission& mission : quest->getMissions()) {
 		if (mission.isStarted(player)) {
-			#if CLIENT_VERSION >= 1121
-			playermsg.add<uint16_t>(0);
+			#if GAME_FEATURE_QUEST_TRACKER > 0
+			playermsg.add<uint16_t>(mission.getMissionId());
 			#endif
 			playermsg.addString(mission.getName(player));
 			playermsg.addString(mission.getDescription(player));
 		}
 	}
-
 	writeToOutputBuffer(playermsg);
 }
+
+#if GAME_FEATURE_QUEST_TRACKER > 0
+void ProtocolGame::sendTrackedQuests(uint8_t remainingQuests, std::vector<const Mission*>& quests)
+{
+	playermsg.reset();
+	playermsg.addByte(0xD0);
+	playermsg.addByte(0x01);
+	playermsg.addByte(remainingQuests);
+	playermsg.addByte(static_cast<uint8_t>(quests.size()));
+	for (const Mission* mission : quests) {
+		Quest* quest = g_game.quests.getQuestByID(mission->getQuestId());
+		playermsg.add<uint16_t>(mission->getMissionId());
+		playermsg.addString((quest ? quest->getName() : std::string()));
+		playermsg.addString(mission->getName(player));
+		playermsg.addString(mission->getDescription(player));
+	}
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendUpdateTrackedQuest(const Mission* mission)
+{
+	playermsg.reset();
+	playermsg.addByte(0xD0);
+	playermsg.addByte(0x00);
+	playermsg.add<uint16_t>(mission->getMissionId());
+	playermsg.addString(mission->getName(player));
+	playermsg.addString(mission->getDescription(player));
+	writeToOutputBuffer(playermsg);
+}
+#endif
 
 void ProtocolGame::sendTradeItemRequest(const std::string& traderName, const Item* item, bool ack)
 {

@@ -352,6 +352,9 @@ class Game
 		void playerOpenChannel(Player* player, uint16_t channelId);
 		void playerCloseChannel(Player* player, uint16_t channelId);
 		void playerOpenPrivateChannel(Player* player, std::string& receiver);
+		#if GAME_FEATURE_QUEST_TRACKER > 0
+		void playerResetTrackedQuests(Player* player, std::vector<uint16_t>& quests);
+		#endif
 		void playerCloseNpcChannel(Player* player);
 		void playerReceivePing(Player* player);
 		void playerReceivePingBack(Player* player);

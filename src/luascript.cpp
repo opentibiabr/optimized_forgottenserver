@@ -2007,6 +2007,10 @@ void LuaScriptInterface::registerFunctions()
 	registerEnumIn("configKeys", ConfigManager::MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER)
 	registerEnumIn("configKeys", ConfigManager::EXP_FROM_PLAYERS_LEVEL_RANGE)
 	registerEnumIn("configKeys", ConfigManager::MAX_PACKETS_PER_SECOND)
+	#if GAME_FEATURE_QUEST_TRACKER > 0
+	registerEnumIn("configKeys", ConfigManager::MAX_TRACKED_QUESTS)
+	registerEnumIn("configKeys", ConfigManager::MAX_TRACKED_QUESTS_PREMIUM)
+	#endif
 
 	// os
 	registerMethod("os", "mtime", LuaScriptInterface::luaSystemTime);

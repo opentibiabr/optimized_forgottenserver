@@ -120,6 +120,10 @@ using MuteCountMap = std::map<uint32_t, uint32_t>;
 static constexpr int32_t PLAYER_MAX_SPEED = 1500;
 static constexpr int32_t PLAYER_MIN_SPEED = 10;
 
+#if GAME_FEATURE_QUEST_TRACKER > 0
+class Mission;
+#endif
+
 class Player final : public Creature, public Cylinder
 {
 	public:
@@ -364,6 +368,12 @@ class Player final : public Creature, public Cylinder
 		void addStorageValue(const uint32_t key, const int32_t value, const bool isLogin = false);
 		bool getStorageValue(const uint32_t key, int32_t& value) const;
 		void genReservedStorageRange();
+
+		#if GAME_FEATURE_QUEST_TRACKER > 0
+		size_t getAllowedTrackedQuestCount() const;
+		bool hasTrackingQuest(uint16_t missionId) const;
+		void resetTrackedQuests(std::vector<uint16_t>& quests);
+		#endif
 
 		void setGroup(Group* newGroup) {
 			group = newGroup;
@@ -1250,6 +1260,18 @@ class Player final : public Creature, public Cylinder
 				client->sendQuestLine(quest);
 			}
 		}
+		#if GAME_FEATURE_QUEST_TRACKER > 0
+		void sendTrackedQuests(uint8_t remainingQuests, std::vector<const Mission*>& quests) {
+			if (client) {
+				client->sendTrackedQuests(remainingQuests, quests);
+			}
+		}
+		void sendUpdateTrackedQuest(const Mission* mission) {
+			if (client) {
+				client->sendUpdateTrackedQuest(mission);
+			}
+		}
+		#endif
 		#if CLIENT_VERSION >= 1000
 		void sendFightModes() {
 			if (client) {
@@ -1356,6 +1378,10 @@ class Player final : public Creature, public Cylinder
 		std::forward_list<Party*> invitePartyList;
 		std::forward_list<std::string> learnedInstantSpellList;
 		std::forward_list<Condition*> storedConditionList; // TODO: This variable is only temporarily used when logging in, get rid of it somehow
+
+		#if GAME_FEATURE_QUEST_TRACKER > 0
+		std::vector<const Mission*> trackedQuests;
+		#endif
 
 		std::string name;
 		std::string guildNick;

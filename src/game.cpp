@@ -1903,6 +1903,13 @@ void Game::playerOpenPrivateChannel(Player* player, std::string& receiver)
 	player->sendOpenPrivateChannel(receiver);
 }
 
+#if GAME_FEATURE_QUEST_TRACKER > 0
+void Game::playerResetTrackedQuests(Player* player, std::vector<uint16_t>& quests)
+{
+	player->resetTrackedQuests(quests);
+}
+#endif
+
 void Game::playerCloseNpcChannel(Player* player)
 {
 	SpectatorVector spectators;
