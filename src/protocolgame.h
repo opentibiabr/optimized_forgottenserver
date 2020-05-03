@@ -229,7 +229,7 @@ class ProtocolGame final : public Protocol
 		void sendQuestLog();
 		void sendQuestLine(const Quest* quest);
 		#if GAME_FEATURE_QUEST_TRACKER > 0
-		void sendTrackedQuests(uint8_t remainingQuests, std::vector<const Mission*>& quests);
+		void sendTrackedQuests(uint8_t remainingQuests, std::vector<uint16_t>& quests);
 		void sendUpdateTrackedQuest(const Mission* mission);
 		#endif
 

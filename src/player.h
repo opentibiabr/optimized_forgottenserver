@@ -1261,7 +1261,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		#if GAME_FEATURE_QUEST_TRACKER > 0
-		void sendTrackedQuests(uint8_t remainingQuests, std::vector<const Mission*>& quests) {
+		void sendTrackedQuests(uint8_t remainingQuests, std::vector<uint16_t>& quests) {
 			if (client) {
 				client->sendTrackedQuests(remainingQuests, quests);
 			}
@@ -1380,7 +1380,7 @@ class Player final : public Creature, public Cylinder
 		std::forward_list<Condition*> storedConditionList; // TODO: This variable is only temporarily used when logging in, get rid of it somehow
 
 		#if GAME_FEATURE_QUEST_TRACKER > 0
-		std::vector<const Mission*> trackedQuests;
+		std::vector<uint16_t> trackedQuests;
 		#endif
 
 		std::string name;

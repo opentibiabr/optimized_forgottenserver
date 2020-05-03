@@ -718,12 +718,7 @@ size_t Player::getAllowedTrackedQuestCount() const
 
 bool Player::hasTrackingQuest(uint16_t missionId) const
 {
-	for (const Mission* mission : trackedQuests) {
-		if (mission->getMissionId() == missionId) {
-			return true;
-		}
-	}
-	return false;
+	return std::find(trackedQuests.begin(), trackedQuests.end(), missionId) != trackedQuests.end();
 }
 
 void Player::resetTrackedQuests(std::vector<uint16_t>& quests)
@@ -733,7 +728,7 @@ void Player::resetTrackedQuests(std::vector<uint16_t>& quests)
 	for (size_t i = 0, end = quests.size(); i < end; ++i) {
 		const Mission* mission = g_game.quests.getMissionByID(quests[i]);
 		if (mission && mission->isStarted(this)) {
-			trackedQuests.emplace_back(mission);
+			trackedQuests.emplace_back(quests[i]);
 			if (trackedQuests.size() >= maxAllowed) {
 				break;
 			}

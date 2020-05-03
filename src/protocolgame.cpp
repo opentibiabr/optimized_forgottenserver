@@ -3154,19 +3154,27 @@ void ProtocolGame::sendQuestLine(const Quest* quest)
 }
 
 #if GAME_FEATURE_QUEST_TRACKER > 0
-void ProtocolGame::sendTrackedQuests(uint8_t remainingQuests, std::vector<const Mission*>& quests)
+void ProtocolGame::sendTrackedQuests(uint8_t remainingQuests, std::vector<uint16_t>& quests)
 {
 	playermsg.reset();
 	playermsg.addByte(0xD0);
 	playermsg.addByte(0x01);
 	playermsg.addByte(remainingQuests);
 	playermsg.addByte(static_cast<uint8_t>(quests.size()));
-	for (const Mission* mission : quests) {
-		Quest* quest = g_game.quests.getQuestByID(mission->getQuestId());
-		playermsg.add<uint16_t>(mission->getMissionId());
-		playermsg.addString((quest ? quest->getName() : std::string()));
-		playermsg.addString(mission->getName(player));
-		playermsg.addString(mission->getDescription(player));
+	for (uint16_t missionId : quests) {
+		const Mission* mission = g_game.quests.getMissionByID(missionId);
+		if (mission) {
+			Quest* quest = g_game.quests.getQuestByID(mission->getQuestId());
+			playermsg.add<uint16_t>(missionId);
+			playermsg.addString((quest ? quest->getName() : std::string()));
+			playermsg.addString(mission->getName(player));
+			playermsg.addString(mission->getDescription(player));
+		} else {
+			playermsg.add<uint16_t>(missionId);
+			playermsg.addString("Unknown Error");
+			playermsg.addString("Unknown Error");
+			playermsg.addString("Unknown Error");
+		}
 	}
 	writeToOutputBuffer(playermsg);
 }
