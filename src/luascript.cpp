@@ -2146,6 +2146,8 @@ void LuaScriptInterface::registerFunctions()
 
 	registerMethod("NetworkMessage", "reset", LuaScriptInterface::luaNetworkMessageReset);
 	registerMethod("NetworkMessage", "skipBytes", LuaScriptInterface::luaNetworkMessageSkipBytes);
+	registerMethod("NetworkMessage", "getMsgPosition", LuaScriptInterface::luaNetworkMessageGetMsgPosition);
+	registerMethod("NetworkMessage", "setMsgPosition", LuaScriptInterface::luaNetworkMessageSetMsgPosition);
 	registerMethod("NetworkMessage", "sendToPlayer", LuaScriptInterface::luaNetworkMessageSendToPlayer);
 
 	// ModalWindow
@@ -2336,6 +2338,7 @@ void LuaScriptInterface::registerFunctions()
 	registerMetaMethod("Player", "__eq", LuaScriptInterface::luaUserdataCompare);
 
 	registerMethod("Player", "isPlayer", LuaScriptInterface::luaPlayerIsPlayer);
+	registerMethod("Player", "setName", LuaScriptInterface::luaPlayerSetName);
 
 	registerMethod("Player", "getGuid", LuaScriptInterface::luaPlayerGetGuid);
 	registerMethod("Player", "getIp", LuaScriptInterface::luaPlayerGetIp);
@@ -4153,10 +4156,16 @@ int LuaScriptInterface::luaDatabaseExecute(lua_State* L)
 int LuaScriptInterface::luaDatabaseAsyncExecute(lua_State* L)
 {
 	std::function<void(DBResult_ptr, bool)> callback;
-	if (lua_gettop(L) > 1) {
+	int parameters = lua_gettop(L);
+	if (parameters > 1) {
+		std::vector<int32_t> params;
+		for (int i = 0; i < parameters - 2; ++i) { //-2 because asyncQuery needs at least two parameters
+			params.push_back(luaL_ref(L, LUA_REGISTRYINDEX));
+		}
+
 		int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		auto scriptId = getScriptEnv()->getScriptId();
-		callback = [ref, scriptId](DBResult_ptr, bool success) {
+		callback = [ref, scriptId, params](DBResult_ptr, bool success) {
 			lua_State* luaState = g_luaEnvironment.getLuaState();
 			if (!luaState) {
 				return;
@@ -4164,16 +4173,29 @@ int LuaScriptInterface::luaDatabaseAsyncExecute(lua_State* L)
 
 			if (!LuaScriptInterface::reserveScriptEnv()) {
 				luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
+				for (auto parameter : params) {
+					luaL_unref(luaState, LUA_REGISTRYINDEX, parameter);
+				}
 				return;
 			}
 
+			//push function
 			lua_rawgeti(luaState, LUA_REGISTRYINDEX, ref);
+
+			//push parameters
 			pushBoolean(luaState, success);
+			for (auto parameter : boost::adaptors::reverse(params)) {
+				lua_rawgeti(luaState, LUA_REGISTRYINDEX, parameter);
+			}
+
 			auto env = getScriptEnv();
 			env->setScriptId(scriptId, &g_luaEnvironment);
-			g_luaEnvironment.callFunction(1);
+			g_luaEnvironment.callFunction(1 + static_cast<int>(params.size()));
 
 			luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
+			for (auto parameter : params) {
+				luaL_unref(luaState, LUA_REGISTRYINDEX, parameter);
+			}
 		};
 	}
 	g_databaseTasks.addTask(getString(L, -1), callback);
@@ -4193,10 +4215,16 @@ int LuaScriptInterface::luaDatabaseStoreQuery(lua_State* L)
 int LuaScriptInterface::luaDatabaseAsyncStoreQuery(lua_State* L)
 {
 	std::function<void(DBResult_ptr, bool)> callback;
-	if (lua_gettop(L) > 1) {
+	int parameters = lua_gettop(L);
+	if (parameters > 1) {
+		std::vector<int32_t> params;
+		for (int i = 0; i < parameters - 2; ++i) { //-2 because asyncStoreQuery needs at least two parameters
+			params.push_back(luaL_ref(L, LUA_REGISTRYINDEX));
+		}
+
 		int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		auto scriptId = getScriptEnv()->getScriptId();
-		callback = [ref, scriptId](DBResult_ptr result, bool) {
+		callback = [ref, scriptId, params](DBResult_ptr result, bool) {
 			lua_State* luaState = g_luaEnvironment.getLuaState();
 			if (!luaState) {
 				return;
@@ -4204,20 +4232,33 @@ int LuaScriptInterface::luaDatabaseAsyncStoreQuery(lua_State* L)
 
 			if (!LuaScriptInterface::reserveScriptEnv()) {
 				luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
+				for (auto parameter : params) {
+					luaL_unref(luaState, LUA_REGISTRYINDEX, parameter);
+				}
 				return;
 			}
 
+			//push function
 			lua_rawgeti(luaState, LUA_REGISTRYINDEX, ref);
+
+			//push parameters
 			if (result) {
 				lua_pushnumber(luaState, ScriptEnvironment::addResult(result));
 			} else {
 				pushBoolean(luaState, false);
 			}
+			for (auto parameter : boost::adaptors::reverse(params)) {
+				lua_rawgeti(luaState, LUA_REGISTRYINDEX, parameter);
+			}
+
 			auto env = getScriptEnv();
 			env->setScriptId(scriptId, &g_luaEnvironment);
-			g_luaEnvironment.callFunction(1);
+			g_luaEnvironment.callFunction(1 + static_cast<int>(params.size()));
 
 			luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
+			for (auto parameter : params) {
+				luaL_unref(luaState, LUA_REGISTRYINDEX, parameter);
+			}
 		};
 	}
 	g_databaseTasks.addTask(getString(L, -1), callback, true);
@@ -5916,6 +5957,32 @@ int LuaScriptInterface::luaNetworkMessageSkipBytes(lua_State* L)
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
 		message->skipBytes(number);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaNetworkMessageGetMsgPosition(lua_State* L)
+{
+	// networkMessage:getMsgPosition()
+	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
+	if (message) {
+		lua_pushnumber(L, message->getBufferPosition());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaNetworkMessageSetMsgPosition(lua_State* L)
+{
+	// networkMessage:setMsgPosition(position)
+	auto position = getNumber<NetworkMessage::MsgSize_t>(L, 2);
+	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
+	if (message) {
+		message->setBufferPosition(position);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -7702,11 +7769,7 @@ int LuaScriptInterface::luaCreatureSetHiddenHealth(lua_State* L)
 		bool oldHiddenHealth = creature->isHealthHidden();
 		creature->setHiddenHealth(getBoolean(L, 2));
 		if (oldHiddenHealth != creature->isHealthHidden()) {
-			#if CLIENT_VERSION >= 1121
 			g_game.updateCreatureData(creature);
-			#else
-			g_game.addCreatureHealth(creature);
-			#endif
 		}
 		pushBoolean(L, true);
 	} else {
@@ -8131,6 +8194,20 @@ int LuaScriptInterface::luaPlayerIsPlayer(lua_State* L)
 {
 	// player:isPlayer()
 	pushBoolean(L, getUserdata<const Player>(L, 1) != nullptr);
+	return 1;
+}
+
+int LuaScriptInterface::luaPlayerSetName(lua_State* L)
+{
+	// player:setName(newName)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		player->setName(getString(L, 2));
+		g_game.updateCreatureData(player);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
 	return 1;
 }
 
@@ -9977,6 +10054,7 @@ int LuaScriptInterface::luaPlayerGetClient(lua_State* L)
 		lua_createtable(L, 0, 2);
 		setField(L, "version", player->getProtocolVersion());
 		setField(L, "os", player->getOperatingSystem());
+		setField(L, "tfcos", player->getTfcOperatingSystem());
 	} else {
 		lua_pushnil(L);
 	}

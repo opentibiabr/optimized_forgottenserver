@@ -1286,9 +1286,9 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 	}
 }
 
-void Player::openShopWindow(Npc* npc, const std::list<ShopInfo>& shop)
+void Player::openShopWindow(Npc* npc, const std::vector<ShopInfo>& shop)
 {
-	shopItemList = shop;
+	shopItemList = std::move(shop);
 	sendShop(npc);
 	sendSaleItemList();
 }
@@ -3062,7 +3062,7 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 			onSendContainer(container);
 		}
 
-		if (shopOwner && requireListUpdate) {
+		if (shopOwner && !scheduledSaleUpdate && requireListUpdate) {
 			updateSaleShopList(item);
 		}
 	} else if (const Creature* creature = thing->getCreature()) {
@@ -3139,7 +3139,7 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 			}
 		}
 
-		if (shopOwner && requireListUpdate) {
+		if (shopOwner && !scheduledSaleUpdate && requireListUpdate) {
 			updateSaleShopList(item);
 		}
 	}
@@ -3163,9 +3163,8 @@ bool Player::updateSaleShopList(const Item* item)
 		}
 	}
 
-	if (client) {
-		client->sendSaleItemList(shopItemList);
-	}
+	g_dispatcher.addTask(createTask(std::bind(&Game::updatePlayerSaleItems, &g_game, getID())));
+	scheduledSaleUpdate = true;
 	return true;
 }
 

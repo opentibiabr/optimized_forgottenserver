@@ -280,12 +280,18 @@ class Player final : public Creature, public Cylinder
 		Vocation* getVocation() const {
 			return vocation;
 		}
-
+		
 		OperatingSystem_t getOperatingSystem() const {
 			return operatingSystem;
 		}
 		void setOperatingSystem(OperatingSystem_t clientos) {
 			operatingSystem = clientos;
+		}
+		OperatingSystem_t getTfcOperatingSystem() const {
+			return tfcOperatingSystem;
+		}
+		void setTfcOperatingSystem(OperatingSystem_t clientos) {
+			tfcOperatingSystem = clientos;
 		}
 
 		uint16_t getProtocolVersion() const {
@@ -605,7 +611,7 @@ class Player final : public Creature, public Cylinder
 		void onWalkComplete() override;
 
 		void stopWalk();
-		void openShopWindow(Npc* npc, const std::list<ShopInfo>& shop);
+		void openShopWindow(Npc* npc, const std::vector<ShopInfo>& shop);
 		bool closeShopWindow(bool sendCloseShopWindow = true);
 		bool updateSaleShopList(const Item* item);
 		bool hasShopItemForSale(uint32_t itemId, uint8_t subType) const;
@@ -945,13 +951,11 @@ class Player final : public Creature, public Cylinder
 		void onUpdateInventoryItem(Item* oldItem, Item* newItem);
 		void onRemoveInventoryItem(Item* item);
 
-		#if CLIENT_VERSION >= 1121
 		void updateCreatureData(const Creature* creature) const {
 			if (client) {
 				client->updateCreatureData(creature);
 			}
 		}
-		#endif
 		void sendCancelMessage(const std::string& msg) const {
 			if (client) {
 				client->sendTextMessage(TextMessage(MESSAGE_STATUS_SMALL, msg));
@@ -1314,6 +1318,13 @@ class Player final : public Creature, public Cylinder
 		void forgetInstantSpell(const std::string& spellName);
 		bool hasLearnedInstantSpell(const std::string& spellName) const;
 
+		void setScheduledSaleUpdate(bool scheduled) {
+			scheduledSaleUpdate = scheduled;
+		}
+		bool getScheduledSaleUpdate() {
+			return scheduledSaleUpdate;
+		}
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 
@@ -1373,7 +1384,7 @@ class Player final : public Creature, public Cylinder
 		std::vector<OutfitEntry> outfits;
 		GuildWarVector guildWarVector;
 
-		std::list<ShopInfo> shopItemList;
+		std::vector<ShopInfo> shopItemList;
 
 		std::forward_list<Party*> invitePartyList;
 		std::forward_list<std::string> learnedInstantSpellList;
@@ -1471,6 +1482,7 @@ class Player final : public Creature, public Cylinder
 
 		PlayerSex_t sex = PLAYERSEX_FEMALE;
 		OperatingSystem_t operatingSystem = CLIENTOS_NONE;
+		OperatingSystem_t tfcOperatingSystem = CLIENTOS_NONE;
 		BlockType_t lastAttackBlockType = BLOCK_NONE;
 		tradestate_t tradeState = TRADE_NONE;
 		fightMode_t fightMode = FIGHTMODE_ATTACK;
@@ -1489,6 +1501,7 @@ class Player final : public Creature, public Cylinder
 		bool isConnecting = false;
 		bool addAttackSkillPoint = false;
 		bool inventoryAbilities[CONST_SLOT_LAST + 1] = {};
+		bool scheduledSaleUpdate = false;
 
 		static uint32_t playerAutoID;
 

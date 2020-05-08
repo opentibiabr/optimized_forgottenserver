@@ -67,7 +67,7 @@ function Player.sendCancelMessage(self, message)
 end
 
 function Player.isUsingTFC(self)
-	return self:getClient().os >= CLIENTOS_TFC_ANDROID
+	return self:getClient().tfcos >= CLIENTOS_TFC_ANDROID
 end
 
 function Player.isUsingOtClient(self)

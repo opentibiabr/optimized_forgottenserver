@@ -318,6 +318,8 @@ class Game
 		void playerDebugAssert(Player* player, const std::string& assertLine, const std::string& date, const std::string& description, const std::string& comment);
 		void playerAnswerModalWindow(Player* player, uint32_t modalWindowId, uint8_t button, uint8_t choice);
 		void playerReportRuleViolation(Player* player, const std::string& targetName, uint8_t reportType, uint8_t reportReason, const std::string& comment, const std::string& translation);
+
+		void updatePlayerSaleItems(uint32_t playerId);
 		void checkCreatureDeath(uint32_t creatureId);
 
 		void playerMonsterCyclopedia(Player* player);
@@ -481,9 +483,7 @@ class Game
 		void addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect);
 		static void addDistanceEffect(const SpectatorVector& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
 
-		#if CLIENT_VERSION >= 1121
 		void updateCreatureData(const Creature* creature);
-		#endif
 
 		void startDecay(Item* item);
 		int32_t getLightHour() const {

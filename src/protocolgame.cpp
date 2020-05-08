@@ -61,7 +61,7 @@ void ProtocolGame::release()
 	Protocol::release();
 }
 
-void ProtocolGame::login(const std::string& name, uint32_t accountId, OperatingSystem_t operatingSystem)
+void ProtocolGame::login(const std::string& name, uint32_t accountId, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
 {
 	//dispatcher thread
 	Player* foundPlayer = g_game.getPlayerByName(name);
@@ -137,9 +137,9 @@ void ProtocolGame::login(const std::string& name, uint32_t accountId, OperatingS
 			disconnectClient("Your character could not be loaded.");
 			return;
 		}
-
+		
 		player->setOperatingSystem(operatingSystem);
-
+		player->setTfcOperatingSystem(tfcOperatingSystem);
 		if (!g_game.placeCreature(player, player->getLoginPosition())) {
 			if (!g_game.placeCreature(player, player->getTemplePosition(), false, true)) {
 				disconnectClient("Temple position is wrong. Contact the administrator.");
@@ -165,15 +165,15 @@ void ProtocolGame::login(const std::string& name, uint32_t accountId, OperatingS
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_scheduler.addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem)));
+			eventConnect = g_scheduler.addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem, tfcOperatingSystem)));
 		} else {
-			connect(foundPlayer->getID(), operatingSystem);
+			connect(foundPlayer->getID(), operatingSystem, tfcOperatingSystem);
 		}
 	}
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
 }
 
-void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
+void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
 {
 	eventConnect = 0;
 
@@ -195,6 +195,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 	g_chat->removeUserFromAllChannels(*player);
 	player->clearModalWindows();
 	player->setOperatingSystem(operatingSystem);
+	player->setTfcOperatingSystem(tfcOperatingSystem);
 	player->isConnecting = false;
 
 	player->client = getThis();
@@ -305,7 +306,6 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 		opcodeMessage.add<uint16_t>(0x00);
 		writeToOutputBuffer(opcodeMessage);
 	}
-	(void)TFCoperatingSystem;
 
 	msg.skipBytes(1); // gamemaster flag
 
@@ -410,7 +410,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 	}
 	#endif
 
-	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem)));
+	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem, TFCoperatingSystem)));
 }
 
 void ProtocolGame::onConnect()
@@ -1528,7 +1528,6 @@ void ProtocolGame::sendTibiaTime(int32_t time)
 }
 #endif
 
-#if CLIENT_VERSION >= 1121
 void ProtocolGame::updateCreatureData(const Creature* creature)
 {
 	uint32_t cid = creature->getID();
@@ -1536,16 +1535,54 @@ void ProtocolGame::updateCreatureData(const Creature* creature)
 		return;
 	}
 
-	//Using some hack so that I'm don't need to modify AddCreature function
-	playermsg.reset();
-	playermsg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION - 1);
-	AddCreature(creature, false, cid);
-	playermsg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
-	playermsg.addByte(0x03);
-	playermsg.setLength(playermsg.getLength() - 2);
-	writeToOutputBuffer(playermsg);
+	OperatingSystem_t regularOS = player->getOperatingSystem();
+	OperatingSystem_t tfcOS = player->getTfcOperatingSystem();
+	if ((regularOS >= CLIENTOS_NEW_LINUX && regularOS < CLIENTOS_OTCLIENT_LINUX) || tfcOS >= CLIENTOS_TFC_ANDROID) {
+		//Using some hack so that I'm don't need to modify AddCreature function
+		playermsg.reset();
+		playermsg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION - 1);
+		AddCreature(creature, false, cid);
+		playermsg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+		playermsg.addByte(0x03);
+		playermsg.setLength(playermsg.getLength() - 2);
+		writeToOutputBuffer(playermsg);
+	} else {
+		if (canSee(creature)) {
+			int32_t stackpos = creature->getTile()->getStackposOfCreature(player, creature);
+			if (stackpos != -1) {
+				playermsg.reset();
+				playermsg.addByte(0x6B);
+				playermsg.addPosition(creature->getPosition());
+				playermsg.addByte(stackpos);
+				AddCreature(creature, false, cid);
+				writeToOutputBuffer(playermsg);
+				return;
+			}
+		}
+
+		//Not the best choice we have here but let's update our creature
+		const Position& pos = player->getPosition();
+		playermsg.reset();
+		playermsg.addByte(0x6A);
+		playermsg.addPosition(pos);
+		#if GAME_FEATURE_TILE_ADDTHING_STACKPOS > 0
+		playermsg.addByte(0xFF);
+		#endif
+		AddCreature(creature, false, cid);
+		playermsg.addByte(0x69);
+		playermsg.addPosition(pos);
+		Tile* tile = player->getTile();
+		if (tile) {
+			GetTileDescription(tile);
+			playermsg.addByte(0x00);
+			playermsg.addByte(0xFF);
+		} else {
+			playermsg.addByte(0x01);
+			playermsg.addByte(0xFF);
+		}
+		writeToOutputBuffer(playermsg);
+	}
 }
-#endif
 
 #if CLIENT_VERSION >= 854
 void ProtocolGame::sendCreatureWalkthrough(const Creature* creature, bool walkthrough)
@@ -1598,22 +1635,22 @@ void ProtocolGame::sendCreatureType(const Creature* creature, uint8_t creatureTy
 	playermsg.reset();
 	playermsg.addByte(0x95);
 	playermsg.add<uint32_t>(creature->getID());
-	if (version >= 1120) {
-		if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
-			creatureType = CREATURETYPE_SUMMON_OWN;
-		}
-		playermsg.addByte(creatureType);
-		if (creatureType == CREATURETYPE_SUMMON_OWN) {
-			const Creature* master = creature->getMaster();
-			if (master) {
-				playermsg.add<uint32_t>(master->getID());
-			} else {
-				playermsg.add<uint32_t>(0);
-			}
-		}
-	} else {
-		playermsg.addByte(creatureType);
+	#if CLIENT_VERSION >= 1121
+	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
+		creatureType = CREATURETYPE_SUMMON_OWN;
 	}
+	playermsg.addByte(creatureType);
+	if (creatureType == CREATURETYPE_SUMMON_OWN) {
+		const Creature* master = creature->getMaster();
+		if (master) {
+			playermsg.add<uint32_t>(master->getID());
+		} else {
+			playermsg.add<uint32_t>(0);
+		}
+	}
+	#else
+	playermsg.addByte(creatureType);
+	#endif
 	writeToOutputBuffer(playermsg);
 }
 #endif
@@ -2620,7 +2657,7 @@ void ProtocolGame::sendCloseShop()
 	writeToOutputBuffer(playermsg);
 }
 
-void ProtocolGame::sendSaleItemList(const std::list<ShopInfo>& shop)
+void ProtocolGame::sendSaleItemList(const std::vector<ShopInfo>& shop)
 {
 	playermsg.reset();
 	playermsg.addByte(0x7B);
@@ -4169,11 +4206,9 @@ void ProtocolGame::sendModalWindow(const ModalWindow& modalWindow)
 void ProtocolGame::AddCreature(const Creature* creature, bool known, uint32_t remove)
 {
 	CreatureType_t creatureType = creature->getType();
-	#if CLIENT_VERSION >= 1121
 	if (creature->isHealthHidden()) {
 		creatureType = CREATURETYPE_HIDDEN;
 	}
-	#endif
 
 	const Player* otherPlayer = creature->getPlayer();
 	if (known) {

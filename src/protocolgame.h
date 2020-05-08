@@ -78,7 +78,7 @@ class ProtocolGame final : public Protocol
 
 		explicit ProtocolGame(Connection_ptr connection) : Protocol(connection) {}
 
-		void login(const std::string& name, uint32_t accountId, OperatingSystem_t operatingSystem);
+		void login(const std::string& name, uint32_t accountId, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem);
 		void logout(bool displayEffect, bool forced);
 
 		uint16_t getVersion() const {
@@ -91,7 +91,7 @@ class ProtocolGame final : public Protocol
 		ProtocolGame_ptr getThis() {
 			return std::static_pointer_cast<ProtocolGame>(shared_from_this());
 		}
-		void connect(uint32_t playerId, OperatingSystem_t operatingSystem);
+		void connect(uint32_t playerId, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem);
 		void disconnectClient(const std::string& message) const;
 		void writeToOutputBuffer(const NetworkMessage& msg);
 
@@ -267,9 +267,7 @@ class ProtocolGame final : public Protocol
 
 		void sendTournamentLeaderboard();
 
-		#if CLIENT_VERSION >= 1121
 		void updateCreatureData(const Creature* creature);
-		#endif
 		#if CLIENT_VERSION >= 854
 		void sendCreatureWalkthrough(const Creature* creature, bool walkthrough);
 		#endif
@@ -284,7 +282,7 @@ class ProtocolGame final : public Protocol
 
 		void sendShop(Npc* npc, const ShopInfoList& itemList);
 		void sendCloseShop();
-		void sendSaleItemList(const std::list<ShopInfo>& shop);
+		void sendSaleItemList(const std::vector<ShopInfo>& shop);
 		#if GAME_FEATURE_MARKET > 0
 		void sendMarketEnter(uint32_t depotId);
 		void sendMarketLeave();

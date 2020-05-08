@@ -4329,14 +4329,12 @@ void Game::addDistanceEffect(const SpectatorVector& spectators, const Position& 
 	}
 }
 
-#if CLIENT_VERSION >= 1121
 void Game::updateCreatureData(const Creature* creature)
 {
 	for (const auto& it : players) {
 		it.second->updateCreatureData(creature);
 	}
 }
-#endif
 
 void Game::startDecay(Item* item)
 {
@@ -4617,11 +4615,13 @@ void Game::updateCreatureType(Creature* creature)
 			}
 		}
 	}
+	if (creature->isHealthHidden()) {
+		creatureType = CREATURETYPE_HIDDEN;
+	}
 
 	//send to clients
 	SpectatorVector spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
-
 	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
 		for (Creature* spectator : spectators) {
 			Player* player = spectator->getPlayer();
@@ -5443,6 +5443,17 @@ void Game::playerAnswerModalWindow(Player* player, uint32_t modalWindowId, uint8
 			creatureEvent->executeModalWindow(player, modalWindowId, button, choice);
 		}
 	}
+}
+
+void Game::updatePlayerSaleItems(uint32_t playerId)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	player->sendSaleItemList();
+	player->setScheduledSaleUpdate(false);
 }
 
 void Game::checkCreatureDeath(uint32_t creatureId)
