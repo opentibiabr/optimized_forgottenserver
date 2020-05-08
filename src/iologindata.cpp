@@ -548,12 +548,26 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 		for (const auto& it : itemMap) {
 			Item* item = it.second;
 			uint32_t pid = static_cast<uint32_t>(it.first);
+			#if GAME_FEATURE_STORE_INBOX > 0 || GAME_FEATURE_PURSE_SLOT > 0
+			if (pid >= 1 && pid <= 11) {
+			#else
 			if (pid >= 1 && pid <= 10) {
+			#endif
 				player->internalAddThing(pid, item);
 				item->startDecaying();
 			}
 		}
 	}
+
+	#if GAME_FEATURE_STORE_INBOX > 0
+	if (!player->inventory[CONST_SLOT_STORE_INBOX]) {
+		player->internalAddThing(CONST_SLOT_STORE_INBOX, Item::CreateItem(ITEM_STORE_INBOX));
+	}
+	#elif GAME_FEATURE_PURSE_SLOT > 0
+	if (!player->inventory[CONST_SLOT_PURSE]) {
+		player->internalAddThing(CONST_SLOT_PURSE, Item::CreateItem(ITEM_PURSE));
+	}
+	#endif
 
 	//load depot locker items
 	itemMap.clear();
@@ -742,12 +756,12 @@ bool IOLoginData::savePlayer(Player* player)
 	query << "`health` = " << player->health << ',';
 	query << "`healthmax` = " << player->healthMax << ',';
 	query << "`experience` = " << player->experience << ',';
-	query << "`lookbody` = " << static_cast<uint32_t>(player->defaultOutfit.lookBody) << ',';
-	query << "`lookfeet` = " << static_cast<uint32_t>(player->defaultOutfit.lookFeet) << ',';
-	query << "`lookhead` = " << static_cast<uint32_t>(player->defaultOutfit.lookHead) << ',';
-	query << "`looklegs` = " << static_cast<uint32_t>(player->defaultOutfit.lookLegs) << ',';
+	query << "`lookbody` = " << static_cast<uint16_t>(player->defaultOutfit.lookBody) << ',';
+	query << "`lookfeet` = " << static_cast<uint16_t>(player->defaultOutfit.lookFeet) << ',';
+	query << "`lookhead` = " << static_cast<uint16_t>(player->defaultOutfit.lookHead) << ',';
+	query << "`looklegs` = " << static_cast<uint16_t>(player->defaultOutfit.lookLegs) << ',';
 	query << "`looktype` = " << player->defaultOutfit.lookType << ',';
-	query << "`lookaddons` = " << static_cast<uint32_t>(player->defaultOutfit.lookAddons) << ',';
+	query << "`lookaddons` = " << static_cast<uint16_t>(player->defaultOutfit.lookAddons) << ',';
 	query << "`maglevel` = " << player->magLevel << ',';
 	query << "`mana` = " << player->mana << ',';
 	query << "`manamax` = " << player->manaMax << ',';
@@ -826,7 +840,7 @@ bool IOLoginData::savePlayer(Player* player)
 		} else if (player->skull == SKULL_BLACK) {
 			skull = SKULL_BLACK;
 		}
-		query << "`skull` = " << static_cast<int64_t>(skull) << ',';
+		query << "`skull` = " << static_cast<uint16_t>(skull) << ',';
 	}
 
 	query << "`lastlogout` = " << player->getLastLogout() << ',';
@@ -849,11 +863,11 @@ bool IOLoginData::savePlayer(Player* player)
 	query << "`skill_shielding_tries` = " << player->skills[SKILL_SHIELD].tries << ',';
 	query << "`skill_fishing` = " << player->skills[SKILL_FISHING].level << ',';
 	query << "`skill_fishing_tries` = " << player->skills[SKILL_FISHING].tries << ',';
-	query << "`direction` = " << static_cast<uint16_t> (player->getDirection()) << ',';
+	query << "`direction` = " << static_cast<uint16_t>(player->getDirection()) << ',';
 	if (!player->isOffline()) {
 		query << "`onlinetime` = `onlinetime` + " << (time(nullptr) - player->lastLoginSaved) << ',';
 	}
-	query << "`blessings` = " << static_cast<uint32_t>(player->blessings);
+	query << "`blessings` = " << static_cast<uint16_t>(player->blessings);
 	query << " WHERE `id` = " << player->getGUID();
 
 	DBTransaction transaction(&g_database);
@@ -868,7 +882,11 @@ bool IOLoginData::savePlayer(Player* player)
 	//item saving
 	query.str(std::string());
 	ItemBlockList itemList;
+	#if GAME_FEATURE_STORE_INBOX > 0 || GAME_FEATURE_PURSE_SLOT > 0
+	for (int32_t slotId = 1; slotId <= 11; ++slotId) {
+	#else
 	for (int32_t slotId = 1; slotId <= 10; ++slotId) {
+	#endif
 		Item* item = player->inventory[slotId];
 		if (item) {
 			itemList.emplace_back(slotId, item);
@@ -888,7 +906,11 @@ bool IOLoginData::savePlayer(Player* player)
 			DepotLocker* depotLocker = it.second;
 			for (auto item = depotLocker->getReversedItems(), end = depotLocker->getReversedEnd(); item != end; ++item) {
 				uint16_t itemId = (*item)->getID();
+				#if GAME_FEATURE_MARKET > 0
 				if (itemId == ITEM_DEPOT || itemId == ITEM_INBOX || itemId == ITEM_MARKET) {
+				#else
+				if (itemId == ITEM_DEPOT) {
+				#endif
 					continue;
 				}
 				itemList.emplace_back(static_cast<int32_t>(it.first), *item);

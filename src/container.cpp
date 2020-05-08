@@ -297,6 +297,16 @@ ReturnValue Container::queryAdd(int32_t index, const Thing& thing, uint32_t coun
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
+	#if GAME_FEATURE_STORE_INBOX > 0
+	if (getID() == ITEM_STORE_INBOX && !hasBitSet(FLAG_NOLIMIT, flags)) {
+		return RETURNVALUE_THISISIMPOSSIBLE;
+	}
+	#elif GAME_FEATURE_PURSE_SLOT > 0
+	if (getID() == ITEM_PURSE && item->getID() != ITEM_PREMIUM_SCROLL) {
+		return RETURNVALUE_THISISIMPOSSIBLE;
+	}
+	#endif
+
 	if (!item->isPickupable()) {
 		return RETURNVALUE_CANNOTPICKUP;
 	}

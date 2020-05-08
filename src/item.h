@@ -912,6 +912,15 @@ class Item : virtual public Thing
 			return items[id].isMagicField();
 		}
 		bool isMoveable() const {
+			#if GAME_FEATURE_STORE_INBOX > 0
+			if (id == ITEM_STORE_INBOX) {
+				return false;
+			}
+			#elif GAME_FEATURE_PURSE_SLOT > 0
+			if (id == ITEM_PURSE) {
+				return false;
+			}
+			#endif
 			return items[id].moveable;
 		}
 		bool isPickupable() const {

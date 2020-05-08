@@ -1112,6 +1112,7 @@ void LuaScriptInterface::registerFunctions()
 
 	// Enums
 	registerEnum(CLIENT_VERSION)
+	registerEnum(NETWORKMESSAGE_PLAYERNAME_MAXLENGTH)
 
 	registerEnum(ACCOUNT_TYPE_NORMAL)
 	registerEnum(ACCOUNT_TYPE_TUTOR)
@@ -1975,6 +1976,9 @@ void LuaScriptInterface::registerFunctions()
 	registerEnumIn("configKeys", ConfigManager::MYSQL_SOCK)
 	registerEnumIn("configKeys", ConfigManager::DEFAULT_PRIORITY)
 	registerEnumIn("configKeys", ConfigManager::MAP_AUTHOR)
+	#if GAME_FEATURE_STORE > 0
+	registerEnumIn("configKeys", ConfigManager::STORE_URL)
+	#endif
 
 	registerEnumIn("configKeys", ConfigManager::SQL_PORT)
 	registerEnumIn("configKeys", ConfigManager::MAX_PLAYERS)
@@ -2007,6 +2011,9 @@ void LuaScriptInterface::registerFunctions()
 	registerEnumIn("configKeys", ConfigManager::MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER)
 	registerEnumIn("configKeys", ConfigManager::EXP_FROM_PLAYERS_LEVEL_RANGE)
 	registerEnumIn("configKeys", ConfigManager::MAX_PACKETS_PER_SECOND)
+	#if GAME_FEATURE_STORE > 0
+	registerEnumIn("configKeys", ConfigManager::STORE_COIN_PACKAGES)
+	#endif
 	#if GAME_FEATURE_QUEST_TRACKER > 0
 	registerEnumIn("configKeys", ConfigManager::MAX_TRACKED_QUESTS)
 	registerEnumIn("configKeys", ConfigManager::MAX_TRACKED_QUESTS_PREMIUM)

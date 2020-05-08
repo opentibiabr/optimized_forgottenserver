@@ -2212,7 +2212,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 	uint8_t inventoryItems = 0;
 	auto startInventory = playermsg.getBufferPosition();
 	playermsg.addByte(inventoryItems);
-	for (std::underlying_type<slots_t>::type slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; slot++) {
+	for (std::underlying_type<slots_t>::type slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_AMMO; slot++) {
 		Item* inventoryItem = player->getInventoryItem(static_cast<slots_t>(slot));
 		if (inventoryItem) {
 			inventoryItems++;
@@ -3685,8 +3685,8 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	#endif
 
 	#if GAME_FEATURE_STORE > 0
-	playermsg.add<uint16_t>(0x00); // URL (string) to ingame store images
-	playermsg.add<uint16_t>(25); // premium coin package size
+	playermsg.addString(g_config.getString(ConfigManager::STORE_URL)); // URL (string) to ingame store images
+	playermsg.add<uint16_t>(static_cast<uint16_t>(g_config.getNumber(ConfigManager::STORE_COIN_PACKAGES))); // premium coin package size
 	#endif
 
 	if (version >= 1150 || addExivaRestrictions) {

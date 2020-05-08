@@ -104,6 +104,14 @@ deSpawnRadius = 50
 -- Stamina
 staminaSystem = true
 
+-- Store
+storeUrl = "https://raw.githubusercontent.com/opentibiabr/store/master/"
+storeCoinPackages = 25 -- transferable coin packages
+
+-- Tracked Quests
+maxTrackedQuests = 10
+maxTrackedQuestsPremium = 25
+
 -- Scripts
 warnUnsafeScripts = true
 convertUnsafeScripts = true
@@ -119,7 +127,3 @@ ownerName = ""
 ownerEmail = ""
 url = "https://otland.net/"
 location = "Sweden"
-
--- Tracked Quests
-maxTrackedQuests = 10
-maxTrackedQuestsPremium = 25

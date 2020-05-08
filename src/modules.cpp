@@ -75,7 +75,7 @@ bool Modules::load()
 			scripts[lowercase] = scriptId;
 		}
 
-		uint16_t byte = pugi::cast<uint16_t>(eventNode.attribute("byte").value());
+		uint16_t byte = static_cast<uint16_t>(strtoul(eventNode.attribute("byte").as_string(), nullptr, 0));
 		auto res = modules.emplace(static_cast<uint8_t>(byte), scriptId);
 		if (!res.second) {
 			std::cout << "[Warning - Modules::load] Duplicate registered module with byte: " << byte << std::endl;

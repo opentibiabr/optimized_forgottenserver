@@ -85,6 +85,7 @@ if(CLIENT_VERSION < 900) then
 		for i = 1, #spectators do
 			msg:sendToPlayer(spectators[i])
 		end
+		msg:delete()
 	end
 end
 

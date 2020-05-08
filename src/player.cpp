@@ -3189,7 +3189,11 @@ void Player::internalAddThing(uint32_t index, Thing* thing)
 	}
 
 	//index == 0 means we should equip this item at the most appropiate slot (no action required here)
+	#if GAME_FEATURE_STORE_INBOX > 0 || GAME_FEATURE_PURSE_SLOT > 0
+	if (index > 0 && index < 12) {
+	#else
 	if (index > 0 && index < 11) {
+	#endif
 		if (inventory[index]) {
 			return;
 		}

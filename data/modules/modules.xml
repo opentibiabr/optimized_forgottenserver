@@ -1,3 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modules>
+
+	<!-- Resource -->
+	<module version="1100" byte="0xED" script="resource/resource.lua"/>
+
+	<!-- Store -->
+	<module version="1180" byte="0xE8" script="store/store.lua"/>
+	<module version="1180" byte="0xE9" script="store/store.lua"/>
+	<module version="1080" byte="0xEF" script="store/store.lua"/>
+	<module version="1080" byte="0xFA" script="store/store.lua"/>
+	<module version="1080" byte="0xFB" script="store/store.lua"/>
+	<module version="1080" byte="0xFC" script="store/store.lua"/>
+	<module version="1080" byte="0xFD" script="store/store.lua"/>
+	<module version="1080" byte="0xFE" script="store/store.lua"/>
+
 </modules>
