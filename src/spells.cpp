@@ -180,7 +180,7 @@ std::vector<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId)
 	spells.reserve(30);
 	for (const auto& it : instants) {
 		VocSpellMap map = it.second->getVocMap();
-		if (map.find(vocationId)->second) {
+		if (map.find(vocationId) != map.end()) {
 			spells.emplace_back(it.second->getId());
 		}
 	}

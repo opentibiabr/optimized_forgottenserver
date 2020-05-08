@@ -972,7 +972,7 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 			descriptions.emplace_back("Contain", "Nothing");
 		}
 
-		if (it.isContainer()) {
+		if (item->getContainer()) {
 			descriptions.emplace_back("Capacity", std::to_string(item->getContainer()->capacity()));
 		}
 

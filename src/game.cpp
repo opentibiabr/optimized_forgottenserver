@@ -2505,6 +2505,30 @@ void Game::playerSeekInContainer(Player* player, uint8_t containerId, uint16_t i
 }
 #endif
 
+#if GAME_FEATURE_INSPECTION > 0
+void Game::playerInspectItem(Player* player, const Position& pos)
+{
+	Thing* thing = internalGetThing(player, pos, 0, 0, STACKPOS_TOPDOWN_ITEM);
+	if (!thing) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	Item* item = thing->getItem();
+	if (!item) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	player->sendItemInspection(item->getClientID(), item->getItemCount(), item, false);
+}
+
+void Game::playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount, bool cyclopedia)
+{
+	player->sendItemInspection(itemId, itemCount, nullptr, cyclopedia);
+}
+#endif
+
 void Game::playerUpdateHouseWindow(Player* player, uint8_t listId, uint32_t windowTextId, const std::string& text)
 {
 	uint32_t internalWindowTextId;

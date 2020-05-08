@@ -174,6 +174,9 @@ class ProtocolGame final : public Protocol
 		#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 		void parseSeekInContainer(NetworkMessage& msg);
 		#endif
+		#if GAME_FEATURE_INSPECTION > 0
+		void parseInspectionObject(NetworkMessage& msg);
+		#endif
 
 		//trade methods
 		void parseRequestTrade(NetworkMessage& msg);
@@ -203,6 +206,9 @@ class ProtocolGame final : public Protocol
 		void parseCloseChannel(NetworkMessage& msg);
 
 		//Send functions
+		#if GAME_FEATURE_INSPECTION > 0
+		void sendItemInspection(uint16_t itemId, uint8_t itemCount, const Item* item, bool cyclopedia);
+		#endif
 		void sendChannelMessage(const std::string& author, const std::string& text, SpeakClasses type, uint16_t channel);
 		#if GAME_FEATURE_CHAT_PLAYERLIST > 0
 		void sendChannelEvent(uint16_t channelId, const std::string& playerName, ChannelEvent_t channelEvent);

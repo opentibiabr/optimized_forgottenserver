@@ -565,6 +565,9 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 		case 0xCC: parseSeekInContainer(msg); break;
 		#endif
+		#if GAME_FEATURE_INSPECTION > 0
+		case 0xCD: parseInspectionObject(msg); break;
+		#endif
 		#if GAME_FEATURE_QUEST_TRACKER > 0
 		case 0xD0: parseTrackedQuestFlags(msg); break;
 		#endif
@@ -1462,7 +1465,59 @@ void ProtocolGame::parseSeekInContainer(NetworkMessage& msg)
 }
 #endif
 
+#if GAME_FEATURE_INSPECTION > 0
+void ProtocolGame::parseInspectionObject(NetworkMessage& msg)
+{
+	uint8_t inspectionType = msg.getByte();
+	if(inspectionType == INSPECT_NORMALOBJECT)
+	{
+		Position pos = msg.getPosition();
+		g_game.playerInspectItem(player, pos);
+	}
+	else if(inspectionType == INSPECT_NPCTRADE || inspectionType == INSPECT_CYCLOPEDIA)
+	{
+		uint16_t itemId = msg.get<uint16_t>();
+		uint16_t itemCount = msg.getByte();
+		g_game.playerInspectItem(player, itemId, itemCount, (inspectionType == INSPECT_CYCLOPEDIA));
+	}
+}
+#endif
+
 // Send methods
+#if GAME_FEATURE_INSPECTION > 0
+void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const Item* item, bool cyclopedia)
+{
+	playermsg.reset();
+	playermsg.addByte(0x76);
+	playermsg.addByte(0x00);//item
+	#if CLIENT_VERSION >= 1220
+	playermsg.addByte(cyclopedia ? 0x01 : 0x00);
+	#else
+	(void)cyclopedia;
+	#endif
+	playermsg.addByte(0x01);
+
+	const ItemType& it = Item::items.getItemIdByClientId(itemId);
+
+	if (item) {
+		playermsg.addString(item->getName());
+		AddItem(item);
+	} else {
+		playermsg.addString(it.name);
+		AddItem(it.id, itemCount);
+	}
+	playermsg.addByte(0); // imbuements
+
+	auto descriptions = Item::getDescriptions(it, item);
+	playermsg.addByte(descriptions.size());
+	for (const auto& description : descriptions) {
+		playermsg.addString(description.first);
+		playermsg.addString(description.second);
+	}
+	writeToOutputBuffer(playermsg);
+}
+#endif
+
 void ProtocolGame::sendOpenPrivateChannel(const std::string& receiver)
 {
 	playermsg.reset();

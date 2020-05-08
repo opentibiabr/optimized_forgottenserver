@@ -380,6 +380,10 @@ class Game
 		#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 		void playerSeekInContainer(Player* player, uint8_t containerId, uint16_t index);
 		#endif
+		#if GAME_FEATURE_INSPECTION > 0
+		void playerInspectItem(Player* player, const Position& pos);
+		void playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount, bool cyclopedia);
+		#endif
 		void playerUpdateHouseWindow(Player* player, uint8_t listId, uint32_t windowTextId, const std::string& text);
 		void playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t stackPos,
 		                        uint32_t tradePlayerId, uint16_t spriteId);
