@@ -24,6 +24,7 @@
 #include "movement.h"
 #include "weapons.h"
 
+#include <boost/filesystem.hpp>
 #include "pugicast.h"
 
 extern MoveEvents* g_moveEvents;
@@ -182,6 +183,11 @@ constexpr auto OTBI = OTB::Identifier{{'O','T', 'B', 'I'}};
 
 bool Items::loadFromOtb(const std::string& file)
 {
+	if (!boost::filesystem::exists(file)) {
+		std::cout << "[Error - Items::loadFromOtb] Failed to load " << file << ": File doesn't exist." << std::endl;
+		return false;
+	}
+
 	OTB::Loader loader{file, OTBI};
 
 	auto& root = loader.parseTree();
@@ -419,7 +425,7 @@ bool Items::loadFromXml()
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(("data/items/" + std::to_string(CLIENT_VERSION) + "/items.xml").c_str());
 	if (!result) {
-		printXMLError("Error - Items::loadFromXml", "data/items/items.xml", result);
+		printXMLError("Error - Items::loadFromXml", "data/items/" + std::to_string(CLIENT_VERSION) + "/items.xml", result);
 		return false;
 	}
 
