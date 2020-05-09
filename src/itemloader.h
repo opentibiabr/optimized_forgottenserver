@@ -27,17 +27,17 @@ enum itemgroup_t {
 
 	ITEM_GROUP_GROUND,
 	ITEM_GROUP_CONTAINER,
-	ITEM_GROUP_WEAPON, //deprecated
-	ITEM_GROUP_AMMUNITION, //deprecated
-	ITEM_GROUP_ARMOR, //deprecated
+	ITEM_GROUP_WEAPON,
+	ITEM_GROUP_AMMUNITION,
+	ITEM_GROUP_ARMOR,
 	ITEM_GROUP_CHARGES,
-	ITEM_GROUP_TELEPORT, //deprecated
-	ITEM_GROUP_MAGICFIELD, //deprecated
-	ITEM_GROUP_WRITEABLE, //deprecated
-	ITEM_GROUP_KEY, //deprecated
+	ITEM_GROUP_TELEPORT,
+	ITEM_GROUP_MAGICFIELD,
+	ITEM_GROUP_WRITEABLE,
+	ITEM_GROUP_KEY,
 	ITEM_GROUP_SPLASH,
 	ITEM_GROUP_FLUID,
-	ITEM_GROUP_DOOR, //deprecated
+	ITEM_GROUP_DOOR,
 	ITEM_GROUP_DEPRECATED,
 
 	ITEM_GROUP_LAST
@@ -120,7 +120,7 @@ enum itemattrib_t {
 	ITEM_ATTR_MAXITEMS,
 	ITEM_ATTR_WEIGHT,
 	ITEM_ATTR_WEAPON,
-	ITEM_ATTR_AMU,
+	ITEM_ATTR_AMMO,
 	ITEM_ATTR_ARMOR,
 	ITEM_ATTR_MAGLEVEL,
 	ITEM_ATTR_MAGFIELDTYPE,
@@ -134,14 +134,14 @@ enum itemattrib_t {
 	ITEM_ATTR_LIGHT,
 
 	//1-byte aligned
-	ITEM_ATTR_DECAY2, //deprecated
-	ITEM_ATTR_WEAPON2, //deprecated
-	ITEM_ATTR_AMU2, //deprecated
-	ITEM_ATTR_ARMOR2, //deprecated
-	ITEM_ATTR_WRITEABLE2, //deprecated
+	ITEM_ATTR_DECAY2,
+	ITEM_ATTR_WEAPON2,
+	ITEM_ATTR_AMMO2,
+	ITEM_ATTR_ARMOR2,
+	ITEM_ATTR_WRITEABLE2,
 	ITEM_ATTR_LIGHT2,
 	ITEM_ATTR_TOPORDER,
-	ITEM_ATTR_WRITEABLE3, //deprecated
+	ITEM_ATTR_WRITEABLE3,
 
 	ITEM_ATTR_WAREID,
 
@@ -157,18 +157,18 @@ enum itemflags_t {
 	FLAG_PICKUPABLE = 1 << 5,
 	FLAG_MOVEABLE = 1 << 6,
 	FLAG_STACKABLE = 1 << 7,
-	FLAG_FLOORCHANGEDOWN = 1 << 8, // unused
-	FLAG_FLOORCHANGENORTH = 1 << 9, // unused
-	FLAG_FLOORCHANGEEAST = 1 << 10, // unused
-	FLAG_FLOORCHANGESOUTH = 1 << 11, // unused
-	FLAG_FLOORCHANGEWEST = 1 << 12, // unused
+	FLAG_FLOORCHANGEDOWN = 1 << 8,
+	FLAG_FLOORCHANGENORTH = 1 << 9,
+	FLAG_FLOORCHANGEEAST = 1 << 10,
+	FLAG_FLOORCHANGESOUTH = 1 << 11,
+	FLAG_FLOORCHANGEWEST = 1 << 12,
 	FLAG_ALWAYSONTOP = 1 << 13,
 	FLAG_READABLE = 1 << 14,
 	FLAG_ROTATABLE = 1 << 15,
 	FLAG_HANGABLE = 1 << 16,
 	FLAG_VERTICAL = 1 << 17,
 	FLAG_HORIZONTAL = 1 << 18,
-	FLAG_CANNOTDECAY = 1 << 19, // unused
+	FLAG_CANNOTDECAY = 1 << 19,
 	FLAG_ALLOWDISTREAD = 1 << 20,
 	FLAG_UNUSED = 1 << 21, // unused
 	FLAG_CLIENTCHARGES = 1 << 22, /* deprecated */
@@ -178,6 +178,72 @@ enum itemflags_t {
 	FLAG_FORCEUSE = 1 << 26,
 };
 
+enum slotsOTB_t {
+	OTB_SLOT_DEFAULT,
+	OTB_SLOT_HEAD,
+	OTB_SLOT_BODY,
+	OTB_SLOT_LEGS,
+	OTB_SLOT_BACKPACK,
+	OTB_SLOT_WEAPON,
+	OTB_SLOT_2HAND,
+	OTB_SLOT_FEET,
+	OTB_SLOT_AMULET,
+	OTB_SLOT_RING,
+	OTB_SLOT_HAND,
+};
+
+enum subfightOTB_t {
+	OTB_DIST_NONE,
+	OTB_DIST_BOLT,
+	OTB_DIST_ARROW,
+	OTB_DIST_FIRE,
+	OTB_DIST_ENERGY,
+	OTB_DIST_POISONARROW,
+	OTB_DIST_BURSTARROW,
+	OTB_DIST_THROWINGSTAR,
+	OTB_DIST_THROWINGKNIFE,
+	OTB_DIST_SMALLSTONE,
+	OTB_DIST_SUDDENDEATH,
+	OTB_DIST_LARGEROCK,
+	OTB_DIST_SNOWBALL,
+	OTB_DIST_POWERBOLT,
+	OTB_DIST_SPEAR,
+	OTB_DIST_POISONFIELD
+};
+
+//8-byte aligned structs
+#pragma pack(8)
+struct weaponBlock {
+	uint8_t weaponType;
+	uint8_t ammoType;
+	uint8_t shootType;
+	uint8_t attack;
+	uint8_t defense;
+};
+
+struct ammoBlock {
+	uint8_t ammoType;
+	uint8_t shootType;
+	uint8_t attack;
+};
+
+struct armorBlock {
+	uint16_t armor;
+	double weight;
+	uint16_t slotPosition;
+};
+
+struct decayBlock {
+	uint16_t decayTo;
+	uint16_t decayTime;
+};
+
+struct lightBlock {
+	uint16_t lightLevel;
+	uint16_t lightColor;
+};
+#pragma pack()
+
 //1-byte aligned structs
 #pragma pack(1)
 
@@ -186,6 +252,31 @@ struct VERSIONINFO {
 	uint32_t dwMinorVersion;
 	uint32_t dwBuildNumber;
 	uint8_t CSDVersion[128];
+};
+
+struct decayBlock2 {
+	uint16_t decayTo;
+	uint16_t decayTime;
+};
+
+struct weaponBlock2 {
+	uint8_t weaponType;
+	uint8_t ammoType;
+	uint8_t shootType;
+	uint8_t attack;
+	uint8_t defense;
+};
+
+struct ammoBlock2 {
+	uint8_t ammoType;
+	uint8_t shootType;
+	uint8_t attack;
+};
+
+struct armorBlock2 {
+	uint16_t armor;
+	double weight;
+	uint16_t slotPosition;
 };
 
 struct lightBlock2 {

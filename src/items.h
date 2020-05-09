@@ -397,6 +397,7 @@ class Items
 		void clear();
 
 		bool loadFromOtb(const std::string& file);
+		bool loadFromOtbLegacy(OTB::Loader& loader, const OTB::Node& rootNode);
 
 		const ItemType& operator[](size_t id) const {
 			return getItemType(id);

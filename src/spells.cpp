@@ -265,7 +265,7 @@ CombatSpell::~CombatSpell()
 {
 	if (!scripted) {
 		delete combat;
-	} else {
+	} else if (combat) {
 		combat->decrementReferenceCounter();
 	}
 }
@@ -273,7 +273,9 @@ CombatSpell::~CombatSpell()
 bool CombatSpell::loadScriptCombat()
 {
 	combat = g_luaEnvironment.getCombatObject(g_luaEnvironment.lastCombatId);
-	combat->incrementReferenceCounter();
+	if (combat) {
+		combat->incrementReferenceCounter();
+	}
 	return combat != nullptr;
 }
 

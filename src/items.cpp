@@ -231,8 +231,7 @@ bool Items::loadFromOtb(const std::string& file)
 	if (majorVersion == 0xFFFFFFFF) {
 		std::cout << "[Warning - Items::loadFromOtb] items.otb using generic client version." << std::endl;
 	} else if (majorVersion != 3) {
-		std::cout << "Old version detected, a newer version of items.otb is required." << std::endl;
-		return false;
+		return loadFromOtbLegacy(loader, root);
 	}
 
 	for (auto& itemNode : root.children) {
@@ -269,10 +268,6 @@ bool Items::loadFromOtb(const std::string& file)
 
 					if (!stream.read<uint16_t>(serverId)) {
 						return false;
-					}
-
-					if (serverId > 30000 && serverId < 30100) {
-						serverId -= 30000;
 					}
 					break;
 				}
@@ -420,6 +415,522 @@ bool Items::loadFromOtb(const std::string& file)
 	return true;
 }
 
+bool Items::loadFromOtbLegacy(OTB::Loader& loader, const OTB::Node& rootNode)
+{
+	auto translateOTBSubfight = [](subfightOTB_t sf) {
+		switch(sf)
+		{
+			case OTB_DIST_BOLT: return CONST_ANI_BOLT;
+			case OTB_DIST_ARROW: return CONST_ANI_ARROW;
+			case OTB_DIST_FIRE: return CONST_ANI_FIRE;
+			case OTB_DIST_ENERGY: return CONST_ANI_ENERGY;
+			case OTB_DIST_POISONARROW: return CONST_ANI_POISONARROW;
+			case OTB_DIST_BURSTARROW: return CONST_ANI_BURSTARROW;
+			case OTB_DIST_THROWINGSTAR: return CONST_ANI_THROWINGSTAR;
+			case OTB_DIST_THROWINGKNIFE: return CONST_ANI_THROWINGKNIFE;
+			case OTB_DIST_SMALLSTONE: return CONST_ANI_SMALLSTONE;
+			case OTB_DIST_SUDDENDEATH: return CONST_ANI_DEATH;
+			case OTB_DIST_LARGEROCK: return CONST_ANI_LARGEROCK;
+			case OTB_DIST_SNOWBALL: return CONST_ANI_SNOWBALL;
+			case OTB_DIST_POWERBOLT: return CONST_ANI_POWERBOLT;
+			case OTB_DIST_SPEAR: return CONST_ANI_SPEAR;
+			case OTB_DIST_POISONFIELD: return CONST_ANI_POISON;
+			default: return CONST_ANI_NONE;
+		}
+	};
+	
+	auto translateOTBSlot = [](slotsOTB_t st) {
+		switch(st)
+		{
+			case OTB_SLOT_HEAD: return SLOTP_HEAD;
+			case OTB_SLOT_BODY: return SLOTP_ARMOR;
+			case OTB_SLOT_LEGS: return SLOTP_LEGS;
+			case OTB_SLOT_BACKPACK: return SLOTP_BACKPACK;
+			case OTB_SLOT_2HAND: return SLOTP_TWO_HAND;
+			case OTB_SLOT_FEET: return SLOTP_FEET;
+			case OTB_SLOT_AMULET: return SLOTP_NECKLACE;
+			case OTB_SLOT_RING: return SLOTP_RING;
+			case OTB_SLOT_HAND: return SLOTP_HAND;
+			case OTB_SLOT_WEAPON: return SLOTP_HAND;
+			default: return SLOTP_WHEREEVER;
+		}
+	};
+
+	for (auto& itemNode : rootNode.children) {
+		PropStream stream;
+		if (!loader.getProps(itemNode, stream)) {
+			return false;
+		}
+		
+		uint32_t flags;
+		if (!stream.read<uint32_t>(flags)) {
+			return false;
+		}
+
+		ItemType iType;
+
+		uint16_t serverId = 0;
+		uint16_t clientId = 0;
+
+		uint8_t attrib;
+		while (stream.read<uint8_t>(attrib)) {
+			uint16_t datalen;
+			if (!stream.read<uint16_t>(datalen)) {
+				return false;
+			}
+
+			switch (attrib) {
+				case ITEM_ATTR_SERVERID: {
+					if (datalen != sizeof(uint16_t)) {
+						return false;
+					}
+
+					if (!stream.read<uint16_t>(serverId)) {
+						return false;
+					}
+
+					if (serverId > 20000 && serverId < 20100) {
+						serverId -= 20000;
+					}
+
+					iType.id = serverId;
+					break;
+				}
+
+				case ITEM_ATTR_CLIENTID: {
+					if (datalen != sizeof(uint16_t)) {
+						return false;
+					}
+
+					if (!stream.read<uint16_t>(clientId)) {
+						return false;
+					}
+
+					iType.clientId = clientId;
+					break;
+				}
+
+				case ITEM_ATTR_NAME: {
+					if (!stream.readString(iType.name, datalen)) {
+						return false;
+					}
+					break;
+				}
+
+				case ITEM_ATTR_DESCR: {
+					if (!stream.readString(iType.description, datalen)) {
+						return false;
+					}
+					break;
+				}
+
+				case ITEM_ATTR_SPEED: {
+					if (datalen != sizeof(uint16_t)) {
+						return false;
+					}
+
+					if (!stream.read<uint16_t>(iType.speed)) {
+						return false;
+					}
+					break;
+				}
+
+				case ITEM_ATTR_SLOT: {
+					if (datalen != sizeof(uint16_t)) {
+						return false;
+					}
+
+					uint16_t otbSlot;
+					if (!stream.read<uint16_t>(otbSlot)) {
+						return false;
+					}
+
+					SlotPositionBits slotPosition = translateOTBSlot(static_cast<slotsOTB_t>(otbSlot));
+					if (slotPosition != SLOTP_WHEREEVER) {
+						iType.slotPosition |= slotPosition;
+					}
+					break;
+				}
+
+				case ITEM_ATTR_MAXITEMS: {
+					if (datalen != sizeof(uint16_t)) {
+						return false;
+					}
+
+					if (!stream.read<uint16_t>(iType.maxItems)) {
+						return false;
+					}
+					break;
+				}
+
+				case ITEM_ATTR_WEIGHT: {
+					if (datalen != sizeof(double)) {
+						return false;
+					}
+
+					double weight;
+					if (!stream.read<double>(weight)) {
+						return false;
+					}
+					iType.weight = static_cast<uint32_t>(weight * 100);
+					break;
+				}
+
+				case ITEM_ATTR_WEAPON: {
+					if (datalen != sizeof(weaponBlock)) {
+						return false;
+					}
+
+					weaponBlock wb;
+					if (!stream.read(wb)) {
+						return false;
+					}
+					
+					iType.weaponType = static_cast<WeaponType_t>(wb.weaponType);
+					iType.shootType = translateOTBSubfight(static_cast<subfightOTB_t>(wb.shootType));
+					iType.ammoType = static_cast<Ammo_t>(wb.ammoType);
+					iType.attack = static_cast<int32_t>(wb.attack);
+					iType.defense = static_cast<int32_t>(wb.defense);
+					break;
+				}
+
+				case ITEM_ATTR_AMMO: {
+					if (datalen != sizeof(ammoBlock)) {
+						return false;
+					}
+
+					ammoBlock ab;
+					if (!stream.read(ab)) {
+						return false;
+					}
+
+					iType.weaponType = WEAPON_AMMO;
+					iType.shootType = translateOTBSubfight(static_cast<subfightOTB_t>(ab.shootType));
+					iType.ammoType = static_cast<Ammo_t>(ab.ammoType);
+					iType.attack = static_cast<int32_t>(ab.attack);
+					break;
+				}
+
+				case ITEM_ATTR_ARMOR: {
+					if (datalen != sizeof(armorBlock)) {
+						return false;
+					}
+
+					armorBlock ab;
+					if (!stream.read(ab)) {
+						return false;
+					}
+
+					iType.armor = static_cast<int32_t>(ab.armor);
+					iType.weight = static_cast<uint32_t>(ab.weight * 100);
+
+					SlotPositionBits slotPosition = translateOTBSlot(static_cast<slotsOTB_t>(ab.slotPosition));
+					if (slotPosition != SLOTP_WHEREEVER) {
+						iType.slotPosition |= slotPosition;
+					}
+					break;
+				}
+
+				case ITEM_ATTR_MAGLEVEL: {
+					if (datalen != sizeof(uint16_t)) {
+						return false;
+					}
+
+					uint16_t runeMagLevel;
+					if (!stream.read<uint16_t>(runeMagLevel)) {
+						return false;
+					}
+					iType.runeMagLevel = static_cast<int32_t>(runeMagLevel);
+					break;
+				}
+
+				case ITEM_ATTR_MAGFIELDTYPE: {
+					if (datalen != sizeof(uint8_t)) {
+						return false;
+					}
+
+					uint8_t magicFieldType;
+					if (!stream.read<uint8_t>(magicFieldType)) {
+						return false;
+					}
+					break;
+				}
+
+				case ITEM_ATTR_ROTATETO: {
+					if (datalen != sizeof(uint16_t)) {
+						return false;
+					}
+
+					if (!stream.read<uint16_t>(iType.rotateTo)) {
+						return false;
+					}
+					break;
+				}
+
+				case ITEM_ATTR_DECAY: {
+					if (datalen != sizeof(decayBlock)) {
+						return false;
+					}
+
+					decayBlock db;
+					if (!stream.read(db)) {
+						return false;
+					}
+					
+					iType.decayTime = static_cast<uint32_t>(db.decayTime);
+					iType.decayTo = static_cast<int32_t>(db.decayTo);
+					break;
+				}
+
+				case ITEM_ATTR_MINIMAPCOLOR:
+				case ITEM_ATTR_07:
+				case ITEM_ATTR_08: {
+					if (datalen != sizeof(uint16_t)) {
+						return false;
+					}
+
+					if (!stream.skip(datalen)) {
+						return false;
+					}
+					break;
+				}
+				
+				case ITEM_ATTR_LIGHT: {
+					if (datalen != sizeof(lightBlock)) {
+						return false;
+					}
+
+					lightBlock lb;
+					if (!stream.read(lb)) {
+						return false;
+					}
+
+					iType.lightLevel = static_cast<uint8_t>(lb.lightLevel);
+					iType.lightColor = static_cast<uint8_t>(lb.lightColor);
+					break;
+				}
+
+				case ITEM_ATTR_DECAY2: {
+					if (datalen != sizeof(decayBlock2)) {
+						return false;
+					}
+
+					decayBlock2 db2;
+					if (!stream.read(db2)) {
+						return false;
+					}
+
+					iType.decayTime = static_cast<uint32_t>(db2.decayTime);
+					iType.decayTo = static_cast<int32_t>(db2.decayTo);
+					break;
+				}
+
+				case ITEM_ATTR_WEAPON2: {
+					if (datalen != sizeof(weaponBlock2)) {
+						return false;
+					}
+
+					weaponBlock2 wb2;
+					if (!stream.read(wb2)) {
+						return false;
+					}
+					
+					iType.weaponType = static_cast<WeaponType_t>(wb2.weaponType);
+					iType.shootType = translateOTBSubfight(static_cast<subfightOTB_t>(wb2.shootType));
+					iType.ammoType = static_cast<Ammo_t>(wb2.ammoType);
+					iType.attack = static_cast<int32_t>(wb2.attack);
+					iType.defense = static_cast<int32_t>(wb2.defense);
+					break;
+				}
+
+				case ITEM_ATTR_AMMO2: {
+					if (datalen != sizeof(ammoBlock2)) {
+						return false;
+					}
+
+					ammoBlock2 ab2;
+					if (!stream.read(ab2)) {
+						return false;
+					}
+
+					iType.weaponType = WEAPON_AMMO;
+					iType.shootType = translateOTBSubfight(static_cast<subfightOTB_t>(ab2.shootType));
+					iType.ammoType = static_cast<Ammo_t>(ab2.ammoType);
+					iType.attack = static_cast<int32_t>(ab2.attack);
+					break;
+				}
+
+				case ITEM_ATTR_ARMOR2: {
+					if (datalen != sizeof(armorBlock2)) {
+						return false;
+					}
+
+					armorBlock2 ab2;
+					if (!stream.read(ab2)) {
+						return false;
+					}
+
+					iType.armor = static_cast<int32_t>(ab2.armor);
+					iType.weight = static_cast<uint32_t>(ab2.weight * 100);
+
+					SlotPositionBits slotPosition = translateOTBSlot(static_cast<slotsOTB_t>(ab2.slotPosition));
+					if (slotPosition != SLOTP_WHEREEVER) {
+						iType.slotPosition |= slotPosition;
+					}
+					break;
+				}
+
+				case ITEM_ATTR_WRITEABLE:
+				case ITEM_ATTR_WRITEABLE2: {
+					if (datalen != sizeof(uint16_t)) {
+						return false;
+					}
+
+					if (!stream.read<uint16_t>(iType.writeOnceItemId)) {
+						return false;
+					}
+					break;
+				}
+
+				case ITEM_ATTR_LIGHT2: {
+					if (datalen != sizeof(lightBlock2)) {
+						return false;
+					}
+
+					lightBlock2 lb2;
+					if (!stream.read(lb2)) {
+						return false;
+					}
+
+					iType.lightLevel = static_cast<uint8_t>(lb2.lightLevel);
+					iType.lightColor = static_cast<uint8_t>(lb2.lightColor);
+					break;
+				}
+
+				case ITEM_ATTR_TOPORDER: {
+					if (datalen != sizeof(uint8_t)) {
+						return false;
+					}
+
+					if (!stream.read<uint8_t>(iType.alwaysOnTopOrder)) {
+						return false;
+					}
+					break;
+				}
+
+				case ITEM_ATTR_WAREID: {
+					if (datalen != sizeof(uint16_t)) {
+						return false;
+					}
+
+					if (!stream.read<uint16_t>(iType.wareId)) {
+						return false;
+					}
+					break;
+				}
+
+				default: {
+					//skip unknown attributes
+					if (!stream.skip(datalen)) {
+						return false;
+					}
+					break;
+				}
+			}
+		}
+
+		iType.group = static_cast<itemgroup_t>(itemNode.type);
+		switch (itemNode.type) {
+			case ITEM_GROUP_CONTAINER:
+				iType.type = ITEM_TYPE_CONTAINER;
+				break;
+			case ITEM_GROUP_DOOR:
+				iType.type = ITEM_TYPE_DOOR;
+				break;
+			case ITEM_GROUP_MAGICFIELD: {
+				iType.type = ITEM_TYPE_MAGICFIELD;
+				break;
+			}
+			case ITEM_GROUP_TELEPORT: {
+				iType.type = ITEM_TYPE_TELEPORT;
+				iType.magicEffect = CONST_ME_TELEPORT;
+				break;
+			}
+			case ITEM_GROUP_CHARGES:
+				iType.type = ITEM_TYPE_RUNE;
+				break;
+			case ITEM_GROUP_KEY:
+				iType.type = ITEM_TYPE_KEY;
+				break;
+			case ITEM_GROUP_WRITEABLE: {
+				iType.canWriteText = true;
+				iType.maxTextLen = 100;
+				break;
+			}
+			case ITEM_GROUP_NONE:
+			case ITEM_GROUP_GROUND:
+			case ITEM_GROUP_WEAPON:
+			case ITEM_GROUP_AMMUNITION:
+			case ITEM_GROUP_ARMOR:
+			case ITEM_GROUP_SPLASH:
+			case ITEM_GROUP_FLUID:
+			case ITEM_GROUP_DEPRECATED:
+				break;
+			default:
+				return false;
+		}
+								
+		iType.blockSolid = hasBitSet(FLAG_BLOCK_SOLID, flags);
+		iType.blockProjectile = hasBitSet(FLAG_BLOCK_PROJECTILE, flags);
+		iType.blockPathFind = hasBitSet(FLAG_BLOCK_PATHFIND, flags);
+		iType.hasHeight = hasBitSet(FLAG_HAS_HEIGHT, flags);
+		iType.useable = hasBitSet(FLAG_USEABLE, flags);
+		iType.pickupable = hasBitSet(FLAG_PICKUPABLE, flags);
+		iType.moveable = hasBitSet(FLAG_MOVEABLE, flags);
+		iType.stackable = hasBitSet(FLAG_STACKABLE, flags);
+		iType.alwaysOnTop = hasBitSet(FLAG_ALWAYSONTOP, flags);
+		if (hasBitSet(FLAG_FLOORCHANGEDOWN, flags)) {
+			iType.floorChange |= TILESTATE_FLOORCHANGE_DOWN;
+		}
+		if (hasBitSet(FLAG_FLOORCHANGENORTH, flags)) {
+			iType.floorChange |= TILESTATE_FLOORCHANGE_NORTH;
+		}
+		if (hasBitSet(FLAG_FLOORCHANGEEAST, flags)) {
+			iType.floorChange |= TILESTATE_FLOORCHANGE_EAST;
+		}
+		if (hasBitSet(FLAG_FLOORCHANGESOUTH, flags)) {
+			iType.floorChange |= TILESTATE_FLOORCHANGE_SOUTH;
+		}
+		if (hasBitSet(FLAG_FLOORCHANGEWEST, flags)) {
+			iType.floorChange |= TILESTATE_FLOORCHANGE_WEST;
+		}
+		iType.isVertical = hasBitSet(FLAG_VERTICAL, flags);
+		iType.isHorizontal = hasBitSet(FLAG_HORIZONTAL, flags);
+		iType.isHangable = hasBitSet(FLAG_HANGABLE, flags);
+		iType.allowDistRead = hasBitSet(FLAG_ALLOWDISTREAD, flags);
+		iType.rotatable = hasBitSet(FLAG_ROTATABLE, flags);
+		iType.canReadText = hasBitSet(FLAG_READABLE, flags);
+		iType.lookThrough = hasBitSet(FLAG_LOOKTHROUGH, flags);
+		iType.isAnimation = hasBitSet(FLAG_ANIMATION, flags);
+		iType.forceUse = hasBitSet(FLAG_FORCEUSE, flags);
+
+		if (clientId >= reverseItemMap.size()) {
+			reverseItemMap.resize(clientId + 1, 0);
+		}
+
+		reverseItemMap[clientId] = serverId;
+		// store the found item
+		if (serverId >= items.size()) {
+			items.resize(serverId + 1);
+		}
+		items[serverId] = std::move(iType);
+	}
+
+	items.shrink_to_fit();
+	reverseItemMap.shrink_to_fit();
+	return true;
+}
+
 bool Items::loadFromXml()
 {
 	pugi::xml_document doc;
@@ -483,14 +994,15 @@ void Items::buildInventoryList()
 
 void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 {
-	if (id > 30000 && id < 30100) {
-		id -= 30000;
+	// Auto detect fluid ids
+	if (id >= items.size()) {
+		uint16_t fid = (id % 10000);
+		if (fid > 0 && fid < 100) {
+			id = fid;
 
-		if (id >= items.size()) {
-			items.resize(id + 1);
+			ItemType& iType = items[id];
+			iType.id = id;
 		}
-		ItemType& iType = items[id];
-		iType.id = id;
 	}
 
 	ItemType& it = getItemType(id);
