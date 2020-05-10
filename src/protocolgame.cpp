@@ -2714,7 +2714,7 @@ void ProtocolGame::sendCloseShop()
 	writeToOutputBuffer(playermsg);
 }
 
-void ProtocolGame::sendSaleItemList(const std::vector<ShopInfo>& shop)
+void ProtocolGame::sendSaleItemList(const std::vector<ShopInfo>& shop, const std::map<uint32_t, uint32_t>& inventoryMap)
 {
 	playermsg.reset();
 	playermsg.addByte(0x7B);
@@ -2724,77 +2724,28 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopInfo>& shop)
 	playermsg.add<uint32_t>(std::min<uint64_t>(player->getMoney(), std::numeric_limits<uint32_t>::max()));
 	#endif
 
-	std::map<uint16_t, uint32_t> saleMap;
-	if (shop.size() <= 5) {
-		// For very small shops it's not worth it to create the complete map
-		for (const ShopInfo& shopInfo : shop) {
-			if (shopInfo.sellPrice == 0) {
-				continue;
-			}
+	uint8_t itemsToSend = 0;
+	auto msgPosition = playermsg.getBufferPosition();
+	playermsg.skipBytes(1);
 
-			int8_t subtype = -1;
-
-			const ItemType& itemType = Item::items[shopInfo.itemId];
-			if (itemType.hasSubType() && !itemType.stackable) {
-				subtype = (shopInfo.subType == 0 ? -1 : shopInfo.subType);
-			}
-
-			uint32_t count = player->getItemTypeCount(shopInfo.itemId, subtype);
-			if (count > 0) {
-				saleMap[shopInfo.itemId] = count;
-			}
+	for (const ShopInfo& shopInfo : shop) {
+		uint32_t index = static_cast<uint32_t>(shopInfo.itemId);
+		if (shopInfo.subType > 0) {
+			index |= (static_cast<uint32_t>(shopInfo.subType) << 16);
 		}
-	} else {
-		// Large shop, it's better to get a cached map of all item counts and use it
-		// We need a temporary map since the finished map should only contain items
-		// available in the shop
-		std::map<uint32_t, uint32_t> tempSaleMap;
-		player->getAllItemTypeCount(tempSaleMap);
 
-		// We must still check manually for the special items that require subtype matches
-		// (That is, fluids such as potions etc., actually these items are very few since
-		// health potions now use their own ID)
-		for (const ShopInfo& shopInfo : shop) {
-			if (shopInfo.sellPrice == 0) {
-				continue;
-			}
-
-			int8_t subtype = -1;
-
-			const ItemType& itemType = Item::items[shopInfo.itemId];
-			if (itemType.hasSubType() && !itemType.stackable) {
-				subtype = (shopInfo.subType == 0 ? -1 : shopInfo.subType);
-			}
-
-			if (subtype != -1) {
-				uint32_t count;
-				if (!itemType.isFluidContainer() && !itemType.isSplash()) {
-					count = player->getItemTypeCount(shopInfo.itemId, subtype); // This shop item requires extra checks
-				} else {
-					count = subtype;
-				}
-
-				if (count > 0) {
-					saleMap[shopInfo.itemId] = count;
-				}
-			} else {
-				std::map<uint32_t, uint32_t>::const_iterator findIt = tempSaleMap.find(shopInfo.itemId);
-				if (findIt != tempSaleMap.end() && findIt->second > 0) {
-					saleMap[shopInfo.itemId] = findIt->second;
-				}
+		auto it = inventoryMap.find(index);
+		if (it != inventoryMap.end()) {
+			playermsg.addItemId(shopInfo.itemId);
+			playermsg.addByte(std::min<uint32_t>(it->second, std::numeric_limits<uint8_t>::max()));
+			if (++itemsToSend >= 0xFF) {
+				break;
 			}
 		}
 	}
 
-	uint8_t itemsToSend = std::min<size_t>(saleMap.size(), std::numeric_limits<uint8_t>::max());
+	playermsg.setBufferPosition(msgPosition);
 	playermsg.addByte(itemsToSend);
-
-	uint8_t i = 0;
-	for (std::map<uint16_t, uint32_t>::const_iterator it = saleMap.begin(); i < itemsToSend; ++it, ++i) {
-		playermsg.addItemId(it->first);
-		playermsg.addByte(std::min<uint32_t>(it->second, std::numeric_limits<uint8_t>::max()));
-	}
-
 	writeToOutputBuffer(playermsg);
 }
 
@@ -3787,9 +3738,6 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	#if CLIENT_VERSION >= 950
 	sendBasicData();
 	#endif
-	#if CLIENT_VERSION >= 900
-	sendItems();
-	#endif
 	player->sendIcons();
 }
 
@@ -3870,26 +3818,48 @@ void ProtocolGame::sendInventoryItem(slots_t slot, const Item* item)
 	writeToOutputBuffer(playermsg);
 }
 
-#if CLIENT_VERSION >= 900
-void ProtocolGame::sendItems()
+#if GAME_FEATURE_INVENTORY_LIST > 0
+void ProtocolGame::sendItems(const std::map<uint32_t, uint32_t>& inventoryMap)
 {
 	playermsg.reset();
 	playermsg.addByte(0xF5);
 
-	const std::vector<uint16_t>& inventory = Item::items.getInventory();
-	playermsg.add<uint16_t>(inventory.size() + 11);
+	uint16_t itemsToSend = 11;
+	auto msgPosition = playermsg.getBufferPosition();
+	playermsg.skipBytes(2);
+
 	for (uint16_t i = 1; i <= 11; i++) {
 		playermsg.add<uint16_t>(i);
-		playermsg.addByte(0); //always 0
-		playermsg.add<uint16_t>(1); // always 1
-	}
-
-	for (auto clientId : inventory) {
-		playermsg.add<uint16_t>(clientId);
-		playermsg.addByte(0); //always 0
+		playermsg.addByte(0);
 		playermsg.add<uint16_t>(1);
 	}
 
+	for (const auto& inventoryInfo : inventoryMap) {
+		uint32_t index = inventoryInfo.first;
+		uint8_t fluidType = static_cast<uint8_t>(index >> 16);
+
+		playermsg.addItemId(static_cast<uint16_t>(index));
+		playermsg.addByte((fluidType ? serverFluidToClient(fluidType) : 0));
+		playermsg.add<uint16_t>(std::min<uint32_t>(inventoryInfo.second, std::numeric_limits<uint16_t>::max()));
+
+		//Limit it to upper networkmessage buffer size incase player have very large inventory
+		#if CLIENT_VERSION >= 1057
+		if (++itemsToSend >= 0x32F0) {
+			break;
+		}
+		#elif CLIENT_VERSION >= 940
+		if (++itemsToSend >= 0x12F0) {
+			break;
+		}
+		#else
+		if (++itemsToSend >= 0xC80) {
+			break;
+		}
+		#endif
+	}
+
+	playermsg.setBufferPosition(msgPosition);
+	playermsg.add<uint16_t>(itemsToSend);
 	writeToOutputBuffer(playermsg);
 }
 #endif
@@ -4693,7 +4663,7 @@ void ProtocolGame::AddItem(uint16_t id, uint8_t count)
 	if (it.stackable) {
 		playermsg.addByte(count);
 	} else if (it.isSplash() || it.isFluidContainer()) {
-		playermsg.addByte(fluidMap[count & 7]);
+		playermsg.addByte(serverFluidToClient(count));
 	}
 
 	#if GAME_FEATURE_QUICK_LOOT > 0
@@ -4717,11 +4687,11 @@ void ProtocolGame::AddItem(const Item* item)
 	#if GAME_FEATURE_ITEM_MARK > 0
 	playermsg.addByte(0xFF); // MARK_UNMARKED
 	#endif
-
+	
 	if (it.stackable) {
 		playermsg.addByte(std::min<uint16_t>(0xFF, item->getItemCount()));
 	} else if (it.isSplash() || it.isFluidContainer()) {
-		playermsg.addByte(fluidMap[item->getFluidType() & 7]);
+		playermsg.addByte(serverFluidToClient(item->getFluidType()));
 	}
 
 	#if GAME_FEATURE_QUICK_LOOT > 0

@@ -1334,22 +1334,30 @@ CombatType_t indexToCombatType(size_t v)
 
 uint8_t serverFluidToClient(uint8_t serverFluid)
 {
-	uint8_t size = sizeof(clientToServerFluidMap) / sizeof(uint8_t);
+	#if GAME_FEATURE_NEWFLUIDS > 0
+	uint8_t size = sizeof(clientToServerFluidMap) / sizeof(clientToServerFluidMap[0]);
 	for (uint8_t i = 0; i < size; ++i) {
 		if (clientToServerFluidMap[i] == serverFluid) {
 			return i;
 		}
 	}
 	return 0;
+	#else
+	return serverFluid;
+	#endif
 }
 
 uint8_t clientFluidToServer(uint8_t clientFluid)
 {
-	uint8_t size = sizeof(clientToServerFluidMap) / sizeof(uint8_t);
+	#if GAME_FEATURE_NEWFLUIDS > 0
+	uint8_t size = sizeof(clientToServerFluidMap) / sizeof(clientToServerFluidMap[0]);
 	if (clientFluid >= size) {
 		return 0;
 	}
 	return clientToServerFluidMap[clientFluid];
+	#else
+	return clientFluid;
+	#endif
 }
 
 itemAttrTypes stringToItemAttribute(const std::string& str)

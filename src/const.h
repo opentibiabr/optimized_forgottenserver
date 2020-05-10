@@ -281,6 +281,7 @@ enum FluidTypes_t : uint8_t {
 
 	FLUID_MUD = FLUID_BROWN + 16,
 	FLUID_FRUITJUICE = FLUID_YELLOW + 16,
+	FLUID_INK = FLUID_WHITE + 16,//12.20+ - we don't care about this id so let's choose whatever
 
 	FLUID_LAVA = FLUID_RED + 24,
 	FLUID_RUM = FLUID_BROWN + 24,
@@ -289,19 +290,6 @@ enum FluidTypes_t : uint8_t {
 	FLUID_TEA = FLUID_BROWN + 32,
 
 	FLUID_MEAD = FLUID_BROWN + 40,
-};
-
-const uint8_t reverseFluidMap[] = {
-	FLUID_EMPTY,
-	FLUID_WATER,
-	FLUID_MANA,
-	FLUID_BEER,
-	FLUID_EMPTY,
-	FLUID_BLOOD,
-	FLUID_SLIME,
-	FLUID_EMPTY,
-	FLUID_LEMONADE,
-	FLUID_MILK,
 };
 
 const uint8_t clientToServerFluidMap[] = {
@@ -323,30 +311,7 @@ const uint8_t clientToServerFluidMap[] = {
 	FLUID_COCONUTMILK,
 	FLUID_TEA,
 	FLUID_MEAD,
-};
-
-enum ClientFluidTypes_t : uint8_t {
-	CLIENTFLUID_EMPTY = 0,
-	CLIENTFLUID_BLUE = 1,
-	CLIENTFLUID_PURPLE = 2,
-	CLIENTFLUID_BROWN_1 = 3,
-	CLIENTFLUID_BROWN_2 = 4,
-	CLIENTFLUID_RED = 5,
-	CLIENTFLUID_GREEN = 6,
-	CLIENTFLUID_BROWN = 7,
-	CLIENTFLUID_YELLOW = 8,
-	CLIENTFLUID_WHITE = 9,
-};
-
-const uint8_t fluidMap[] = {
-	CLIENTFLUID_EMPTY,
-	CLIENTFLUID_BLUE,
-	CLIENTFLUID_RED,
-	CLIENTFLUID_BROWN_1,
-	CLIENTFLUID_GREEN,
-	CLIENTFLUID_YELLOW,
-	CLIENTFLUID_WHITE,
-	CLIENTFLUID_PURPLE,
+	FLUID_INK,
 };
 
 enum SquareColor_t : uint8_t {

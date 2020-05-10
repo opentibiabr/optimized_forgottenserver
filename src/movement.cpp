@@ -754,7 +754,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 	}
 
 	if (needUpdateSkills) {
-		player->sendSkills();
+		player->addScheduledUpdates(PlayerUpdate_Skills);
 	}
 
 	//stat modifiers
@@ -773,7 +773,12 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 	}
 
 	if (needUpdateStats) {
-		player->sendStats();
+		#if CLIENT_VERSION >= 1200
+		//We have magic level in skills now so we need to send skills update too here
+		player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+		#else
+		player->addScheduledUpdates(PlayerUpdate_Stats);
+		#endif
 	}
 
 	return 1;
@@ -835,7 +840,7 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, slots_t 
 	}
 
 	if (needUpdateSkills) {
-		player->sendSkills();
+		player->addScheduledUpdates(PlayerUpdate_Skills);
 	}
 
 	//stat modifiers
@@ -854,7 +859,12 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, slots_t 
 	}
 
 	if (needUpdateStats) {
-		player->sendStats();
+		#if CLIENT_VERSION >= 1200
+		//We have magic level in skills now so we need to send skills update too here
+		player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+		#else
+		player->addScheduledUpdates(PlayerUpdate_Stats);
+		#endif
 	}
 
 	return 1;

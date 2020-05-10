@@ -498,7 +498,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count)
 	}
 
 	if (sendUpdateSkills) {
-		sendSkills();
+		addScheduledUpdates(PlayerUpdate_Skills);
 	}
 }
 
@@ -1011,6 +1011,7 @@ void Player::sendAddContainerItem(const Container* container, const Item* item)
 		#else
 		client->sendAddContainerItem(it.first, item);
 		#endif
+		return;
 	}
 }
 
@@ -1044,6 +1045,10 @@ void Player::sendUpdateContainerItem(const Container* container, uint8_t slot, c
 		#else
 		client->sendUpdateContainerItem(it.first, slot, newItem);
 		#endif
+		#if GAME_FEATURE_INVENTORY_LIST > 0
+		addScheduledUpdates(PlayerUpdate_Inventory);
+		#endif
+		return;
 	}
 }
 
@@ -1074,6 +1079,7 @@ void Player::sendRemoveContainerItem(const Container* container, uint8_t slot)
 		#else
 		client->sendRemoveContainerItem(it.first, slot);
 		#endif
+		return;
 	}
 }
 
@@ -1155,9 +1161,12 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 				removeCondition(condition);
 			}
 		}
-
+		
 		g_game.checkPlayersRecord();
 		IOLoginData::updateOnlineStatus(guid, true);
+		#if GAME_FEATURE_INVENTORY_LIST > 0
+		addScheduledUpdates(PlayerUpdate_Inventory);
+		#endif
 	}
 }
 
@@ -1290,7 +1299,7 @@ void Player::openShopWindow(Npc* npc, const std::vector<ShopInfo>& shop)
 {
 	shopItemList = std::move(shop);
 	sendShop(npc);
-	sendSaleItemList();
+	addScheduledUpdates(PlayerUpdate_Sale);
 }
 
 bool Player::closeShopWindow(bool sendCloseShopWindow /*= true*/)
@@ -1557,7 +1566,7 @@ void Player::onThink(uint32_t interval)
 
 	addOfflineTrainingTime(interval);
 	if (lastStatsTrainingTime != getOfflineTrainingTime() / 60 / 1000) {
-		sendStats();
+		addScheduledUpdates(PlayerUpdate_Stats);
 	}
 }
 
@@ -1613,7 +1622,7 @@ void Player::removeMessageBuffer()
 void Player::drainHealth(Creature* attacker, int32_t damage)
 {
 	Creature::drainHealth(attacker, damage);
-	sendStats();
+	addScheduledUpdates(PlayerUpdate_Stats);
 }
 
 void Player::drainMana(Creature* attacker, int32_t manaLoss)
@@ -1625,7 +1634,7 @@ void Player::drainMana(Creature* attacker, int32_t manaLoss)
 		addDamagePoints(attacker, manaLoss);
 	}
 
-	sendStats();
+	addScheduledUpdates(PlayerUpdate_Stats);
 }
 
 void Player::addManaSpent(uint64_t amount)
@@ -1681,7 +1690,7 @@ void Player::addManaSpent(uint64_t amount)
 	}
 
 	if (sendUpdateStats) {
-		sendStats();
+		addScheduledUpdates(PlayerUpdate_Stats);
 	}
 }
 
@@ -1693,7 +1702,7 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 	if (currLevelExp >= nextLevelExp) {
 		//player has reached max level
 		levelPercent = 0;
-		sendStats();
+		addScheduledUpdates(PlayerUpdate_Stats);
 		return;
 	}
 
@@ -1775,7 +1784,7 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 	} else {
 		levelPercent = 0;
 	}
-	sendStats();
+	addScheduledUpdates(PlayerUpdate_Stats);
 }
 
 void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
@@ -1858,7 +1867,7 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 	} else {
 		levelPercent = 0;
 	}
-	sendStats();
+	addScheduledUpdates(PlayerUpdate_Stats);
 }
 
 uint8_t Player::getPercentLevel(uint64_t count, uint64_t nextLevelCount)
@@ -2849,6 +2858,10 @@ void Player::updateThing(Thing* thing, uint16_t itemId, uint32_t count)
 
 	//event methods
 	onUpdateInventoryItem(item, item);
+	
+	#if GAME_FEATURE_INVENTORY_LIST > 0
+	addScheduledUpdates(PlayerUpdate_Inventory);
+	#endif
 }
 
 void Player::replaceThing(uint32_t index, Thing* thing)
@@ -2872,9 +2885,12 @@ void Player::replaceThing(uint32_t index, Thing* thing)
 
 	//event methods
 	onUpdateInventoryItem(oldItem, item);
+	
+	#if GAME_FEATURE_INVENTORY_LIST > 0
+	addScheduledUpdates(PlayerUpdate_Inventory);
+	#endif
 
 	item->setParent(this);
-
 	inventory[index] = item;
 }
 
@@ -3036,6 +3052,36 @@ std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uin
 	return countMap;
 }
 
+void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const
+{
+	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
+		Item* item = inventory[i];
+		if (!item) {
+			continue;
+		}
+
+		uint16_t itemId = item->getID();
+		if (Item::items[itemId].isFluidContainer()) {
+			countMap[static_cast<uint32_t>(itemId) | (static_cast<uint32_t>(item->getFluidType()) << 16)] += item->getItemCount();
+		} else {
+			countMap[static_cast<uint32_t>(itemId)] += item->getItemCount();
+		}
+
+		if (Container* container = item->getContainer()) {
+			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+				item = (*it);
+
+				itemId = item->getID();
+				if (Item::items[itemId].isFluidContainer()) {
+					countMap[static_cast<uint32_t>(itemId) | (static_cast<uint32_t>(item->getFluidType()) << 16)] += item->getItemCount();
+				} else {
+					countMap[static_cast<uint32_t>(itemId)] += item->getItemCount();
+				}
+			}
+		}
+	}
+}
+
 Thing* Player::getThing(size_t index) const
 {
 	if (index >= CONST_SLOT_FIRST && index <= CONST_SLOT_LAST) {
@@ -3066,9 +3112,7 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 			requireListUpdate = oldParent != this;
 		}
 
-		updateInventoryWeight();
-		updateItemsLight();
-		sendStats();
+		addScheduledUpdates((PlayerUpdate_Weight | PlayerUpdate_Light | PlayerUpdate_Stats));
 	}
 
 	if (const Item* item = thing->getItem()) {
@@ -3076,8 +3120,13 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 			onSendContainer(container);
 		}
 
-		if (shopOwner && !scheduledSaleUpdate && requireListUpdate) {
-			updateSaleShopList(item);
+		if (requireListUpdate) {
+			#if GAME_FEATURE_INVENTORY_LIST > 0
+			addScheduledUpdates(PlayerUpdate_Inventory);
+			#endif
+			if (shopOwner && !hasScheduledUpdates(PlayerUpdate_Sale)) {
+				updateSaleShopList(item);
+			}
 		}
 	} else if (const Creature* creature = thing->getCreature()) {
 		if (creature == this) {
@@ -3120,9 +3169,7 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 			requireListUpdate = newParent != this;
 		}
 
-		updateInventoryWeight();
-		updateItemsLight();
-		sendStats();
+		addScheduledUpdates((PlayerUpdate_Weight | PlayerUpdate_Light | PlayerUpdate_Stats));
 	}
 
 	if (const Item* item = thing->getItem()) {
@@ -3153,8 +3200,13 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 			}
 		}
 
-		if (shopOwner && !scheduledSaleUpdate && requireListUpdate) {
-			updateSaleShopList(item);
+		if (requireListUpdate) {
+			#if GAME_FEATURE_INVENTORY_LIST > 0
+			addScheduledUpdates(PlayerUpdate_Inventory);
+			#endif
+			if (shopOwner && !hasScheduledUpdates(PlayerUpdate_Sale)) {
+				updateSaleShopList(item);
+			}
 		}
 	}
 }
@@ -3177,8 +3229,7 @@ bool Player::updateSaleShopList(const Item* item)
 		}
 	}
 
-	g_dispatcher.addTask(createTask(std::bind(&Game::updatePlayerSaleItems, &g_game, getID())));
-	scheduledSaleUpdate = true;
+	addScheduledUpdates(PlayerUpdate_Sale);
 	return true;
 }
 
@@ -3715,7 +3766,7 @@ bool Player::lastHitIsPlayer(Creature* lastHitCreature)
 void Player::changeHealth(int32_t healthChange, bool sendHealthChange/* = true*/)
 {
 	Creature::changeHealth(healthChange, sendHealthChange);
-	sendStats();
+	addScheduledUpdates(PlayerUpdate_Stats);
 }
 
 void Player::changeMana(int32_t manaChange)
@@ -3728,7 +3779,7 @@ void Player::changeMana(int32_t manaChange)
 		}
 	}
 
-	sendStats();
+	addScheduledUpdates(PlayerUpdate_Stats);
 }
 
 void Player::changeSoul(int32_t soulChange)
@@ -3739,7 +3790,7 @@ void Player::changeSoul(int32_t soulChange)
 		soul = std::max<int32_t>(0, soul + soulChange);
 	}
 
-	sendStats();
+	addScheduledUpdates(PlayerUpdate_Stats);
 }
 
 bool Player::canWear(uint32_t lookType, uint8_t addons) const
@@ -4490,7 +4541,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 	}
 
 	if (sendUpdate) {
-		sendSkills();
+		addScheduledUpdates(PlayerUpdate_Skills);
 	}
 
 	std::ostringstream ss;
@@ -4674,5 +4725,15 @@ void Player::setGuild(Guild* guild)
 
 	if (oldGuild) {
 		oldGuild->removeMember(this);
+	}
+}
+
+void Player::addScheduledUpdates(uint32_t flags)
+{
+	scheduledUpdates |= flags;
+	if (!scheduledUpdate) {
+		//To make it work even better it's possible to use slightly delayed scheduler task so it'll cache even more updates at once
+		g_dispatcher.addTask(createTask(std::bind(&Game::updatePlayerEvent, &g_game, getID())));
+		scheduledUpdate = true;
 	}
 }

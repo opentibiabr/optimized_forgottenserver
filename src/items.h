@@ -217,16 +217,19 @@ class ItemType
 		ItemType& operator=(ItemType&& other) = default;
 
 		bool isGroundTile() const {
-			return group == ITEM_GROUP_GROUND;
+			return (group == ITEM_GROUP_GROUND);
 		}
 		bool isContainer() const {
-			return group == ITEM_GROUP_CONTAINER;
+			return (group == ITEM_GROUP_CONTAINER);
 		}
 		bool isSplash() const {
-			return group == ITEM_GROUP_SPLASH;
+			return (group == ITEM_GROUP_SPLASH);
 		}
 		bool isFluidContainer() const {
-			return group == ITEM_GROUP_FLUID;
+			return (group == ITEM_GROUP_FLUID);
+		}
+		bool isFluid() const {
+			return (group == ITEM_GROUP_SPLASH || group == ITEM_GROUP_FLUID);
 		}
 
 		bool isDoor() const {
@@ -263,7 +266,7 @@ class ItemType
 			return (useable);
 		}
 		bool hasSubType() const {
-			return (isFluidContainer() || isSplash() || stackable || charges != 0);
+			return (isFluid() || stackable || charges != 0);
 		}
 
 		Abilities& getAbilities() {
@@ -385,8 +388,6 @@ class ItemType
 class Items
 {
 	public:
-		using InventoryVector = std::vector<uint16_t>;
-
 		Items();
 
 		// non-copyable
@@ -415,11 +416,6 @@ class Items
 		bool loadFromXml();
 		void parseItemNode(const pugi::xml_node& itemNode, uint16_t id);
 
-		void buildInventoryList();
-		const InventoryVector& getInventory() const {
-			return inventory;
-		}
-
 		size_t size() const {
 			return items.size();
 		}
@@ -427,6 +423,5 @@ class Items
 	private:
 		std::vector<uint16_t> reverseItemMap;
 		std::vector<ItemType> items;
-		InventoryVector inventory;
 };
 #endif

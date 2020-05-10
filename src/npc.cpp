@@ -364,8 +364,6 @@ void Npc::doSayToPlayer(Player* player, const std::string& text)
 void Npc::onPlayerTrade(Player* player, int32_t callback, uint16_t itemId, uint8_t count,
                         uint8_t amount, bool ignore/* = false*/, bool inBackpacks/* = false*/)
 {
-	g_dispatcher.addTask(createTask(std::bind(&Game::updatePlayerSaleItems, &g_game, player->getID())));
-	player->setScheduledSaleUpdate(true);
 	if (npcEventHandler) {
 		npcEventHandler->onPlayerTrade(player, callback, itemId, count, amount, ignore, inBackpacks);
 	}

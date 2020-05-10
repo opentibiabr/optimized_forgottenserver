@@ -115,6 +115,15 @@ struct Skill {
 	uint8_t percent = 0;
 };
 
+enum PlayerUpdateFlags : uint32_t {
+	PlayerUpdate_Weight = 1 << 0,
+	PlayerUpdate_Light = 1 << 1,
+	PlayerUpdate_Stats = 1 << 2,
+	PlayerUpdate_Skills = 1 << 3,
+	PlayerUpdate_Inventory = 1 << 4,
+	PlayerUpdate_Sale = 1 << 5
+};
+
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr int32_t PLAYER_MAX_SPEED = 1500;
@@ -916,10 +925,10 @@ class Player final : public Creature, public Cylinder
 				client->sendInventoryItem(slot, item);
 			}
 		}
-		#if CLIENT_VERSION >= 910
-		void sendItems() {
+		#if GAME_FEATURE_INVENTORY_LIST > 0
+		void sendItems(const std::map<uint32_t, uint32_t>& inventoryMap) {
 			if (client) {
-				client->sendItems();
+				client->sendItems(inventoryMap);
 			}
 		}
 		#endif
@@ -1058,9 +1067,9 @@ class Player final : public Creature, public Cylinder
 				client->sendShop(npc, shopItemList);
 			}
 		}
-		void sendSaleItemList() const {
+		void sendSaleItemList(const std::map<uint32_t, uint32_t>& inventoryMap) const {
 			if (client) {
-				client->sendSaleItemList(shopItemList);
+				client->sendSaleItemList(shopItemList, inventoryMap);
 			}
 		}
 		void sendCloseShop() const {
@@ -1325,11 +1334,13 @@ class Player final : public Creature, public Cylinder
 		void forgetInstantSpell(const std::string& spellName);
 		bool hasLearnedInstantSpell(const std::string& spellName) const;
 
-		void setScheduledSaleUpdate(bool scheduled) {
-			scheduledSaleUpdate = scheduled;
+		void addScheduledUpdates(uint32_t flags);
+		bool hasScheduledUpdates(uint32_t flags) const {
+			return (scheduledUpdates & flags);
 		}
-		bool getScheduledSaleUpdate() {
-			return scheduledSaleUpdate;
+		void resetScheduledUpdates() {
+			scheduledUpdates = 0;
+			scheduledUpdate = false;
 		}
 
 	private:
@@ -1374,6 +1385,7 @@ class Player final : public Creature, public Cylinder
 		size_t getLastIndex() const override;
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t, uint32_t>& countMap) const override;
+		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const;
 		Thing* getThing(size_t index) const override;
 
 		void internalAddThing(Thing* thing) override;
@@ -1446,6 +1458,7 @@ class Player final : public Creature, public Cylinder
 		Town* town = nullptr;
 		Vocation* vocation = nullptr;
 
+		uint32_t scheduledUpdates = 0;
 		uint32_t inventoryWeight = 0;
 		uint32_t capacity = 40000;
 		uint32_t damageImmunities = 0;
@@ -1508,7 +1521,7 @@ class Player final : public Creature, public Cylinder
 		bool isConnecting = false;
 		bool addAttackSkillPoint = false;
 		bool inventoryAbilities[CONST_SLOT_LAST + 1] = {};
-		bool scheduledSaleUpdate = false;
+		bool scheduledUpdate = false;
 
 		static uint32_t playerAutoID;
 

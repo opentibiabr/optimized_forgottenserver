@@ -450,7 +450,12 @@ void ConditionAttributes::updateStats(Player* player)
 	}
 
 	if (needUpdateStats) {
-		player->sendStats();
+		#if CLIENT_VERSION >= 1200
+		//We have magic level in skills now so we need to send skills update too here
+		player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+		#else
+		player->addScheduledUpdates(PlayerUpdate_Stats);
+		#endif
 	}
 }
 
@@ -485,7 +490,7 @@ void ConditionAttributes::updateSkills(Player* player)
 	}
 
 	if (needUpdateSkills) {
-		player->sendSkills();
+		player->addScheduledUpdates(PlayerUpdate_Skills);
 	}
 }
 
@@ -515,7 +520,7 @@ void ConditionAttributes::endCondition(Creature* creature)
 		}
 
 		if (needUpdateSkills) {
-			player->sendSkills();
+			player->addScheduledUpdates(PlayerUpdate_Skills);
 		}
 
 		bool needUpdateStats = false;
@@ -528,7 +533,12 @@ void ConditionAttributes::endCondition(Creature* creature)
 		}
 
 		if (needUpdateStats) {
-			player->sendStats();
+			#if CLIENT_VERSION >= 1200
+			//We have magic level in skills now so we need to send skills update too here
+			player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+			#else
+			player->addScheduledUpdates(PlayerUpdate_Stats);
+			#endif
 		}
 	}
 

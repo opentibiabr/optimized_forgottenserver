@@ -319,7 +319,7 @@ class Game
 		void playerAnswerModalWindow(Player* player, uint32_t modalWindowId, uint8_t button, uint8_t choice);
 		void playerReportRuleViolation(Player* player, const std::string& targetName, uint8_t reportType, uint8_t reportReason, const std::string& comment, const std::string& translation);
 
-		void updatePlayerSaleItems(uint32_t playerId);
+		void updatePlayerEvent(uint32_t playerId);
 		void checkCreatureDeath(uint32_t creatureId);
 
 		void playerMonsterCyclopedia(Player* player);

@@ -288,7 +288,7 @@ class ProtocolGame final : public Protocol
 
 		void sendShop(Npc* npc, const ShopInfoList& itemList);
 		void sendCloseShop();
-		void sendSaleItemList(const std::vector<ShopInfo>& shop);
+		void sendSaleItemList(const std::vector<ShopInfo>& shop, const std::map<uint32_t, uint32_t>& inventoryMap);
 		#if GAME_FEATURE_MARKET > 0
 		void sendMarketEnter(uint32_t depotId);
 		void sendMarketLeave();
@@ -363,8 +363,8 @@ class ProtocolGame final : public Protocol
 
 		//inventory
 		void sendInventoryItem(slots_t slot, const Item* item);
-		#if CLIENT_VERSION >= 910
-		void sendItems();
+		#if GAME_FEATURE_INVENTORY_LIST > 0
+		void sendItems(const std::map<uint32_t, uint32_t>& inventoryMap);
 		#endif
 
 		//messages

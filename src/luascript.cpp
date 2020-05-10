@@ -7711,7 +7711,7 @@ int LuaScriptInterface::luaCreatureSetHealth(lua_State* L)
 
 	Player* player = creature->getPlayer();
 	if (player) {
-		player->sendStats();
+		player->addScheduledUpdates(PlayerUpdate_Stats);
 	}
 	pushBoolean(L, true);
 	return 1;
@@ -7764,7 +7764,7 @@ int LuaScriptInterface::luaCreatureSetMaxHealth(lua_State* L)
 
 	Player* player = creature->getPlayer();
 	if (player) {
-		player->sendStats();
+		player->addScheduledUpdates(PlayerUpdate_Stats);
 	}
 	pushBoolean(L, true);
 	return 1;
@@ -8324,7 +8324,7 @@ int LuaScriptInterface::luaPlayerSetCapacity(lua_State* L)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
 		player->capacity = getNumber<uint32_t>(L, 2);
-		player->sendStats();
+		player->addScheduledUpdates(PlayerUpdate_Stats);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -8577,7 +8577,7 @@ int LuaScriptInterface::luaPlayerSetMaxMana(lua_State* L)
 	if (player) {
 		player->manaMax = getNumber<int32_t>(L, 2);
 		player->mana = std::min<int32_t>(player->mana, player->manaMax);
-		player->sendStats();
+		player->addScheduledUpdates(PlayerUpdate_Stats);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -8741,7 +8741,7 @@ int LuaScriptInterface::luaPlayerAddOfflineTrainingTime(lua_State* L)
 	if (player) {
 		int32_t time = getNumber<int32_t>(L, 2);
 		player->addOfflineTrainingTime(time);
-		player->sendStats();
+		player->addScheduledUpdates(PlayerUpdate_Stats);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -8769,7 +8769,7 @@ int LuaScriptInterface::luaPlayerRemoveOfflineTrainingTime(lua_State* L)
 	if (player) {
 		int32_t time = getNumber<int32_t>(L, 2);
 		player->removeOfflineTrainingTime(time);
-		player->sendStats();
+		player->addScheduledUpdates(PlayerUpdate_Stats);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -9119,7 +9119,7 @@ int LuaScriptInterface::luaPlayerSetStamina(lua_State* L)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
 		player->staminaMinutes = std::min<uint16_t>(2520, stamina);
-		player->sendStats();
+		player->addScheduledUpdates(PlayerUpdate_Stats);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

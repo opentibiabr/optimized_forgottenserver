@@ -329,8 +329,8 @@ Thing* Game::internalGetThing(Player* player, const Position& pos, int32_t index
 		}
 
 		int32_t subType;
-		if (it.isFluidContainer() && index < static_cast<int32_t>(sizeof(reverseFluidMap) / sizeof(uint8_t))) {
-			subType = reverseFluidMap[index];
+		if (it.isFluidContainer()) {
+			subType = clientFluidToServer(index);
 		} else {
 			subType = -1;
 		}
@@ -1602,6 +1602,8 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 		}
 
 		newParent->postAddNotification(item, cylinder, newParent->getThingIndex(item));
+		item->startDecaying();
+
 		return item;
 	}
 
@@ -1633,6 +1635,8 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 					item->setParent(nullptr);
 					cylinder->postRemoveNotification(item, cylinder, itemIndex);
 					ReleaseItem(item);
+					newItem->startDecaying();
+
 					return newItem;
 				} else {
 					return transformItem(item, newItemId);
@@ -1657,6 +1661,8 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 
 			cylinder->updateThing(item, itemId, count);
 			cylinder->postAddNotification(item, cylinder, itemIndex);
+			item->startDecaying();
+
 			return item;
 		}
 	}
@@ -5469,15 +5475,40 @@ void Game::playerAnswerModalWindow(Player* player, uint32_t modalWindowId, uint8
 	}
 }
 
-void Game::updatePlayerSaleItems(uint32_t playerId)
+void Game::updatePlayerEvent(uint32_t playerId)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
-	player->sendSaleItemList();
-	player->setScheduledSaleUpdate(false);
+	if (player->hasScheduledUpdates(PlayerUpdate_Weight)) {
+		player->updateInventoryWeight();
+	}
+	if (player->hasScheduledUpdates(PlayerUpdate_Light)) {
+		player->updateItemsLight();
+	}
+	if (player->hasScheduledUpdates(PlayerUpdate_Stats)) {
+		player->sendStats();
+	}
+	if (player->hasScheduledUpdates(PlayerUpdate_Skills)) {
+		player->sendSkills();
+	}
+	#if GAME_FEATURE_NPC_INTERFACE > 0 || GAME_FEATURE_INVENTORY_LIST > 0
+	if (player->hasScheduledUpdates((PlayerUpdate_Inventory | PlayerUpdate_Sale))) {
+		std::map<uint32_t, uint32_t> tempInventoryMap;
+		player->getAllItemTypeCountAndSubtype(tempInventoryMap);
+		#if GAME_FEATURE_INVENTORY_LIST > 0
+		if (player->hasScheduledUpdates(PlayerUpdate_Inventory)) {
+			player->sendItems(tempInventoryMap);
+		}
+		#endif
+		if (player->hasScheduledUpdates(PlayerUpdate_Sale)) {
+			player->sendSaleItemList(tempInventoryMap);
+		}
+	}
+	#endif
+	player->resetScheduledUpdates();
 }
 
 void Game::checkCreatureDeath(uint32_t creatureId)
