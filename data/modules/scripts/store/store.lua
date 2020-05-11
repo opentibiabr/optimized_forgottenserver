@@ -881,7 +881,7 @@ function playerBuyStore(resultId, playerId, offerId, productType, extraInfo)
 			end
 		end
 
-		db.asyncQuery("UPDATE `players` SET `name` = " .. db.escapeString(newName) .. " WHERE `id` = " .. player:getGuid())
+		db.query("UPDATE `players` SET `name` = " .. db.escapeString(newName) .. " WHERE `id` = " .. player:getGuid())
 		player:setName(newName)
 	elseif(offer.type == GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE) then
 		local outfit = player:getOutfit()

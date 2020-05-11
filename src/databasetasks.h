@@ -38,7 +38,6 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 {
 	public:
 		DatabaseTasks() = default;
-		void start();
 		void flush();
 		void shutdown();
 

@@ -78,7 +78,11 @@ class ProtocolGame final : public Protocol
 
 		explicit ProtocolGame(Connection_ptr connection) : Protocol(connection) {}
 
-		void login(const std::string& name, uint32_t accountId, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem);
+		#if GAME_FEATURE_SESSIONKEY > 0
+		void login(const std::string accountName, const std::string password, std::string characterName, std::string token, uint32_t tokenTime, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem);
+		#else
+		void login(const std::string accountName, const std::string password, std::string characterName, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem);
+		#endif
 		void logout(bool displayEffect, bool forced);
 
 		uint16_t getVersion() const {

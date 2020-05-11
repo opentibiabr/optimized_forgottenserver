@@ -43,9 +43,9 @@ void ProtocolLogin::disconnectClient(const std::string& message, uint32_t versio
 }
 
 #if GAME_FEATURE_SESSIONKEY > 0
-void ProtocolLogin::getCharacterList(const std::string& accountName, const std::string& password, const std::string& token, uint32_t version)
+void ProtocolLogin::getCharacterList(const std::string accountName, const std::string password, const std::string token, uint32_t version)
 #else
-void ProtocolLogin::getCharacterList(const std::string& accountName, const std::string& password, uint32_t version)
+void ProtocolLogin::getCharacterList(const std::string accountName, const std::string password, uint32_t version)
 #endif
 {
 	#if !(GAME_FEATURE_LOGIN_EXTENDED > 0)
@@ -63,6 +63,23 @@ void ProtocolLogin::getCharacterList(const std::string& accountName, const std::
 		}
 	}
 	#endif
+
+	auto connection = getConnection();
+	if (!connection) {
+		return;
+	}
+
+	BanInfo banInfo;
+	if (IOBan::isIpBanned(connection->getIP(), banInfo)) {
+		if (banInfo.reason.empty()) {
+			banInfo.reason = "(none)";
+		}
+
+		std::ostringstream ss;
+		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
+		disconnectClient(ss.str(), version);
+		return;
+	}
 
 	Account account;
 	if (!IOLoginData::loginserverAuthentication(accountName, password, account)) {
@@ -219,23 +236,6 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 		return;
 	}
 
-	BanInfo banInfo;
-	auto connection = getConnection();
-	if (!connection) {
-		return;
-	}
-
-	if (IOBan::isIpBanned(connection->getIP(), banInfo)) {
-		if (banInfo.reason.empty()) {
-			banInfo.reason = "(none)";
-		}
-
-		std::ostringstream ss;
-		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
-		disconnectClient(ss.str(), clientVersion);
-		return;
-	}
-
 	#if GAME_FEATURE_ACCOUNT_NAME > 0
 	std::string accountName = msg.getString();
 	#else
@@ -263,9 +263,9 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 	std::string authToken = msg.getString();
 
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-	g_dispatcher.addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountName, password, authToken, clientVersion)));
+	g_dispatcher.addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, std::move(accountName), std::move(password), std::move(authToken), clientVersion)));
 	#else
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-	g_dispatcher.addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, accountName, password, clientVersion)));
+	g_dispatcher.addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, std::move(accountName), std::move(password), clientVersion)));
 	#endif
 }

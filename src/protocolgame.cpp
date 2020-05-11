@@ -61,17 +61,47 @@ void ProtocolGame::release()
 	Protocol::release();
 }
 
-void ProtocolGame::login(const std::string& name, uint32_t accountId, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
+#if GAME_FEATURE_SESSIONKEY > 0
+void ProtocolGame::login(const std::string accountName, const std::string password, std::string characterName, std::string token, uint32_t tokenTime, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
+#else
+void ProtocolGame::login(const std::string accountName, const std::string password, std::string characterName, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
+#endif
 {
 	//dispatcher thread
-	Player* foundPlayer = g_game.getPlayerByName(name);
+	BanInfo banInfo;
+	if (IOBan::isIpBanned(getIP(), banInfo)) {
+		if (banInfo.reason.empty()) {
+			banInfo.reason = "(none)";
+		}
+
+		std::ostringstream ss;
+		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
+		disconnectClient(ss.str());
+		return;
+	}
+	
+	#if GAME_FEATURE_SESSIONKEY > 0
+	uint32_t accountId = IOLoginData::gameworldAuthentication(accountName, password, characterName, token, tokenTime);
+	if (accountId == 0) {
+		disconnectClient("Account name or password is not correct.");
+		return;
+	}
+	#else
+	uint32_t accountId = IOLoginData::gameworldAuthentication(accountName, password, characterName);
+	if (accountId == 0) {
+		disconnectClient("Account name or password is not correct.");
+		return;
+	}
+	#endif
+
+	Player* foundPlayer = g_game.getPlayerByName(characterName);
 	if (!foundPlayer || g_config.getBoolean(ConfigManager::ALLOW_CLONES)) {
 		player = new Player(getThis());
-		player->setName(name);
+		player->setName(characterName);
 
 		player->incrementReferenceCounter();
 
-		if (!IOLoginData::preloadPlayer(player, name)) {
+		if (!IOLoginData::preloadPlayer(player, characterName)) {
 			disconnectClient("Your character could not be loaded.");
 			return;
 		}
@@ -98,7 +128,6 @@ void ProtocolGame::login(const std::string& name, uint32_t accountId, OperatingS
 		}
 
 		if (!player->hasFlag(PlayerFlag_CannotBeBanned)) {
-			BanInfo banInfo;
 			if (IOBan::isAccountBanned(accountId, banInfo)) {
 				if (banInfo.reason.empty()) {
 					banInfo.reason = "(none)";
@@ -148,6 +177,12 @@ void ProtocolGame::login(const std::string& name, uint32_t accountId, OperatingS
 		}
 
 		if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
+			NetworkMessage opcodeMessage;
+			opcodeMessage.addByte(0x32);
+			opcodeMessage.addByte(0x00);
+			opcodeMessage.add<uint16_t>(0x00);
+			writeToOutputBuffer(opcodeMessage);
+
 			player->registerCreatureEvent("ExtendedOpcode");
 		}
 
@@ -177,15 +212,15 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem,
 {
 	eventConnect = 0;
 
-	Player* foundPlayer = g_game.getPlayerByID(playerId);
-	if (!foundPlayer || foundPlayer->client) {
-		disconnectClient("You are already logged in.");
-		return;
-	}
-
 	if (isConnectionExpired()) {
 		//ProtocolGame::release() has been called at this point and the Connection object
 		//no longer exists, so we return to prevent leakage of the Player.
+		return;
+	}
+
+	Player* foundPlayer = g_game.getPlayerByID(playerId);
+	if (!foundPlayer || foundPlayer->client) {
+		disconnectClient("You are already logged in.");
 		return;
 	}
 
@@ -299,14 +334,6 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 		return;
 	}
 
-	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
-		NetworkMessage opcodeMessage;
-		opcodeMessage.addByte(0x32);
-		opcodeMessage.addByte(0x00);
-		opcodeMessage.add<uint16_t>(0x00);
-		writeToOutputBuffer(opcodeMessage);
-	}
-
 	msg.skipBytes(1); // gamemaster flag
 
 	#if GAME_FEATURE_SESSIONKEY > 0
@@ -349,8 +376,18 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 	#endif
 	#endif
 
+	if (characterName.empty() || characterName.size() > NETWORKMESSAGE_PLAYERNAME_MAXLENGTH) {
+		disconnectClient("Malformed packet.");
+		return;
+	}
+
 	if (accountName.empty()) {
 		disconnectClient("You must enter your account name.");
+		return;
+	}
+
+	if (password.empty()) {
+		disconnectClient("Invalid password.");
 		return;
 	}
 
@@ -383,34 +420,12 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 		disconnectClient("Gameworld is under maintenance. Please re-connect in a while.");
 		return;
 	}
-
-	BanInfo banInfo;
-	if (IOBan::isIpBanned(getIP(), banInfo)) {
-		if (banInfo.reason.empty()) {
-			banInfo.reason = "(none)";
-		}
-
-		std::ostringstream ss;
-		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
-		disconnectClient(ss.str());
-		return;
-	}
-
+	
 	#if GAME_FEATURE_SESSIONKEY > 0
-	uint32_t accountId = IOLoginData::gameworldAuthentication(accountName, password, characterName, token, tokenTime);
-	if (accountId == 0) {
-		disconnectClient("Account name or password is not correct.");
-		return;
-	}
+	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::login, getThis(), std::move(accountName), std::move(password), std::move(characterName), std::move(token), tokenTime, operatingSystem, TFCoperatingSystem)));
 	#else
-	uint32_t accountId = IOLoginData::gameworldAuthentication(accountName, password, characterName);
-	if (accountId == 0) {
-		disconnectClient("Account name or password is not correct.");
-		return;
-	}
+	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::login, getThis(), std::move(accountName), std::move(password), std::move(characterName), operatingSystem, TFCoperatingSystem)));
 	#endif
-
-	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem, TFCoperatingSystem)));
 }
 
 void ProtocolGame::onConnect()
@@ -1191,8 +1206,8 @@ void ProtocolGame::parseRuleViolationReport(NetworkMessage& msg)
 {
 	uint8_t reportType = msg.getByte();
 	uint8_t reportReason = msg.getByte();
-	const std::string& targetName = msg.getString();
-	const std::string& comment = msg.getString();
+	const std::string targetName = msg.getString();
+	const std::string comment = msg.getString();
 	std::string translation;
 	if (reportType == REPORT_TYPE_NAME) {
 		translation = msg.getString();
@@ -4710,7 +4725,7 @@ void ProtocolGame::AddItem(const Item* item)
 void ProtocolGame::parseExtendedOpcode(NetworkMessage& msg)
 {
 	uint8_t opcode = msg.getByte();
-	const std::string& buffer = msg.getString();
+	const std::string buffer = msg.getString();
 
 	// process additional opcodes via lua script event
 	g_game.playerExtendedOpcode(player, opcode, buffer);

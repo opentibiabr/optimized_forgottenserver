@@ -267,6 +267,7 @@ void Connection::parsePacket(const boost::system::error_code& error)
 		return;
 	}
 
+	bool skipReadingNextPacket = false;
 	if (!receivedFirst) {
 		// First message received
 		receivedFirst = true;
@@ -302,18 +303,17 @@ void Connection::parsePacket(const boost::system::error_code& error)
 
 		protocol->onRecvFirstMessage(msg);
 	} else {
-		protocol->onRecvMessage(msg); // Send the packet to the current protocol
-		return; // Stop fetching next packets until protocol resume our work
+		skipReadingNextPacket = protocol->onRecvMessage(msg); // Send the packet to the current protocol
 	}
 
 	try {
 		readTimer.expires_from_now(boost::posix_time::seconds(CONNECTION_READ_TIMEOUT));
 		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
-		// Wait to the next packet
-		boost::asio::async_read(socket,
-		                        boost::asio::buffer(msg.getBuffer(), NetworkMessage::HEADER_LENGTH),
-		                        std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
+		if (!skipReadingNextPacket) {
+			// Wait to the next packet
+			boost::asio::async_read(socket, boost::asio::buffer(msg.getBuffer(), NetworkMessage::HEADER_LENGTH), std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
+		}
 	} catch (boost::system::system_error& e) {
 		std::cout << "[Network error - Connection::parsePacket] " << e.what() << std::endl;
 		close(FORCE_CLOSE);
@@ -325,13 +325,8 @@ void Connection::resumeWork()
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
 
 	try {
-		readTimer.expires_from_now(boost::posix_time::seconds(CONNECTION_READ_TIMEOUT));
-		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
-
 		// Wait to the next packet
-		boost::asio::async_read(socket,
-			boost::asio::buffer(msg.getBuffer(), NetworkMessage::HEADER_LENGTH),
-			std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
+		boost::asio::async_read(socket, boost::asio::buffer(msg.getBuffer(), NetworkMessage::HEADER_LENGTH), std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
 	} catch (boost::system::system_error& e) {
 		std::cout << "[Network error - Connection::parsePacket] " << e.what() << std::endl;
 		close(FORCE_CLOSE);
@@ -349,7 +344,13 @@ void Connection::send(const OutputMessage_ptr& msg)
 	messageQueue.emplace_back(msg);
 	if (noPendingWrite) {
 		// Make asio thread handle xtea encryption instead of dispatcher
-		socket.get_io_service().post(std::bind(&Connection::internalWorker, shared_from_this()));
+		try {
+			socket.get_io_service().post(std::bind(&Connection::internalWorker, shared_from_this()));
+		} catch (boost::system::system_error& e) {
+			std::cout << "[Network error - Connection::send] " << e.what() << std::endl;
+			messageQueue.clear();
+			close(FORCE_CLOSE);
+		}
 	}
 }
 
