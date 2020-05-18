@@ -55,7 +55,11 @@ void ServiceManager::stop()
 
 	for (auto& servicePortIt : acceptors) {
 		try {
+			#if BOOST_VERSION >= 106600
+			boost::asio::post(io_service, std::bind(&ServicePort::onStopServer, servicePortIt.second));
+			#else
 			io_service.post(std::bind(&ServicePort::onStopServer, servicePortIt.second));
+			#endif
 		} catch (boost::system::system_error& e) {
 			std::cout << "[ServiceManager::stop] Network Error: " << e.what() << std::endl;
 		}

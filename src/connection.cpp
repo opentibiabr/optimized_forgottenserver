@@ -345,7 +345,11 @@ void Connection::send(const OutputMessage_ptr& msg)
 	if (noPendingWrite) {
 		// Make asio thread handle xtea encryption instead of dispatcher
 		try {
+			#if BOOST_VERSION >= 106600
+			boost::asio::post(socket.get_executor(), std::bind(&Connection::internalWorker, shared_from_this()));
+			#else
 			socket.get_io_service().post(std::bind(&Connection::internalWorker, shared_from_this()));
+			#endif
 		} catch (boost::system::system_error& e) {
 			std::cout << "[Network error - Connection::send] " << e.what() << std::endl;
 			messageQueue.clear();
