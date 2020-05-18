@@ -52,6 +52,8 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 		std::list<DatabaseTask> tasks;
 		std::mutex taskLock;
 		std::condition_variable taskSignal;
+		std::condition_variable flushSignal;
+		bool flushTasks = false;
 };
 
 extern DatabaseTasks g_databaseTasks;
