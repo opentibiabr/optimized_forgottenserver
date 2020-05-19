@@ -812,6 +812,12 @@ int NpcScriptInterface::luaOpenShopWindow(lua_State* L)
 		uint32_t buyPrice = getField<uint32_t>(L, tableIndex, "buy");
 		uint32_t sellPrice = getField<uint32_t>(L, tableIndex, "sell");
 		std::string realName = getFieldString(L, tableIndex, "name");
+		if (buyPrice == static_cast<uint32_t>(-1)) {
+			buyPrice = 0;
+		}
+		if (sellPrice == static_cast<uint32_t>(-1)) {
+			sellPrice = 0;
+		}
 
 		items.emplace_back(itemId, subType, buyPrice, sellPrice, std::move(realName));
 		lua_pop(L, 6);
@@ -1030,6 +1036,12 @@ int NpcScriptInterface::luaNpcOpenShopWindow(lua_State* L)
 		uint32_t buyPrice = getField<uint32_t>(L, tableIndex, "buy");
 		uint32_t sellPrice = getField<uint32_t>(L, tableIndex, "sell");
 		std::string realName = getFieldString(L, tableIndex, "name");
+		if (buyPrice == static_cast<uint32_t>(-1)) {
+			buyPrice = 0;
+		}
+		if (sellPrice == static_cast<uint32_t>(-1)) {
+			sellPrice = 0;
+		}
 
 		items.emplace_back(itemId, subType, buyPrice, sellPrice, std::move(realName));
 		lua_pop(L, 6);

@@ -4661,8 +4661,8 @@ void ProtocolGame::AddShopItem(const ShopInfo& item)
 
 	playermsg.addString(item.realName);
 	playermsg.add<uint32_t>(it.weight);
-	playermsg.add<uint32_t>((item.buyPrice == static_cast<uint32_t>(-1) ? 0 : item.buyPrice));
-	playermsg.add<uint32_t>((item.sellPrice == static_cast<uint32_t>(-1) ? 0 : item.sellPrice));
+	playermsg.add<uint32_t>(item.buyPrice);
+	playermsg.add<uint32_t>(item.sellPrice);
 }
 
 void ProtocolGame::AddItem(uint16_t id, uint8_t count)
