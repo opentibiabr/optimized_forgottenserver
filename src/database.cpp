@@ -76,6 +76,7 @@ void Database::disconnect()
 {
 	if (handle != nullptr) {
 		mysql_close(handle);
+		handle = nullptr;
 	}
 
 	mysql_thread_end();
