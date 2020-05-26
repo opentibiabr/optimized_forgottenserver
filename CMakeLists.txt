@@ -23,6 +23,7 @@ include(FindLTO)
 # Find packages.
 find_package(GMP REQUIRED)
 find_package(PugiXML REQUIRED)
+find_package(ZLIB REQUIRED)
 find_package(MySQL)
 find_package(Threads)
 

@@ -20,13 +20,15 @@
 #ifndef FS_PROTOCOL_H_D71405071ACF4137A4B1203899DE80E1
 #define FS_PROTOCOL_H_D71405071ACF4137A4B1203899DE80E1
 
+#include <zlib.h>
+
 #include "connection.h"
 
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
 	public:
 		explicit Protocol(Connection_ptr connection) : connection(connection) {}
-		virtual ~Protocol() = default;
+		virtual ~Protocol();
 
 		// non-copyable
 		Protocol(const Protocol&) = delete;
@@ -83,6 +85,7 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		void setChecksumMethod(ChecksumMethods_t method) {
 			checksumMethod = method;
 		}
+		void enableCompression();
 
 		static bool RSA_decrypt(NetworkMessage& msg);
 
@@ -95,18 +98,21 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 	private:
 		void XTEA_encrypt(OutputMessage& msg) const;
 		bool XTEA_decrypt(NetworkMessage& msg) const;
+		bool compression(OutputMessage& msg);
 
 		friend class Connection;
 
 		OutputMessage_ptr outputBuffer;
+		z_stream* defStream = nullptr;
 
 		const ConnectionWeak_ptr connection;
 		uint32_t key[4] = {};
 		uint32_t serverSequenceNumber = 0;
 		uint32_t clientSequenceNumber = 0;
-		bool encryptionEnabled = false;
 		std::underlying_type<ChecksumMethods_t>::type checksumMethod = CHECKSUM_METHOD_NONE;
+		bool encryptionEnabled = false;
 		bool rawMessages = false;
+		bool compreesionEnabled = false;
 };
 
 #endif

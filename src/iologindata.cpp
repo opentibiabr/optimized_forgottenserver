@@ -450,7 +450,6 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 		}
 	}
 
-
 	if (!player->setVocation(result->getNumber<uint16_t>("vocation"))) {
 		std::cout << "[Error - IOLoginData::loadPlayer] " << player->name << " has Vocation ID " << result->getNumber<uint16_t>("vocation") << " which doesn't exist" << std::endl;
 		return false;

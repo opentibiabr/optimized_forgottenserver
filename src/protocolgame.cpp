@@ -290,6 +290,10 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 	version = msg.get<uint16_t>();
 	if (version >= 1111) {
 		setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
+		if (TFCoperatingSystem < CLIENTOS_TFC_ANDROID) {
+			//compression on the forgotten client will be implemented in the next client update
+			enableCompression();
+		}
 	} else if (version >= 830) {
 		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 	}

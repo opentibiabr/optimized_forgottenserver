@@ -20,15 +20,32 @@
 #include "otpch.h"
 #include "tasks.h"
 
+#include "configmanager.h"
 #include "protocol.h"
 #include "outputmessage.h"
 #include "rsa.h"
 
 extern RSA g_RSA;
+extern ConfigManager g_config;
+
+Protocol::~Protocol()
+{
+	if (compreesionEnabled) {
+		deflateEnd(defStream);
+		delete defStream;
+	}
+}
 
 void Protocol::onSendMessage(const OutputMessage_ptr& msg)
 {
 	if (!rawMessages) {
+		uint32_t _compression = 0;
+		if (compreesionEnabled && msg->getLength() >= 128) {
+			if (compression(*msg)) {
+				_compression = (1U << 31);
+			}
+		}
+
 		msg->writeMessageLength();
 
 		if (encryptionEnabled) {
@@ -38,7 +55,7 @@ void Protocol::onSendMessage(const OutputMessage_ptr& msg)
 			} else if (checksumMethod == CHECKSUM_METHOD_ADLER32) {
 				msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()));
 			} else if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
-				msg->addCryptoHeader(true, ++serverSequenceNumber);
+				msg->addCryptoHeader(true, _compression | (++serverSequenceNumber));
 				if (serverSequenceNumber >= 0x7FFFFFFF) {
 					serverSequenceNumber = 0;
 				}
@@ -491,4 +508,47 @@ uint32_t Protocol::getIP() const
 	}
 
 	return 0;
+}
+
+void Protocol::enableCompression()
+{
+	if(!compreesionEnabled)
+	{
+		int32_t compressionLevel = g_config.getNumber(ConfigManager::COMPRESSION_LEVEL);
+		if (compressionLevel != 0) {
+			defStream = new z_stream;
+			defStream->zalloc = Z_NULL;
+			defStream->zfree = Z_NULL;
+			defStream->opaque = Z_NULL;
+			if (deflateInit2(defStream, compressionLevel, Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY) != Z_OK) {
+				delete defStream;
+				std::cout << "Zlib deflateInit2 error: " << (defStream->msg ? defStream->msg : "unknown error") << std::endl;
+			} else {
+				compreesionEnabled = true;
+			}
+		}
+	}
+}
+
+bool Protocol::compression(OutputMessage& msg)
+{
+	static thread_local uint8_t defBuffer[NETWORKMESSAGE_MAXSIZE];
+	defStream->next_in = msg.getOutputBuffer();
+	defStream->avail_in = msg.getLength();
+	defStream->next_out = defBuffer;
+	defStream->avail_out = NETWORKMESSAGE_MAXSIZE;
+
+	int32_t ret = deflate(defStream, Z_FINISH);
+	if (ret != Z_OK && ret != Z_STREAM_END) {
+		return false;
+	}
+	uint32_t totalSize = static_cast<uint32_t>(defStream->total_out);
+	deflateReset(defStream);
+	if (totalSize == 0) {
+		return false;
+	}
+
+	msg.reset();
+	msg.addBytes(reinterpret_cast<const char*>(defBuffer), static_cast<size_t>(totalSize));
+	return true;
 }
