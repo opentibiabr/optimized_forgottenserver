@@ -360,9 +360,13 @@ void Connection::send(const OutputMessage_ptr& msg)
 
 void Connection::internalWorker()
 {
-	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	std::unique_lock<std::recursive_mutex> lockClass(connectionLock);
 	if (!messageQueue.empty()) {
-		internalSend(messageQueue.front());
+		const OutputMessage_ptr& msg = messageQueue.front();
+		lockClass.unlock();
+		protocol->onSendMessage(msg);
+		lockClass.lock();
+		internalSend(msg);
 	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		closeSocket();
 	}
@@ -370,7 +374,6 @@ void Connection::internalWorker()
 
 void Connection::internalSend(const OutputMessage_ptr& msg)
 {
-	protocol->onSendMessage(msg);
 	try {
 		writeTimer.expires_from_now(boost::posix_time::seconds(CONNECTION_WRITE_TIMEOUT));
 		writeTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
@@ -400,7 +403,7 @@ uint32_t Connection::getIP()
 
 void Connection::onWriteOperation(const boost::system::error_code& error)
 {
-	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+	std::unique_lock<std::recursive_mutex> lockClass(connectionLock);
 	writeTimer.cancel();
 	messageQueue.pop_front();
 
@@ -411,7 +414,11 @@ void Connection::onWriteOperation(const boost::system::error_code& error)
 	}
 
 	if (!messageQueue.empty()) {
-		internalSend(messageQueue.front());
+		const OutputMessage_ptr& msg = messageQueue.front();
+		lockClass.unlock();
+		protocol->onSendMessage(msg);
+		lockClass.lock();
+		internalSend(msg);
 	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		closeSocket();
 	}
