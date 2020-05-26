@@ -275,6 +275,7 @@ bool House::transferToDepot(Player* player) const
 				#if GAME_FEATURE_MARKET > 0
 				g_game.internalAddItem(player->getInbox(), parcel, INDEX_WHEREEVER, FLAG_NOLIMIT);
 				#else
+				player->setLastDepotId(static_cast<int16_t>(townId));
 				g_game.internalAddItem(player->getDepotLocker(townId), parcel, INDEX_WHEREEVER, FLAG_NOLIMIT);
 				#endif
 				return true;
@@ -289,6 +290,7 @@ bool House::transferToDepot(Player* player) const
 		}
 		#else
 		DepotLocker* depot = player->getDepotLocker(townId);
+		player->setLastDepotId(static_cast<int16_t>(townId));
 		for (Item* item : moveItemList) {
 			g_game.internalMoveItem(item->getParent(), depot, INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT);
 		}
@@ -761,6 +763,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const
 					}
 					#else
 					DepotLocker* depot = player.getDepotLocker(town->getID());
+					player.setLastDepotId(static_cast<int16_t>(town->getID()));
 					if (depot) {
 						if (g_game.internalAddItem(depot, letter, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 							delete letter;
