@@ -450,7 +450,6 @@ class Game
 		void internalCreatureChangeVisible(Creature* creature, bool visible);
 		void changeLight(const Creature* creature);
 		void updateCreatureSkull(const Creature* creature);
-		void updatePlayerShield(Player* player);
 		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 		void updatePlayerHelpers(const Player& player);
 		#endif
@@ -482,6 +481,9 @@ class Game
 		//animation help functions
 		void addCreatureHealth(const Creature* target);
 		static void addCreatureHealth(const SpectatorVector& spectators, const Creature* target);
+		#if GAME_FEATURE_PARTY_LIST > 0
+		void addPlayerMana(const Player* target);
+		#endif
 		void addMagicEffect(const Position& pos, uint8_t effect);
 		static void addMagicEffect(const SpectatorVector& spectators, const Position& pos, uint8_t effect);
 		void addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect);

@@ -183,6 +183,9 @@ bool ConfigManager::load()
 	integer[MAX_TRACKED_QUESTS] = getGlobalNumber(L, "maxTrackedQuests", 10);
 	integer[MAX_TRACKED_QUESTS_PREMIUM] = getGlobalNumber(L, "maxTrackedQuestsPremium", 25);
 	#endif
+	#if GAME_FEATURE_PARTY_LIST > 0
+	integer[PARTY_LIST_MAX_DISTANCE] = getGlobalNumber(L, "partyListMaxDistance", 0);
+	#endif
 
 	loaded = true;
 	lua_close(L);

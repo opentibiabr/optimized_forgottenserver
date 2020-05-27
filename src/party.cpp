@@ -44,11 +44,10 @@ void Party::disband()
 
 	currentLeader->setParty(nullptr);
 	currentLeader->sendClosePrivate(CHANNEL_PARTY);
-	g_game.updatePlayerShield(currentLeader);
 	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	g_game.updatePlayerHelpers(*currentLeader);
 	#endif
-	currentLeader->sendCreatureSkull(currentLeader);
+	currentLeader->sendPlayerPartyIcons(currentLeader);
 	currentLeader->sendTextMessage(MESSAGE_INFO_DESCR, "Your party has been disbanded.");
 
 	for (Player* invitee : inviteList) {
@@ -64,14 +63,12 @@ void Party::disband()
 	}
 
 	for (Player* member : memberList) {
-		g_game.updatePlayerShield(member);
-
 		for (Player* otherMember : memberList) {
-			otherMember->sendCreatureSkull(member);
+			otherMember->sendPlayerPartyIcons(member);
 		}
 
-		member->sendCreatureSkull(currentLeader);
-		currentLeader->sendCreatureSkull(member);
+		member->sendPlayerPartyIcons(currentLeader);
+		currentLeader->sendPlayerPartyIcons(member);
 		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 		g_game.updatePlayerHelpers(*member);
 		#endif
@@ -115,21 +112,20 @@ bool Party::leaveParty(Player* player)
 
 	player->setParty(nullptr);
 	player->sendClosePrivate(CHANNEL_PARTY);
-	g_game.updatePlayerShield(player);
 	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	g_game.updatePlayerHelpers(*player);
 	#endif
 
 	for (Player* member : memberList) {
-		member->sendCreatureSkull(player);
+		member->sendPlayerPartyIcons(player);
 		player->sendPlayerPartyIcons(member);
 		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 		g_game.updatePlayerHelpers(*member);
 		#endif
 	}
 
-	leader->sendCreatureSkull(player);
-	player->sendCreatureSkull(player);
+	leader->sendPlayerPartyIcons(player);
+	player->sendPlayerPartyIcons(player);
 	player->sendPlayerPartyIcons(leader);
 
 	player->sendTextMessage(MESSAGE_INFO_DESCR, "You have left the party.");
@@ -173,8 +169,13 @@ bool Party::passPartyLeadership(Player* player)
 	updateSharedExperience();
 
 	for (Player* member : memberList) {
+		#if GAME_FEATURE_PARTY_LIST > 0
+		member->sendPartyCreatureShield(oldLeader);
+		member->sendPartyCreatureShield(leader);
+		#else
 		member->sendCreatureShield(oldLeader);
 		member->sendCreatureShield(leader);
+		#endif
 	}
 
 	for (Player* invitee : inviteList) {
@@ -182,8 +183,13 @@ bool Party::passPartyLeadership(Player* player)
 		invitee->sendCreatureShield(leader);
 	}
 
+	#if GAME_FEATURE_PARTY_LIST > 0
+	leader->sendPartyCreatureShield(oldLeader);
+	leader->sendPartyCreatureShield(leader);
+	#else
 	leader->sendCreatureShield(oldLeader);
 	leader->sendCreatureShield(leader);
+	#endif
 
 	player->sendTextMessage(MESSAGE_INFO_DESCR, "You are now the leader of the party.");
 	return true;
@@ -208,21 +214,23 @@ bool Party::joinParty(Player& player)
 
 	player.setParty(this);
 
-	g_game.updatePlayerShield(&player);
-
 	for (Player* member : memberList) {
-		member->sendCreatureSkull(&player);
+		member->sendPlayerPartyIcons(&player);
 		player.sendPlayerPartyIcons(member);
 	}
 
-	player.sendCreatureSkull(&player);
-	leader->sendCreatureSkull(&player);
+	player.sendPlayerPartyIcons(&player);
+	leader->sendPlayerPartyIcons(&player);
 	player.sendPlayerPartyIcons(leader);
 
 	memberList.push_back(&player);
 
 	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	g_game.updatePlayerHelpers(player);
+	#endif
+
+	#if GAME_FEATURE_PARTY_LIST > 0
+	updatePlayerStatus(&player);
 	#endif
 
 	player.removePartyInvitation(this);
@@ -292,8 +300,7 @@ bool Party::invitePlayer(Player& player)
 
 	if (empty()) {
 		ss << " Open the party channel to communicate with your members.";
-		g_game.updatePlayerShield(leader);
-		leader->sendCreatureSkull(leader);
+		leader->sendPlayerPartyIcons(leader);
 	}
 
 	leader->sendTextMessage(MESSAGE_INFO_DESCR, ss.str());
@@ -325,6 +332,17 @@ bool Party::isPlayerInvited(const Player* player) const
 
 void Party::updateAllPartyIcons()
 {
+	#if GAME_FEATURE_PARTY_LIST > 0
+	for (Player* member : memberList) {
+		for (Player* otherMember : memberList) {
+			member->sendPartyCreatureShield(otherMember);
+		}
+
+		member->sendPartyCreatureShield(leader);
+		leader->sendPartyCreatureShield(member);
+	}
+	leader->sendPartyCreatureShield(leader);
+	#else
 	for (Player* member : memberList) {
 		for (Player* otherMember : memberList) {
 			member->sendCreatureShield(otherMember);
@@ -334,6 +352,7 @@ void Party::updateAllPartyIcons()
 		leader->sendCreatureShield(member);
 	}
 	leader->sendCreatureShield(leader);
+	#endif
 }
 
 void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string& msg, bool sendToInvitations /*= false*/)
@@ -476,3 +495,105 @@ bool Party::canOpenCorpse(uint32_t ownerId) const
 	}
 	return false;
 }
+
+#if GAME_FEATURE_PARTY_LIST > 0
+void Party::showPlayerStatus(Player* player, Player* member, bool showStatus)
+{
+	player->sendPartyCreatureShowStatus(member, showStatus);
+	member->sendPartyCreatureShowStatus(player, showStatus);
+	if (showStatus) {
+		for (Creature* summon : member->getSummons()) {
+			player->sendPartyCreatureShowStatus(summon, showStatus);
+			player->sendPartyCreatureHealth(summon, std::ceil((static_cast<double>(summon->getHealth()) / std::max<int32_t>(summon->getMaxHealth(), 1)) * 100));
+		}
+		for (Creature* summon : player->getSummons()) {
+			member->sendPartyCreatureShowStatus(summon, showStatus);
+			member->sendPartyCreatureHealth(summon, std::ceil((static_cast<double>(summon->getHealth()) / std::max<int32_t>(summon->getMaxHealth(), 1)) * 100));
+		}
+		player->sendPartyCreatureHealth(member, std::ceil((static_cast<double>(member->getHealth()) / std::max<int32_t>(member->getMaxHealth(), 1)) * 100));
+		member->sendPartyCreatureHealth(player, std::ceil((static_cast<double>(player->getHealth()) / std::max<int32_t>(player->getMaxHealth(), 1)) * 100));
+		player->sendPartyPlayerMana(member, std::ceil((static_cast<double>(member->getMana()) / std::max<int32_t>(member->getMaxMana(), 1)) * 100));
+		member->sendPartyPlayerMana(player, std::ceil((static_cast<double>(player->getMana()) / std::max<int32_t>(player->getMaxMana(), 1)) * 100));
+	} else {
+		for (Creature* summon : player->getSummons()) {
+			member->sendPartyCreatureShowStatus(summon, showStatus);
+		}
+		for (Creature* summon : member->getSummons()) {
+			player->sendPartyCreatureShowStatus(summon, showStatus);
+		}
+	}
+}
+
+void Party::updatePlayerStatus(Player* player)
+{
+	int32_t maxDistance = g_config.getNumber(ConfigManager::PARTY_LIST_MAX_DISTANCE);
+	for (Player* member : memberList) {
+		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
+		if (condition) {
+			showPlayerStatus(player, member, true);
+		} else {
+			showPlayerStatus(player, member, false);
+		}
+	}
+	bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), leader->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), leader->getPosition()) <= maxDistance));
+	if (condition) {
+		showPlayerStatus(player, leader, true);
+	} else {
+		showPlayerStatus(player, leader, false);
+	}
+}
+
+void Party::updatePlayerStatus(Player* player, const Position& oldPos, const Position& newPos)
+{
+	int32_t maxDistance = g_config.getNumber(ConfigManager::PARTY_LIST_MAX_DISTANCE);
+	if (maxDistance != 0) {
+		for (Player* member : memberList) {
+			bool condition1 = (Position::getDistanceX(oldPos, member->getPosition()) <= maxDistance && Position::getDistanceY(oldPos, member->getPosition()) <= maxDistance);
+			bool condition2 = (Position::getDistanceX(newPos, member->getPosition()) <= maxDistance && Position::getDistanceY(newPos, member->getPosition()) <= maxDistance);
+			if (condition1 && !condition2) {
+				showPlayerStatus(player, member, false);
+			} else if (!condition1 && condition2) {
+				showPlayerStatus(player, member, true);
+			}
+		}
+
+		bool condition1 = (Position::getDistanceX(oldPos, leader->getPosition()) <= maxDistance && Position::getDistanceY(oldPos, leader->getPosition()) <= maxDistance);
+		bool condition2 = (Position::getDistanceX(newPos, leader->getPosition()) <= maxDistance && Position::getDistanceY(newPos, leader->getPosition()) <= maxDistance);
+		if (condition1 && !condition2) {
+			showPlayerStatus(player, leader, false);
+		} else if (!condition1 && condition2) {
+			showPlayerStatus(player, leader, true);
+		}
+	}
+}
+
+void Party::updatePlayerHealth(const Player* player, const Creature* target, uint8_t healthPercent)
+{
+	int32_t maxDistance = g_config.getNumber(ConfigManager::PARTY_LIST_MAX_DISTANCE);
+	for (Player* member : memberList) {
+		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
+		if (condition) {
+			member->sendPartyCreatureHealth(target, healthPercent);
+		}
+	}
+	bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), leader->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), leader->getPosition()) <= maxDistance));
+	if (condition) {
+		leader->sendPartyCreatureHealth(target, healthPercent);
+	}
+}
+
+void Party::updatePlayerMana(const Player* player, uint8_t manaPercent)
+{
+	int32_t maxDistance = g_config.getNumber(ConfigManager::PARTY_LIST_MAX_DISTANCE);
+	for (Player* member : memberList) {
+		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
+		if (condition) {
+			member->sendPartyPlayerMana(player, manaPercent);
+		}
+	}
+	bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), leader->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), leader->getPosition()) <= maxDistance));
+	if (condition) {
+		leader->sendPartyPlayerMana(player, manaPercent);
+	}
+}
+#endif

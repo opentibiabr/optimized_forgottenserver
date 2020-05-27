@@ -279,4 +279,8 @@
 #define GAME_FEATURE_TOURNAMENTS 1
 #endif
 
+#if CLIENT_VERSION >= 1220
+#define GAME_FEATURE_PARTY_LIST 1
+#endif
+
 #endif

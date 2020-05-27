@@ -229,7 +229,15 @@ class ProtocolGame final : public Protocol
 
 		void sendDistanceShoot(const Position& from, const Position& to, uint8_t type);
 		void sendMagicEffect(const Position& pos, uint8_t type);
-		void sendCreatureHealth(const Creature* creature);
+		void sendCreatureHealth(const Creature* creature, uint8_t healthPercent);
+		#if GAME_FEATURE_PARTY_LIST > 0
+		void sendPartyCreatureUpdate(const Creature* target);
+		void sendPartyCreatureShield(const Creature* target);
+		void sendPartyCreatureSkull(const Creature* target);
+		void sendPartyCreatureHealth(const Creature* target, uint8_t healthPercent);
+		void sendPartyPlayerMana(const Player* target, uint8_t manaPercent);
+		void sendPartyCreatureShowStatus(const Creature* target, bool showStatus);
+		#endif
 		void sendSkills();
 		void sendPing();
 		void sendPingBack();

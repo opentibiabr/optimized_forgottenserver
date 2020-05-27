@@ -4298,12 +4298,39 @@ void Game::addCreatureHealth(const Creature* target)
 
 void Game::addCreatureHealth(const SpectatorVector& spectators, const Creature* target)
 {
+	uint8_t healthPercent = std::ceil((static_cast<double>(target->getHealth()) / std::max<int32_t>(target->getMaxHealth(), 1)) * 100);
+	#if GAME_FEATURE_PARTY_LIST > 0
+	if (const Player* targetPlayer = target->getPlayer()) {
+		if (Party* party = targetPlayer->getParty()) {
+			party->updatePlayerHealth(targetPlayer, target, healthPercent);
+		}
+	} else if (const Creature* master = target->getMaster()) {
+		if (const Player* masterPlayer = master->getPlayer()) {
+			if (Party* party = masterPlayer->getParty()) {
+				party->updatePlayerHealth(masterPlayer, target, healthPercent);
+			}
+		}
+	}
+	#endif
+
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendCreatureHealth(target);
+			tmpPlayer->sendCreatureHealth(target, healthPercent);
 		}
 	}
 }
+
+#if GAME_FEATURE_PARTY_LIST > 0
+void Game::addPlayerMana(const Player* target)
+{
+	if (const Player* targetPlayer = target->getPlayer()) {
+		if (Party* party = targetPlayer->getParty()) {
+			uint8_t manaPercent = std::ceil((static_cast<double>(target->getMana()) / std::max<int32_t>(target->getMaxMana(), 1)) * 100);
+			party->updatePlayerMana(targetPlayer, manaPercent);
+		}
+	}
+}
+#endif
 
 void Game::addMagicEffect(const Position& pos, uint8_t effect)
 {
@@ -4604,15 +4631,6 @@ void Game::updateCreatureSkull(const Creature* creature)
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	for (Creature* spectator : spectators) {
 		spectator->getPlayer()->sendCreatureSkull(creature);
-	}
-}
-
-void Game::updatePlayerShield(Player* player)
-{
-	SpectatorVector spectators;
-	map.getSpectators(spectators, player->getPosition(), true, true);
-	for (Creature* spectator : spectators) {
-		spectator->getPlayer()->sendCreatureShield(player);
 	}
 }
 

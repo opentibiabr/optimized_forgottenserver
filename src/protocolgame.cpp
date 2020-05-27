@@ -761,6 +761,23 @@ void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool& known, uint32_t& remo
 	if (knownCreatureSet.size() > 100) {
 	#endif
 		// Look for a creature to remove
+		#if GAME_FEATURE_PARTY_LIST > 0
+		for (auto it = knownCreatureSet.begin(), end = knownCreatureSet.end(); it != end; ++it) {
+			// We need to protect party players from removing
+			Creature* creature = g_game.getCreatureByID(*it);
+			if (Player* checkPlayer = creature->getPlayer()) {
+				if (player->getParty() != checkPlayer->getParty() && !canSee(creature)) {
+					removedKnown = *it;
+					knownCreatureSet.erase(it);
+					return;
+				}
+			} else if (!canSee(creature)) {
+				removedKnown = *it;
+				knownCreatureSet.erase(it);
+				return;
+			}
+		}
+		#else
 		for (auto it = knownCreatureSet.begin(), end = knownCreatureSet.end(); it != end; ++it) {
 			Creature* creature = g_game.getCreatureByID(*it);
 			if (!canSee(creature)) {
@@ -769,6 +786,7 @@ void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool& known, uint32_t& remo
 				return;
 			}
 		}
+		#endif
 
 		// Bad situation. Let's just remove anyone.
 		auto it = knownCreatureSet.begin();
@@ -2395,10 +2413,14 @@ void ProtocolGame::sendBasicData()
 	playermsg.addByte(0x9F);
 	if (player->isPremium()) {
 		playermsg.addByte(1);
+		#if GAME_FEATURE_PREMIUM_EXPIRATION > 0
 		playermsg.add<uint32_t>(time(nullptr) + (player->premiumDays * 86400));
+		#endif
 	} else {
 		playermsg.addByte(0);
+		#if GAME_FEATURE_PREMIUM_EXPIRATION > 0
 		playermsg.add<uint32_t>(0);
+		#endif
 	}
 	playermsg.addByte(player->getVocation()->getClientId());
 	#if CLIENT_VERSION >= 1100
@@ -3539,22 +3561,118 @@ void ProtocolGame::sendMagicEffect(const Position& pos, uint8_t type)
 	#endif
 }
 
-void ProtocolGame::sendCreatureHealth(const Creature* creature)
+void ProtocolGame::sendCreatureHealth(const Creature* creature, uint8_t healthPercent)
 {
 	playermsg.reset();
 	playermsg.addByte(0x8C);
 	playermsg.add<uint32_t>(creature->getID());
 	#if CLIENT_VERSION >= 1121
-	playermsg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
+	playermsg.addByte(healthPercent);
 	#else
 	if (creature->isHealthHidden()) {
 		playermsg.addByte(0x00);
 	} else {
-		playermsg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
+		playermsg.addByte(healthPercent);
 	}
 	#endif
 	writeToOutputBuffer(playermsg);
 }
+
+#if GAME_FEATURE_PARTY_LIST > 0
+void ProtocolGame::sendPartyCreatureUpdate(const Creature* target)
+{
+	bool known;
+	uint32_t removedKnown;
+	uint32_t cid = target->getID();
+	checkCreatureAsKnown(cid, known, removedKnown);
+
+	playermsg.reset();
+	playermsg.addByte(0x8B);
+	playermsg.add<uint32_t>(cid);
+	playermsg.addByte(0);//creature update
+	AddCreature(player, known, removedKnown);
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendPartyCreatureShield(const Creature* target)
+{
+	uint32_t cid = target->getID();
+	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+		sendPartyCreatureUpdate(target);
+		return;
+	}
+
+	playermsg.reset();
+	playermsg.addByte(0x91);
+	playermsg.add<uint32_t>(target->getID());
+	playermsg.addByte(player->getPartyShield(target->getPlayer()));
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendPartyCreatureSkull(const Creature* target)
+{
+	if (g_game.getWorldType() != WORLD_TYPE_PVP) {
+		return;
+	}
+
+	uint32_t cid = target->getID();
+	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+		sendPartyCreatureUpdate(target);
+		return;
+	}
+
+	playermsg.reset();
+	playermsg.addByte(0x90);
+	playermsg.add<uint32_t>(target->getID());
+	playermsg.addByte(player->getSkullClient(target));
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendPartyCreatureHealth(const Creature* target, uint8_t healthPercent)
+{
+	uint32_t cid = target->getID();
+	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+		sendPartyCreatureUpdate(target);
+		return;
+	}
+
+	playermsg.reset();
+	playermsg.addByte(0x8C);
+	playermsg.add<uint32_t>(cid);
+	playermsg.addByte(healthPercent);
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendPartyPlayerMana(const Player* target, uint8_t manaPercent)
+{
+	uint32_t cid = target->getID();
+	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+		sendPartyCreatureUpdate(target);
+	}
+
+	playermsg.reset();
+	playermsg.addByte(0x8B);
+	playermsg.add<uint32_t>(cid);
+	playermsg.addByte(11);//mana percent
+	playermsg.addByte(manaPercent);
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendPartyCreatureShowStatus(const Creature* target, bool showStatus)
+{
+	uint32_t cid = target->getID();
+	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+		sendPartyCreatureUpdate(target);
+	}
+
+	playermsg.reset();
+	playermsg.addByte(0x8B);
+	playermsg.add<uint32_t>(cid);
+	playermsg.addByte(12);//show status
+	playermsg.addByte((showStatus ? 0x01 : 0x00));
+	writeToOutputBuffer(playermsg);
+}
+#endif
 
 void ProtocolGame::sendFYIBox(const std::string& message)
 {

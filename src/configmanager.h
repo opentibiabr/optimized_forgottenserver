@@ -111,6 +111,9 @@ class ConfigManager
 			MAX_TRACKED_QUESTS,
 			MAX_TRACKED_QUESTS_PREMIUM,
 			#endif
+			#if GAME_FEATURE_PARTY_LIST > 0
+			PARTY_LIST_MAX_DISTANCE,
+			#endif
 
 			LAST_INTEGER_CONFIG /* this must be the last one */
 		};

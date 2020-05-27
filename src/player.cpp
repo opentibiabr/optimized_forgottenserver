@@ -520,6 +520,11 @@ void Player::setVarStats(stats_t stat, int32_t modifier)
 			if (getMana() > getMaxMana()) {
 				changeMana(getMaxMana() - getMana());
 			}
+			#if GAME_FEATURE_PARTY_LIST > 0
+			else {
+				g_game.addPlayerMana(this);
+			}
+			#endif
 			break;
 		}
 
@@ -1373,6 +1378,9 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 
 	if (party) {
 		party->updateSharedExperience();
+		#if GAME_FEATURE_PARTY_LIST > 0
+		party->updatePlayerStatus(this, oldPos, newPos);
+		#endif
 	}
 
 	if (teleport || oldPos.z != newPos.z) {
@@ -1760,6 +1768,9 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 
 		g_game.changeSpeed(this, 0);
 		g_game.addCreatureHealth(this);
+		#if GAME_FEATURE_PARTY_LIST > 0
+		g_game.addPlayerMana(this);
+		#endif
 
 		#if CLIENT_VERSION >= 854
 		const uint32_t protectionLevel = static_cast<uint32_t>(g_config.getNumber(ConfigManager::PROTECTION_LEVEL));
@@ -1844,6 +1855,9 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 
 		g_game.changeSpeed(this, 0);
 		g_game.addCreatureHealth(this);
+		#if GAME_FEATURE_PARTY_LIST > 0
+		g_game.addPlayerMana(this);
+		#endif
 
 		#if CLIENT_VERSION >= 854
 		const uint32_t protectionLevel = static_cast<uint32_t>(g_config.getNumber(ConfigManager::PROTECTION_LEVEL));
@@ -2191,6 +2205,9 @@ void Player::death(Creature* lastHitCreature)
 		health = healthMax;
 		g_game.internalTeleport(this, getTemplePosition(), true);
 		g_game.addCreatureHealth(this);
+		#if GAME_FEATURE_PARTY_LIST > 0
+		g_game.addPlayerMana(this);
+		#endif
 		onThink(EVENT_CREATURE_THINK_INTERVAL);
 		onIdleStatus();
 		sendStats();
@@ -3779,6 +3796,9 @@ void Player::changeMana(int32_t manaChange)
 		}
 	}
 
+	#if GAME_FEATURE_PARTY_LIST > 0
+	g_game.addPlayerMana(this);
+	#endif
 	addScheduledUpdates(PlayerUpdate_Stats);
 }
 
@@ -4202,8 +4222,13 @@ bool Player::isGuildMate(const Player* player) const
 
 void Player::sendPlayerPartyIcons(Player* player)
 {
+	#if GAME_FEATURE_PARTY_LIST > 0
+	sendPartyCreatureShield(player);
+	sendPartyCreatureSkull(player);
+	#else
 	sendCreatureShield(player);
 	sendCreatureSkull(player);
+	#endif
 }
 
 bool Player::addPartyInvitation(Party* party)
