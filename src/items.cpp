@@ -1893,8 +1893,8 @@ uint16_t Items::getItemIdByName(const std::string& name)
 	size_t nameSize = compare.length();
 	const char* itemName = compare.c_str();
 	for (size_t i = 100, size = items.size(); i < size; ++i) {
-		const std::string& compareName = asLowerCaseString(items[i].name);
-		if (nameSize == compareName.length() && !tfs_strncmp(itemName, compareName.c_str(), nameSize)) {
+		ItemType& it = items[i];
+		if (nameSize == it.name.length() && !tfs_strncmp(itemName, asLowerCaseString(it.name).c_str(), nameSize)) {
 			return i;
 		}
 	}
