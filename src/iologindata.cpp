@@ -432,7 +432,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
 	std::string spell;
 	while (propStream.readString(spell)) {
-		player->learnedInstantSpellList.push_front(spell);
+		player->learnedInstantSpellList.emplace(spell);
 	}
 
 	//load storage map
