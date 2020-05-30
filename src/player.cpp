@@ -4237,13 +4237,16 @@ bool Player::addPartyInvitation(Party* party)
 		return false;
 	}
 
-	invitePartyList.push_front(party);
+	invitePartyList.push_back(party);
 	return true;
 }
 
 void Player::removePartyInvitation(Party* party)
 {
-	invitePartyList.remove(party);
+	auto it = std::find(invitePartyList.begin(), invitePartyList.end(), party);
+	if (it != invitePartyList.end()) {
+		invitePartyList.erase(it);
+	}
 }
 
 void Player::clearPartyInvitations()
