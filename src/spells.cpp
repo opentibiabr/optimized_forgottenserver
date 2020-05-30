@@ -125,18 +125,21 @@ bool Spells::registerEvent(Event_ptr event, const pugi::xml_node&)
 	InstantSpell* instant = dynamic_cast<InstantSpell*>(event.get());
 	if (instant) {
 		InstantSpell_ptr instptr{ static_cast<InstantSpell*>(event.release()) };
-		auto result = instants.emplace(instant->getWords(), std::move(instptr));
+
+		std::string words = instant->getWords();
+		auto result = instants.emplace(words, std::move(instptr));
 		if (!result.second) {
-			std::cout << "[Warning - Spells::registerEvent] Duplicate registered instant spell with words: " << instant->getWords() << std::endl;
+			std::cout << "[Warning - Spells::registerEvent] Duplicate registered instant spell with words: " << words << std::endl;
 		}
 		return result.second;
 	}
 
 	RuneSpell* rune = dynamic_cast<RuneSpell*>(event.get());
 	if (rune) {
-		auto result = runes.emplace(rune->getRuneItemId(), std::move(*rune));
+		uint16_t runeId = rune->getRuneItemId();
+		auto result = runes.emplace(runeId, std::move(*rune));
 		if (!result.second) {
-			std::cout << "[Warning - Spells::registerEvent] Duplicate registered rune with id: " << rune->getRuneItemId() << std::endl;
+			std::cout << "[Warning - Spells::registerEvent] Duplicate registered rune with id: " << runeId << std::endl;
 		}
 		return result.second;
 	}
@@ -149,7 +152,7 @@ bool Spells::registerInstantLuaEvent(InstantSpell* event)
 	InstantSpell_ptr instant{ event };
 	if (instant) {
 		std::string words = instant->getWords();
-		auto result = instants.emplace(instant->getWords(), std::move(instant));
+		auto result = instants.emplace(words, std::move(instant));
 		if (!result.second) {
 			std::cout << "[Warning - Spells::registerInstantLuaEvent] Duplicate registered instant spell with words: " << words << std::endl;
 		}
@@ -163,10 +166,10 @@ bool Spells::registerRuneLuaEvent(RuneSpell* event)
 {
 	RuneSpell_ptr rune { event };
 	if (rune) {
-		uint16_t id = rune->getRuneItemId();
-		auto result = runes.emplace(rune->getRuneItemId(), std::move(*rune));
+		uint16_t runeId = rune->getRuneItemId();
+		auto result = runes.emplace(runeId, std::move(*rune));
 		if (!result.second) {
-			std::cout << "[Warning - Spells::registerRuneLuaEvent] Duplicate registered rune with id: " << id << std::endl;
+			std::cout << "[Warning - Spells::registerRuneLuaEvent] Duplicate registered rune with id: " << runeId << std::endl;
 		}
 		return result.second;
 	}
