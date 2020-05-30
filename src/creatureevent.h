@@ -69,7 +69,6 @@ class CreatureEvent final : public Event
 			loaded = b;
 		}
 
-		void clearEvent();
 		void copyEvent(CreatureEvent* creatureEvent);
 
 		//scripting
@@ -107,7 +106,7 @@ class CreatureEvents final : public BaseEvents
 		// global events
 		bool playerLogin(Player* player) const;
 		bool playerLogout(Player* player) const;
-		bool playerAdvance(Player* player, skills_t, uint32_t, uint32_t);
+		bool playerAdvance(Player* player, skills_t skill, uint32_t oldLevel, uint32_t newLevel);
 
 		CreatureEvent* getEventByName(const std::string& name, bool forceLoaded = true);
 
@@ -123,6 +122,9 @@ class CreatureEvents final : public BaseEvents
 		//creature events
 		using CreatureEventMap = std::map<std::string, CreatureEvent>;
 		CreatureEventMap creatureEvents;
+		std::vector<CreatureEvent> loginEvents;
+		std::vector<CreatureEvent> logoutEvents;
+		std::vector<CreatureEvent> advanceEvents;
 
 		LuaScriptInterface scriptInterface;
 };

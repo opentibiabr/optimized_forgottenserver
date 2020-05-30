@@ -5681,13 +5681,55 @@ void Game::removeUniqueItem(uint16_t uniqueId)
 	}
 }
 
+bool Game::reloadCreatureScripts(bool fromLua, bool reload)
+{
+	std::map<uint32_t, std::vector<std::string>> cacheCreaturesEvents;
+	#define cacheCreatures(container)																	\
+		do {																							\
+			for (const auto& it : players) {															\
+				CreatureEventList& creatureEvents = it.second->getCreatureEvents();						\
+				for (auto creatureEvent : creatureEvents) {												\
+					cacheCreaturesEvents[it.second->getID()].emplace_back(creatureEvent->getName());	\
+				}																						\
+				it.second->resetEventsRegistered();														\
+				creatureEvents.clear();																	\
+			}																							\
+		} while(0)
+
+	cacheCreatures(players);
+	cacheCreatures(npcs);
+	cacheCreatures(monsters);
+	#undef cacheCreatures
+
+	bool result = true;
+	if (fromLua) {
+		if (reload) {
+			result = g_creatureEvents->reload();
+		}
+		g_creatureEvents->clear(true);
+		g_scripts->loadScripts("scripts", false, true);
+	} else {
+		result = g_creatureEvents->reload();
+	}
+
+	for (const auto& it : cacheCreaturesEvents) {
+		Creature* creature = getCreatureByID(it.first);
+		if (creature) {
+			for (const std::string& creatureEvent : it.second) {
+				creature->registerCreatureEvent(creatureEvent);
+			}
+		}
+	}
+	return result;
+}
+
 bool Game::reload(ReloadTypes_t reloadType)
 {
 	switch (reloadType) {
 		case RELOAD_TYPE_ACTIONS: return g_actions->reload();
 		case RELOAD_TYPE_CHAT: return g_chat->load();
 		case RELOAD_TYPE_CONFIG: return g_config.reload();
-		case RELOAD_TYPE_CREATURESCRIPTS: return g_creatureEvents->reload();
+		case RELOAD_TYPE_CREATURESCRIPTS: return reloadCreatureScripts();
 		case RELOAD_TYPE_EVENTS: return g_events->load();
 		case RELOAD_TYPE_GLOBALEVENTS: return g_globalEvents->reload();
 		case RELOAD_TYPE_ITEMS: return Item::items.reload();
@@ -5730,14 +5772,13 @@ bool Game::reload(ReloadTypes_t reloadType)
 		case RELOAD_TYPE_SCRIPTS: {
 			// commented out stuff is TODO, once we approach further in revscriptsys
 			g_actions->clear(true);
-			g_creatureEvents->clear(true);
 			g_moveEvents->clear(true);
 			g_talkActions->clear(true);
 			g_globalEvents->clear(true);
 			g_weapons->clear(true);
 			g_weapons->loadDefaults();
 			g_spells->clear(true);
-			g_scripts->loadScripts("scripts", false, true);
+			reloadCreatureScripts(true, false); //Keep it as the last because it'll call loadScripts
 			/*
 			Npcs::reload();
 			raids.reload() && raids.startup();
@@ -5762,7 +5803,6 @@ bool Game::reload(ReloadTypes_t reloadType)
 
 			g_actions->reload();
 			g_config.reload();
-			g_creatureEvents->reload();
 			g_monsters.reload();
 			g_moveEvents->reload();
 			Npcs::reload();
@@ -5780,12 +5820,11 @@ bool Game::reload(ReloadTypes_t reloadType)
 			g_events->load();
 			g_chat->load();
 			g_actions->clear(true);
-			g_creatureEvents->clear(true);
 			g_moveEvents->clear(true);
 			g_talkActions->clear(true);
 			g_globalEvents->clear(true);
 			g_spells->clear(true);
-			g_scripts->loadScripts("scripts", false, true);
+			reloadCreatureScripts(true); //Keep it as the last because it'll call loadScripts
 			return true;
 		}
 	}

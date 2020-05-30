@@ -29,7 +29,7 @@
 #include "creatureevent.h"
 
 using ConditionList = std::list<Condition*>;
-using CreatureEventList = std::list<CreatureEvent*>;
+using CreatureEventList = std::vector<CreatureEvent*>;
 
 enum slots_t : uint8_t {
 	CONST_SLOT_WHEREEVER = 0,
@@ -539,7 +539,13 @@ class Creature : virtual public Thing
 		bool hasEventRegistered(CreatureEventType_t event) const {
 			return (0 != (scriptEventsBitField & (static_cast<uint32_t>(1) << event)));
 		}
+		void resetEventsRegistered() {
+			scriptEventsBitField = 0;
+		}
 		CreatureEventList getCreatureEvents(CreatureEventType_t type);
+		CreatureEventList& getCreatureEvents() {
+			return eventsList;
+		}
 
 		void updateMapCache();
 		void updateTileCache(const Tile* tile, int32_t dx, int32_t dy);

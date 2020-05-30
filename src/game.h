@@ -429,7 +429,7 @@ class Game
 		void playerCreateMarketOffer(Player* player, uint8_t type, uint16_t spriteId, uint16_t amount, uint32_t price, bool anonymous);
 		void playerCancelMarketOffer(Player* player, uint32_t timestamp, uint16_t counter);
 		void playerAcceptMarketOffer(Player* player, uint32_t timestamp, uint16_t counter, uint16_t amount);
-		std::forward_list<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotChest* depotChest, Inbox* inbox);
+		std::vector<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotChest* depotChest, Inbox* inbox);
 		#endif
 
 		void playerExtendedOpcode(Player* player, uint8_t opcode, const std::string& buffer);
@@ -538,6 +538,7 @@ class Game
 		bool addUniqueItem(uint16_t uniqueId, Item* item);
 		void removeUniqueItem(uint16_t uniqueId);
 
+		bool reloadCreatureScripts(bool fromLua = false, bool reload = true);
 		bool reload(ReloadTypes_t reloadType);
 
 		Groups groups;
