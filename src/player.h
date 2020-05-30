@@ -1439,7 +1439,7 @@ class Player final : public Creature, public Cylinder
 
 		std::unordered_set<std::string> learnedInstantSpellList;
 		std::vector<Party*> invitePartyList;
-		std::forward_list<Condition*> storedConditionList; // TODO: This variable is only temporarily used when logging in, get rid of it somehow
+		std::vector<Condition*> storedConditionList;
 
 		#if GAME_FEATURE_QUEST_TRACKER > 0
 		std::vector<uint16_t> trackedQuests;
