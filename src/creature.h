@@ -28,7 +28,7 @@
 #include "enums.h"
 #include "creatureevent.h"
 
-using ConditionList = std::list<Condition*>;
+using ConditionList = std::vector<Condition*>;
 using CreatureEventList = std::vector<CreatureEvent*>;
 
 enum slots_t : uint8_t {
