@@ -14340,17 +14340,19 @@ int LuaScriptInterface::luaSpellOnCastSpell(lua_State* L)
 int LuaScriptInterface::luaSpellRegister(lua_State* L)
 {
 	// spell:register()
-	Spell* spell = getUserdata<Spell>(L, 1);
-	if (spell) {
+	Spell** spellPtr = getRawUserdata<Spell>(L, 1);
+	if (spellPtr && *spellPtr) {
+		Spell* spell = *spellPtr;
 		if (spell->spellType == SPELL_INSTANT) {
-			InstantSpell* instant = dynamic_cast<InstantSpell*>(getUserdata<Spell>(L, 1));
+			InstantSpell* instant = dynamic_cast<InstantSpell*>(spell);
 			if (!instant->isScripted()) {
 				pushBoolean(L, false);
-				return 1;
+				delete spell;
+			} else {
+				pushBoolean(L, g_spells->registerInstantLuaEvent(instant));
 			}
-			pushBoolean(L, g_spells->registerInstantLuaEvent(instant));
 		} else if (spell->spellType == SPELL_RUNE) {
-			RuneSpell* rune = dynamic_cast<RuneSpell*>(getUserdata<Spell>(L, 1));
+			RuneSpell* rune = dynamic_cast<RuneSpell*>(spell);
 			if (rune->getMagicLevel() != 0 || rune->getLevel() != 0) {
 				//Change information in the ItemType to get accurate description
 				ItemType& iType = Item::items.getItemType(rune->getRuneItemId());
@@ -14361,10 +14363,12 @@ int LuaScriptInterface::luaSpellRegister(lua_State* L)
 			}
 			if (!rune->isScripted()) {
 				pushBoolean(L, false);
-				return 1;
+				delete spell;
+			} else {
+				pushBoolean(L, g_spells->registerRuneLuaEvent(rune));
 			}
-			pushBoolean(L, g_spells->registerRuneLuaEvent(rune));
 		}
+		*spellPtr = nullptr; // Remove luascript reference
 	} else {
 		lua_pushnil(L);
 	}
