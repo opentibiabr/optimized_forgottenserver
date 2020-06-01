@@ -35,7 +35,7 @@ function onCastSpell(creature, variant)
 	end
 
 	local position = creature:getPosition()
-	local summon = Game.createMonster(monsterName, position, true)
+	local summon = Game.createMonster(monsterName, position, true, false, creature)
 	if not summon then
 		creature:sendCancelMessage(RETURNVALUE_NOTENOUGHROOM)
 		position:sendMagicEffect(CONST_ME_POFF)
@@ -44,7 +44,6 @@ function onCastSpell(creature, variant)
 
 	creature:addMana(-manaCost)
 	creature:addManaSpent(manaCost)
-	creature:addSummon(summon)
 	position:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	summon:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	return true

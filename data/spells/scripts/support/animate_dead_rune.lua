@@ -6,10 +6,9 @@ function onCastSpell(creature, variant, isHotkey)
 		if corpse then
 			local itemType = corpse:getType()
 			if itemType:isCorpse() and itemType:isMovable() then
-				local monster = Game.createMonster("Skeleton", position)
+				local monster = Game.createMonster("Skeleton", position, true, false, creature)
 				if monster then
 					corpse:remove()
-					creature:addSummon(monster)
 					position:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 					return true
 				end
