@@ -42,10 +42,10 @@ enum MoveEvent_t {
 };
 
 class MoveEvent;
-using MoveEvent_ptr = std::unique_ptr<MoveEvent>;
+using MoveEvent_ptr = std::shared_ptr<MoveEvent>;
 
 struct MoveEventList {
-	std::list<MoveEvent> moveEvent[MOVE_EVENT_LAST];
+	MoveEvent_ptr moveEvent[MOVE_EVENT_LAST];
 };
 
 using VocEquipMap = std::map<uint16_t, bool>;
@@ -67,12 +67,12 @@ class MoveEvents final : public BaseEvents
 
 		MoveEvent* getEvent(Item* item, MoveEvent_t eventType);
 
-		bool registerLuaEvent(MoveEvent* event);
-		bool registerLuaFunction(MoveEvent* event);
+		bool registerLuaEvent(MoveEvent_ptr event);
+		bool registerLuaFunction(MoveEvent_ptr event);
 		void clear(bool fromLua) override final;
 
 	private:
-		using MoveListMap = std::map<int32_t, MoveEventList>;
+		using MoveListMap = std::map<uint16_t, MoveEventList>;
 		using MovePosListMap = std::map<Position, MoveEventList>;
 		void clearMap(MoveListMap& map, bool fromLua);
 		void clearPosMap(MovePosListMap& map, bool fromLua);
@@ -82,9 +82,9 @@ class MoveEvents final : public BaseEvents
 		Event_ptr getEvent(const std::string& nodeName) override;
 		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
 
-		void addEvent(MoveEvent moveEvent, int32_t id, MoveListMap& map);
+		void addEvent(MoveEvent_ptr moveEvent, uint16_t id, MoveListMap& map);
+		void addEvent(MoveEvent_ptr moveEvent, const Position& pos, MovePosListMap& map);
 
-		void addEvent(MoveEvent moveEvent, const Position& pos, MovePosListMap& map);
 		MoveEvent* getEvent(const Tile* tile, MoveEvent_t eventType);
 
 		MoveEvent* getEvent(Item* item, MoveEvent_t eventType, slots_t slot);
@@ -160,22 +160,22 @@ class MoveEvent final : public Event
 		void setTileItem(bool b) {
 			tileItem = b;
 		}
-		std::vector<uint32_t> getItemIdRange() {
+		std::vector<uint16_t>& getItemIdRange() {
 			return itemIdRange;
 		}
-		void addItemId(uint32_t id) {
+		void addItemId(uint16_t id) {
 			itemIdRange.emplace_back(id);
 		}
-		std::vector<uint32_t> getActionIdRange() {
+		std::vector<uint16_t>& getActionIdRange() {
 			return actionIdRange;
 		}
-		void addActionId(uint32_t id) {
+		void addActionId(uint16_t id) {
 			actionIdRange.emplace_back(id);
 		}
-		std::vector<uint32_t> getUniqueIdRange() {
+		std::vector<uint16_t>& getUniqueIdRange() {
 			return uniqueIdRange;
 		}
-		void addUniqueId(uint32_t id) {
+		void addUniqueId(uint16_t id) {
 			uniqueIdRange.emplace_back(id);
 		}
 		std::vector<Position> getPosList() {
@@ -247,9 +247,9 @@ class MoveEvent final : public Event
 		VocEquipMap vocEquipMap;
 		bool tileItem = false;
 
-		std::vector<uint32_t> itemIdRange;
-		std::vector<uint32_t> actionIdRange;
-		std::vector<uint32_t> uniqueIdRange;
+		std::vector<uint16_t> itemIdRange;
+		std::vector<uint16_t> actionIdRange;
+		std::vector<uint16_t> uniqueIdRange;
 		std::vector<Position> posList;
 };
 
