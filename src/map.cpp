@@ -326,7 +326,7 @@ void Map::moveCreature(Creature& creature, Tile& newTile, bool forceTeleport/* =
 std::vector<Tile*> Map::getFloorTiles(int32_t x, int32_t y, int32_t width, int32_t height, int32_t z)
 {
 	std::vector<Tile*> tileVector;
-	tileVector.resize(width*height, NULL);
+	tileVector.resize(width*height, nullptr);
 
 	int32_t x1 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, x));
 	int32_t y1 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, y));
