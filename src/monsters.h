@@ -260,7 +260,6 @@ class Monsters
 		std::map<uint16_t, std::map<uint16_t, std::string>> monsterRaces;
 
 		std::map<std::string, MonsterType> monsters;
-		std::map<std::string, std::string> unloadedMonsters;
 
 		bool loaded = false;
 };
