@@ -15103,16 +15103,21 @@ int LuaScriptInterface::luaActionOnUse(lua_State* L)
 int LuaScriptInterface::luaActionRegister(lua_State* L)
 {
 	// action:register()
-	Action* action = getUserdata<Action>(L, 1);
-	if (action) {
+	Action** actionPtr = getRawUserdata<Action>(L, 1);
+	if (actionPtr && *actionPtr) {
+		Action_ptr action{ *actionPtr };
 		if (!action->isScripted()) {
 			pushBoolean(L, false);
-			return 1;
+		} else {
+			pushBoolean(L, g_actions->registerLuaEvent(action));
 		}
-		pushBoolean(L, g_actions->registerLuaEvent(action));
 		action->getActionIdRange().clear();
+		action->getActionIdRange().shrink_to_fit();
 		action->getItemIdRange().clear();
+		action->getItemIdRange().shrink_to_fit();
 		action->getUniqueIdRange().clear();
+		action->getUniqueIdRange().shrink_to_fit();
+		*actionPtr = nullptr; // Remove luascript reference
 	} else {
 		lua_pushnil(L);
 	}
@@ -15127,10 +15132,10 @@ int LuaScriptInterface::luaActionItemId(lua_State* L)
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				action->addItemId(getNumber<uint32_t>(L, 2 + i));
+				action->addItemId(getNumber<uint16_t>(L, 2 + i));
 			}
 		} else {
-			action->addItemId(getNumber<uint32_t>(L, 2));
+			action->addItemId(getNumber<uint16_t>(L, 2));
 		}
 		pushBoolean(L, true);
 	} else {
@@ -15147,10 +15152,10 @@ int LuaScriptInterface::luaActionActionId(lua_State* L)
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				action->addActionId(getNumber<uint32_t>(L, 2 + i));
+				action->addActionId(getNumber<uint16_t>(L, 2 + i));
 			}
 		} else {
-			action->addActionId(getNumber<uint32_t>(L, 2));
+			action->addActionId(getNumber<uint16_t>(L, 2));
 		}
 		pushBoolean(L, true);
 	} else {
@@ -15167,10 +15172,10 @@ int LuaScriptInterface::luaActionUniqueId(lua_State* L)
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				action->addUniqueId(getNumber<uint32_t>(L, 2 + i));
+				action->addUniqueId(getNumber<uint16_t>(L, 2 + i));
 			}
 		} else {
-			action->addUniqueId(getNumber<uint32_t>(L, 2));
+			action->addUniqueId(getNumber<uint16_t>(L, 2));
 		}
 		pushBoolean(L, true);
 	} else {

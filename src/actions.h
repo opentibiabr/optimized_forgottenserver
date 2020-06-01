@@ -25,7 +25,7 @@
 #include "luascript.h"
 
 class Action;
-using Action_ptr = std::unique_ptr<Action>;
+using Action_ptr = std::shared_ptr<Action>;
 using ActionFunction = std::function<bool(Player* player, Item* item, const Position& fromPosition, Thing* target, const Position& toPosition, bool isHotkey)>;
 
 class Action : public Event
@@ -61,21 +61,21 @@ class Action : public Event
 			checkFloor = v;
 		}
 
-		std::vector<uint16_t> getItemIdRange() {
+		std::vector<uint16_t>& getItemIdRange() {
 			return ids;
 		}
 		void addItemId(uint16_t id) {
 			ids.emplace_back(id);
 		}
 
-		std::vector<uint16_t> getUniqueIdRange() {
+		std::vector<uint16_t>& getUniqueIdRange() {
 			return uids;
 		}
 		void addUniqueId(uint16_t id) {
 			uids.emplace_back(id);
 		}
 
-		std::vector<uint16_t> getActionIdRange() {
+		std::vector<uint16_t>& getActionIdRange() {
 			return aids;
 		}
 		void addActionId(uint16_t id) {
@@ -118,7 +118,7 @@ class Actions final : public BaseEvents
 		ReturnValue canUse(const Player* player, const Position& pos, const Item* item);
 		ReturnValue canUseFar(const Creature* creature, const Position& toPos, bool checkLineOfSight, bool checkFloor);
 
-		bool registerLuaEvent(Action* event);
+		bool registerLuaEvent(Action_ptr event);
 		void clear(bool fromLua) override final;
 
 	private:
@@ -130,7 +130,7 @@ class Actions final : public BaseEvents
 		Event_ptr getEvent(const std::string& nodeName) override;
 		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
 
-		using ActionUseMap = std::map<uint16_t, Action>;
+		using ActionUseMap = std::map<uint16_t, Action_ptr>;
 		ActionUseMap useItemMap;
 		ActionUseMap uniqueItemMap;
 		ActionUseMap actionItemMap;
