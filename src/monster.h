@@ -73,9 +73,7 @@ class Monster final : public Creature
 		const std::string& getNameDescription() const override {
 			return mType->nameDescription;
 		}
-		std::string getDescription(int32_t) const override {
-			return strDescription + '.';
-		}
+		std::string getDescription(int32_t) const override;
 
 		CreatureType_t getType() const override {
 			return CREATURETYPE_MONSTER;

@@ -2996,9 +2996,11 @@ void Game::playerLookInShop(Player* player, uint16_t spriteId, uint8_t count)
 		return;
 	}
 
-	std::ostringstream ss;
-	ss << "You see " << Item::getDescription(it, 1, nullptr, subType);
-	player->sendTextMessage(MESSAGE_INFO_DESCR, ss.str());
+	std::string str, description = Item::getDescription(it, 1, nullptr, subType);
+	str.reserve(description.length() + static_cast<size_t>(10));
+	str.append("You see ").append(description);
+	
+	player->sendTextMessage(MESSAGE_INFO_DESCR, str);
 }
 
 void Game::playerLookAt(Player* player, const Position& pos, uint8_t stackPos)

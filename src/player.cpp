@@ -114,88 +114,89 @@ bool Player::isPushable() const
 
 std::string Player::getDescription(int32_t lookDistance) const
 {
-	std::ostringstream s;
+	std::string sink;
+	sink.reserve(512);
 
 	if (lookDistance == -1) {
-		s << "yourself.";
+		sink.append("yourself.");
 
 		if (group->access) {
-			s << " You are " << group->name << '.';
+			sink.append(" You are ").append(group->name).append(1, '.');
 		} else if (vocation->getId() != VOCATION_NONE) {
-			s << " You are " << vocation->getVocDescription() << '.';
+			sink.append(" You are ").append(vocation->getVocDescription()).append(1, '.');
 		} else {
-			s << " You have no vocation.";
+			sink.append(" You have no vocation.");
 		}
 	} else {
-		s << name;
+		sink.append(name);
 		if (!group->access) {
-			s << " (Level " << level << ')';
+			sink.append(" (Level ").append(std::to_string(level)).append(1, ')');
 		}
-		s << '.';
+		sink.append(1, '.');
 
 		if (sex == PLAYERSEX_FEMALE) {
-			s << " She";
+			sink.append(" She");
 		} else {
-			s << " He";
+			sink.append(" He");
 		}
 
 		if (group->access) {
-			s << " is " << group->name << '.';
+			sink.append(" is ").append(group->name).append(1, '.');
 		} else if (vocation->getId() != VOCATION_NONE) {
-			s << " is " << vocation->getVocDescription() << '.';
+			sink.append(" is ").append(vocation->getVocDescription()).append(1, '.');
 		} else {
-			s << " has no vocation.";
+			sink.append(" has no vocation.");
 		}
 	}
 
 	if (party) {
 		if (lookDistance == -1) {
-			s << " Your party has ";
+			sink.append(" Your party has ");
 		} else if (sex == PLAYERSEX_FEMALE) {
-			s << " She is in a party with ";
+			sink.append(" She is in a party with ");
 		} else {
-			s << " He is in a party with ";
+			sink.append(" He is in a party with ");
 		}
 
 		size_t memberCount = party->getMemberCount() + 1;
 		if (memberCount == 1) {
-			s << "1 member and ";
+			sink.append("1 member and ");
 		} else {
-			s << memberCount << " members and ";
+			sink.append(std::to_string(memberCount)).append(" members and ");
 		}
 
 		size_t invitationCount = party->getInvitationCount();
 		if (invitationCount == 1) {
-			s << "1 pending invitation.";
+			sink.append("1 pending invitation.");
 		} else {
-			s << invitationCount << " pending invitations.";
+			sink.append(std::to_string(invitationCount)).append(" pending invitations.");
 		}
 	}
 
 	if (!guild || !guildRank) {
-		return s.str();
+		return sink;
 	}
 
 	if (lookDistance == -1) {
-		s << " You are ";
+		sink.append(" You are ");
 	} else if (sex == PLAYERSEX_FEMALE) {
-		s << " She is ";
+		sink.append(" She is ");
 	} else {
-		s << " He is ";
+		sink.append(" He is ");
 	}
 
-	s << guildRank->name << " of the " << guild->getName();
+	sink.append(guildRank->name).append(" of the ").append(guild->getName());
 	if (!guildNick.empty()) {
-		s << " (" << guildNick << ')';
+		sink.append(" (").append(guildNick).append(1, ')');
 	}
 
 	size_t memberCount = guild->getMemberCount();
 	if (memberCount == 1) {
-		s << ", which has 1 member, " << guild->getMembersOnline().size() << " of them online.";
+		sink.append(", which has 1 member, ").append(std::to_string(guild->getMembersOnline().size())).append(" of them online.");
 	} else {
-		s << ", which has " << memberCount << " members, " << guild->getMembersOnline().size() << " of them online.";
+		sink.append(", which has ").append(std::to_string(memberCount)).append(" members, ").append(std::to_string(guild->getMembersOnline().size())).append(" of them online.");
 	}
-	return s.str();
+	return sink;
 }
 
 Item* Player::getInventoryItem(slots_t slot) const
