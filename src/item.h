@@ -66,6 +66,7 @@ enum ItemDecayState_t : uint8_t {
 	DECAYING_FALSE = 0,
 	DECAYING_TRUE,
 	DECAYING_PENDING,
+	DECAYING_STOPPING,
 };
 
 enum AttrTypes_t {
@@ -196,17 +197,25 @@ class ItemAttributes
 		}
 
 		void setDuration(int32_t time) {
-			setIntAttr(ITEM_ATTRIBUTE_DURATION, time);
+			setIntAttr(ITEM_ATTRIBUTE_DURATION, std::max<int32_t>(0, time));
 		}
-		void decreaseDuration(int32_t time) {
-			increaseIntAttr(ITEM_ATTRIBUTE_DURATION, -time);
+		void setDurationTimestamp(int64_t timestamp) {
+			setIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP, timestamp);
 		}
-		uint32_t getDuration() const {
-			return getIntAttr(ITEM_ATTRIBUTE_DURATION);
+		int32_t getDuration() const {
+			ItemDecayState_t decayState = getDecaying();
+			if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
+				return std::max<int32_t>(0, static_cast<int32_t>(getIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP) - OTSYS_TIME()));
+			} else {
+				return getIntAttr(ITEM_ATTRIBUTE_DURATION);
+			}
 		}
 
 		void setDecaying(ItemDecayState_t decayState) {
 			setIntAttr(ITEM_ATTRIBUTE_DECAYSTATE, decayState);
+			if (decayState == DECAYING_FALSE) {
+				removeAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
+			}
 		}
 		ItemDecayState_t getDecaying() const {
 			return static_cast<ItemDecayState_t>(getIntAttr(ITEM_ATTRIBUTE_DECAYSTATE));
@@ -523,6 +532,7 @@ class ItemAttributes
 			checkTypes |= ITEM_ATTRIBUTE_CHARGES;
 			checkTypes |= ITEM_ATTRIBUTE_FLUIDTYPE;
 			checkTypes |= ITEM_ATTRIBUTE_DOORID;
+			checkTypes |= ITEM_ATTRIBUTE_DURATION_TIMESTAMP;
 			return (type & static_cast<itemAttrTypes>(checkTypes)) != 0;
 		}
 		static bool isStrAttrType(itemAttrTypes type) {
@@ -621,16 +631,16 @@ class Item : virtual public Thing
 			getAttributes()->setStrAttr(type, value);
 		}
 
-		int32_t getIntAttr(itemAttrTypes type) const {
+		int64_t getIntAttr(itemAttrTypes type) const {
 			if (!attributes) {
 				return 0;
 			}
 			return attributes->getIntAttr(type);
 		}
-		void setIntAttr(itemAttrTypes type, int32_t value) {
+		void setIntAttr(itemAttrTypes type, int64_t value) {
 			getAttributes()->setIntAttr(type, value);
 		}
-		void increaseIntAttr(itemAttrTypes type, int32_t value) {
+		void increaseIntAttr(itemAttrTypes type, int64_t value) {
 			getAttributes()->increaseIntAttr(type, value);
 		}
 
@@ -782,20 +792,25 @@ class Item : virtual public Thing
 		}
 
 		void setDuration(int32_t time) {
-			setIntAttr(ITEM_ATTRIBUTE_DURATION, time);
+			setIntAttr(ITEM_ATTRIBUTE_DURATION, std::max<int32_t>(0, time));
 		}
-		void decreaseDuration(int32_t time) {
-			increaseIntAttr(ITEM_ATTRIBUTE_DURATION, -time);
+		void setDurationTimestamp(int64_t timestamp) {
+			setIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP, timestamp);
 		}
-		uint32_t getDuration() const {
-			if (!attributes) {
-				return 0;
+		int32_t getDuration() const {
+			ItemDecayState_t decayState = getDecaying();
+			if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
+				return std::max<int32_t>(0, static_cast<int32_t>(getIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP) - OTSYS_TIME()));
+			} else {
+				return getIntAttr(ITEM_ATTRIBUTE_DURATION);
 			}
-			return getIntAttr(ITEM_ATTRIBUTE_DURATION);
 		}
 
 		void setDecaying(ItemDecayState_t decayState) {
 			setIntAttr(ITEM_ATTRIBUTE_DECAYSTATE, decayState);
+			if (decayState == DECAYING_FALSE) {
+				removeAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
+			}
 		}
 		ItemDecayState_t getDecaying() const {
 			if (!attributes) {
@@ -1037,9 +1052,7 @@ class Item : virtual public Thing
 		Cylinder* getParent() const override {
 			return parent;
 		}
-		void setParent(Cylinder* cylinder) override {
-			parent = cylinder;
-		}
+		void setParent(Cylinder* cylinder) override;
 		Cylinder* getTopParent();
 		const Cylinder* getTopParent() const;
 		Tile* getTile() override;
@@ -1064,6 +1077,7 @@ class Item : virtual public Thing
 		bool loadedFromMap = false;
 
 		//Don't add variables here, use the ItemAttribute class.
+		friend class Decay;
 };
 
 using ItemList = std::list<Item*>;
