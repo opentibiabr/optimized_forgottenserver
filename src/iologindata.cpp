@@ -629,6 +629,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 		for (const auto& it : itemMap) {
 			Item* item = it.second;
 			player->getInbox()->internalAddThing(item);
+			item->startDecaying();
 		}
 	}
 	#endif

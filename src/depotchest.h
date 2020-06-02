@@ -43,6 +43,9 @@ class DepotChest final : public Container
 		bool canRemove() const override {
 			return false;
 		}
+		bool isRemoved() const override {
+			return false;
+		}
 
 		#if GAME_FEATURE_MARKET > 0
 		Cylinder* getParent() const override;

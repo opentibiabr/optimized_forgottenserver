@@ -1183,6 +1183,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		}
 
 		if (item->isRemoved()) {
+			item->stopDecaying();
 			ReleaseItem(item);
 		}
 	}
@@ -1349,6 +1350,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 
 		if (item->isRemoved()) {
 			item->onRemoved();
+			item->stopDecaying();
 			ReleaseItem(item);
 		}
 
@@ -1597,6 +1599,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 
 		Cylinder* newParent = item->getParent();
 		if (newParent == nullptr) {
+			item->stopDecaying();
 			ReleaseItem(item);
 			return nullptr;
 		}
@@ -1634,6 +1637,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 
 					item->setParent(nullptr);
 					cylinder->postRemoveNotification(item, cylinder, itemIndex);
+					item->stopDecaying();
 					ReleaseItem(item);
 					newItem->startDecaying();
 
@@ -1684,6 +1688,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 
 	item->setParent(nullptr);
 	cylinder->postRemoveNotification(item, cylinder, itemIndex);
+	item->stopDecaying();
 	ReleaseItem(item);
 	newItem->startDecaying();
 

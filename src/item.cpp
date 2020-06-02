@@ -272,14 +272,6 @@ void Item::setID(uint16_t newid)
 	}
 }
 
-void Item::setParent(Cylinder* cylinder)
-{
-	parent = cylinder;
-	if (!parent) {
-		g_game.stopDecay(this);
-	}
-}
-
 Cylinder* Item::getTopParent()
 {
 	Cylinder* aux = getParent();
@@ -2182,6 +2174,11 @@ ItemAttributes::Attribute& ItemAttributes::getAttr(itemAttrTypes type)
 void Item::startDecaying()
 {
 	g_game.startDecay(this);
+}
+
+void Item::stopDecaying()
+{
+	g_game.stopDecay(this);
 }
 
 bool Item::hasMarketAttributes() const
