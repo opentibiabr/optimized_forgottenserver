@@ -64,12 +64,14 @@ Player::~Player()
 	for (Item* item : inventory) {
 		if (item) {
 			item->setParent(nullptr);
+			item->stopDecaying();
 			item->decrementReferenceCounter();
 		}
 	}
 
 	for (const auto& it : depotChests) {
 		if (!it.second->getRealParent()) {
+			it.second->stopDecaying();
 			it.second->decrementReferenceCounter();
 		}
 	}
@@ -78,10 +80,12 @@ Player::~Player()
 		#if GAME_FEATURE_MARKET > 0
 		it.second->removeInbox(inbox);
 		#endif
+		it.second->stopDecaying();
 		it.second->decrementReferenceCounter();
 	}
 
 	#if GAME_FEATURE_MARKET > 0
+	inbox->stopDecaying();
 	inbox->decrementReferenceCounter();
 	#endif
 
