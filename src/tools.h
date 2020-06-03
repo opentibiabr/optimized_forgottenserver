@@ -106,4 +106,22 @@ int tfs_strcmp(const char* s1, const char* s2);
 #define tfs_strcmp strcmp
 #endif
 
+char* tfs_toStr(uint64_t value);
+char* tfs_toStr(int64_t value);
+char* tfs_toStr(uint32_t value);
+char* tfs_toStr(int32_t value);
+char* tfs_toStr(uint16_t value);
+char* tfs_toStr(int16_t value);
+char* tfs_toStr(uint8_t value);
+char* tfs_toStr(int8_t value);
+
+char* tfs_toStrShowPos(uint64_t value);
+char* tfs_toStrShowPos(int64_t value);
+char* tfs_toStrShowPos(uint32_t value);
+char* tfs_toStrShowPos(int32_t value);
+char* tfs_toStrShowPos(uint16_t value);
+char* tfs_toStrShowPos(int16_t value);
+char* tfs_toStrShowPos(uint8_t value);
+char* tfs_toStrShowPos(int8_t value);
+
 #endif

@@ -1712,3 +1712,89 @@ int tfs_strcmp(const char* s1, const char* s2)
 	return 0;
 }
 #endif
+
+char* tfs_toStr(uint64_t value)
+{
+	//Extremely fast int to string conversion
+	const char digits[] =
+		"0001020304050607080910111213141516171819"
+		"2021222324252627282930313233343536373839"
+		"4041424344454647484950515253545556575859"
+		"6061626364656667686970717273747576777879"
+		"8081828384858687888990919293949596979899";
+
+	static thread_local char buffer[24]; // Should be able to contain uint64_t max value + sign
+	buffer[23] = '\0';
+
+	char* ptrBuffer = buffer + 22;
+	while (value >= 100) {
+		uint32_t index = static_cast<uint32_t>((value % 100) * 2);
+		value /= 100;
+
+		ptrBuffer -= 2;
+		memcpy(ptrBuffer, digits + index, 2);
+	}
+	if (value < 10) {
+		*--ptrBuffer = static_cast<char>('0' + value);
+		return ptrBuffer;
+	}
+
+	uint32_t index = static_cast<uint32_t>(value * 2);
+	ptrBuffer -= 2;
+	memcpy(ptrBuffer, digits + index, 2);
+	return ptrBuffer;
+}
+
+char* tfs_toStr(int64_t value)
+{
+	uint64_t abs_value = static_cast<uint64_t>(value);
+	bool neg = (value < 0);
+	if (neg) {
+		abs_value = 0 - abs_value;
+	}
+
+	char* ptrBuffer = tfs_toStr(abs_value);
+	if (neg) {
+		*--ptrBuffer = '-';
+	}
+	return ptrBuffer;
+}
+
+char* tfs_toStr(uint32_t value) { return tfs_toStr(static_cast<uint64_t>(value)); }
+char* tfs_toStr(int32_t value) { return tfs_toStr(static_cast<int64_t>(value)); }
+char* tfs_toStr(uint16_t value) { return tfs_toStr(static_cast<uint64_t>(value)); }
+char* tfs_toStr(int16_t value) { return tfs_toStr(static_cast<int64_t>(value)); }
+char* tfs_toStr(uint8_t value) { return tfs_toStr(static_cast<uint64_t>(value)); }
+char* tfs_toStr(int8_t value) { return tfs_toStr(static_cast<int64_t>(value)); }
+
+char* tfs_toStrShowPos(uint64_t value)
+{
+	char* ptrBuffer = tfs_toStr(value);
+	*--ptrBuffer = '+';
+	return ptrBuffer;
+}
+
+char* tfs_toStrShowPos(int64_t value)
+{
+	uint64_t abs_value = static_cast<uint64_t>(value);
+	bool neg = (value < 0);
+	if (neg) {
+		abs_value = 0 - abs_value;
+	}
+
+	char* ptrBuffer = tfs_toStr(abs_value);
+	if (neg) {
+		*--ptrBuffer = '-';
+		return ptrBuffer;
+	}
+
+	*--ptrBuffer = '+';
+	return ptrBuffer;
+}
+
+char* tfs_toStrShowPos(uint32_t value) { return tfs_toStrShowPos(static_cast<uint64_t>(value)); }
+char* tfs_toStrShowPos(int32_t value) { return tfs_toStrShowPos(static_cast<int64_t>(value)); }
+char* tfs_toStrShowPos(uint16_t value) { return tfs_toStrShowPos(static_cast<uint64_t>(value)); }
+char* tfs_toStrShowPos(int16_t value) { return tfs_toStrShowPos(static_cast<int64_t>(value)); }
+char* tfs_toStrShowPos(uint8_t value) { return tfs_toStrShowPos(static_cast<uint64_t>(value)); }
+char* tfs_toStrShowPos(int8_t value) { return tfs_toStrShowPos(static_cast<int64_t>(value)); }
