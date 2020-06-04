@@ -574,6 +574,7 @@
     <ClInclude Include="..\src\simd.h" />
     <ClInclude Include="..\src\spawn.h" />
     <ClInclude Include="..\src\spells.h" />
+    <ClInclude Include="..\src\stringExtend.h" />
     <ClInclude Include="..\src\protocolstatus.h" />
     <ClInclude Include="..\src\talkaction.h" />
     <ClInclude Include="..\src\tasks.h" />
