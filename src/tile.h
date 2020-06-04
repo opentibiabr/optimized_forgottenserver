@@ -120,7 +120,7 @@ class TileItemVector : private ItemVector
 		using ItemVector::rend;
 		using ItemVector::size;
 		using ItemVector::clear;
-		using ItemVector::at;
+		using ItemVector::operator[];
 		using ItemVector::insert;
 		using ItemVector::erase;
 		using ItemVector::push_back;
@@ -131,54 +131,54 @@ class TileItemVector : private ItemVector
 		using ItemVector::const_reverse_iterator;
 
 		iterator getBeginDownItem() {
-			return begin();
+			return begin() + topItemCount;
 		}
 		const_iterator getBeginDownItem() const {
-			return begin();
+			return begin() + topItemCount;
 		}
 		iterator getEndDownItem() {
-			return begin() + downItemCount;
+			return end();
 		}
 		const_iterator getEndDownItem() const {
-			return begin() + downItemCount;
+			return end();
 		}
 		iterator getBeginTopItem() {
-			return getEndDownItem();
+			return begin();
 		}
 		const_iterator getBeginTopItem() const {
-			return getEndDownItem();
+			return begin();
 		}
 		iterator getEndTopItem() {
-			return end();
+			return getBeginDownItem();
 		}
 		const_iterator getEndTopItem() const {
-			return end();
+			return getBeginDownItem();
 		}
 
 		uint32_t getTopItemCount() const {
-			return size() - downItemCount;
+			return topItemCount;
 		}
 		uint32_t getDownItemCount() const {
-			return downItemCount;
+			return size() - topItemCount;
 		}
 		inline Item* getTopTopItem() const {
-			if (getTopItemCount() == 0) {
+			if (topItemCount == 0) {
 				return nullptr;
 			}
 			return *(getEndTopItem() - 1);
 		}
 		inline Item* getTopDownItem() const {
-			if (downItemCount == 0) {
+			if (getDownItemCount() == 0) {
 				return nullptr;
 			}
-			return *getBeginDownItem();
+			return *(getEndDownItem() - 1);
 		}
-		void addDownItemCount(int32_t increment) {
-			downItemCount += increment;
+		void addTopItemCount(int32_t increment) {
+			topItemCount += increment;
 		}
 
 	private:
-		uint16_t downItemCount = 0;
+		uint16_t topItemCount = 0;
 };
 
 class Tile : public Cylinder

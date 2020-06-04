@@ -688,7 +688,7 @@ void ProtocolGame::GetTileDescription(const Tile* tile)
 	}
 
 	if (items && count < 10) {
-		for (auto it = items->getBeginDownItem(), end = items->getEndDownItem(); it != end; ++it) {
+		for (auto it = ItemVector::const_reverse_iterator(items->getEndDownItem()), end = ItemVector::const_reverse_iterator(items->getBeginDownItem()); it != end; ++it) {
 			AddItem(*it);
 			if (++count == 10) {
 				return;

@@ -240,7 +240,8 @@ bool House::transferToDepot(Player* player) const
 	ItemList moveItemList;
 	for (HouseTile* tile : houseTiles) {
 		if (const TileItemVector* items = tile->getItemList()) {
-			for (Item* item : *items) {
+			for (auto it = items->rbegin(), end = items->rend(); it != end; ++it) {
+				Item* item = (*it);
 				if (item->isPickupable()) {
 					moveItemList.push_back(item);
 				} else {

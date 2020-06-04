@@ -137,7 +137,7 @@ void Map::setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile)
 	if (tile) {
 		TileItemVector* items = newTile->getItemList();
 		if (items) {
-			for (auto it = items->rbegin(), end = items->rend(); it != end; ++it) {
+			for (auto it = items->begin(), end = items->end(); it != end; ++it) {
 				tile->addThing(*it);
 			}
 			items->clear();
@@ -1366,7 +1366,9 @@ uint32_t Map::clean() const
 	std::vector<const QTreeNode*> nodes {
 		&root
 	};
+	nodes.reserve(64);
 	std::vector<Item*> toRemove;
+	toRemove.reserve(32);
 	do {
 		const QTreeNode* node = nodes.back();
 		nodes.pop_back();
@@ -1390,7 +1392,7 @@ uint32_t Map::clean() const
 						}
 
 						++tiles;
-						for (auto it = itemList->getBeginDownItem(), end = itemList->getEndDownItem(); it != end; ++it) {
+						for (auto it = ItemVector::const_reverse_iterator(itemList->getEndDownItem()), end = ItemVector::const_reverse_iterator(itemList->getBeginDownItem()); it != end; ++it) {
 							Item* item = (*it);
 							if (item->isCleanable()) {
 								toRemove.push_back(item);

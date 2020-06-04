@@ -3195,8 +3195,7 @@ int LuaScriptInterface::luaFastRelocate(lua_State* L)
 		return 1;
 	}
 
-	TileItemVector* fromItems = fromTile->getItemList();
-	if (fromItems) {
+	if (TileItemVector* fromItems = fromTile->getItemList()) {
 		TileItemVector* toItems = toTile->makeItemList();
 
 		uint32_t downItemCount = fromItems->getDownItemCount();
@@ -3205,30 +3204,31 @@ int LuaScriptInterface::luaFastRelocate(lua_State* L)
 			ItemVector::iterator endIt = fromItems->getEndDownItem();
 			if (downItemCount <= 5) {
 				// For a small amount of items choose default relocate
-				for (ItemVector::iterator it = startIt; it < endIt; ++it) {
-					Item* item = (*it);
+				int32_t topItemSize = fromTile->getTopItemCount();
+				for (int32_t i = downItemCount, index = 0; --i >= 0 && (topItemSize + index) < fromItems->size();) {
+					Item* item = (*fromItems)[topItemSize + index];
 					if (Item::items[item->getID()].moveable) {
-						g_game.internalMoveItem(item->getParent(), toTile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT | FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE | FLAG_IGNORENOTMOVEABLE);
+						if (g_game.internalMoveItem(item->getParent(), toTile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT | FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE | FLAG_IGNORENOTMOVEABLE) != RETURNVALUE_NOERROR) {
+							++index;
+						}
+					} else {
+						++index;
 					}
 				}
 				pushBoolean(L, true);
 				return 1;
 			}
 
-			Item* firstItem = *(endIt - 1);
+			Item* firstItem = *startIt;
 			if (!Item::items[firstItem->getID()].moveable) { // Check if someone maybe make door as DownItem
-				--endIt;
-				--downItemCount;
+				++startIt;
 			}
 			for (ItemVector::iterator it = startIt; it < endIt; ++it) {
 				(*it)->setParent(toTile);
 			}
 
-			toItems->insert(toItems->getBeginDownItem(), startIt, endIt);
+			toItems->insert(toItems->getEndDownItem(), startIt, endIt);
 			fromItems->erase(startIt, endIt);
-
-			fromItems->addDownItemCount(static_cast<int32_t>(downItemCount) * -1);
-			toItems->addDownItemCount(static_cast<int32_t>(downItemCount));
 
 			SpectatorVector spectators;
 			if (Position::areInRange<1, 1, 0>(fromPos, toPos)) {
@@ -5326,7 +5326,8 @@ int LuaScriptInterface::luaTileGetItemByType(lua_State* L)
 	}
 
 	if (const TileItemVector* items = tile->getItemList()) {
-		for (Item* item : *items) {
+		for (auto tit = items->rbegin(), end = items->rend(); tit != end; ++tit) {
+			Item* item = (*tit);
 			const ItemType& it = Item::items[item->getID()];
 			if (it.type == itemType) {
 				pushUserdata<Item>(L, item);
@@ -5496,7 +5497,8 @@ int LuaScriptInterface::luaTileGetItems(lua_State* L)
 	lua_createtable(L, itemVector->size(), 0);
 
 	int index = 0;
-	for (Item* item : *itemVector) {
+	for (auto it = itemVector->rbegin(), end = itemVector->rend(); it != end; ++it) {
+		Item* item = (*it);
 		pushUserdata<Item>(L, item);
 		setItemMetatable(L, -1, item);
 		lua_rawseti(L, -2, ++index);
@@ -11643,7 +11645,8 @@ int LuaScriptInterface::luaHouseGetItems(lua_State* L)
 	for (Tile* tile : tiles) {
 		TileItemVector* itemVector = tile->getItemList();
 		if(itemVector) {
-			for(Item* item : *itemVector) {
+			for (auto it = itemVector->rbegin(), end = itemVector->rend(); it != end; ++it) {
+				Item* item = (*it);
 				pushUserdata<Item>(L, item);
 				setItemMetatable(L, -1, item);
 				lua_rawseti(L, -2, ++index);
