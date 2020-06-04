@@ -66,7 +66,7 @@ class IOLoginData
 		static bool loadContainer(PropStream& propStream, Container* container);
 		static void loadItems(ItemBlockList& itemMap, DBResult_ptr result, PropStream& stream);
 		static void saveItem(PropWriteStream& stream, const Item* item);
-		static bool saveItems(const Player* player, const ItemBlockList& itemList, std::ostringstream& query, PropWriteStream& stream, const std::string& table);
+		static bool saveItems(const Player* player, const ItemBlockList& itemList, std::stringExtended& query, PropWriteStream& stream, const std::string& table);
 };
 
 #endif
