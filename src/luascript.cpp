@@ -3205,7 +3205,7 @@ int LuaScriptInterface::luaFastRelocate(lua_State* L)
 			if (downItemCount <= 5) {
 				// For a small amount of items choose default relocate
 				int32_t topItemSize = fromTile->getTopItemCount();
-				for (int32_t i = downItemCount, index = 0; --i >= 0 && (topItemSize + index) < fromItems->size();) {
+				for (int32_t i = downItemCount, index = 0; --i >= 0 && static_cast<size_t>(topItemSize + index) < fromItems->size();) {
 					Item* item = (*fromItems)[topItemSize + index];
 					if (Item::items[item->getID()].moveable) {
 						if (g_game.internalMoveItem(item->getParent(), toTile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT | FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE | FLAG_IGNORENOTMOVEABLE) != RETURNVALUE_NOERROR) {
