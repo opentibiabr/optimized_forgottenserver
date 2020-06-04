@@ -1175,8 +1175,7 @@ bool Creature::addCombatCondition(Condition* condition)
 
 void Creature::removeCondition(ConditionType_t type, bool force/* = false*/)
 {
-	for (auto it = conditions.begin(), end = conditions.end(); it != end; ++it) {
-		Condition* condition = *it;
+	for (Condition* condition : conditions) {
 		if (condition->getType() != type) {
 			continue;
 		}
@@ -1197,8 +1196,7 @@ void Creature::removeCondition(ConditionType_t type, bool force/* = false*/)
 
 void Creature::removeCondition(ConditionType_t type, ConditionId_t conditionId, bool force/* = false*/)
 {
-	for (auto it = conditions.begin(), end = conditions.end(); it != end; ++it) {
-		Condition* condition = *it;
+	for (Condition* condition : conditions) {
 		if (condition->getType() != type || condition->getId() != conditionId) {
 			continue;
 		}

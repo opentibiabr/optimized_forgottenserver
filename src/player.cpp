@@ -2184,31 +2184,23 @@ void Player::death(Creature* lastHitCreature)
 			mana = manaMax;
 		}
 
-		auto it = conditions.begin(), end = conditions.end();
-		while (it != end) {
-			Condition* condition = *it;
+		for(Condition* condition : conditions) {
 			if (condition->isPersistent()) {
 				ConditionType_t type = condition->getType();
 				condition->setType(CONDITION_NONE); // Safely schedule it to be removed
 				condition->endCondition(this);
 				onEndCondition(type);
-			} else {
-				++it;
 			}
 		}
 	} else {
 		setSkillLoss(true);
 
-		auto it = conditions.begin(), end = conditions.end();
-		while (it != end) {
-			Condition* condition = *it;
+		for (Condition* condition : conditions) {
 			if (condition->isPersistent()) {
 				ConditionType_t type = condition->getType();
 				condition->setType(CONDITION_NONE); // Safely schedule it to be removed
 				condition->endCondition(this);
 				onEndCondition(type);
-			} else {
-				++it;
 			}
 		}
 
