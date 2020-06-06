@@ -4720,12 +4720,14 @@ int LuaScriptInterface::luaGameCreateMonster(lua_State* L)
 		return 1;
 	}
 
+	bool isSummon = false;
 	if (lua_gettop(L) >= 5) {
 		Creature* master = getCreature(L, 5);
 		if (master) {
 			monster->setMaster(master);
 			monster->setDropLoot(false);
 			monster->setSkillLoss(false);
+			isSummon = true;
 		}
 	}
 
@@ -4736,7 +4738,11 @@ int LuaScriptInterface::luaGameCreateMonster(lua_State* L)
 		pushUserdata<Monster>(L, monster);
 		setMetatable(L, -1, "Monster");
 	} else {
-		delete monster;
+		if (isSummon) {
+			monster->setMaster(nullptr);
+		} else {
+			delete monster;
+		}
 		lua_pushnil(L);
 	}
 	return 1;
