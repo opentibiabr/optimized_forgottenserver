@@ -126,6 +126,12 @@ void Game::setGameState(GameState_t newState)
 			mounts.loadFromXml();
 			#endif
 
+			size_t maxPlayers = static_cast<size_t>(g_config.getNumber(ConfigManager::MAX_PLAYERS));
+			if (maxPlayers > 0) {
+				players.reserve(maxPlayers);
+				mappedPlayerNames.reserve(maxPlayers);
+			}
+
 			loadMotdNum();
 			loadPlayersRecord();
 
@@ -576,31 +582,30 @@ bool Game::removeCreature(Creature* creature, bool isLogout/* = true*/)
 	}
 
 	Tile* tile = creature->getTile();
-
-	std::vector<int32_t> oldStackPosVector;
+	const Position& tilePosition = tile->getPosition();
 
 	SpectatorVector spectators;
 	map.getSpectators(spectators, tile->getPosition(), true);
+
+	std::vector<int32_t> oldStackPosVector(spectators.size());
+	size_t i = static_cast<size_t>(-1); //Start index at -1 to avoid copying it
 	for (Creature* spectator : spectators) {
 		if (Player* player = spectator->getPlayer()) {
-			oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getStackposOfCreature(player, creature) : -1);
+			if (player->canSeeCreature(creature)) {
+				oldStackPosVector[++i] = (player->canSeeCreature(creature) ? tile->getStackposOfCreature(player, creature) : -1);
+			}
 		}
 	}
 
 	tile->removeCreature(creature);
 
-	const Position& tilePosition = tile->getPosition();
-
-	//send to client
-	size_t i = 0;
+	//send to client + event method
+	i = static_cast<size_t>(-1); //Start index at -1 to avoid copying it
 	for (Creature* spectator : spectators) {
 		if (Player* player = spectator->getPlayer()) {
-			player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
+			player->sendRemoveTileThing(tilePosition, oldStackPosVector[++i]);
 		}
-	}
 
-	//event method
-	for (Creature* spectator : spectators) {
 		spectator->onRemoveCreature(creature, isLogout);
 	}
 
