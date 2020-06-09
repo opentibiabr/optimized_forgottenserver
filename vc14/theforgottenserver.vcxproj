@@ -565,6 +565,7 @@
     <ClInclude Include="..\src\pugicast.h" />
     <ClInclude Include="..\src\quests.h" />
     <ClInclude Include="..\src\raids.h" />
+    <ClInclude Include="..\src\robin_hood.h" />
     <ClInclude Include="..\src\rsa.h" />
     <ClInclude Include="..\src\scheduler.h" />
     <ClInclude Include="..\src\script.h" />

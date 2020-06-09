@@ -44,3 +44,7 @@
 #include <pugixml.hpp>
 #include "simd.h"
 #include "features.h"
+
+#if GAME_FEATURE_ROBINHOOD_HASH_MAP > 0
+#include "robin_hood.h"
+#endif
