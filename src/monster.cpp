@@ -82,7 +82,7 @@ void Monster::removeList()
 
 bool Monster::canSee(const Position& pos) const
 {
-	return Creature::canSee(getPosition(), pos, 9, 9);
+	return Creature::canSee(getPosition(), pos, CLIENT_MAP_WIDTH_OFFSET, CLIENT_MAP_HEIGHT_OFFFSET);
 }
 
 std::string Monster::getDescription(int32_t) const

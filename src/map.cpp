@@ -417,7 +417,7 @@ void Map::getSpectatorsInternal(SpectatorVector& spectators, const Position& cen
 					if (static_cast<uint32_t>(static_cast<int32_t>(cpos.z) - minRangeZ) <= depth) {
 						int_fast16_t offsetZ = Position::getOffsetZ(centerPos, cpos);
 						if (static_cast<uint32_t>(static_cast<int32_t>(cpos.x - offsetZ) - min_x) <= width && static_cast<uint32_t>(static_cast<int32_t>(cpos.y - offsetZ) - min_y) <= height) {
-							spectators.emplace_back(creature);
+							spectators.push_back(creature);
 						}
 					}
 				}
@@ -433,7 +433,6 @@ void Map::getSpectatorsInternal(SpectatorVector& spectators, const Position& cen
 			leafS = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, ny + FLOOR_SIZE);
 		}
 	}
-	spectators.shrink_to_fit();
 }
 
 void Map::getSpectators(SpectatorVector& spectators, const Position& centerPos, bool multifloor /*= false*/, bool onlyPlayers /*= false*/, int32_t minRangeX /*= 0*/, int32_t maxRangeX /*= 0*/, int32_t minRangeY /*= 0*/, int32_t maxRangeY /*= 0*/)
