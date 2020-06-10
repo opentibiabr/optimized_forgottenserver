@@ -81,94 +81,43 @@ class AStarNodes
 
 using SpectatorCache = std::map<Position, SpectatorVector>;
 
-static constexpr int32_t FLOOR_BITS = 3;
-static constexpr int32_t FLOOR_SIZE = (1 << FLOOR_BITS);
-static constexpr int32_t FLOOR_MASK = (FLOOR_SIZE - 1);
-
-struct Floor {
-	constexpr Floor() = default;
-	~Floor();
-
-	// non-copyable
-	Floor(const Floor&) = delete;
-	Floor& operator=(const Floor&) = delete;
-
-	Tile* tiles[FLOOR_SIZE][FLOOR_SIZE] = {};
-};
+//SECTOR_SIZE must be power of 2 value
+//The bigger the SECTOR_SIZE is the less hash map collision there should be but it'll consume more memory
+static constexpr int32_t SECTOR_SIZE = 16;
+static constexpr int32_t SECTOR_MASK = (SECTOR_SIZE - 1);
 
 class FrozenPathingConditionCall;
-class QTreeLeafNode;
 
-class QTreeNode
+class MapSector
 {
 	public:
-		constexpr QTreeNode() = default;
-		virtual ~QTreeNode();
+		MapSector() = default;
+		~MapSector();
 
 		// non-copyable
-		QTreeNode(const QTreeNode&) = delete;
-		QTreeNode& operator=(const QTreeNode&) = delete;
+		MapSector(const MapSector&) = delete;
+		MapSector& operator=(const MapSector&) = delete;
 
-		bool isLeaf() const {
-			return leaf;
-		}
+		// non-moveable
+		MapSector(const MapSector&&) = delete;
+		MapSector& operator=(const MapSector&&) = delete;
 
-		QTreeLeafNode* getLeaf(uint32_t x, uint32_t y);
-
-		template<typename Leaf, typename Node>
-		static Leaf getLeafStatic(Node node, uint32_t x, uint32_t y)
-		{
-			do {
-				node = node->child[((x & 0x8000) >> 15) | ((y & 0x8000) >> 14)];
-				if (!node) {
-					return nullptr;
-				}
-
-				x <<= 1;
-				y <<= 1;
-			} while (!node->leaf);
-			return static_cast<Leaf>(node);
-		}
-
-		QTreeLeafNode* createLeaf(uint32_t x, uint32_t y, uint32_t level);
-
-	protected:
-		bool leaf = false;
-
-	private:
-		QTreeNode* child[4] = {};
-
-		friend class Map;
-};
-
-class QTreeLeafNode final : public QTreeNode
-{
-	public:
-		QTreeLeafNode() { leaf = true; newLeaf = true; }
-		~QTreeLeafNode();
-
-		// non-copyable
-		QTreeLeafNode(const QTreeLeafNode&) = delete;
-		QTreeLeafNode& operator=(const QTreeLeafNode&) = delete;
-
-		Floor* createFloor(uint32_t z);
-		Floor* getFloor(uint8_t z) const {
-			return array[z];
-		}
+		void createFloor(uint8_t z);
+		bool getFloor(uint8_t z) const;
 
 		void addCreature(Creature* c);
 		void removeCreature(Creature* c);
 
 	private:
-		static bool newLeaf;
-		QTreeLeafNode* leafS = nullptr;
-		QTreeLeafNode* leafE = nullptr;
-		Floor* array[MAP_MAX_LAYERS] = {};
+		static bool newSector;
+		MapSector* sectorS = nullptr;
+		MapSector* sectorE = nullptr;
 		CreatureVector creature_list;
 		CreatureVector player_list;
+		Tile* tiles[MAP_MAX_LAYERS][SECTOR_SIZE][SECTOR_SIZE] = {};
+		uint32_t floorBits = 0;
 
 		friend class Map;
-		friend class QTreeNode;
 };
 
 /**
@@ -197,6 +146,19 @@ class Map
 		  * \returns true if the map was saved successfully
 		  */
 		static bool save();
+
+		/**
+		  * Creates a map sector.
+		  * \returns A pointer to that map sector.
+		  */
+		MapSector* createMapSector(uint32_t x, uint32_t y);
+
+		/**
+		  * Gets a map sector.
+		  * \returns A pointer to that map sector.
+		  */
+		inline MapSector* getMapSector(uint32_t x, uint32_t y);
+		inline const MapSector* getMapSector(uint32_t x, uint32_t y) const;
 
 		/**
 		  * Get a single tile.
@@ -267,10 +229,6 @@ class Map
 
 		std::map<std::string, Position> waypoints;
 
-		QTreeLeafNode* getQTNode(uint16_t x, uint16_t y) {
-			return QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y);
-		}
-
 		Spawns spawns;
 		Towns towns;
 		Houses houses;
@@ -279,7 +237,11 @@ class Map
 		SpectatorCache spectatorCache;
 		SpectatorCache playersSpectatorCache;
 
-		QTreeNode root;
+		#if GAME_FEATURE_ROBINHOOD_HASH_MAP > 0
+		robin_hood::unordered_map<uint32_t, MapSector> mapSectors;
+		#else
+		std::unordered_map<uint32_t, MapSector> mapSectors;
+		#endif
 
 		std::string spawnfile;
 		std::string housefile;

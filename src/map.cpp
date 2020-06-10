@@ -75,22 +75,48 @@ bool Map::save()
 	return saved;
 }
 
+MapSector* Map::createMapSector(uint32_t x, uint32_t y)
+{
+	uint32_t index = (x / SECTOR_SIZE) | ((y / SECTOR_SIZE) << 16);
+	auto it = mapSectors.find(index);
+	if (it != mapSectors.end()) {
+		return &it->second;
+	}
+
+	MapSector::newSector = true;
+	return &mapSectors[index];
+}
+
+MapSector* Map::getMapSector(uint32_t x, uint32_t y)
+{
+	auto it = mapSectors.find((x / SECTOR_SIZE) | ((y / SECTOR_SIZE) << 16));
+	if (it != mapSectors.end()) {
+		return &it->second;
+	}
+	return nullptr;
+}
+
+const MapSector* Map::getMapSector(uint32_t x, uint32_t y) const
+{
+	auto it = mapSectors.find((x / SECTOR_SIZE) | ((y / SECTOR_SIZE) << 16));
+	if (it != mapSectors.end()) {
+		return &it->second;
+	}
+	return nullptr;
+}
+
 Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) const
 {
 	if (z >= MAP_MAX_LAYERS) {
 		return nullptr;
 	}
 
-	const QTreeLeafNode* leaf = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, x, y);
-	if (!leaf) {
+	const MapSector* sector = getMapSector(x, y);
+	if (!sector) {
 		return nullptr;
 	}
 
-	const Floor* floor = leaf->getFloor(z);
-	if (!floor) {
-		return nullptr;
-	}
-	return floor->tiles[x & FLOOR_MASK][y & FLOOR_MASK];
+	return sector->tiles[z][x & SECTOR_MASK][y & SECTOR_MASK];
 }
 
 void Map::setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile)
@@ -100,40 +126,37 @@ void Map::setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile)
 		return;
 	}
 
-	QTreeLeafNode::newLeaf = false;
-	QTreeLeafNode* leaf = root.createLeaf(x, y, 15);
+	MapSector::newSector = false;
+	MapSector* sector = createMapSector(x, y);
 
-	if (QTreeLeafNode::newLeaf) {
-		//update north
-		QTreeLeafNode* northLeaf = root.getLeaf(x, y - FLOOR_SIZE);
-		if (northLeaf) {
-			northLeaf->leafS = leaf;
+	if (MapSector::newSector) {
+		//update north sector
+		MapSector* northSector = getMapSector(x, y - SECTOR_SIZE);
+		if (northSector) {
+			northSector->sectorS = sector;
 		}
 
-		//update west leaf
-		QTreeLeafNode* westLeaf = root.getLeaf(x - FLOOR_SIZE, y);
-		if (westLeaf) {
-			westLeaf->leafE = leaf;
+		//update west sector
+		MapSector* westSector = getMapSector(x - SECTOR_SIZE, y);
+		if (westSector) {
+			westSector->sectorE = sector;
 		}
 
-		//update south
-		QTreeLeafNode* southLeaf = root.getLeaf(x, y + FLOOR_SIZE);
-		if (southLeaf) {
-			leaf->leafS = southLeaf;
+		//update south sector
+		MapSector* southSector = getMapSector(x, y + SECTOR_SIZE);
+		if (southSector) {
+			sector->sectorS = southSector;
 		}
 
-		//update east
-		QTreeLeafNode* eastLeaf = root.getLeaf(x + FLOOR_SIZE, y);
-		if (eastLeaf) {
-			leaf->leafE = eastLeaf;
+		//update east sector
+		MapSector* eastSector = getMapSector(x + SECTOR_SIZE, y);
+		if (eastSector) {
+			sector->sectorE = eastSector;
 		}
 	}
 
-	Floor* floor = leaf->createFloor(z);
-	uint32_t offsetX = x & FLOOR_MASK;
-	uint32_t offsetY = y & FLOOR_MASK;
-
-	Tile*& tile = floor->tiles[offsetX][offsetY];
+	sector->createFloor(z);
+	Tile*& tile = sector->tiles[z][x & SECTOR_MASK][y & SECTOR_MASK];
 	if (tile) {
 		TileItemVector* items = newTile->getItemList();
 		if (items) {
@@ -222,7 +245,7 @@ bool Map::placeCreature(const Position& centerPos, Creature* creature, bool exte
 	toCylinder->internalAddThing(creature);
 
 	const Position& dest = toCylinder->getPosition();
-	getQTNode(dest.x, dest.y)->addCreature(creature);
+	getMapSector(dest.x, dest.y)->addCreature(creature);
 	return true;
 }
 
@@ -230,8 +253,8 @@ void Map::moveCreature(Creature& creature, Tile& newTile, bool forceTeleport/* =
 {
 	Tile& oldTile = *creature.getTile();
 
-	Position oldPos = oldTile.getPosition();
-	Position newPos = newTile.getPosition();
+	const Position& oldPos = oldTile.getPosition();
+	const Position& newPos = newTile.getPosition();
 
 	bool teleport = forceTeleport || !newTile.getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
 
@@ -260,13 +283,14 @@ void Map::moveCreature(Creature& creature, Tile& newTile, bool forceTeleport/* =
 		spectators.mergeSpectators(newspectators);
 	}
 
-	std::vector<int32_t> oldStackPosVector;
+	std::vector<int32_t> oldStackPosVector(spectators.size());
+	size_t i = static_cast<size_t>(-1); //Start index at -1 to avoid copying it
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			if (tmpPlayer->canSeeCreature(&creature)) {
-				oldStackPosVector.push_back(oldTile.getClientIndexOfCreature(tmpPlayer, &creature));
+				oldStackPosVector[++i] = oldTile.getClientIndexOfCreature(tmpPlayer, &creature);
 			} else {
-				oldStackPosVector.push_back(-1);
+				oldStackPosVector[++i] = -1;
 			}
 		}
 	}
@@ -274,13 +298,13 @@ void Map::moveCreature(Creature& creature, Tile& newTile, bool forceTeleport/* =
 	//remove the creature
 	oldTile.removeThing(&creature, 0);
 
-	QTreeLeafNode* leaf = getQTNode(oldPos.x, oldPos.y);
-	QTreeLeafNode* new_leaf = getQTNode(newPos.x, newPos.y);
+	MapSector* old_sector = getMapSector(oldPos.x, oldPos.y);
+	MapSector* new_sector = getMapSector(newPos.x, newPos.y);
 
 	// Switch the node ownership
-	if (leaf != new_leaf) {
-		leaf->removeCreature(&creature);
-		new_leaf->addCreature(&creature);
+	if (old_sector != new_sector) {
+		old_sector->removeCreature(&creature);
+		new_sector->addCreature(&creature);
 	}
 
 	//add the creature
@@ -300,55 +324,49 @@ void Map::moveCreature(Creature& creature, Tile& newTile, bool forceTeleport/* =
 		}
 	}
 
-	//send to client
-	size_t i = 0;
+	//send to client + event method
+	i = static_cast<size_t>(-1); //Start index at -1 to avoid copying it
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			//Use the correct stackpos
-			int32_t stackpos = oldStackPosVector[i++];
+			int32_t stackpos = oldStackPosVector[++i];
 			if (stackpos != -1) {
-				tmpPlayer->sendCreatureMove(&creature, newPos, newTile.getStackposOfCreature(tmpPlayer, &creature), oldPos, stackpos, teleport);
+				// 0xFF is special stackpos that tells client to insert it as new object - exactly what we want
+				tmpPlayer->sendCreatureMove(&creature, newPos, 0xFF, oldPos, stackpos, teleport);
 			}
 		}
-	}
 
-	//event method
-	for (Creature* spectator : spectators) {
 		spectator->onCreatureMove(&creature, &newTile, newPos, &oldTile, oldPos, teleport);
 	}
 
 	oldTile.postRemoveNotification(&creature, &newTile, 0);
 	newTile.postAddNotification(&creature, &oldTile, 0);
-
-	clearSpectatorCache(creature.getPlayer());
 }
 
 std::vector<Tile*> Map::getFloorTiles(int32_t x, int32_t y, int32_t width, int32_t height, int32_t z)
 {
-	std::vector<Tile*> tileVector;
-	tileVector.resize(width*height, nullptr);
+	std::vector<Tile*> tileVector(width*height, nullptr);
 
 	int32_t x1 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, x));
 	int32_t y1 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, y));
 	int32_t x2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (x + width)));
 	int32_t y2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (y + height)));
 
-	int32_t startx1 = x1 - (x1 & FLOOR_MASK);
-	int32_t starty1 = y1 - (y1 & FLOOR_MASK);
-	int32_t endx2 = x2 - (x2 & FLOOR_MASK);
-	int32_t endy2 = y2 - (y2 & FLOOR_MASK);
+	int32_t startx1 = x1 - (x1 & SECTOR_MASK);
+	int32_t starty1 = y1 - (y1 & SECTOR_MASK);
+	int32_t endx2 = x2 - (x2 & SECTOR_MASK);
+	int32_t endy2 = y2 - (y2 & SECTOR_MASK);
 
-	const QTreeLeafNode* startLeaf = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, starty1);
-	const QTreeLeafNode* leafS = startLeaf;
-	const QTreeLeafNode* leafE;
-	for (int32_t ny = starty1; ny <= endy2; ny += FLOOR_SIZE) {
-		leafE = leafS;
-		for (int32_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
-			if (leafE) {
-				Floor* floor = leafE->getFloor(z);
-				if (floor) {
+	const MapSector* startSector = getMapSector(startx1, starty1);
+	const MapSector* sectorS = startSector;
+	const MapSector* sectorE;
+	for (int32_t ny = starty1; ny <= endy2; ny += SECTOR_SIZE) {
+		sectorE = sectorS;
+		for (int32_t nx = startx1; nx <= endx2; nx += SECTOR_SIZE) {
+			if (sectorE) {
+				if (sectorE->getFloor(z)) {
 					int32_t tx = nx;
-					for (auto& row : floor->tiles) {
+					for (auto& row : sectorE->tiles[z]) {
 						if (static_cast<uint32_t>(tx - x) < static_cast<uint32_t>(width)) {
 							int32_t ty = ny;
 							uint32_t index = ((tx - x) * height) + (ty - y);
@@ -363,16 +381,16 @@ std::vector<Tile*> Map::getFloorTiles(int32_t x, int32_t y, int32_t width, int32
 						++tx;
 					}
 				}
-				leafE = leafE->leafE;
+				sectorE = sectorE->sectorE;
 			} else {
-				leafE = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, nx + FLOOR_SIZE, ny);
+				sectorE = getMapSector(nx + SECTOR_SIZE, ny);
 			}
 		}
 
-		if (leafS) {
-			leafS = leafS->leafS;
+		if (sectorS) {
+			sectorS = sectorS->sectorS;
 		} else {
-			leafS = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, ny + FLOOR_SIZE);
+			sectorS = getMapSector(startx1, ny + SECTOR_SIZE);
 		}
 	}
 	return tileVector;
@@ -397,19 +415,19 @@ void Map::getSpectatorsInternal(SpectatorVector& spectators, const Position& cen
 	int32_t x2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (max_x + maxoffset)));
 	int32_t y2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (max_y + maxoffset)));
 
-	int32_t startx1 = x1 - (x1 & FLOOR_MASK);
-	int32_t starty1 = y1 - (y1 & FLOOR_MASK);
-	int32_t endx2 = x2 - (x2 & FLOOR_MASK);
-	int32_t endy2 = y2 - (y2 & FLOOR_MASK);
+	int32_t startx1 = x1 - (x1 & SECTOR_MASK);
+	int32_t starty1 = y1 - (y1 & SECTOR_MASK);
+	int32_t endx2 = x2 - (x2 & SECTOR_MASK);
+	int32_t endy2 = y2 - (y2 & SECTOR_MASK);
 
-	const QTreeLeafNode* startLeaf = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, starty1);
-	const QTreeLeafNode* leafS = startLeaf;
-	const QTreeLeafNode* leafE;
-	for (int32_t ny = starty1; ny <= endy2; ny += FLOOR_SIZE) {
-		leafE = leafS;
-		for (int32_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
-			if (leafE) {
-				const CreatureVector& node_list = (onlyPlayers ? leafE->player_list : leafE->creature_list);
+	const MapSector* startSector = getMapSector(startx1, starty1);
+	const MapSector* sectorS = startSector;
+	const MapSector* sectorE;
+	for (int32_t ny = starty1; ny <= endy2; ny += SECTOR_SIZE) {
+		sectorE = sectorS;
+		for (int32_t nx = startx1; nx <= endx2; nx += SECTOR_SIZE) {
+			if (sectorE) {
+				const CreatureVector& node_list = (onlyPlayers ? sectorE->player_list : sectorE->creature_list);
 				for (auto it = node_list.begin(), end = node_list.end(); it != end; ++it) {
 					Creature* creature = (*it);
 
@@ -421,16 +439,16 @@ void Map::getSpectatorsInternal(SpectatorVector& spectators, const Position& cen
 						}
 					}
 				}
-				leafE = leafE->leafE;
+				sectorE = sectorE->sectorE;
 			} else {
-				leafE = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, nx + FLOOR_SIZE, ny);
+				sectorE = getMapSector(nx + SECTOR_SIZE, ny);
 			}
 		}
 
-		if (leafS) {
-			leafS = leafS->leafS;
+		if (sectorS) {
+			sectorS = sectorS->sectorS;
 		} else {
-			leafS = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, ny + FLOOR_SIZE);
+			sectorS = getMapSector(startx1, ny + SECTOR_SIZE);
 		}
 	}
 }
@@ -575,42 +593,161 @@ bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const
 	Position start(fromPos.z > toPos.z ? toPos : fromPos);
 	Position destination(fromPos.z > toPos.z ? fromPos : toPos);
 
-	const int8_t mx = start.x < destination.x ? 1 : start.x == destination.x ? 0 : -1;
-	const int8_t my = start.y < destination.y ? 1 : start.y == destination.y ? 0 : -1;
+	int32_t distanceX = Position::getDistanceX(start, destination);
+	int32_t distanceY = Position::getDistanceY(start, destination);
 
-	int32_t A = Position::getOffsetY(destination, start);
-	int32_t B = Position::getOffsetX(start, destination);
-	int32_t C = -(A * destination.x + B * destination.y);
+	if (start.y == destination.y) {
+		// Horizontal line
+		const uint16_t delta = (start.x < destination.x ? 0x0001 : 0xFFFF);
+		do {
+			start.x += delta;
 
-	while (start.x != destination.x || start.y != destination.y) {
-		int32_t move_hor = std::abs(A * (start.x + mx) + B * (start.y) + C);
-		int32_t move_ver = std::abs(A * (start.x) + B * (start.y + my) + C);
-		int32_t move_cross = std::abs(A * (start.x + mx) + B * (start.y + my) + C);
+			const Tile* tile = getTile(start.x, start.y, start.z);
+			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+				return false;
+			}
+		} while (start.x != destination.x);
+	} else if (start.x == destination.x) {
+		// Vertical line
+		const uint16_t delta = (start.y < destination.y ? 0x0001 : 0xFFFF);
+		do {
+			start.y += delta;
 
-		if (start.y != destination.y && (start.x == destination.x || move_hor > move_ver || move_hor > move_cross)) {
-			start.y += my;
+			const Tile* tile = getTile(start.x, start.y, start.z);
+			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+				return false;
+			}
+		} while (start.y != destination.y);
+	} else if (distanceX == distanceY) {
+		// Diagonal line
+		const uint16_t deltaX = (start.x < destination.x ? 0x0001 : 0xFFFF);
+		const uint16_t deltaY = (start.y < destination.y ? 0x0001 : 0xFFFF);
+		do {
+			start.x += deltaX;
+			start.y += deltaY;
+
+			const Tile* tile = getTile(start.x, start.y, start.z);
+			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+				return false;
+			}
+		} while (--distanceX);
+	} else {
+		const uint16_t deltaX = (start.x < destination.x ? 0x0001 : 0xFFFF);
+		const uint16_t deltaY = (start.y < destination.y ? 0x0001 : 0xFFFF);
+
+		#if GAME_FEATURE_XIAOLIN_WU_SIGHT_CLEAR > 0
+		// Xiaolin Wu's line algorithm
+		uint16_t eAdj, eAcc = 0;
+
+		if (distanceY > distanceX) {
+			eAdj = (static_cast<uint32_t>(distanceX) << 16) / static_cast<uint32_t>(distanceY);
+
+			do {
+				uint16_t xIncrease = 0, eAccTemp = eAcc;
+				eAcc += eAdj;
+				if (eAcc <= eAccTemp) {
+					xIncrease = deltaX;
+				}
+
+				const Tile* tile = getTile(start.x + xIncrease, start.y + deltaY, start.z);
+				if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+					if (Position::areInRange<1, 1>(start, destination)) {
+						break;
+					} else {
+						return false;
+					}
+				}
+
+				start.x += xIncrease;
+				start.y += deltaY;
+			} while (--distanceY);
+		} else {
+			eAdj = (static_cast<uint32_t>(distanceY) << 16) / static_cast<uint32_t>(distanceX);
+
+			do {
+				uint16_t yIncrease = 0, eAccTemp = eAcc;
+				eAcc += eAdj;
+				if (eAcc <= eAccTemp) {
+					yIncrease = deltaY;
+				}
+
+				const Tile* tile = getTile(start.x + deltaX, start.y + yIncrease, start.z);
+				if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+					if (Position::areInRange<1, 1>(start, destination)) {
+						break;
+					} else {
+						return false;
+					}
+				}
+
+				start.x += deltaX;
+				start.y += yIncrease;
+			} while (--distanceX);
+		}
+		#else
+		// Bresenham's line algorithm
+		int32_t distance, delta, d1Increase, d2Increase;
+		uint16_t x1Increase, x2Increase;
+		uint16_t y1Increase, y2Increase;
+
+		if (distanceX >= distanceY) {
+			distance = distanceX;
+			delta = (2 * distanceY) - distanceX;
+			d1Increase = distanceY * 2;
+			d2Increase = (distanceY - distanceX) * 2;
+			x1Increase = deltaX;
+			x2Increase = deltaX;
+			y1Increase = 0;
+			y2Increase = deltaY;
+		} else {
+			distance = distanceY;
+			delta = (2 * distanceX) - distanceY;
+			d1Increase = distanceX * 2;
+			d2Increase = (distanceX - distanceY) * 2;
+			x1Increase = 0;
+			x2Increase = deltaX;
+			y1Increase = deltaY;
+			y2Increase = deltaY;
 		}
 
-		if (start.x != destination.x && (start.y == destination.y || move_ver > move_hor || move_ver > move_cross)) {
-			start.x += mx;
-		}
+		do {
+			uint16_t xIncrease = 0, yIncrease = 0;
+			if (delta < 0) {
+				delta += d1Increase;
+				xIncrease = x1Increase;
+				yIncrease = y1Increase;
+			} else {
+				delta += d2Increase;
+				xIncrease = x2Increase;
+				yIncrease = y2Increase;
+			}
 
-		const Tile* tile = getTile(start.x, start.y, start.z);
-		if (tile && tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
-			return false;
-		}
+			const Tile* tile = getTile(start.x + xIncrease, start.y + yIncrease, start.z);
+			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+				if (Position::areInRange<1, 1>(start, destination)) {
+					break;
+				} else {
+					return false;
+				}
+			}
+
+			start.x += xIncrease;
+			start.y += yIncrease;
+		} while (--distance);
+		#endif
 	}
-
+	
 	// now we need to perform a jump between floors to see if everything is clear (literally)
 	while (start.z != destination.z) {
-		const Tile* tile = getTile(start.x, start.y, start.z);
+		// use destination x and y because we might end up with different start x and y values
+		const Tile* tile = getTile(destination.x, destination.y, start.z);
 		if (tile && tile->getThingCount() > 0) {
 			return false;
 		}
 
 		start.z++;
 	}
-
+	
 	return true;
 }
 
@@ -1265,73 +1402,35 @@ inline int_fast32_t AStarNodes::getTileWalkCost(const Creature& creature, const 
 	return cost;
 }
 
-// Floor
-Floor::~Floor()
-{
-	for (auto& row : tiles) {
-		for (auto tile : row) {
-			delete tile;
-		}
-	}
-}
+// MapSector
+bool MapSector::newSector = false;
 
-// QTreeNode
-QTreeNode::~QTreeNode()
+MapSector::~MapSector()
 {
-	for (auto* ptr : child) {
-		delete ptr;
-	}
-}
-
-QTreeLeafNode* QTreeNode::getLeaf(uint32_t x, uint32_t y)
-{
-	if (leaf) {
-		return static_cast<QTreeLeafNode*>(this);
-	}
-
-	QTreeNode* node = child[((x & 0x8000) >> 15) | ((y & 0x8000) >> 14)];
-	if (!node) {
-		return nullptr;
-	}
-	return node->getLeaf(x << 1, y << 1);
-}
-
-QTreeLeafNode* QTreeNode::createLeaf(uint32_t x, uint32_t y, uint32_t level)
-{
-	if (!isLeaf()) {
-		uint32_t index = ((x & 0x8000) >> 15) | ((y & 0x8000) >> 14);
-		if (!child[index]) {
-			if (level != FLOOR_BITS) {
-				child[index] = new QTreeNode();
-			} else {
-				child[index] = new QTreeLeafNode();
-				QTreeLeafNode::newLeaf = true;
+	for (auto& depth : tiles) {
+		for (auto& row : depth) {
+			for (auto tile : row) {
+				delete tile;
 			}
 		}
-		return child[index]->createLeaf(x << 1, y << 1, level - 1);
 	}
-	return static_cast<QTreeLeafNode*>(this);
 }
 
-// QTreeLeafNode
-bool QTreeLeafNode::newLeaf = false;
-
-QTreeLeafNode::~QTreeLeafNode()
+void MapSector::createFloor(uint8_t z)
 {
-	for (auto* ptr : array) {
-		delete ptr;
-	}
+	floorBits |= (1 << static_cast<uint32_t>(z));
 }
 
-Floor* QTreeLeafNode::createFloor(uint32_t z)
+bool MapSector::getFloor(uint8_t z) const
 {
-	if (!array[z]) {
-		array[z] = new Floor();
+	if (floorBits & (1 << static_cast<uint32_t>(z))) {
+		return true;
+	} else {
+		return false;
 	}
-	return array[z];
 }
 
-void QTreeLeafNode::addCreature(Creature* c)
+void MapSector::addCreature(Creature* c)
 {
 	creature_list.push_back(c);
 	if (c->getPlayer()) {
@@ -1339,7 +1438,7 @@ void QTreeLeafNode::addCreature(Creature* c)
 	}
 }
 
-void QTreeLeafNode::removeCreature(Creature* c)
+void MapSector::removeCreature(Creature* c)
 {
 	auto iter = std::find(creature_list.begin(), creature_list.end(), c);
 	assert(iter != creature_list.end());
@@ -1362,24 +1461,12 @@ uint32_t Map::clean() const
 		g_game.setGameState(GAME_STATE_MAINTAIN);
 	}
 
-	std::vector<const QTreeNode*> nodes {
-		&root
-	};
-	nodes.reserve(64);
 	std::vector<Item*> toRemove;
-	toRemove.reserve(32);
-	do {
-		const QTreeNode* node = nodes.back();
-		nodes.pop_back();
-		if (node->isLeaf()) {
-			const QTreeLeafNode* leafNode = static_cast<const QTreeLeafNode*>(node);
-			for (uint8_t z = 0; z < MAP_MAX_LAYERS; ++z) {
-				Floor* floor = leafNode->getFloor(z);
-				if (!floor) {
-					continue;
-				}
-
-				for (auto& row : floor->tiles) {
+	toRemove.reserve(128);
+	for (const auto& mit : mapSectors) {
+		for (uint8_t z = 0; z < MAP_MAX_LAYERS; ++z) {
+			if (mit.second.getFloor(z)) {
+				for (auto& row : mit.second.tiles[z]) {
 					for (auto tile : row) {
 						if (!tile || tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 							continue;
@@ -1400,14 +1487,8 @@ uint32_t Map::clean() const
 					}
 				}
 			}
-		} else {
-			for (auto childNode : node->child) {
-				if (childNode) {
-					nodes.push_back(childNode);
-				}
-			}
 		}
-	} while (!nodes.empty());
+	}
 
 	size_t count = toRemove.size();
 	for (Item* item : toRemove) {
