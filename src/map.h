@@ -157,8 +157,8 @@ class Map
 		  * Gets a map sector.
 		  * \returns A pointer to that map sector.
 		  */
-		inline MapSector* getMapSector(uint32_t x, uint32_t y);
-		inline const MapSector* getMapSector(uint32_t x, uint32_t y) const;
+		MapSector* getMapSector(uint32_t x, uint32_t y);
+		const MapSector* getMapSector(uint32_t x, uint32_t y) const;
 
 		/**
 		  * Get a single tile.
