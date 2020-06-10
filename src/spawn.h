@@ -27,24 +27,44 @@ class Monster;
 class MonsterType;
 class Npc;
 
-struct spawnBlock_t {
-	Position pos;
+struct spawnBlock_t
+{
+	spawnBlock_t(MonsterType* mType, uint32_t interval, Position pos, Direction direction) : mType(mType), interval(interval), pos(std::move(pos)), direction(direction) {}
+
+	Monster* monster = nullptr;
 	MonsterType* mType;
-	int64_t lastSpawn;
+	int64_t lastSpawn = 0;
 	uint32_t interval;
+	Position pos;
 	Direction direction;
 };
 
 class Spawn
 {
 	public:
-		Spawn(Position pos, int32_t radius) : centerPos(std::move(pos)), radius(radius) {}
+		Spawn(Position pos) : centerPos(std::move(pos)) {}
 		~Spawn();
 
 		// non-copyable
 		Spawn(const Spawn&) = delete;
 		Spawn& operator=(const Spawn&) = delete;
 
+		// moveable
+		Spawn(Spawn&& rhs) noexcept {
+			this->spawnMap = std::move(rhs.spawnMap);
+			this->centerPos = std::move(rhs.centerPos);
+			this->interval = rhs.interval;
+			this->checkSpawnEvent = rhs.checkSpawnEvent;
+		}
+		Spawn& operator=(Spawn&& rhs) noexcept {
+			this->spawnMap = std::move(rhs.spawnMap);
+			this->centerPos = std::move(rhs.centerPos);
+			this->interval = rhs.interval;
+			this->checkSpawnEvent = rhs.checkSpawnEvent;
+			return *this;
+		}
+
+		void scheduleSpawn(size_t spawnId, int32_t interval);
 		bool addMonster(const std::string& name, const Position& pos, Direction dir, uint32_t interval);
 		void removeMonster(Monster* monster);
 
@@ -56,26 +76,17 @@ class Spawn
 		void startSpawnCheck();
 		void stopEvent();
 
-		bool isInSpawnZone(const Position& pos);
-		void cleanup();
-
 	private:
-		//map of the spawned creatures
-		using SpawnedMap = std::multimap<uint32_t, Monster*>;
-		using spawned_pair = SpawnedMap::value_type;
-		SpawnedMap spawnedMap;
-
 		//map of creatures in the spawn
-		std::map<uint32_t, spawnBlock_t> spawnMap;
+		std::vector<spawnBlock_t> spawnMap;
+		size_t spawnIndex = 0;
 
 		Position centerPos;
-		int32_t radius;
-
 		uint32_t interval = 60000;
 		uint32_t checkSpawnEvent = 0;
 
 		static bool findPlayer(const Position& pos);
-		bool spawnMonster(uint32_t spawnId, MonsterType* mType, const Position& pos, Direction dir, bool startup = false);
+		bool spawnMonster(spawnBlock_t& sb, bool startup = false);
 		void checkSpawn();
 };
 
@@ -93,8 +104,8 @@ class Spawns
 		}
 
 	private:
-		std::forward_list<Npc*> npcList;
-		std::forward_list<Spawn> spawnList;
+		std::vector<Npc*> npcList;
+		std::vector<Spawn> spawnList;
 		std::string filename;
 		bool loaded = false;
 		bool started = false;
