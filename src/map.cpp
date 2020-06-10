@@ -599,30 +599,30 @@ bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const
 	if (start.y == destination.y) {
 		// Horizontal line
 		const uint16_t delta = (start.x < destination.x ? 0x0001 : 0xFFFF);
-		do {
+		while (--distanceX) {
 			start.x += delta;
 
 			const Tile* tile = getTile(start.x, start.y, start.z);
 			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
 				return false;
 			}
-		} while (start.x != destination.x);
+		}
 	} else if (start.x == destination.x) {
 		// Vertical line
 		const uint16_t delta = (start.y < destination.y ? 0x0001 : 0xFFFF);
-		do {
+		while (--distanceY){
 			start.y += delta;
 
 			const Tile* tile = getTile(start.x, start.y, start.z);
 			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
 				return false;
 			}
-		} while (start.y != destination.y);
+		}
 	} else if (distanceX == distanceY) {
 		// Diagonal line
 		const uint16_t deltaX = (start.x < destination.x ? 0x0001 : 0xFFFF);
 		const uint16_t deltaY = (start.y < destination.y ? 0x0001 : 0xFFFF);
-		do {
+		while (--distanceX) {
 			start.x += deltaX;
 			start.y += deltaY;
 
@@ -630,7 +630,7 @@ bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const
 			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
 				return false;
 			}
-		} while (--distanceX);
+		}
 	} else {
 		const uint16_t deltaX = (start.x < destination.x ? 0x0001 : 0xFFFF);
 		const uint16_t deltaY = (start.y < destination.y ? 0x0001 : 0xFFFF);
@@ -642,7 +642,7 @@ bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const
 		if (distanceY > distanceX) {
 			eAdj = (static_cast<uint32_t>(distanceX) << 16) / static_cast<uint32_t>(distanceY);
 
-			do {
+			while (--distanceY) {
 				uint16_t xIncrease = 0, eAccTemp = eAcc;
 				eAcc += eAdj;
 				if (eAcc <= eAccTemp) {
@@ -660,11 +660,11 @@ bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const
 
 				start.x += xIncrease;
 				start.y += deltaY;
-			} while (--distanceY);
+			}
 		} else {
 			eAdj = (static_cast<uint32_t>(distanceY) << 16) / static_cast<uint32_t>(distanceX);
 
-			do {
+			while (--distanceX) {
 				uint16_t yIncrease = 0, eAccTemp = eAcc;
 				eAcc += eAdj;
 				if (eAcc <= eAccTemp) {
@@ -682,7 +682,7 @@ bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const
 
 				start.x += deltaX;
 				start.y += yIncrease;
-			} while (--distanceX);
+			}
 		}
 		#else
 		// Bresenham's line algorithm
@@ -710,7 +710,7 @@ bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const
 			y2Increase = deltaY;
 		}
 
-		do {
+		while (--distance) {
 			uint16_t xIncrease = 0, yIncrease = 0;
 			if (delta < 0) {
 				delta += d1Increase;
@@ -733,7 +733,7 @@ bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const
 
 			start.x += xIncrease;
 			start.y += yIncrease;
-		} while (--distance);
+		}
 		#endif
 	}
 	
@@ -755,6 +755,17 @@ bool Map::isSightClear(const Position& fromPos, const Position& toPos, bool floo
 {
 	if (floorCheck && fromPos.z != toPos.z) {
 		return false;
+	}
+
+	// Perform checking destination first
+	const Tile* tile = getTile(toPos.x, toPos.y, (fromPos.z > toPos.z ? toPos.z : fromPos.z));
+	if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
+		return false;
+	} else {
+		// Check if we even need to perform line checking
+		if (fromPos.z == toPos.z && Position::areInRange<1, 1>(fromPos, toPos)) {
+			return true;
+		}
 	}
 
 	// Cast two converging rays and see if either yields a result.
