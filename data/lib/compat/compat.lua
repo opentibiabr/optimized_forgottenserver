@@ -1307,3 +1307,10 @@ function createFunctions(class)
 end
 
 function doPlayerTakeItem(cid, itemid, count) local p = Player(cid) return p and p:removeItem(itemid, count) end
+
+function doPlayerAddLevel(cid, amount, round) local p = Player(cid) return p and p:addLevel(amount, round) end
+function getExperienceForLevel(level)
+    local level = level - 1
+    return (((50 * level * level * level) - (150 * level * level) + (400 * level))/3) 
+end
+doPlayerAddExperience = doPlayerAddExp
