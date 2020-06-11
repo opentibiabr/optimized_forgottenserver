@@ -535,7 +535,9 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 
 void Combat::CombatDispelFunc(Creature*, Creature* target, const CombatParams& params, CombatDamage*)
 {
-	target->removeCombatCondition(params.dispelType);
+	if (params.dispelType != CONDITION_NONE) {
+		target->removeCombatCondition(params.dispelType);
+	}
 }
 
 void Combat::CombatNullFunc(Creature* caster, Creature* target, const CombatParams& params, CombatDamage*)
