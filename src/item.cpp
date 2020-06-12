@@ -2108,7 +2108,8 @@ void ItemAttributes::removeAttribute(itemAttrTypes type)
 
 	for (auto it = attributes.begin(), end = attributes.end(); it != end; ++it) {
 		if ((*it).type == type) {
-			attributes.erase(it);
+			(*it) = std::move(attributes.back());
+			attributes.pop_back();
 			break;
 		}
 	}

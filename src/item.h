@@ -398,7 +398,6 @@ class ItemAttributes
 
 			//non-copyable
 			Attribute& operator=(const Attribute& other) = delete;
-			Attribute& operator=(Attribute&& other) = default;
 
 			Attribute(itemAttrTypes type) : type(type) {
 				memset(&value, 0, sizeof(value));
@@ -415,9 +414,25 @@ class ItemAttributes
 					memset(&value, 0, sizeof(value));
 				}
 			}
-			Attribute(Attribute&& attribute) : value(attribute.value), type(attribute.type) {
+			Attribute(Attribute&& attribute) noexcept : value(attribute.value), type(attribute.type) {
 				memset(&attribute.value, 0, sizeof(value));
 				attribute.type = ITEM_ATTRIBUTE_NONE;
+			}
+			Attribute& operator=(Attribute&& other) noexcept {
+				if (this != &other) {
+					if (ItemAttributes::isStrAttrType(type)) {
+						delete value.string;
+					} else if (ItemAttributes::isCustomAttrType(type)) {
+						delete value.custom;
+					}
+
+					value = other.value;
+					type = other.type;
+
+					memset(&other.value, 0, sizeof(value));
+					other.type = ITEM_ATTRIBUTE_NONE;
+				}
+				return *this;
 			}
 			~Attribute() {
 				if (ItemAttributes::isStrAttrType(type)) {
