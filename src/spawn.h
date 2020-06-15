@@ -64,13 +64,13 @@ class Spawn
 
 		// moveable
 		Spawn(Spawn&& rhs) noexcept : spawnMap(std::move(rhs.spawnMap)),
-			centerPos(std::move(rhs.centerPos)), interval(rhs.interval), checkSpawnEvent(rhs.checkSpawnEvent) {}
+			checkSpawnEvent(rhs.checkSpawnEvent), centerPos(std::move(rhs.centerPos)), interval(rhs.interval) {}
 		Spawn& operator=(Spawn&& rhs) noexcept {
 			if (this != &rhs) {
 				spawnMap = std::move(rhs.spawnMap);
+				checkSpawnEvent = rhs.checkSpawnEvent;
 				centerPos = std::move(rhs.centerPos);
 				interval = rhs.interval;
-				checkSpawnEvent = rhs.checkSpawnEvent;
 			}
 			return *this;
 		}

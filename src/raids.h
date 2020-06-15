@@ -106,7 +106,7 @@ class Raid
 {
 	public:
 		Raid(std::string name, uint32_t interval, uint32_t marginTime, bool repeat) :
-			name(std::move(name)), interval(interval), margin(marginTime), repeat(repeat) {}
+			name(std::move(name)), margin(marginTime), interval(interval), repeat(repeat) {}
 		~Raid();
 
 		// non-copyable
