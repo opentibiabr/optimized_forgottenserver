@@ -456,7 +456,7 @@ class Player final : public Creature, public Cylinder
 
 		uint16_t getHelpers() const;
 
-		bool setVocation(uint16_t vocId);
+		bool setVocation(uint16_t vocId, bool internal = false);
 		uint16_t getVocationId() const {
 			return vocation->getId();
 		}

@@ -93,7 +93,7 @@ Player::~Player()
 	setEditHouse(nullptr);
 }
 
-bool Player::setVocation(uint16_t vocId)
+bool Player::setVocation(uint16_t vocId, bool internal /*=false*/)
 {
 	Vocation* voc = g_vocations.getVocation(vocId);
 	if (!voc) {
@@ -108,9 +108,11 @@ bool Player::setVocation(uint16_t vocId)
 		condition->setParam(CONDITION_PARAM_MANAGAIN, vocation->getManaGainAmount());
 		condition->setParam(CONDITION_PARAM_MANATICKS, vocation->getManaGainTicks() * 1000);
 	}
-	#if CLIENT_VERSION >= 950
-	sendBasicData();
-	#endif
+	if (!internal) {
+		#if CLIENT_VERSION >= 950
+		sendBasicData();
+		#endif
+	}
 	return true;
 }
 
