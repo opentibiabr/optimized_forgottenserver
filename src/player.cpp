@@ -1065,7 +1065,15 @@ void Player::sendUpdateContainerItem(const Container* container, uint8_t slot, c
 		client->sendUpdateContainerItem(it.first, slot, newItem);
 		#endif
 		#if GAME_FEATURE_INVENTORY_LIST > 0
-		addScheduledUpdates(PlayerUpdate_Inventory);
+		if (shopOwner) {
+			addScheduledUpdates(PlayerUpdate_Inventory | PlayerUpdate_Sale);
+		} else {
+			addScheduledUpdates(PlayerUpdate_Inventory);
+		}
+		#else
+		if (shopOwner) {
+			addScheduledUpdates(PlayerUpdate_Sale);
+		}
 		#endif
 		return;
 	}
@@ -2881,7 +2889,15 @@ void Player::updateThing(Thing* thing, uint16_t itemId, uint32_t count)
 	onUpdateInventoryItem(item, item);
 	
 	#if GAME_FEATURE_INVENTORY_LIST > 0
-	addScheduledUpdates(PlayerUpdate_Inventory);
+	if (shopOwner) {
+		addScheduledUpdates(PlayerUpdate_Inventory | PlayerUpdate_Sale);
+	} else {
+		addScheduledUpdates(PlayerUpdate_Inventory);
+	}
+	#else
+	if (shopOwner) {
+		addScheduledUpdates(PlayerUpdate_Sale);
+	}
 	#endif
 }
 
@@ -2908,7 +2924,15 @@ void Player::replaceThing(uint32_t index, Thing* thing)
 	onUpdateInventoryItem(oldItem, item);
 	
 	#if GAME_FEATURE_INVENTORY_LIST > 0
-	addScheduledUpdates(PlayerUpdate_Inventory);
+	if (shopOwner) {
+		addScheduledUpdates(PlayerUpdate_Inventory | PlayerUpdate_Sale);
+	} else {
+		addScheduledUpdates(PlayerUpdate_Inventory);
+	}
+	#else
+	if (shopOwner) {
+		addScheduledUpdates(PlayerUpdate_Sale);
+	}
 	#endif
 
 	item->setParent(this);
