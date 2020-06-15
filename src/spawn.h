@@ -29,7 +29,20 @@ class Npc;
 
 struct spawnBlock_t
 {
-	spawnBlock_t(MonsterType* mType, uint32_t interval, Position pos, Direction direction) : mType(mType), interval(interval), pos(std::move(pos)), direction(direction) {}
+	spawnBlock_t(MonsterType* mType, uint32_t interval, Position pos, Direction direction) :
+		mType(mType), interval(interval), pos(std::move(pos)), direction(direction) {}
+
+	// non-copyable
+	spawnBlock_t(const spawnBlock_t&) = delete;
+	spawnBlock_t& operator=(const spawnBlock_t&) = delete;
+
+	// moveable
+	spawnBlock_t(spawnBlock_t&& rhs) noexcept :
+		monster(rhs.monster), mType(rhs.mType), lastSpawn(rhs.lastSpawn), interval(rhs.interval), pos(std::move(rhs.pos)), direction(rhs.direction) {
+		rhs.monster = nullptr;
+		rhs.mType = nullptr;
+	}
+	spawnBlock_t& operator=(const spawnBlock_t&&) = delete;
 
 	Monster* monster = nullptr;
 	MonsterType* mType;
@@ -50,17 +63,15 @@ class Spawn
 		Spawn& operator=(const Spawn&) = delete;
 
 		// moveable
-		Spawn(Spawn&& rhs) noexcept {
-			this->spawnMap = std::move(rhs.spawnMap);
-			this->centerPos = std::move(rhs.centerPos);
-			this->interval = rhs.interval;
-			this->checkSpawnEvent = rhs.checkSpawnEvent;
-		}
+		Spawn(Spawn&& rhs) noexcept : spawnMap(std::move(rhs.spawnMap)),
+			centerPos(std::move(rhs.centerPos)), interval(rhs.interval), checkSpawnEvent(rhs.checkSpawnEvent) {}
 		Spawn& operator=(Spawn&& rhs) noexcept {
-			this->spawnMap = std::move(rhs.spawnMap);
-			this->centerPos = std::move(rhs.centerPos);
-			this->interval = rhs.interval;
-			this->checkSpawnEvent = rhs.checkSpawnEvent;
+			if (this != &rhs) {
+				spawnMap = std::move(rhs.spawnMap);
+				centerPos = std::move(rhs.centerPos);
+				interval = rhs.interval;
+				checkSpawnEvent = rhs.checkSpawnEvent;
+			}
 			return *this;
 		}
 
