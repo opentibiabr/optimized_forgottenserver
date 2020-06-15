@@ -32,27 +32,11 @@ class Task
 	public:
 		// DO NOT allocate this class on the stack
 		explicit Task(std::function<void (void)>&& f) : func(std::move(f)) {}
-		Task(uint32_t ms, std::function<void (void)>&& f) :
-			expiration(std::chrono::system_clock::now() + std::chrono::milliseconds(ms)), func(std::move(f)) {}
 
 		virtual ~Task() = default;
 		void operator()() {
 			func();
 		}
-
-		void setDontExpire() {
-			expiration = SYSTEM_TIME_ZERO;
-		}
-
-		bool hasExpired() const {
-			if (expiration == SYSTEM_TIME_ZERO) {
-				return false;
-			}
-			return expiration < std::chrono::system_clock::now();
-		}
-
-	protected:
-		std::chrono::system_clock::time_point expiration = SYSTEM_TIME_ZERO;
 
 	private:
 		// Expiration has another meaning for scheduler tasks,
@@ -62,11 +46,11 @@ class Task
 };
 
 Task* createTask(std::function<void (void)> f);
-Task* createTask(uint32_t expiration, std::function<void (void)> f);
 
 class Dispatcher : public ThreadHolder<Dispatcher> {
 	public:
-		void addTask(Task* task, bool push_front = false);
+		void addTask(std::function<void (void)> functor);
+		void addTask(Task* task);
 
 		void shutdown();
 
@@ -78,11 +62,9 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 
 	private:
 		std::thread thread;
-		std::mutex taskLock;
-		std::condition_variable taskSignal;
-
-		std::list<Task*> taskList;
 		uint64_t dispatcherCycle = 0;
+		boost::asio::io_service io_service;
+		boost::asio::io_service::work work{ io_service };
 };
 
 extern Dispatcher g_dispatcher;

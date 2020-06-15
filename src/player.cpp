@@ -3318,7 +3318,7 @@ bool Player::setAttackedCreature(Creature* creature)
 	}
 
 	if (creature) {
-		g_dispatcher.addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game, getID())));
+		g_dispatcher.addTask(std::bind(&Game::checkCreatureAttack, &g_game, getID()));
 	}
 	return true;
 }

@@ -428,7 +428,7 @@ class ProtocolGame final : public Protocol
 		std::unordered_set<uint32_t> knownCreatureSet;
 		Player* player = nullptr;
 
-		uint32_t eventConnect = 0;
+		uint64_t eventConnect = 0;
 		uint32_t challengeTimestamp = 0;
 		uint16_t version = CLIENT_VERSION;
 

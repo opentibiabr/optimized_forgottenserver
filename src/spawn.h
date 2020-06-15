@@ -64,7 +64,7 @@ class Spawn
 			return *this;
 		}
 
-		void scheduleSpawn(size_t spawnId, int32_t interval);
+		void scheduleSpawn(uint32_t spawnId, int32_t interval);
 		bool addMonster(const std::string& name, const Position& pos, Direction dir, uint32_t interval);
 		void removeMonster(Monster* monster);
 
@@ -79,11 +79,11 @@ class Spawn
 	private:
 		//map of creatures in the spawn
 		std::vector<spawnBlock_t> spawnMap;
-		size_t spawnIndex = 0;
+		uint64_t checkSpawnEvent = 0;
 
 		Position centerPos;
 		uint32_t interval = 60000;
-		uint32_t checkSpawnEvent = 0;
+		uint32_t spawnIndex = 0;
 
 		static bool findPlayer(const Position& pos);
 		bool spawnMonster(spawnBlock_t& sb, bool startup = false);

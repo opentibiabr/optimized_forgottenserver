@@ -72,7 +72,7 @@ class GlobalEvents final : public BaseEvents
 		LuaScriptInterface scriptInterface;
 
 		GlobalEventMap thinkMap, serverMap, timerMap;
-		int32_t thinkEventId = 0, timerEventId = 0;
+		uint64_t thinkEventId = 0, timerEventId = 0;
 };
 
 class GlobalEvent final : public Event

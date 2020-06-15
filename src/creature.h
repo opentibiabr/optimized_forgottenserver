@@ -496,12 +496,12 @@ class Creature : virtual public Thing
 		Creature* attackedCreature = nullptr;
 		Creature* master = nullptr;
 		Creature* followCreature = nullptr;
+		uint64_t eventWalk = 0;
 
 		uint64_t lastStep = 0;
 		uint32_t referenceCounter = 0;
 		uint32_t id = 0;
 		uint32_t scriptEventsBitField = 0;
-		uint32_t eventWalk = 0;
 		uint32_t walkUpdateTicks = 0;
 		uint32_t lastHitCreatureId = 0;
 		uint32_t blockCount = 0;

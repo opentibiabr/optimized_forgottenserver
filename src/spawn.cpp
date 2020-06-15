@@ -233,7 +233,7 @@ void Spawn::checkSpawn()
 
 	int32_t spawnCount = 0;
 	size_t spawnedCount = 0;
-	for (size_t i = 0, end = spawnMap.size(); i < end; ++i) {
+	for (uint32_t i = 0, end = static_cast<uint32_t>(spawnMap.size()); i < end; ++i) {
 		if (++spawnIndex >= end) {
 			spawnIndex = 0;
 		}
@@ -262,7 +262,7 @@ void Spawn::checkSpawn()
 					if (++spawnCount >= g_config.getNumber(ConfigManager::RATE_SPAWN)) {
 						break;
 					}
-				}//1070
+				}
 			} else {
 				scheduleSpawn(spawnIndex, 3 * 1500);
 				++spawnedCount;
@@ -278,9 +278,9 @@ void Spawn::checkSpawn()
 	}
 }
 
-void Spawn::scheduleSpawn(size_t spawnId, int32_t interval)
+void Spawn::scheduleSpawn(uint32_t spawnId, int32_t interval)
 {
-	if (spawnId >= spawnMap.size()) {
+	if (spawnId >= static_cast<uint32_t>(spawnMap.size())) {
 		return;
 	}
 

@@ -585,7 +585,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			if ((creature == followCreature) && listWalkDir.empty()) {
 				//This should make monsters more responsive without needing to decrease creature think interval
 				isUpdatingPath = false;
-				g_dispatcher.addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game, getID())), true);
+				g_dispatcher.addTask(std::bind(&Game::updateCreatureWalk, &g_game, getID()));
 			} else {
 				isUpdatingPath = true;
 			}
@@ -602,7 +602,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 		} else {
 			if (hasExtraSwing()) {
 				//our target is moving lets see if we can get in hit
-				g_dispatcher.addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game, getID())));
+				g_dispatcher.addTask(std::bind(&Game::checkCreatureAttack, &g_game, getID()));
 			}
 
 			if (newTile->getZone() != oldTile->getZone()) {
@@ -935,7 +935,7 @@ bool Creature::setFollowCreature(Creature* creature)
 		forceUpdateFollowPath = false;
 		followCreature = creature;
 		isUpdatingPath = false;
-		g_dispatcher.addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game, getID())), true);
+		g_dispatcher.addTask(std::bind(&Game::updateCreatureWalk, &g_game, getID()));
 	} else {
 		isUpdatingPath = false;
 		followCreature = nullptr;

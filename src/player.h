@@ -1461,6 +1461,9 @@ class Player final : public Creature, public Cylinder
 		uint64_t lastAttack = 0;
 		uint64_t bankBalance = 0;
 		uint64_t lastQuestlogUpdate = 0;
+		uint64_t actionTaskEvent = 0;
+		uint64_t nextStepEvent = 0;
+		uint64_t walkTaskEvent = 0;
 		int64_t lastFailedFollow = 0;
 		int64_t skullTicks = 0;
 		int64_t lastWalkthroughAttempt = 0;
@@ -1498,9 +1501,6 @@ class Player final : public Creature, public Cylinder
 		uint32_t conditionSuppressions = 0;
 		uint32_t level = 1;
 		uint32_t magLevel = 0;
-		uint32_t actionTaskEvent = 0;
-		uint32_t nextStepEvent = 0;
-		uint32_t walkTaskEvent = 0;
 		uint32_t MessageBufferTicks = 0;
 		uint32_t lastIP = 0;
 		uint32_t accountNumber = 0;
