@@ -4765,8 +4765,7 @@ void Player::addScheduledUpdates(uint32_t flags)
 {
 	scheduledUpdates |= flags;
 	if (!scheduledUpdate) {
-		//To make it work even better it's possible to use slightly delayed scheduler task so it'll cache even more updates at once
-		g_dispatcher.addTask(createTask(std::bind(&Game::updatePlayerEvent, &g_game, getID())));
+		g_scheduler.addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&Game::updatePlayerEvent, &g_game, getID())));
 		scheduledUpdate = true;
 	}
 }
