@@ -35,7 +35,6 @@
 #include "iomarket.h"
 #include "waitlist.h"
 #include "ban.h"
-#include "scheduler.h"
 #include "spells.h"
 
 extern ConfigManager g_config;
@@ -62,9 +61,9 @@ void ProtocolGame::release()
 }
 
 #if GAME_FEATURE_SESSIONKEY > 0
-void ProtocolGame::login(const std::string accountName, const std::string password, std::string characterName, std::string token, uint32_t tokenTime, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
+void ProtocolGame::login(const std::string& accountName, const std::string& password, std::string& characterName, std::string& token, uint32_t tokenTime, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
 #else
-void ProtocolGame::login(const std::string accountName, const std::string password, std::string characterName, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
+void ProtocolGame::login(const std::string& accountName, const std::string& password, std::string& characterName, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
 #endif
 {
 	//dispatcher thread
@@ -199,7 +198,7 @@ void ProtocolGame::login(const std::string accountName, const std::string passwo
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_scheduler.addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem, tfcOperatingSystem)));
+			eventConnect = g_dispatcher.addEvent(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem, tfcOperatingSystem));
 		} else {
 			connect(foundPlayer->getID(), operatingSystem, tfcOperatingSystem);
 		}
@@ -290,10 +289,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 	version = msg.get<uint16_t>();
 	if (version >= 1111) {
 		setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
-		if (TFCoperatingSystem < CLIENTOS_TFC_ANDROID) {
-			//compression on the forgotten client will be implemented in the next client update
-			enableCompression();
-		}
+		enableCompression();
 	} else if (version >= 830) {
 		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 	}
@@ -3840,7 +3836,7 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	#endif
 
 	playermsg.add<uint32_t>(player->getID());
-	playermsg.add<uint16_t>(0x32); // beat duration (50)
+	playermsg.add<uint16_t>(SERVER_BEAT_MILISECONDS);
 
 	#if GAME_FEATURE_NEWSPEED_LAW > 0
 	playermsg.addDouble(Creature::speedA, 3);
