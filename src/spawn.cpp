@@ -132,9 +132,6 @@ void Spawns::startup()
 
 	for (Npc* npc : npcList) {
 		g_game.placeCreature(npc, npc->getMasterPos(), false, true);
-		#if GAME_FEATURE_NEWSPEED_LAW > 0
-		npc->cacheSpeed();
-		#endif
 	}
 	npcList.clear();
 	npcList.shrink_to_fit();
@@ -216,9 +213,6 @@ bool Spawn::spawnMonster(spawnBlock_t& sb, bool startup /*= false*/)
 	sb.monster = monster_ptr.release();
 	sb.monster->setSpawn(this);
 	sb.monster->setMasterPos(sb.pos);
-	#if GAME_FEATURE_NEWSPEED_LAW > 0
-	sb.monster->cacheSpeed();
-	#endif
 	sb.monster->incrementReferenceCounter();
 	sb.lastSpawn = OTSYS_TIME();
 	return true;
