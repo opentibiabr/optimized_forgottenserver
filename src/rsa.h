@@ -32,9 +32,11 @@ class RSA
 		RSA(const RSA&) = delete;
 		RSA& operator=(const RSA&) = delete;
 
-		void queryNanD(const char* pString, const char* qString);
-		void setKey(const char* nString, const char* dString);
+		void setKey(const char* pString, const char* qString, int base = 10);
 		void decrypt(char* msg) const;
+
+		std::string base64Decrypt(const std::string& input);
+		bool loadPEM(const std::string& filename);
 
 	private:
 		mpz_t n, d;
