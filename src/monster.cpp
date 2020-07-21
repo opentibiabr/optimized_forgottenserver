@@ -1008,11 +1008,11 @@ bool Monster::pushItem(Item* item)
 {
 	const Position& centerPos = item->getPosition();
 
-	static std::vector<std::pair<int32_t, int32_t>> relList {
+	static std::array<std::pair<int32_t, int32_t>, 8> relList { {
 		{-1, -1}, {0, -1}, {1, -1},
 		{-1,  0},          {1,  0},
 		{-1,  1}, {0,  1}, {1,  1}
-	};
+	} };
 
 	std::shuffle(relList.begin(), relList.end(), getRandomGenerator());
 
@@ -1059,7 +1059,7 @@ void Monster::pushItems(Tile* tile)
 
 bool Monster::pushCreature(Creature* creature)
 {
-	static std::vector<Direction> dirList {
+	static std::array<Direction, 4> dirList {
 			DIRECTION_NORTH,
 		DIRECTION_WEST, DIRECTION_EAST,
 			DIRECTION_SOUTH
@@ -1163,7 +1163,7 @@ bool Monster::getNextStep(Direction& direction, uint32_t& flags)
 
 bool Monster::getRandomStep(const Position& creaturePos, Direction& direction) const
 {
-	static std::vector<Direction> dirList{
+	static std::array<Direction, 4> dirList{
 			DIRECTION_NORTH,
 		DIRECTION_WEST, DIRECTION_EAST,
 			DIRECTION_SOUTH
