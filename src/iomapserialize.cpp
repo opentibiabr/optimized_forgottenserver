@@ -93,7 +93,7 @@ bool IOMapSerialize::saveHouseItems()
 			const char* attributes = stream.getStream(attributesSize);
 			if (attributesSize > 0) {
 				query.clear();
-				query.appendInt(house->getId()).append(1, ',').append(g_database.escapeBlob(attributes, attributesSize));
+				query << house->getId() << ',' << g_database.escapeBlob(attributes, attributesSize);
 				if (!stmt.addRow(query)) {
 					return false;
 				}
@@ -375,24 +375,24 @@ bool IOMapSerialize::saveHouseInfo()
 
 		const std::string& escapedName = g_database.escapeString(house->getName());
 		query.clear();
-		query.append("INSERT INTO `houses` (`id`, `owner`, `paid`, `warnings`, `name`, `town_id`, `rent`, `size`, `beds`) VALUES (");
-		query.appendInt(house->getId()).append(1, ',');
-		query.appendInt(house->getOwner()).append(1, ',');
-		query.appendInt(house->getPaidUntil()).append(1, ',');
-		query.appendInt(house->getPayRentWarnings()).append(1, ',');
-		query.append(escapedName).append(1, ',');
-		query.appendInt(house->getTownId()).append(1, ',');
-		query.appendInt(house->getRent()).append(1, ',');
-		query.appendInt(house->getTiles().size()).append(1, ',');
-		query.appendInt(house->getBedCount()).append(1, ')');
-		query.append("ON DUPLICATE KEY UPDATE `owner` = ").appendInt(house->getOwner());
-		query.append(",`paid` = ").appendInt(house->getPaidUntil());
-		query.append(",`warnings` = ").appendInt(house->getPayRentWarnings());
-		query.append(",`name` = ").append(escapedName);
-		query.append(",`town_id` = ").appendInt(house->getTownId());
-		query.append(",`rent` = ").appendInt(house->getRent());
-		query.append(",`size` = ").appendInt(house->getTiles().size());
-		query.append(",`beds` = ").appendInt(house->getBedCount());
+		query << "INSERT INTO `houses` (`id`, `owner`, `paid`, `warnings`, `name`, `town_id`, `rent`, `size`, `beds`) VALUES (";
+		query << house->getId() << ',';
+		query << house->getOwner() << ',';
+		query << house->getPaidUntil() << ',';
+		query << house->getPayRentWarnings() << ',';
+		query << escapedName << ',';
+		query << house->getTownId() << ',';
+		query << house->getRent() << ',';
+		query << house->getTiles().size() << ',';
+		query << house->getBedCount() << ')';
+		query << "ON DUPLICATE KEY UPDATE `owner` = " << house->getOwner();
+		query << ",`paid` = " << house->getPaidUntil();
+		query << ",`warnings` = " << house->getPayRentWarnings();
+		query << ",`name` = " << escapedName;
+		query << ",`town_id` = " << house->getTownId();
+		query << ",`rent` = " << house->getRent();
+		query << ",`size` = " << house->getTiles().size();
+		query << ",`beds` = " << house->getBedCount();
 		g_database.executeQuery(query);
 	}
 
@@ -403,7 +403,7 @@ bool IOMapSerialize::saveHouseInfo()
 		std::string listText;
 		if (house->getAccessList(GUEST_LIST, listText) && !listText.empty()) {
 			query.clear();
-			query.appendInt(house->getId()).append(1, ',').appendInt(GUEST_LIST).append(1, ',').append(g_database.escapeString(listText));
+			query << house->getId() << ',' << GUEST_LIST << ',' << g_database.escapeString(listText);
 			if (!stmt.addRow(query)) {
 				return false;
 			}
@@ -413,7 +413,7 @@ bool IOMapSerialize::saveHouseInfo()
 
 		if (house->getAccessList(SUBOWNER_LIST, listText) && !listText.empty()) {
 			query.clear();
-			query.appendInt(house->getId()).append(1, ',').appendInt(SUBOWNER_LIST).append(1, ',').append(g_database.escapeString(listText));
+			query << house->getId() << ',' << SUBOWNER_LIST << ',' << g_database.escapeString(listText);
 			if (!stmt.addRow(query)) {
 				return false;
 			}
@@ -424,7 +424,7 @@ bool IOMapSerialize::saveHouseInfo()
 		for (Door* door : house->getDoors()) {
 			if (door->getAccessList(listText) && !listText.empty()) {
 				query.clear();
-				query.appendInt(house->getId()).append(1, ',').appendInt(door->getDoorId()).append(1, ',').append(g_database.escapeString(listText));
+				query << house->getId() << ',' << door->getDoorId() << ',' << g_database.escapeString(listText);
 				if (!stmt.addRow(query)) {
 					return false;
 				}
