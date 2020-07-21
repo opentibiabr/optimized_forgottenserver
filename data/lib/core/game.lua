@@ -79,7 +79,7 @@ if(CLIENT_VERSION < 900) then
 		if player ~= nil then
 			spectators = {player}
 		else
-			spectators = Game.getSpectators(pos)
+			spectators = Game.getSpectators(pos, false, true, 8, 8, 6, 6)
 		end
 
 		for i = 1, #spectators do
