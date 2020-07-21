@@ -108,7 +108,18 @@ class NetworkMessage
 
 		void addString(const std::string& value);
 
-		void addDouble(double value, uint8_t precision = 2);
+		template<uint8_t precision>
+		inline void addDouble(double value) {
+			if (!canAdd(5)) {
+				return;
+			}
+
+			uint32_t doubleValue = (value * std::pow(10.0, precision)) + std::numeric_limits<int32_t>::max();
+			buffer[info.position] = precision;
+			memcpy(buffer + info.position + 1, &doubleValue, sizeof(doubleValue));
+			info.position += sizeof(doubleValue) + 1;
+			info.length += sizeof(doubleValue) + 1;
+		}
 
 		// write functions for complex types
 		void addPosition(const Position& pos);

@@ -2729,7 +2729,7 @@ void ProtocolGame::sendShop(Npc* npc, const ShopInfoList& itemList)
 	#endif
 	
 	#if CLIENT_VERSION >= 1240
-	playermsg.addString(std::string());//??
+	playermsg.addString(std::string());
 	#endif
 
 	#if CLIENT_VERSION >= 980
@@ -3839,9 +3839,9 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	playermsg.add<uint16_t>(SERVER_BEAT_MILISECONDS);
 
 	#if GAME_FEATURE_NEWSPEED_LAW > 0
-	playermsg.addDouble(Creature::speedA, 3);
-	playermsg.addDouble(Creature::speedB, 3);
-	playermsg.addDouble(Creature::speedC, 3);
+	playermsg.addDouble<3>(Creature::speedA);
+	playermsg.addDouble<3>(Creature::speedB);
+	playermsg.addDouble<3>(Creature::speedC);
 	#endif
 
 	// can report bugs?
@@ -4570,7 +4570,7 @@ void ProtocolGame::AddPlayerStats()
 	playermsg.add<uint16_t>(0); // xp boost
 	playermsg.add<uint16_t>(100); // stamina multiplier (100 = x1.0)
 	#else
-	playermsg.addDouble(0.0);
+	playermsg.addDouble<2>(0.0);
 	#endif
 	#endif
 

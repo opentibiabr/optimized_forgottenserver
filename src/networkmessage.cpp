@@ -61,12 +61,6 @@ void NetworkMessage::addString(const std::string& value)
 	info.length += stringLen;
 }
 
-void NetworkMessage::addDouble(double value, uint8_t precision/* = 2*/)
-{
-	addByte(precision);
-	add<uint32_t>((value * std::pow(static_cast<float>(10), precision)) + std::numeric_limits<int32_t>::max());
-}
-
 void NetworkMessage::addBytes(const char* bytes, size_t size)
 {
 	if (!canAdd(size)) {
