@@ -546,6 +546,139 @@ void Combat::CombatNullFunc(Creature* caster, Creature* target, const CombatPara
 	CombatDispelFunc(caster, target, params, nullptr);
 }
 
+#if CLIENT_VERSION >= 1203
+void Combat::combatTileEffects(const SpectatorVector& spectators, NetworkMessage& effectMsg, EffectParams& effectParams, Creature* caster, Tile* tile, const CombatParams& params)
+{
+	if (params.itemId != 0) {
+		uint16_t itemId = params.itemId;
+		switch (itemId) {
+			case ITEM_FIREFIELD_PERSISTENT_FULL:
+				itemId = ITEM_FIREFIELD_PVP_FULL;
+				break;
+
+			case ITEM_FIREFIELD_PERSISTENT_MEDIUM:
+				itemId = ITEM_FIREFIELD_PVP_MEDIUM;
+				break;
+
+			case ITEM_FIREFIELD_PERSISTENT_SMALL:
+				itemId = ITEM_FIREFIELD_PVP_SMALL;
+				break;
+
+			case ITEM_ENERGYFIELD_PERSISTENT:
+				itemId = ITEM_ENERGYFIELD_PVP;
+				break;
+
+			case ITEM_POISONFIELD_PERSISTENT:
+				itemId = ITEM_POISONFIELD_PVP;
+				break;
+
+			case ITEM_MAGICWALL_PERSISTENT:
+				itemId = ITEM_MAGICWALL;
+				break;
+
+			case ITEM_WILDGROWTH_PERSISTENT:
+				itemId = ITEM_WILDGROWTH;
+				break;
+
+			default:
+				break;
+		}
+
+		if (caster) {
+			Player* casterPlayer;
+			if (caster->isSummon()) {
+				casterPlayer = caster->getMaster()->getPlayer();
+			} else {
+				casterPlayer = caster->getPlayer();
+			}
+
+			if (casterPlayer) {
+				if (g_game.getWorldType() == WORLD_TYPE_NO_PVP || tile->hasFlag(TILESTATE_NOPVPZONE)) {
+					if (itemId == ITEM_FIREFIELD_PVP_FULL) {
+						itemId = ITEM_FIREFIELD_NOPVP;
+					} else if (itemId == ITEM_POISONFIELD_PVP) {
+						itemId = ITEM_POISONFIELD_NOPVP;
+					} else if (itemId == ITEM_ENERGYFIELD_PVP) {
+						itemId = ITEM_ENERGYFIELD_NOPVP;
+					}
+				} else if (itemId == ITEM_FIREFIELD_PVP_FULL || itemId == ITEM_POISONFIELD_PVP || itemId == ITEM_ENERGYFIELD_PVP) {
+					casterPlayer->addInFightTicks();
+				}
+			}
+		}
+
+		Item* item = Item::CreateItem(itemId);
+		if (caster) {
+			item->setOwner(caster->getID());
+		}
+
+		ReturnValue ret = g_game.internalAddItem(tile, item);
+		if (ret == RETURNVALUE_NOERROR) {
+			item->startDecaying();
+		} else {
+			delete item;
+		}
+	}
+
+	if (params.tileCallback) {
+		params.tileCallback->onTileCombat(caster, tile);
+	}
+
+	//Pack our effects
+	if (params.impactEffect != CONST_ME_NONE) {
+		const Position& position = tile->getPosition();
+		if (position.x >= effectParams.startPosX + CLIENT_MAP_WIDTH) {
+			//We can't pack this effect :(
+			Game::addMagicEffect(spectators, tile->getPosition(), params.impactEffect);
+			return;
+		}
+
+		//Adjust Positions
+		uint32_t deltaDiff = 0;
+
+		//Adjust Y-Position
+		if (position.y > effectParams.currentPosY) {
+			//First check delta whether we don't need to add full width
+			deltaDiff += CLIENT_MAP_WIDTH - (effectParams.deltaPos % CLIENT_MAP_WIDTH);
+			++effectParams.currentPosY;
+			if (position.y > effectParams.currentPosY) {
+				//Add rest of Y-Axis adjustment as full width's
+				deltaDiff += static_cast<uint32_t>(position.y - effectParams.currentPosY) * CLIENT_MAP_WIDTH;
+				effectParams.currentPosY = position.y;
+			}
+			effectParams.currentPosX = effectParams.startPosX;
+		}
+
+		//Adjust X-Position
+		if (position.x > effectParams.currentPosX) {
+			deltaDiff += (position.x - effectParams.currentPosX);
+			effectParams.currentPosX = position.x;
+		}
+
+		//Adjust Positions
+		effectParams.deltaPos += deltaDiff;
+		if (deltaDiff > 0) {
+			//Just in-case check if we have overflowed uint8_t - shouldn't be possible on standard client viewport unless someone use some bullshit large area for spell
+			constexpr uint32_t maxU8 = std::numeric_limits<uint8_t>::max();
+			Delta_Check:
+			if (deltaDiff > maxU8) {
+				effectMsg.addByte(MAGIC_EFFECTS_DELTA);
+				effectMsg.addByte(maxU8);
+				deltaDiff -= maxU8;
+				goto Delta_Check;
+			} else {
+				effectMsg.addByte(MAGIC_EFFECTS_DELTA);
+				effectMsg.addByte(deltaDiff);
+			}
+		}
+
+		//Pack Effect
+		effectMsg.addByte(MAGIC_EFFECTS_CREATE_EFFECT);
+		effectMsg.addByte(params.impactEffect);
+	}
+}
+#endif
+
 void Combat::combatTileEffects(const SpectatorVector& spectators, Creature* caster, Tile* tile, const CombatParams& params)
 {
 	if (params.itemId != 0) {
@@ -696,20 +829,33 @@ void Combat::CombatFunc(Creature* caster, const Position& pos, const AreaCombat*
 		}
 	}
 
-	const int32_t rangeX = maxX + Map::maxViewportX;
-	const int32_t rangeY = maxY + Map::maxViewportY;
+	const int32_t rangeX = maxX + Map::maxClientViewportX;
+	const int32_t rangeY = maxY + Map::maxClientViewportY;
 
 	SpectatorVector spectators;
 	g_game.map.getSpectators(spectators, pos, true, true, rangeX, rangeX, rangeY, rangeY);
 
 	postCombatEffects(caster, pos, params);
+	#if CLIENT_VERSION >= 1203
+	NetworkMessage effectMsg;
+	effectMsg.addByte(0x83);
+
+	EffectParams effectParams(pos.x - maxX, pos.y - maxY);
+	effectMsg.add<uint16_t>(effectParams.startPosX);
+	effectMsg.add<uint16_t>(effectParams.startPosY);
+	effectMsg.addByte(pos.z);
+	#endif
 
 	for (Tile* tile : tileList) {
 		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
 			continue;
 		}
 
+		#if CLIENT_VERSION >= 1203
+		combatTileEffects(spectators, effectMsg, effectParams, caster, tile, params);
+		#else
 		combatTileEffects(spectators, caster, tile, params);
+		#endif
 		if (CreatureVector* creatures = tile->getCreatures()) {
 			const Creature* topCreature = tile->getTopCreature();
 			for (Creature* creature : *creatures) {
@@ -736,6 +882,15 @@ void Combat::CombatFunc(Creature* caster, const Position& pos, const AreaCombat*
 			}
 		}
 	}
+
+	#if CLIENT_VERSION >= 1203
+	effectMsg.addByte(MAGIC_EFFECTS_END_LOOP);
+	for (Creature* spectator : spectators) {
+		if (Player* tmpPlayer = spectator->getPlayer()) {
+			tmpPlayer->sendNetworkMessage(effectMsg);
+		}
+	}
+	#endif
 }
 
 void Combat::doCombat(Creature* caster, Creature* target) const

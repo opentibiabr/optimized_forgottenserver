@@ -24,6 +24,9 @@
 #include "condition.h"
 #include "map.h"
 #include "baseevents.h"
+#if CLIENT_VERSION >= 1203
+#include "networkmessage.h"
+#endif
 
 class Condition;
 class Creature;
@@ -76,6 +79,18 @@ struct CombatParams {
 	bool aggressive = true;
 	bool useCharges = false;
 };
+
+#if CLIENT_VERSION >= 1203
+struct EffectParams {
+	EffectParams(uint16_t startX, uint16_t startY) : startPosX(startX), startPosY(startY), currentPosX(startX), currentPosY(startY) {}
+
+	uint32_t deltaPos = 0;
+	uint16_t startPosX;
+	uint16_t startPosY;
+	uint16_t currentPosX;
+	uint16_t currentPosY;
+};
+#endif
 
 using CombatFunction = std::function<void(Creature*, Creature*, const CombatParams&, CombatDamage*)>;
 
@@ -311,6 +326,9 @@ class Combat
 		static void CombatDispelFunc(Creature* caster, Creature* target, const CombatParams& params, CombatDamage* data);
 		static void CombatNullFunc(Creature* caster, Creature* target, const CombatParams& params, CombatDamage* data);
 
+		#if CLIENT_VERSION >= 1203
+		static void combatTileEffects(const SpectatorVector& spectators, NetworkMessage& effectMsg, EffectParams& effectParams, Creature* caster, Tile* tile, const CombatParams& params);
+		#endif
 		static void combatTileEffects(const SpectatorVector& spectators, Creature* caster, Tile* tile, const CombatParams& params);
 		CombatDamage getCombatDamage(Creature* creature, Creature* target) const;
 
