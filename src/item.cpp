@@ -828,9 +828,7 @@ uint32_t Item::getWeight() const
 
 std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const ItemType& it, const Item* item /*= nullptr*/)
 {
-	char buffer[24]; // Enough to contain uint64_t
-	std::string str;
-	str.reserve(32);
+	std::stringExtended str(32);
 
 	std::vector<std::pair<std::string, std::string>> descriptions;
 	descriptions.reserve(30);
@@ -853,7 +851,7 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 		if (attack != 0) {
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 				str.clear();
-				str.append(std::to_string(attack)).append(" physical +").append(std::to_string(static_cast<uint32_t>(it.abilities->elementDamage))).append(1, ' ').append(getCombatName(it.abilities->elementType));
+				str << attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 				descriptions.emplace_back("Attack", str);
 			} else {
 				descriptions.emplace_back("Attack", std::to_string(attack));
@@ -868,9 +866,8 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 		int32_t defense = item->getDefense(), extraDefense = item->getExtraDefense();
 		if (defense != 0 || extraDefense != 0) {
 			if (extraDefense != 0) {
-				int32_t len = sprintf(buffer, " %+d", extraDefense);
 				str.clear();
-				str.append(std::to_string(defense)).append(buffer, static_cast<size_t>(len));
+				str << defense << ' ' <<= extraDefense;
 				descriptions.emplace_back("Defense", str);
 			} else {
 				descriptions.emplace_back("Defense", std::to_string(defense));
@@ -888,9 +885,8 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 					continue;
 				}
 
-				int32_t len = sprintf(buffer, "%+d", it.abilities->skills[i]);
 				str.clear();
-				str.append(buffer, static_cast<size_t>(len));
+				str <<= it.abilities->skills[i];
 				descriptions.emplace_back(getSkillName(i), str);
 			}
 
@@ -899,23 +895,20 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 					continue;
 				}
 
-				int32_t len = sprintf(buffer, "%+d%%", it.abilities->specialSkills[i]);
 				str.clear();
-				str.append(buffer, static_cast<size_t>(len));
+				str <<= it.abilities->specialSkills[i];
 				descriptions.emplace_back(getSpecialSkillName(i), str);
 			}
 
 			if (it.abilities->stats[STAT_MAGICPOINTS]) {
-				int32_t len = sprintf(buffer, "%+d", it.abilities->stats[STAT_MAGICPOINTS]);
 				str.clear();
-				str.append(buffer, static_cast<size_t>(len));
+				str <<= it.abilities->stats[STAT_MAGICPOINTS];
 				descriptions.emplace_back("Magic Level", str);
 			}
 
 			if (it.abilities->speed) {
-				int32_t len = sprintf(buffer, "%+d", (it.abilities->speed >> 1));
 				str.clear();
-				str.append(buffer, static_cast<size_t>(len));
+				str <<= (it.abilities->speed >> 1);
 				descriptions.emplace_back("Speed", str);
 			}
 
@@ -940,9 +933,8 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 					continue;
 				}
 
-				int32_t len = sprintf(buffer, " %+d%%", it.abilities->absorbPercent[i]);
 				str.clear();
-				str.append(getCombatName(indexToCombatType(i))).append(buffer, static_cast<size_t>(len));
+				str << getCombatName(indexToCombatType(i)) << ' ' <<= it.abilities->absorbPercent[i];
 				descriptions.emplace_back("Protection", str);
 			}
 
@@ -951,17 +943,18 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 					continue;
 				}
 
-				int32_t len = sprintf(buffer, " %+d%%", it.abilities->fieldAbsorbPercent[i]);
 				str.clear();
-				str.append(getCombatName(indexToCombatType(i))).append(buffer, static_cast<size_t>(len));
+				str << getCombatName(indexToCombatType(i)) << ' ' <<= it.abilities->fieldAbsorbPercent[i];
 				descriptions.emplace_back("Field Protection", str);
 			}
 		}
 
 		if (it.isKey()) {
-			int32_t len = sprintf(buffer, "%04d", static_cast<int32_t>(item->getActionId()));
 			str.clear();
-			str.append(buffer, static_cast<size_t>(len));
+			str << item->getActionId();
+			for (size_t i = str.length(); i < 4; ++i) {
+				str.insert(str.begin(), '0');
+			}
 			descriptions.emplace_back("Key", str);
 		}
 
@@ -987,15 +980,14 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 		if (weight != 0) {
 			str.clear();
 			if (weight < 10) {
-				str.append("0.0").append(std::to_string(weight));
+				str << "0.0" << weight;
 			} else if (weight < 100) {
-				str.append("0.").append(std::to_string(weight));
+				str << "0." << weight;
 			} else {
-				std::string weightString = std::to_string(weight);
-				weightString.insert(weightString.end() - 2, '.');
-				str.append(weightString);
+				str << weight;
+				str.insert(str.end() - 2, '.');
 			}
-			str.append(" oz");
+			str << " oz";
 			descriptions.emplace_back("Weight", str);
 		}
 
@@ -1003,36 +995,36 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 			str.clear();
 			if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
 				uint32_t duration = item->getDuration() / 1000;
-				str.append("Will expire in ");
+				str << "Will expire in ";
 				if (duration >= 86400) {
 					uint32_t days = duration / 86400;
 					uint32_t hours = (duration % 86400) / 3600;
-					str.append(std::to_string(days)).append(" day").append(days != 1 ? "s" : "");
+					str << days << " day" << (days != 1 ? "s" : "");
 					
 					if (hours > 0) {
-						str.append(" and ").append(std::to_string(hours)).append(" hour").append(hours != 1 ? "s" : "");
+						str << " and " << hours << " hour" << (hours != 1 ? "s" : "");
 					}
 				} else if (duration >= 3600) {
 					uint32_t hours = duration / 3600;
 					uint32_t minutes = (duration % 3600) / 60;
-					str.append(std::to_string(hours)).append(" hour").append(hours != 1 ? "s" : "");
+					str << hours << " hour" << (hours != 1 ? "s" : "");
 					
 					if (minutes > 0) {
-						str.append(" and ").append(std::to_string(minutes)).append(" minute").append(minutes != 1 ? "s" : "");
+						str << " and " << minutes << " minute" << (minutes != 1 ? "s" : "");
 					}
 				} else if (duration >= 60) {
 					uint32_t minutes = duration / 60;
 					uint32_t seconds = duration % 60;
-					str.append(std::to_string(minutes)).append(" minute").append(minutes != 1 ? "s" : "");
+					str << minutes << " minute" << (minutes != 1 ? "s" : "");
 					
 					if (seconds > 0) {
-						str.append(" and ").append(std::to_string(seconds)).append(" second").append(seconds != 1 ? "s" : "");
+						str << " and " << seconds << " second" << (seconds != 1 ? "s" : "");
 					}
 				} else {
-					str.append(std::to_string(duration)).append(" second").append(duration != 1 ? "s" : "");
+					str << duration << " second" << (duration != 1 ? "s" : "");
 				}
 			} else {
-				str.append("Is brand-new");
+				str << "Is brand-new";
 			}
 			descriptions.emplace_back("Expiration", str);
 		}
@@ -1100,7 +1092,7 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 		if (attack != 0) {
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 				str.clear();
-				str.append(std::to_string(attack)).append(" physical +").append(std::to_string(static_cast<uint32_t>(it.abilities->elementDamage))).append(1, ' ').append(getCombatName(it.abilities->elementType));
+				str << attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 				descriptions.emplace_back("Attack", str);
 			} else {
 				descriptions.emplace_back("Attack", std::to_string(attack));
@@ -1115,9 +1107,8 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 		int32_t defense = it.defense, extraDefense = it.extraDefense;
 		if (defense != 0 || extraDefense != 0) {
 			if (extraDefense != 0) {
-				int32_t len = sprintf(buffer, " %+d", extraDefense);
 				str.clear();
-				str.append(std::to_string(defense)).append(buffer, static_cast<size_t>(len));
+				str << defense << ' ' <<= extraDefense;
 				descriptions.emplace_back("Defense", str);
 			} else {
 				descriptions.emplace_back("Defense", std::to_string(defense));
@@ -1135,9 +1126,8 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 					continue;
 				}
 
-				int32_t len = sprintf(buffer, "%+d", it.abilities->skills[i]);
 				str.clear();
-				str.append(buffer, static_cast<size_t>(len));
+				str <<= it.abilities->skills[i];
 				descriptions.emplace_back(getSkillName(i), str);
 			}
 
@@ -1146,23 +1136,20 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 					continue;
 				}
 
-				int32_t len = sprintf(buffer, "%+d%%", it.abilities->specialSkills[i]);
 				str.clear();
-				str.append(buffer, static_cast<size_t>(len));
+				str <<= it.abilities->specialSkills[i];
 				descriptions.emplace_back(getSpecialSkillName(i), str);
 			}
 
 			if (it.abilities->stats[STAT_MAGICPOINTS]) {
-				int32_t len = sprintf(buffer, "%+d", it.abilities->stats[STAT_MAGICPOINTS]);
 				str.clear();
-				str.append(buffer, static_cast<size_t>(len));
+				str <<= it.abilities->stats[STAT_MAGICPOINTS];
 				descriptions.emplace_back("Magic Level", str);
 			}
 
 			if (it.abilities->speed) {
-				int32_t len = sprintf(buffer, "%+d", (it.abilities->speed >> 1));
 				str.clear();
-				str.append(buffer, static_cast<size_t>(len));
+				str <<= (it.abilities->speed >> 1);
 				descriptions.emplace_back("Speed", str);
 			}
 
@@ -1187,9 +1174,8 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 					continue;
 				}
 
-				int32_t len = sprintf(buffer, " %+d%%", static_cast<int32_t>(it.abilities->absorbPercent[i]));
 				str.clear();
-				str.append(getCombatName(indexToCombatType(i))).append(buffer, static_cast<size_t>(len));
+				str << getCombatName(indexToCombatType(i)) << ' ' <<= it.abilities->absorbPercent[i];
 				descriptions.emplace_back("Protection", str);
 			}
 
@@ -1198,9 +1184,8 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 					continue;
 				}
 
-				int32_t len = sprintf(buffer, " %+d%%", static_cast<int32_t>(it.abilities->fieldAbsorbPercent[i]));
 				str.clear();
-				str.append(getCombatName(indexToCombatType(i))).append(buffer, static_cast<size_t>(len));
+				str << getCombatName(indexToCombatType(i)) << ' ' <<= it.abilities->fieldAbsorbPercent[i];
 				descriptions.emplace_back("Field Protection", str);
 			}
 		}
@@ -1225,15 +1210,14 @@ std::vector<std::pair<std::string, std::string>> Item::getDescriptions(const Ite
 		if (weight != 0) {
 			str.clear();
 			if (weight < 10) {
-				str.append("0.0").append(std::to_string(weight));
+				str << "0.0" << weight;
 			} else if (weight < 100) {
-				str.append("0.").append(std::to_string(weight));
+				str << "0." << weight;
 			} else {
-				std::string weightString = std::to_string(weight);
-				weightString.insert(weightString.end() - 2, '.');
-				str.append(weightString);
+				str << weight;
+				str.insert(str.end() - 2, '.');
 			}
-			str.append(" oz");
+			str << " oz";
 			descriptions.emplace_back("Weight", str);
 		}
 
@@ -1296,11 +1280,9 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
                                  const Item* item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/)
 {
 	const std::string* text = nullptr;
-	char buffer[24]; // Enough to contain uint64_t
 
-	std::string sink;
-	sink.reserve(1024);
-	sink.append(getNameDescription(it, item, subType, addArticle));
+	std::stringExtended sink(1024);
+	sink << getNameDescription(it, item, subType, addArticle);
 
 	if (item) {
 		subType = item->getSubType();
@@ -1309,7 +1291,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 		if (it.runeLevel > 0 || it.runeMagLevel > 0) {
 			if (RuneSpell* rune = g_spells->getRuneSpell(it.id)) {
 				int32_t tmpSubType = subType;
-				sink.append(". ").append(it.stackable && tmpSubType > 1 ? "They" : "It").append(" can only be used by ");
+				sink << ". " << (it.stackable && tmpSubType > 1 ? "They" : "It") << " can only be used by ";
 
 				const VocSpellMap& vocMap = rune->getVocMap();
 				std::vector<Vocation*> showVocMap;
@@ -1326,37 +1308,37 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 				if (!showVocMap.empty()) {
 					auto vocIt = showVocMap.begin(), vocLast = (showVocMap.end() - 1);
 					while (vocIt != vocLast) {
-						sink.append(asLowerCaseString((*vocIt)->getVocName())).append("s");
+						sink << asLowerCaseString((*vocIt)->getVocName()) << 's';
 						if (++vocIt == vocLast) {
-							sink.append(" and ");
+							sink << " and ";
 						} else {
-							sink.append(", ");
+							sink << ", ";
 						}
 					}
-					sink.append(asLowerCaseString((*vocLast)->getVocName())).append("s");
+					sink << asLowerCaseString((*vocLast)->getVocName()) << 's';
 				} else {
-					sink.append("players");
+					sink << "players";
 				}
 
-				sink.append(" with");
+				sink << " with";
 				if (it.runeLevel > 0) {
-					sink.append(" level ").append(std::to_string(it.runeLevel));
+					sink << " level " << it.runeLevel;
 				}
 
 				if (it.runeMagLevel > 0) {
 					if (it.runeLevel > 0) {
-						sink.append(" and");
-						sink.append(" magic level ").append(std::to_string(it.runeMagLevel));
+						sink << " and";
 					}
+					sink << " magic level " << it.runeMagLevel;
 				}
 
-				sink.append(" or higher");
+				sink << " or higher";
 			}
 		}
 	} else if (it.weaponType != WEAPON_NONE) {
 		bool begin = true;
 		if (it.weaponType == WEAPON_DISTANCE && it.ammoType != AMMO_NONE) {
-			sink.append(" (Range:").append(std::to_string(static_cast<uint32_t>(item ? item->getShootRange() : it.shootRange)));
+			sink << " (Range:" << (item ? item->getShootRange() : it.shootRange);
 
 			int32_t attack;
 			int8_t hitChance;
@@ -1369,13 +1351,11 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 			}
 
 			if (attack != 0) {
-				int32_t len = sprintf(buffer, "%+d", attack);
-				sink.append(", Atk").append(buffer, static_cast<size_t>(len));
+				sink << ", Atk" <<= attack;
 			}
 
 			if (hitChance != 0) {
-				int32_t len = sprintf(buffer, "%+d", static_cast<int32_t>(hitChance));
-				sink.append(", Hit%").append(buffer, static_cast<size_t>(len));
+				sink << ", Hit%" <<= hitChance;
 			}
 
 			begin = false;
@@ -1393,25 +1373,24 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 			if (attack != 0) {
 				begin = false;
-				sink.append(" (Atk:").append(std::to_string(attack));
+				sink << " (Atk:" << attack;
 
 				if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
-					sink.append(" physical + ").append(std::to_string(static_cast<uint32_t>(it.abilities->elementDamage))).append(1, ' ').append(getCombatName(it.abilities->elementType));
+					sink << " physical + " << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 				}
 			}
 
 			if (defense != 0 || extraDefense != 0) {
 				if (begin) {
 					begin = false;
-					sink.append(" (");
+					sink << " (";
 				} else {
-					sink.append(", ");
+					sink << ", ";
 				}
 
-				sink.append("Def:").append(std::to_string(defense));
+				sink << "Def:" << defense;
 				if (extraDefense != 0) {
-					int32_t len = sprintf(buffer, " %+d", extraDefense);
-					sink.append(buffer, static_cast<size_t>(len));
+					sink << ' ' <<= extraDefense;
 				}
 			}
 		}
@@ -1424,13 +1403,12 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 				if (begin) {
 					begin = false;
-					sink.append(" (");
+					sink << " (";
 				} else {
-					sink.append(", ");
+					sink << ", ";
 				}
 
-				int32_t len = sprintf(buffer, " %+d", it.abilities->skills[i]);
-				sink.append(getSkillName(i)).append(buffer, static_cast<size_t>(len));
+				sink << getSkillName(i) << ' ' <<= it.abilities->skills[i];
 			}
 
 			for (uint8_t i = SPECIALSKILL_FIRST; i <= SPECIALSKILL_LAST; i++) {
@@ -1440,25 +1418,23 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 				if (begin) {
 					begin = false;
-					sink.append(" (");
+					sink << " (";
 				} else {
-					sink.append(", ");
+					sink << ", ";
 				}
 
-				int32_t len = sprintf(buffer, " %+d%%", it.abilities->specialSkills[i]);
-				sink.append(getSpecialSkillName(i)).append(buffer, static_cast<size_t>(len));
+				sink << getSpecialSkillName(i) << ' ' <<= it.abilities->specialSkills[i];
 			}
 
 			if (it.abilities->stats[STAT_MAGICPOINTS]) {
 				if (begin) {
 					begin = false;
-					sink.append(" (");
+					sink << " (";
 				} else {
-					sink.append(", ");
+					sink << ", ";
 				}
 
-				int32_t len = sprintf(buffer, "%+d", it.abilities->stats[STAT_MAGICPOINTS]);
-				sink.append("magic level ").append(buffer, static_cast<size_t>(len));
+				sink << "magic level " <<= it.abilities->stats[STAT_MAGICPOINTS];
 			}
 
 			int16_t show = it.abilities->absorbPercent[0];
@@ -1484,29 +1460,27 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 						if (begin) {
 							begin = false;
-							sink.append(" (");
+							sink << " (";
 						} else {
-							sink.append(", ");
+							sink << ", ";
 						}
 
-						sink.append("protection ");
+						sink << "protection ";
 					} else {
-						sink.append(", ");
+						sink << ", ";
 					}
 
-					int32_t len = sprintf(buffer, " %+d%%", static_cast<int32_t>(it.abilities->absorbPercent[i]));
-					sink.append(getCombatName(indexToCombatType(i))).append(buffer, static_cast<size_t>(len));
+					sink << getCombatName(indexToCombatType(i)) << ' ' <<= it.abilities->absorbPercent[i];
 				}
 			} else {
 				if (begin) {
 					begin = false;
-					sink.append(" (");
+					sink << " (";
 				} else {
-					sink.append(", ");
+					sink << ", ";
 				}
 
-				int32_t len = sprintf(buffer, "%+d%%", static_cast<int32_t>(show));
-				sink.append("protection all ").append(buffer, static_cast<size_t>(len));
+				sink << "protection all " <<= show;
 			}
 
 			show = it.abilities->fieldAbsorbPercent[0];
@@ -1532,53 +1506,50 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 						if (begin) {
 							begin = false;
-							sink.append(" (");
+							sink << " (";
 						} else {
-							sink.append(", ");
+							sink << ", ";
 						}
 
-						sink.append("protection ");
+						sink << "protection ";
 					} else {
-						sink.append(", ");
+						sink << ", ";
 					}
 
-					int32_t len = sprintf(buffer, "%+d%%", static_cast<int32_t>(it.abilities->fieldAbsorbPercent[i]));
-					sink.append(getCombatName(indexToCombatType(i))).append(" field ").append(buffer, static_cast<size_t>(len));
+					sink << getCombatName(indexToCombatType(i)) << " field " <<= it.abilities->fieldAbsorbPercent[i];
 				}
 			} else {
 				if (begin) {
 					begin = false;
-					sink.append(" (");
+					sink << " (";
 				} else {
-					sink.append(", ");
+					sink << ", ";
 				}
 
-				int32_t len = sprintf(buffer, "%+d%%", static_cast<int32_t>(show));
-				sink.append("protection all fields ").append(buffer, static_cast<size_t>(len));
+				sink << "protection all fields " <<= show;
 			}
 
 			if (it.abilities->speed) {
 				if (begin) {
 					begin = false;
-					sink.append(" (");
+					sink << " (";
 				} else {
-					sink.append(", ");
+					sink << ", ";
 				}
 
-				int32_t len = sprintf(buffer, "%+d", (it.abilities->speed >> 1));
-				sink.append("speed ").append(buffer, static_cast<size_t>(len));
+				sink << "speed " <<= (it.abilities->speed >> 1);
 			}
 		}
 
 		if (!begin) {
-			sink.append(1, ')');
+			sink << ')';
 		}
 	} else if (it.armor != 0 || (item && item->getArmor() != 0) || it.showAttributes) {
 		bool begin = true;
 
 		int32_t armor = (item ? item->getArmor() : it.armor);
 		if (armor != 0) {
-			sink.append(" (Arm:").append(std::to_string(armor));
+			sink << " (Arm:" << armor;
 			begin = false;
 		}
 
@@ -1590,25 +1561,23 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 				if (begin) {
 					begin = false;
-					sink.append(" (");
+					sink << " (";
 				} else {
-					sink.append(", ");
+					sink << ", ";
 				}
 
-				int32_t len = sprintf(buffer, " %+d", it.abilities->skills[i]);
-				sink.append(getSkillName(i)).append(buffer, static_cast<size_t>(len));
+				sink << getSkillName(i) << ' ' <<= it.abilities->skills[i];
 			}
 
 			if (it.abilities->stats[STAT_MAGICPOINTS]) {
 				if (begin) {
 					begin = false;
-					sink.append(" (");
+					sink << " (";
 				} else {
-					sink.append(", ");
+					sink << ", ";
 				}
 
-				int32_t len = sprintf(buffer, "%+d", it.abilities->stats[STAT_MAGICPOINTS]);
-				sink.append("magic level ").append(buffer, static_cast<size_t>(len));
+				sink << "magic level " <<= it.abilities->stats[STAT_MAGICPOINTS];
 			}
 
 			int16_t show = it.abilities->absorbPercent[0];
@@ -1633,29 +1602,27 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 						if (begin) {
 							begin = false;
-							sink.append(" (");
+							sink << " (";
 						} else {
-							sink.append(", ");
+							sink << ", ";
 						}
 
-						sink.append("protection ");
+						sink << "protection ";
 					} else {
-						sink.append(", ");
+						sink << ", ";
 					}
 
-					int32_t len = sprintf(buffer, " %+d%%", static_cast<int32_t>(it.abilities->absorbPercent[i]));
-					sink.append(getCombatName(indexToCombatType(i))).append(buffer, static_cast<size_t>(len));
+					sink << getCombatName(indexToCombatType(i)) << ' ' <<= it.abilities->absorbPercent[i];
 				}
 			} else {
 				if (begin) {
 					begin = false;
-					sink.append(" (");
+					sink << " (";
 				} else {
-					sink.append(", ");
+					sink << ", ";
 				}
 
-				int32_t len = sprintf(buffer, "%+d%%", static_cast<int32_t>(show));
-				sink.append("protection all ").append(buffer, static_cast<size_t>(len));
+				sink << "protection all " <<= show;
 			}
 
 			show = it.abilities->fieldAbsorbPercent[0];
@@ -1681,46 +1648,43 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 						if (begin) {
 							begin = false;
-							sink.append(" (");
+							sink << " (";
 						} else {
-							sink.append(", ");
+							sink << ", ";
 						}
 
-						sink.append("protection ");
+						sink << "protection ";
 					} else {
-						sink.append(", ");
+						sink << ", ";
 					}
 
-					int32_t len = sprintf(buffer, "%+d%%", static_cast<int32_t>(it.abilities->fieldAbsorbPercent[i]));
-					sink.append(getCombatName(indexToCombatType(i))).append(" field ").append(buffer, static_cast<size_t>(len));
+					sink << getCombatName(indexToCombatType(i)) << " field " <<= it.abilities->fieldAbsorbPercent[i];
 				}
 			} else {
 				if (begin) {
 					begin = false;
-					sink.append(" (");
+					sink << " (";
 				} else {
-					sink.append(", ");
+					sink << ", ";
 				}
 
-				int32_t len = sprintf(buffer, "%+d%%", static_cast<int32_t>(show));
-				sink.append("protection all fields ").append(buffer, static_cast<size_t>(len));
+				sink << "protection all fields " <<= show;
 			}
 
 			if (it.abilities->speed) {
 				if (begin) {
 					begin = false;
-					sink.append(" (");
+					sink << " (";
 				} else {
-					sink.append(", ");
+					sink << ", ";
 				}
 
-				int32_t len = sprintf(buffer, "%+d", (it.abilities->speed >> 1));
-				sink.append("speed ").append(buffer, static_cast<size_t>(len));
+				sink << "speed " <<= (it.abilities->speed >> 1);
 			}
 		}
 
 		if (!begin) {
-			sink.append(1, ')');
+			sink << ')';
 		}
 	} else if (it.isContainer() || (item && item->getContainer())) {
 		uint32_t volume = 0;
@@ -1733,23 +1697,23 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 		}
 
 		if (volume != 0) {
-			sink.append(" (Vol:").append(std::to_string(volume)).append(1, ')');
+			sink << " (Vol:" << volume << ')';
 		}
 	} else {
 		bool found = true;
 
 		if (it.abilities) {
 			if (it.abilities->speed > 0) {
-				int32_t len = sprintf(buffer, "%+d", (it.abilities->speed >> 1));
-				sink.append(" (speed ").append(buffer, static_cast<size_t>(len)).append(1, ')');
+				sink << " (speed " <<= (it.abilities->speed >> 1);
+				sink << ')';
 			} else if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
-				sink.append(" (hard drinking)");
+				sink << " (hard drinking)";
 			} else if (it.abilities->invisible) {
-				sink.append(" (invisibility)");
+				sink << " (invisibility)";
 			} else if (it.abilities->regeneration) {
-				sink.append(" (faster regeneration)");
+				sink << " (faster regeneration)";
 			} else if (it.abilities->manaShield) {
-				sink.append(" (mana shield)");
+				sink << " (mana shield)";
 			} else {
 				found = false;
 			}
@@ -1759,25 +1723,29 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 		if (!found) {
 			if (it.isKey()) {
-				int32_t len = sprintf(buffer, "%04d", (item ? static_cast<int32_t>(item->getActionId()) : 0));
-				sink.append(" (Key:").append(buffer, static_cast<size_t>(len)).append(1, ')');
+				std::stringExtended str(4);
+				str << (item ? item->getActionId() : 0);
+				for (size_t i = str.length(); i < 4; ++i) {
+					str.insert(str.begin(), '0');
+				}
+				sink << " (Key:" << str << ')';
 			} else if (it.isFluidContainer()) {
 				if (subType > 0) {
 					const std::string& itemName = items[subType].name;
-					sink.append(" of ").append(!itemName.empty() ? itemName : "unknown");
+					sink << " of " << (!itemName.empty() ? itemName : "unknown");
 				} else {
-					sink.append(". It is empty");
+					sink << ". It is empty";
 				}
 			} else if (it.isSplash()) {
-				sink.append(" of ");
+				sink << " of ";
 
 				if (subType > 0 && !items[subType].name.empty()) {
-					sink.append(items[subType].name);
+					sink << items[subType].name;
 				} else {
-					sink.append("unknown");
+					sink << "unknown";
 				}
 			} else if (it.allowDistRead && (it.id < 7369 || it.id > 7371)) {
-				sink.append(".\n");
+				sink << ".\n";
 
 				if (lookDistance <= 4) {
 					if (item) {
@@ -1786,138 +1754,138 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 							const std::string& writer = item->getWriter();
 							if (!writer.empty()) {
-								sink.append(writer).append(" wrote");
+								sink << writer << " wrote";
 								time_t date = item->getDate();
 								if (date != 0) {
-									sink.append(" on ").append(formatDateShort(date));
+									sink << " on " << formatDateShort(date);
 								}
-								sink.append(": ");
+								sink << ": ";
 							} else {
-								sink.append("You read: ");
+								sink << "You read: ";
 							}
 
-							sink.append(*text);
+							sink << (*text);
 						} else {
-							sink.append("Nothing is written on it");
+							sink << "Nothing is written on it";
 						}
 					} else {
-						sink.append("Nothing is written on it");
+						sink << "Nothing is written on it";
 					}
 				} else {
-					sink.append("You are too far away to read it");
+					sink << "You are too far away to read it";
 				}
 			} else if (it.levelDoor != 0 && item) {
 				uint32_t actionId = static_cast<uint32_t>(item->getActionId());
 				if (actionId >= it.levelDoor) {
-					sink.append(" for level ").append(std::to_string(actionId - it.levelDoor));
+					sink << " for level " << (actionId - it.levelDoor);
 				}
 			}
 		}
 	}
 
 	if (it.showCharges) {
-		sink.append(" that has ").append(std::to_string(subType)).append(" charge").append(subType != 1 ? "s" : "").append(" left");
+		sink << " that has " << subType << " charge" << (subType != 1 ? "s" : "") << " left";
 	}
 
 	if (it.showDuration) {
 		if (item && item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
 			uint32_t duration = item->getDuration() / 1000;
-			sink.append(" that will expire in ");
+			sink << " that will expire in ";
 
 			if (duration >= 86400) {
 				uint32_t days = duration / 86400;
 				uint32_t hours = (duration % 86400) / 3600;
-				sink.append(std::to_string(days)).append(" day").append(days != 1 ? "s" : "");
+				sink << days << " day" << (days != 1 ? "s" : "");
 
 				if (hours > 0) {
-					sink.append(" and ").append(std::to_string(hours)).append(" hour").append(hours != 1 ? "s" : "");
+					sink << " and " << hours << " hour" << (hours != 1 ? "s" : "");
 				}
 			} else if (duration >= 3600) {
 				uint32_t hours = duration / 3600;
 				uint32_t minutes = (duration % 3600) / 60;
-				sink.append(std::to_string(hours)).append(" hour").append(hours != 1 ? "s" : "");
+				sink << hours << " hour" << (hours != 1 ? "s" : "");
 
 				if (minutes > 0) {
-					sink.append(" and ").append(std::to_string(minutes)).append(" minute").append(minutes != 1 ? "s" : "");
+					sink << " and " << minutes << " minute" << (minutes != 1 ? "s" : "");
 				}
 			} else if (duration >= 60) {
 				uint32_t minutes = duration / 60;
 				uint32_t seconds = duration % 60;
-				sink.append(std::to_string(minutes)).append(" minute").append(minutes != 1 ? "s" : "");
+				sink << minutes << " minute" << (minutes != 1 ? "s" : "");
 
 				if (seconds > 0) {
-					sink.append(" and ").append(std::to_string(seconds)).append(" second").append(seconds != 1 ? "s" : "");
+					sink << " and " << seconds << " second" << (seconds != 1 ? "s" : "");
 				}
 			} else {
-				sink.append(std::to_string(duration)).append(" second").append(duration != 1 ? "s" : "");
+				sink << duration << " second" << (duration != 1 ? "s" : "");
 			}
 		} else {
-			sink.append(" that is brand-new");
+			sink << " that is brand-new";
 		}
 	}
 
 	if (!it.allowDistRead || (it.id >= 7369 && it.id <= 7371)) {
-		sink.append(1, '.');
+		sink << '.';
 	} else {
 		if (!text && item) {
 			text = &item->getText();
 		}
 
 		if (!text || text->empty()) {
-			sink.append(1, '.');
+			sink << '.';
 		}
 	}
 
 	if (it.wieldInfo != 0) {
-		sink.append("\nIt can only be wielded properly by ");
+		sink << "\nIt can only be wielded properly by ";
 
 		if (it.wieldInfo & WIELDINFO_PREMIUM) {
-			sink.append("premium ");
+			sink << "premium ";
 		}
 
 		if (!it.vocationString.empty()) {
-			sink.append(it.vocationString);
+			sink << it.vocationString;
 		} else {
-			sink.append("players");
+			sink << "players";
 		}
 
 		if (it.wieldInfo & WIELDINFO_LEVEL) {
-			sink.append(" of level ").append(std::to_string(it.minReqLevel)).append(" or higher");
+			sink << " of level " << it.minReqLevel << " or higher";
 		}
 
 		if (it.wieldInfo & WIELDINFO_MAGLV) {
 			if (it.wieldInfo & WIELDINFO_LEVEL) {
-				sink.append(" and");
+				sink << " and";
 			} else {
-				sink.append(" of");
+				sink << " of";
 			}
 
-			sink.append(" magic level ").append(std::to_string(it.minReqMagicLevel)).append(" or higher");
+			sink << " magic level " << it.minReqMagicLevel << " or higher";
 		}
 
-		sink.append(1, '.');
+		sink << '.';
 	}
 
 	if (lookDistance <= 1) {
 		if (item) {
 			const uint32_t weight = item->getWeight();
 			if (weight != 0 && it.pickupable) {
-				sink.append(1, '\n').append(getWeightDescription(it, weight, item->getItemCount()));
+				sink << '\n' << getWeightDescription(it, weight, item->getItemCount());
 			}
 		} else if (it.weight != 0 && it.pickupable) {
-			sink.append(1, '\n').append(getWeightDescription(it, it.weight));
+			sink << '\n' << getWeightDescription(it, it.weight);
 		}
 	}
 
 	if (item) {
 		const std::string& specialDescription = item->getSpecialDescription();
 		if (!specialDescription.empty()) {
-			sink.append(1, '\n').append(specialDescription);
+			sink << '\n' << specialDescription;
 		} else if (lookDistance <= 1 && !it.description.empty()) {
-			sink.append(1, '\n').append(it.description);
+			sink << '\n' << it.description;
 		}
 	} else if (lookDistance <= 1 && !it.description.empty()) {
-		sink.append(1, '\n').append(it.description);
+		sink << '\n' << it.description;
 	}
 
 	if (it.allowDistRead && it.id >= 7369 && it.id <= 7371) {
@@ -1926,7 +1894,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 		}
 
 		if (text && !text->empty()) {
-			sink.append(1, '\n').append(*text);
+			sink << '\n' << (*text);
 		}
 	}
 	return sink;
@@ -1944,29 +1912,28 @@ std::string Item::getNameDescription(const ItemType& it, const Item* item /*= nu
 		subType = item->getSubType();
 	}
 
-	std::string str;
-	str.reserve(32);
+	std::stringExtended str(32);
 
 	const std::string& name = (item ? item->getName() : it.name);
 	if (!name.empty()) {
 		if (it.stackable && subType > 1) {
 			if (it.showCount) {
-				str.append(std::to_string(subType)).append(1, ' ');
+				str << subType << ' ';
 			}
 
-			str.append(item ? item->getPluralName() : it.getPluralName());
+			str << (item ? item->getPluralName() : it.getPluralName());
 		} else {
 			if (addArticle) {
 				const std::string& article = (item ? item->getArticle() : it.article);
 				if (!article.empty()) {
-					str.append(article).append(1, ' ');
+					str << article << ' ';
 				}
 			}
 
-			str.append(name);
+			str << name;
 		}
 	} else {
-		str.append("an item of type ").append(std::to_string(it.id));
+		str << "an item of type " << it.id;
 	}
 	return str;
 }
@@ -1979,25 +1946,23 @@ std::string Item::getNameDescription() const
 
 std::string Item::getWeightDescription(const ItemType& it, uint32_t weight, uint32_t count /*= 1*/)
 {
-	std::string str;
-	str.reserve(20);
+	std::stringExtended str(20);
 	if (it.stackable && count > 1 && it.showCount != 0) {
-		str.append("They weigh ");
+		str << "They weigh ";
 	} else {
-		str.append("It weighs ");
+		str << "It weighs ";
 	}
 
 	if (weight < 10) {
-		str.append("0.0").append(std::to_string(weight));
+		str << "0.0" << weight;
 	} else if (weight < 100) {
-		str.append("0.").append(std::to_string(weight));
+		str << "0." << weight;
 	} else {
-		std::string weightString = std::to_string(weight);
-		weightString.insert(weightString.end() - 2, '.');
-		str.append(weightString);
+		str << weight;
+		str.insert(str.end() - 2, '.');
 	}
 
-	return str.append(" oz.");
+	return (str << " oz.");
 }
 
 std::string Item::getWeightDescription(uint32_t weight) const

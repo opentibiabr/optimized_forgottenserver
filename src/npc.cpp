@@ -240,9 +240,8 @@ bool Npc::canSee(const Position& pos) const
 
 std::string Npc::getDescription(int32_t) const
 {
-	std::string str;
-	str.reserve(name.length() + static_cast<size_t>(2));
-	return str.append(name).append(1, '.');
+	std::stringExtended str(name.length() + static_cast<size_t>(2));
+	return (str << name << '.');
 }
 
 void Npc::onCreatureAppear(Creature* creature, bool isLogin)

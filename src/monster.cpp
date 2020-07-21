@@ -87,9 +87,8 @@ bool Monster::canSee(const Position& pos) const
 
 std::string Monster::getDescription(int32_t) const
 {
-	std::string str;
-	str.reserve(strDescription.length() + static_cast<size_t>(2));
-	return str.append(strDescription).append(1, '.');
+	std::stringExtended str(strDescription.length() + static_cast<size_t>(2));
+	return (str << strDescription << '.');
 }
 
 bool Monster::canWalkOnFieldType(CombatType_t combatType) const
