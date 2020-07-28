@@ -41,9 +41,9 @@ void House::addTile(HouseTile* tile)
 void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* player/* = nullptr*/)
 {
 	if (updateDatabase && owner != guid) {
-		std::ostringstream query;
+		std::stringExtended query(256);
 		query << "UPDATE `houses` SET `owner` = " << guid << ", `bid` = 0, `bid_end` = 0, `last_bid` = 0, `highest_bidder` = 0  WHERE `id` = " << id;
-		g_database.executeQuery(query.str());
+		g_database.executeQuery(query);
 	}
 
 	if (isLoaded && owner == guid) {
@@ -116,7 +116,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 
 void House::updateDoorDescription() const
 {
-	std::ostringstream ss;
+	std::stringExtended ss(houseName.length() + ownerName.length() + static_cast<size_t>(128));
 	if (owner != 0) {
 		ss << "It belongs to house '" << houseName << "'. " << ownerName << " owns this house.";
 	} else {
@@ -129,7 +129,7 @@ void House::updateDoorDescription() const
 	}
 
 	for (const auto& it : doorSet) {
-		it->setSpecialDescription(ss.str());
+		it->setSpecialDescription(ss);
 	}
 }
 
@@ -410,9 +410,9 @@ HouseTransferItem* HouseTransferItem::createHouseTransferItem(House* house)
 	transferItem->incrementReferenceCounter();
 	transferItem->setID(ITEM_DOCUMENT_RO);
 	transferItem->setSubType(1);
-	std::ostringstream ss;
+	std::stringExtended ss(house->getName().length() + static_cast<size_t>(64));
 	ss << "It is a house transfer document for '" << house->getName() << "'.";
-	transferItem->setSpecialDescription(ss.str());
+	transferItem->setSpecialDescription(ss);
 	return transferItem;
 }
 
@@ -755,9 +755,9 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const
 
 				Item* letter = Item::CreateItem(ITEM_LETTER_STAMPED);
 				if (letter) {
-					std::ostringstream ss;
+					std::stringExtended ss(period.length() + house->getName().length() + static_cast<size_t>(256));
 					ss << "Warning! \nThe " << period << " rent of " << house->getRent() << " gold for your house \"" << house->getName() << "\" is payable. Have it within " << daysLeft << " days or you will lose this house.";
-					letter->setText(ss.str());
+					letter->setText(ss);
 					#if GAME_FEATURE_MARKET > 0
 					if (g_game.internalAddItem(player.getInbox(), letter, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 						delete letter;

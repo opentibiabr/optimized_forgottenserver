@@ -197,7 +197,7 @@ void IOMarket::checkExpiredOffers()
 
 	std::stringExtended query(128);
 	query << "SELECT `id`, `amount`, `price`, `itemtype`, `player_id`, `sale` FROM `market_offers` WHERE `created` <= " << lastExpireDate;
-	g_databaseTasks.addTask(query, IOMarket::processExpiredOffers, true);
+	g_databaseTasks.addTask(std::move(static_cast<std::string&>(query)), IOMarket::processExpiredOffers, true);
 
 	int32_t checkExpiredMarketOffersEachMinutes = g_config.getNumber(ConfigManager::CHECK_EXPIRED_MARKET_OFFERS_EACH_MINUTES);
 	if (checkExpiredMarketOffersEachMinutes <= 0) {
@@ -291,7 +291,7 @@ void IOMarket::appendHistory(uint32_t playerId, MarketAction_t type, uint16_t it
 	query << timestamp << ',';
 	query << time(nullptr) << ',';
 	query << state << ')';
-	g_databaseTasks.addTask(query);
+	g_databaseTasks.addTask(std::move(static_cast<std::string&>(query)));
 }
 
 bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state)

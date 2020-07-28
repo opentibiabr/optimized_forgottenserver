@@ -77,7 +77,7 @@ bool IOBan::isAccountBanned(uint32_t accountId, BanInfo& banInfo)
 
 		query.clear();
 		query << "DELETE FROM `account_bans` WHERE `account_id` = " << accountId;
-		g_databaseTasks.addTask(query);
+		g_databaseTasks.addTask(std::move(static_cast<std::string&>(query)));
 		return false;
 	}
 
@@ -105,7 +105,7 @@ bool IOBan::isIpBanned(uint32_t clientIP, BanInfo& banInfo)
 	if (expiresAt != 0 && time(nullptr) > expiresAt) {
 		query.clear();
 		query << "DELETE FROM `ip_bans` WHERE `ip` = " << clientIP;
-		g_databaseTasks.addTask(query);
+		g_databaseTasks.addTask(std::move(static_cast<std::string&>(query)));
 		return false;
 	}
 

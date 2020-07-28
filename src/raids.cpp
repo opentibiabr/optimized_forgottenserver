@@ -63,9 +63,9 @@ bool Raids::loadFromXml()
 		if ((attr = raidNode.attribute("file"))) {
 			file = attr.as_string();
 		} else {
-			std::ostringstream ss;
+			std::stringExtended ss(name.length() + static_cast<size_t>(16));
 			ss << "raids/" << name << ".xml";
-			file = ss.str();
+			file = ss;
 			std::cout << "[Warning - Raids::loadFromXml] File tag missing for raid " << name << ". Using default: " << file << std::endl;
 		}
 

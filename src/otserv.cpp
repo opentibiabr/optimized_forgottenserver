@@ -269,9 +269,9 @@ void mainLoader(int, char*[], ServiceManager* services)
 	} else {
 		std::cout << std::endl;
 
-		std::ostringstream ss;
+		std::stringExtended ss(256);
 		ss << "> ERROR: Unknown world type: " << g_config.getString(ConfigManager::WORLD_TYPE) << ", valid world types are: pvp, no-pvp and pvp-enforced.";
-		startupErrorMessage(ss.str());
+		startupErrorMessage(ss);
 		return;
 	}
 	std::cout << asUpperCaseString(worldType) << std::endl;

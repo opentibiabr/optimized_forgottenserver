@@ -73,12 +73,12 @@ void ProtocolGame::login(const std::string& accountName, const std::string& pass
 			banInfo.reason = "(none)";
 		}
 
-		std::ostringstream ss;
+		std::stringExtended ss(banInfo.bannedBy.length() + banInfo.reason.length() + static_cast<size_t>(64));
 		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
-		disconnectClient(ss.str());
+		disconnectClient(ss);
 		return;
 	}
-	
+
 	#if GAME_FEATURE_SESSIONKEY > 0
 	uint32_t accountId = IOLoginData::gameworldAuthentication(accountName, password, characterName, token, tokenTime);
 	if (accountId == 0) {
@@ -132,13 +132,13 @@ void ProtocolGame::login(const std::string& accountName, const std::string& pass
 					banInfo.reason = "(none)";
 				}
 
-				std::ostringstream ss;
+				std::stringExtended ss(banInfo.bannedBy.length() + banInfo.reason.length() + static_cast<size_t>(68));
 				if (banInfo.expiresAt > 0) {
 					ss << "Your account has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
 				} else {
 					ss << "Your account has been permanently banned by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
 				}
-				disconnectClient(ss.str());
+				disconnectClient(ss);
 				return;
 			}
 		}
@@ -146,14 +146,14 @@ void ProtocolGame::login(const std::string& accountName, const std::string& pass
 		std::size_t currentSlot;
 		if (!WaitingList::getInstance().clientLogin(player, currentSlot)) {
 			int64_t retryTime = WaitingList::getTime(currentSlot);
-			std::ostringstream ss;
+			std::stringExtended ss(128);
 
 			ss << "Too many players online.\nYou are at place "
 			   << currentSlot << " on the waiting list.";
 
 			auto output = OutputMessagePool::getOutputMessage();
 			output->addByte(0x16);
-			output->addString(ss.str());
+			output->addString(ss);
 			output->addByte(static_cast<uint8_t>(retryTime));
 			send(output);
 			disconnect();
@@ -404,9 +404,9 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 	#else
 	if (version != CLIENT_VERSION) {
 	#endif
-		std::ostringstream ss;
+		std::stringExtended ss(64);
 		ss << "Only clients with protocol " << CLIENT_VERSION_UPPER << "." << CLIENT_VERSION_LOWER << " allowed!";
-		disconnectClient(ss.str());
+		disconnectClient(ss);
 		return;
 	}
 
@@ -3035,6 +3035,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	playermsg.reset();
 	playermsg.addByte(0xF8);
 	playermsg.addItemId(itemId);
+	std::stringExtended ss(128);
 
 	const ItemType& it = Item::items[itemId];
 	if (it.armor != 0) {
@@ -3048,9 +3049,9 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		// example:
 		// "attack +x, chance to hit +y%, z fields"
 		if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
-			std::ostringstream ss;
+			ss.clear();
 			ss << it.attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
-			playermsg.addString(ss.str());
+			playermsg.addString(ss);
 		} else {
 			playermsg.addString(std::to_string(it.attack));
 		}
@@ -3066,9 +3067,9 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 
 	if (it.defense != 0) {
 		if (it.extraDefense != 0) {
-			std::ostringstream ss;
-			ss << it.defense << ' ' << std::showpos << it.extraDefense << std::noshowpos;
-			playermsg.addString(ss.str());
+			ss.clear();
+			ss << it.defense << ' ' <<= it.extraDefense;
+			playermsg.addString(ss);
 		} else {
 			playermsg.addString(std::to_string(it.defense));
 		}
@@ -3088,15 +3089,15 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	}
 
 	if (it.decayTime != 0) {
-		std::ostringstream ss;
+		ss.clear();
 		ss << it.decayTime << " seconds";
-		playermsg.addString(ss.str());
+		playermsg.addString(ss);
 	} else {
 		playermsg.add<uint16_t>(0x00);
 	}
 
 	if (it.abilities) {
-		std::ostringstream ss;
+		ss.clear();
 		bool separator = false;
 		for (size_t i = 0; i < COMBAT_COUNT; ++i) {
 			if (it.abilities->absorbPercent[i] == 0) {
@@ -3109,10 +3110,11 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 				separator = true;
 			}
 
-			ss << getCombatName(indexToCombatType(i)) << ' ' << std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
+			ss << getCombatName(indexToCombatType(i)) << ' ' <<= it.abilities->absorbPercent[i];
+			ss << '%';
 		}
 
-		playermsg.addString(ss.str());
+		playermsg.addString(ss);
 	} else {
 		playermsg.add<uint16_t>(0x00);
 	}
@@ -3133,7 +3135,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 
 	playermsg.addString(it.runeSpellName);
 	if (it.abilities) {
-		std::ostringstream ss;
+		ss.clear();
 		bool separator = false;
 		for (uint8_t i = SKILL_FIRST; i <= SKILL_LAST; i++) {
 			if (!it.abilities->skills[i]) {
@@ -3146,7 +3148,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 				separator = true;
 			}
 
-			ss << getSkillName(i) << ' ' << std::showpos << it.abilities->skills[i] << std::noshowpos;
+			ss << getSkillName(i) << ' ' <<= it.abilities->skills[i];
 		}
 
 		if (it.abilities->stats[STAT_MAGICPOINTS] != 0) {
@@ -3156,7 +3158,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 				separator = true;
 			}
 
-			ss << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+			ss << "magic level " <<= it.abilities->stats[STAT_MAGICPOINTS];
 		}
 
 		if (it.abilities->speed != 0) {
@@ -3164,10 +3166,10 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 				ss << ", ";
 			}
 
-			ss << "speed " << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+			ss << "speed " <<= (it.abilities->speed >> 1);
 		}
 
-		playermsg.addString(ss.str());
+		playermsg.addString(ss);
 	} else {
 		playermsg.add<uint16_t>(0x00);
 	}
@@ -3189,18 +3191,17 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 
 	playermsg.addString(weaponName);
 	if (it.weight != 0) {
-		std::ostringstream ss;
+		ss.clear();
 		if (it.weight < 10) {
 			ss << "0.0" << it.weight;
 		} else if (it.weight < 100) {
 			ss << "0." << it.weight;
 		} else {
-			std::string weightString = std::to_string(it.weight);
-			weightString.insert(weightString.end() - 2, '.');
-			ss << weightString;
+			ss << it.weight;
+			ss.insert(ss.end() - 2, '.');
 		}
 		ss << " oz";
-		playermsg.addString(ss.str());
+		playermsg.addString(ss);
 	} else {
 		playermsg.add<uint16_t>(0x00);
 	}
@@ -4302,7 +4303,7 @@ void ProtocolGame::sendVIP(uint32_t guid, const std::string& name, VipStatus_t s
 
 void ProtocolGame::sendVIPEntries()
 {
-	std::ostringstream query;
+	std::stringExtended query(256);
 	#if GAME_FEATURE_ADDITIONAL_VIPINFO > 0
 	query << "SELECT `player_id`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `name`, `description`, `icon`, `notify` FROM `account_viplist` WHERE `account_id` = " << player->getAccount();
 	#else
@@ -4333,7 +4334,7 @@ void ProtocolGame::sendVIPEntries()
 			}
 		}
 	};
-	g_databaseTasks.addTask(query.str(), callback, true);
+	g_databaseTasks.addTask(std::move(static_cast<std::string&>(query)), callback, true);
 }
 
 #if CLIENT_VERSION >= 870

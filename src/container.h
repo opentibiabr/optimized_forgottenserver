@@ -155,7 +155,7 @@ class Container : public Item, public Cylinder
 		ItemDeque itemlist;
 
 	private:
-		std::string& getContentDescription(std::string& sink) const;
+		std::string& getContentDescription(std::stringExtended& sink) const;
 
 		uint32_t maxSize;
 		uint32_t totalWeight = 0;

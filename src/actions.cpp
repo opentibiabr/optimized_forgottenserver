@@ -219,7 +219,7 @@ bool Actions::registerLuaEvent(Action_ptr event)
 
 	if (!event->getUniqueIdRange().empty()) {
 		for (uint16_t uniqueId : event->getUniqueIdRange()) {
-			auto res = actionItemMap.emplace(uniqueId, event);
+			auto res = uniqueItemMap.emplace(uniqueId, event);
 			if (!res.second) {
 				std::cout << "[Warning - Actions::registerLuaEvent] Duplicate registered item with uid: " << uniqueId << " in range from uid: " << event->getUniqueIdRange()[0] << ", to uid: " << event->getUniqueIdRange()[event->getUniqueIdRange().size() - 1] << std::endl;
 				continue;
@@ -440,16 +440,15 @@ bool Actions::useItemEx(Player* player, const Position& fromPos, const Position&
 
 void Actions::showUseHotkeyMessage(Player* player, const Item* item, uint32_t count)
 {
-	std::string str;
-	str.reserve(128);
+	std::stringExtended str(128);
 
 	const ItemType& it = Item::items[item->getID()];
 	if (!it.showCount) {
-		str.append("Using one of ").append(item->getName()).append(3, '.');
+		str << "Using one of " << item->getName() << "...";
 	} else if (count == 1) {
-		str.append("Using the last ").append(item->getName()).append(3, '.');
+		str << "Using the last " << item->getName() << "...";
 	} else {
-		str.append("Using one of ").append(std::to_string(count)).append(1, ' ').append(item->getPluralName()).append(3, '.');
+		str << "Using one of " << count << ' ' << item->getPluralName() << "...";
 	}
 	player->sendTextMessage(MESSAGE_INFO_DESCR, str);
 }

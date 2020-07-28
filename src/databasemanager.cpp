@@ -27,10 +27,10 @@ extern ConfigManager g_config;
 
 bool DatabaseManager::optimizeTables()
 {
-	std::ostringstream query;
+	std::stringExtended query(256);
 
 	query << "SELECT `TABLE_NAME` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = " << g_database.escapeString(g_config.getString(ConfigManager::MYSQL_DB)) << " AND `DATA_FREE` > 0";
-	DBResult_ptr result = g_database.storeQuery(query.str());
+	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
 		return false;
 	}
@@ -39,10 +39,10 @@ bool DatabaseManager::optimizeTables()
 		std::string tableName = result->getString("TABLE_NAME");
 		std::cout << "> Optimizing table " << tableName << "..." << std::flush;
 
-		query.str(std::string());
+		query.clear();
 		query << "OPTIMIZE TABLE `" << tableName << '`';
 
-		if (g_database.executeQuery(query.str())) {
+		if (g_database.executeQuery(query)) {
 			std::cout << " [success]" << std::endl;
 		} else {
 			std::cout << " [failed]" << std::endl;
@@ -53,16 +53,16 @@ bool DatabaseManager::optimizeTables()
 
 bool DatabaseManager::tableExists(const std::string& tableName)
 {
-	std::ostringstream query;
+	std::stringExtended query(256);
 	query << "SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = " << g_database.escapeString(g_config.getString(ConfigManager::MYSQL_DB)) << " AND `TABLE_NAME` = " << g_database.escapeString(tableName) << " LIMIT 1";
-	return g_database.storeQuery(query.str()).get() != nullptr;
+	return g_database.storeQuery(query).get() != nullptr;
 }
 
 bool DatabaseManager::isDatabaseSetup()
 {
-	std::ostringstream query;
+	std::stringExtended query(256);
 	query << "SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = " << g_database.escapeString(g_config.getString(ConfigManager::MYSQL_DB));
-	return g_database.storeQuery(query.str()).get() != nullptr;
+	return g_database.storeQuery(query).get() != nullptr;
 }
 
 int32_t DatabaseManager::getDatabaseVersion()
@@ -103,9 +103,9 @@ void DatabaseManager::updateDatabase()
 
 	int32_t version = getDatabaseVersion();
 	do {
-		std::ostringstream ss;
+		std::stringExtended ss(32);
 		ss << "data/migrations/" << version << ".lua";
-		if (luaL_dofile(L, ss.str().c_str()) != 0) {
+		if (luaL_dofile(L, static_cast<std::string&>(ss).c_str()) != 0) {
 			std::cout << "[Error - DatabaseManager::updateDatabase - Version: " << version << "] " << lua_tostring(L, -1) << std::endl;
 			break;
 		}
@@ -137,10 +137,10 @@ void DatabaseManager::updateDatabase()
 
 bool DatabaseManager::getDatabaseConfig(const std::string& config, int32_t& value)
 {
-	std::ostringstream query;
+	std::stringExtended query(256);
 	query << "SELECT `value` FROM `server_config` WHERE `config` = " << g_database.escapeString(config);
 
-	DBResult_ptr result = g_database.storeQuery(query.str());
+	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
 		return false;
 	}
@@ -151,7 +151,7 @@ bool DatabaseManager::getDatabaseConfig(const std::string& config, int32_t& valu
 
 void DatabaseManager::registerDatabaseConfig(const std::string& config, int32_t value)
 {
-	std::ostringstream query;
+	std::stringExtended query(256);
 
 	int32_t tmp;
 
@@ -161,5 +161,5 @@ void DatabaseManager::registerDatabaseConfig(const std::string& config, int32_t 
 		query << "UPDATE `server_config` SET `value` = '" << value << "' WHERE `config` = " << g_database.escapeString(config);
 	}
 
-	g_database.executeQuery(query.str());
+	g_database.executeQuery(query);
 }

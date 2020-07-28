@@ -169,12 +169,11 @@ uint32_t Container::getWeight() const
 
 std::string Container::getContentDescription() const
 {
-	std::string sink;
-	sink.reserve(1024);
+	std::stringExtended sink(1024);
 	return getContentDescription(sink);
 }
 
-std::string& Container::getContentDescription(std::string& sink) const
+std::string& Container::getContentDescription(std::stringExtended& sink) const
 {
 	bool firstitem = true;
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
@@ -188,18 +187,18 @@ std::string& Container::getContentDescription(std::string& sink) const
 		if (firstitem) {
 			firstitem = false;
 		} else {
-			sink.append(", ");
+			sink << ", ";
 		}
 
 		#if CLIENT_VERSION >= 1200
-		sink.append(1, '{').append(std::to_string(static_cast<uint32_t>(item->getClientID()))).append(1, '|').append(item->getNameDescription()).append(1, '}');
+		sink << '{' << item->getClientID() << '|' << item->getNameDescription() << '}';
 		#else
-		sink.append(item->getNameDescription());
+		sink << item->getNameDescription();
 		#endif
 	}
 
 	if (firstitem) {
-		sink.append("nothing");
+		sink << "nothing";
 	}
 	return sink;
 }

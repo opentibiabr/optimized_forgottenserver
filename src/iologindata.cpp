@@ -811,7 +811,7 @@ bool IOLoginData::savePlayer(Player* player)
 		propWriteStream.writeString(learnedSpell);
 	}
 
-	propWriteStream.getStream(attributesSize);
+	attributes = propWriteStream.getStream(attributesSize);
 	if (attributesSize > 0) {
 		query << ",`spells` = " << g_database.escapeBlob(attributes, attributesSize);
 	} else {
@@ -1044,7 +1044,7 @@ void IOLoginData::addVIPEntry(uint32_t accountId, uint32_t guid, const std::stri
 	std::stringExtended query(escapedDescription.length() + static_cast<size_t>(256));
 	query << "INSERT IGNORE INTO `account_viplist` (`account_id`, `player_id`, `description`, `icon`, `notify`) VALUES (" << accountId << ',' << guid << ',';
 	query << escapedDescription << ',' << icon << ',' << (notify ? "1" : "0") << ')';
-	g_databaseTasks.addTask(query);
+	g_databaseTasks.addTask(std::move(static_cast<std::string&>(query)));
 }
 
 void IOLoginData::editVIPEntry(uint32_t accountId, uint32_t guid, const std::string& description, uint32_t icon, bool notify)
@@ -1053,14 +1053,14 @@ void IOLoginData::editVIPEntry(uint32_t accountId, uint32_t guid, const std::str
 	std::stringExtended query(escapedDescription.length() + static_cast<size_t>(256));
 	query << "UPDATE `account_viplist` SET `description` = " << escapedDescription << ", `icon` = " << icon << ", `notify` = " << (notify ? "1" : "0");
 	query << " WHERE `account_id` = " << accountId << " AND `player_id` = " << guid;
-	g_databaseTasks.addTask(query);
+	g_databaseTasks.addTask(std::move(static_cast<std::string&>(query)));
 }
 
 void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid)
 {
 	std::stringExtended query(128);
 	query << "DELETE FROM `account_viplist` WHERE `account_id` = " << accountId << " AND `player_id` = " << guid;
-	g_databaseTasks.addTask(query);
+	g_databaseTasks.addTask(std::move(static_cast<std::string&>(query)));
 }
 
 void IOLoginData::addPremiumDays(uint32_t accountId, int32_t addDays)

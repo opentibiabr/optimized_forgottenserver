@@ -75,9 +75,9 @@ void ProtocolLogin::getCharacterList(const std::string& accountName, const std::
 			banInfo.reason = "(none)";
 		}
 
-		std::ostringstream ss;
+		std::stringExtended ss(banInfo.bannedBy.length() + banInfo.reason.length() + static_cast<size_t>(64));
 		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
-		disconnectClient(ss.str(), version);
+		disconnectClient(ss, version);
 		return;
 	}
 
@@ -113,9 +113,9 @@ void ProtocolLogin::getCharacterList(const std::string& accountName, const std::
 		//Add MOTD
 		output->addByte(0x14);
 
-		std::ostringstream ss;
+		std::stringExtended ss(motd.length() + static_cast<size_t>(16));
 		ss << g_game.getMotdNum() << "\n" << motd;
-		output->addString(ss.str());
+		output->addString(ss);
 	}
 
 	#if GAME_FEATURE_SESSIONKEY > 0
@@ -220,9 +220,9 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 	}
 
 	if (clientVersion != CLIENT_VERSION) {
-		std::ostringstream ss;
+		std::stringExtended ss(64);
 		ss << "Only clients with protocol " << CLIENT_VERSION_UPPER << "." << CLIENT_VERSION_LOWER << " allowed!";
-		disconnectClient(ss.str(), clientVersion);
+		disconnectClient(ss, clientVersion);
 		return;
 	}
 

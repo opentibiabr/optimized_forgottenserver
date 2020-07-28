@@ -2533,9 +2533,9 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 	}
 
 	if (!Position::areInRange<2, 2, 0>(tradePartner->getPosition(), player->getPosition())) {
-		std::ostringstream ss;
+		std::stringExtended ss(tradePartner->getName().length() + static_cast<size_t>(32));
 		ss << tradePartner->getName() << " tells you to move closer.";
-		player->sendTextMessage(MESSAGE_INFO_DESCR, ss.str());
+		player->sendTextMessage(MESSAGE_INFO_DESCR, ss);
 		return;
 	}
 
@@ -2642,9 +2642,9 @@ bool Game::internalStartTrade(Player* player, Player* tradePartner, Item* tradeI
 	player->sendTradeItemRequest(player->getName(), tradeItem, true);
 
 	if (tradePartner->tradeState == TRADE_NONE) {
-		std::ostringstream ss;
+		std::stringExtended ss(player->getName().length() + static_cast<size_t>(32));
 		ss << player->getName() << " wants to trade with you.";
-		tradePartner->sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+		tradePartner->sendTextMessage(MESSAGE_EVENT_ADVANCE, ss);
 		tradePartner->tradeState = TRADE_ACKNOWLEDGE;
 		tradePartner->tradePartner = player;
 	} else {
@@ -2748,7 +2748,7 @@ std::string Game::getTradeErrorDescription(ReturnValue ret, Item* item)
 {
 	if (item) {
 		if (ret == RETURNVALUE_NOTENOUGHCAPACITY) {
-			std::ostringstream ss;
+			std::stringExtended ss(128);
 			ss << "You do not have enough capacity to carry";
 
 			if (item->isStackable() && item->getItemCount() > 1) {
@@ -2758,9 +2758,9 @@ std::string Game::getTradeErrorDescription(ReturnValue ret, Item* item)
 			}
 
 			ss << "\n " << item->getWeightDescription();
-			return ss.str();
+			return ss;
 		} else if (ret == RETURNVALUE_NOTENOUGHROOM || ret == RETURNVALUE_CONTAINERNOTENOUGHROOM) {
-			std::ostringstream ss;
+			std::stringExtended ss(128);
 			ss << "You do not have enough room to carry";
 
 			if (item->isStackable() && item->getItemCount() > 1) {
@@ -2769,7 +2769,7 @@ std::string Game::getTradeErrorDescription(ReturnValue ret, Item* item)
 				ss << " this object.";
 			}
 
-			return ss.str();
+			return ss;
 		}
 	}
 	return "Trade could not be completed.";
@@ -3231,9 +3231,9 @@ void Game::playerSay(Player* player, uint16_t channelId, SpeakClasses type,
 
 	uint32_t muteTime = player->isMuted();
 	if (muteTime > 0) {
-		std::ostringstream ss;
+		std::stringExtended ss(64);
 		ss << "You are still muted for " << muteTime << " seconds.";
-		player->sendTextMessage(MESSAGE_STATUS_SMALL, ss.str());
+		player->sendTextMessage(MESSAGE_STATUS_SMALL, ss);
 		return;
 	}
 
@@ -3374,9 +3374,9 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string& r
 	if (toPlayer->isInGhostMode() && !player->isAccessPlayer()) {
 		player->sendTextMessage(MESSAGE_STATUS_SMALL, "A player with this name is not online.");
 	} else {
-		std::ostringstream ss;
+		std::stringExtended ss(toPlayer->getName().length() + static_cast<size_t>(32));
 		ss << "Message sent to " << toPlayer->getName() << '.';
-		player->sendTextMessage(MESSAGE_STATUS_SMALL, ss.str());
+		player->sendTextMessage(MESSAGE_STATUS_SMALL, ss);
 	}
 	return true;
 }
@@ -4663,13 +4663,13 @@ void Game::loadMotdNum()
 
 void Game::saveMotdNum() const
 {
-	std::ostringstream query;
+	std::stringExtended query(128);
 	query << "UPDATE `server_config` SET `value` = '" << motdNum << "' WHERE `config` = 'motd_num'";
-	g_database.executeQuery(query.str());
+	g_database.executeQuery(query);
 
-	query.str(std::string());
+	query.clear();
 	query << "UPDATE `server_config` SET `value` = '" << transformToSHA1(g_config.getString(ConfigManager::MOTD)) << "' WHERE `config` = 'motd_hash'";
-	g_database.executeQuery(query.str());
+	g_database.executeQuery(query);
 }
 
 void Game::checkPlayersRecord()
@@ -4688,9 +4688,9 @@ void Game::checkPlayersRecord()
 
 void Game::updatePlayersRecord() const
 {
-	std::ostringstream query;
+	std::stringExtended query(128);
 	query << "UPDATE `server_config` SET `value` = '" << playersRecord << "' WHERE `config` = 'players_record'";
-	g_database.executeQuery(query.str());
+	g_database.executeQuery(query);
 }
 
 void Game::loadPlayersRecord()
@@ -4778,9 +4778,9 @@ void Game::playerInviteToParty(Player* player, uint32_t invitedId)
 	}
 
 	if (invitedPlayer->getParty()) {
-		std::ostringstream ss;
+		std::stringExtended ss(invitedPlayer->getName().length() + static_cast<size_t>(32));
 		ss << invitedPlayer->getName() << " is already in a party.";
-		player->sendTextMessage(MESSAGE_INFO_DESCR, ss.str());
+		player->sendTextMessage(MESSAGE_INFO_DESCR, ss);
 		return;
 	}
 

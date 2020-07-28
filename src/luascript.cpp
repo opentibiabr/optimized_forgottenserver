@@ -4208,7 +4208,7 @@ int LuaScriptInterface::luaDatabaseAsyncExecute(lua_State* L)
 			}
 		};
 	}
-	g_databaseTasks.addTask(getString(L, -1), callback);
+	g_databaseTasks.addTask(std::move(getString(L, -1)), callback);
 	return 0;
 }
 
@@ -4271,7 +4271,7 @@ int LuaScriptInterface::luaDatabaseAsyncStoreQuery(lua_State* L)
 			}
 		};
 	}
-	g_databaseTasks.addTask(getString(L, -1), callback, true);
+	g_databaseTasks.addTask(std::move(getString(L, -1)), callback, true);
 	return 0;
 }
 
@@ -9307,9 +9307,9 @@ int LuaScriptInterface::luaPlayerSetStorageValue(lua_State* L)
 	uint32_t key = getNumber<uint32_t>(L, 2);
 	Player* player = getUserdata<Player>(L, 1);
 	if (IS_IN_KEYRANGE(key, RESERVED_RANGE)) {
-		std::ostringstream ss;
+		std::stringExtended ss(64);
 		ss << "Accessing reserved range: " << key;
-		reportErrorFunc(ss.str());
+		reportErrorFunc(ss);
 		pushBoolean(L, false);
 		return 1;
 	}
