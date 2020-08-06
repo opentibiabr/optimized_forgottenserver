@@ -5934,7 +5934,7 @@ int LuaScriptInterface::luaNetworkMessageAddDouble(lua_State* L)
 	double number = getNumber<double>(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
-		message->addDouble<2>(number);
+		message->add<double>(number);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

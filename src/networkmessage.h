@@ -103,23 +103,36 @@ class NetworkMessage
 			info.length += sizeof(T);
 		}
 
-		void addBytes(const char* bytes, size_t size);
-		void addPaddingBytes(size_t n);
-
-		void addString(const std::string& value);
-
-		template<uint8_t precision>
-		inline void addDouble(double value) {
+		template<>
+		void add<float>(float value) {
 			if (!canAdd(5)) {
 				return;
 			}
 
-			uint32_t doubleValue = (value * std::pow(10.0, precision)) + std::numeric_limits<int32_t>::max();
-			buffer[info.position] = precision;
+			uint32_t floatValue = (value * 100.f) + std::numeric_limits<int32_t>::max();
+			buffer[info.position] = 2; // precision
+			memcpy(buffer + info.position + 1, &floatValue, sizeof(floatValue));
+			info.position += sizeof(floatValue) + 1;
+			info.length += sizeof(floatValue) + 1;
+		}
+
+		template<>
+		void add<double>(double value) {
+			if (!canAdd(5)) {
+				return;
+			}
+
+			uint32_t doubleValue = (value * 1000.0) + std::numeric_limits<int32_t>::max();
+			buffer[info.position] = 3; // precision
 			memcpy(buffer + info.position + 1, &doubleValue, sizeof(doubleValue));
 			info.position += sizeof(doubleValue) + 1;
 			info.length += sizeof(doubleValue) + 1;
 		}
+
+		void addBytes(const char* bytes, size_t size);
+		void addPaddingBytes(size_t n);
+
+		void addString(const std::string& value);
 
 		// write functions for complex types
 		void addPosition(const Position& pos);

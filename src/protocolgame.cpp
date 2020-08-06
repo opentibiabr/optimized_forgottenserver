@@ -3846,9 +3846,9 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	playermsg.add<uint16_t>(SERVER_BEAT_MILISECONDS);
 
 	#if GAME_FEATURE_NEWSPEED_LAW > 0
-	playermsg.addDouble<3>(Creature::speedA);
-	playermsg.addDouble<3>(Creature::speedB);
-	playermsg.addDouble<3>(Creature::speedC);
+	playermsg.add<double>(Creature::speedA);
+	playermsg.add<double>(Creature::speedB);
+	playermsg.add<double>(Creature::speedC);
 	#endif
 
 	// can report bugs?
@@ -4577,7 +4577,7 @@ void ProtocolGame::AddPlayerStats()
 	playermsg.add<uint16_t>(0); // xp boost
 	playermsg.add<uint16_t>(100); // stamina multiplier (100 = x1.0)
 	#else
-	playermsg.addDouble<2>(0.0);
+	playermsg.add<float>(0.f);
 	#endif
 	#endif
 
