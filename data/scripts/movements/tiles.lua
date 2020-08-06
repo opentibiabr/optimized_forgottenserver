@@ -1,6 +1,15 @@
 local increasing = {[416] = 417, [426] = 425, [446] = 447, [3216] = 3217, [3202] = 3215, [11062] = 11063}
 local decreasing = {[417] = 416, [425] = 426, [447] = 446, [3217] = 3216, [3215] = 3202, [11063] = 11062}
 
+local itemAdjusting = nil
+if GAME_FEATURE_STASH then
+	itemAdjusting = 4
+elseif GAME_FEATURE_MARKET then
+	itemAdjusting = 3
+else
+	itemAdjusting = 1
+end
+
 local tile = MoveEvent()
 tile:type("stepin")
 
@@ -29,13 +38,11 @@ function tile.onStepIn(creature, item, position, fromPosition)
 		lookPosition:getNextPosition(creature:getDirection())
 		local depotItem = Tile(lookPosition):getItemByType(ITEM_TYPE_DEPOT)
 		if depotItem then
-			local depotItems = creature:getDepotLocker(getDepotId(depotItem:getUniqueId()), true):getItemHoldingCount()
-			if(CLIENT_VERSION >= 940) then
-				depotItems = depotItems - 3
-			else
-				depotItems = depotItems - 1
-			end
+			local depotItems = creature:getDepotLocker(getDepotId(depotItem:getUniqueId()), true):getItemHoldingCount() - itemAdjusting
 			creature:sendTextMessage(MESSAGE_STATUS_DEFAULT, "Your depot contains " .. depotItems .. " item" .. (depotItems > 1 and "s." or "."))
+			if GAME_FEATURE_STASH then
+				creature:setSpecialContainersAvailable(true, true)
+			end
 			return true
 		end
 	end
@@ -65,6 +72,10 @@ function tile.onStepOut(creature, item, position, fromPosition)
 
 	if creature:isPlayer() and creature:isInGhostMode() then
 		return true
+	end
+
+	if GAME_FEATURE_STASH and (creature:isSupplyStashAvailable() or creature:isMarketAvailable()) then
+		creature:setSpecialContainersAvailable(false, false)
 	end
 
 	item:transform(decreasing[item.itemid])

@@ -899,6 +899,9 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 	depotLocker->internalAddThing(Item::CreateItem(ITEM_MARKET));
 	depotLocker->internalAddThing(inbox);
 	#endif
+	#if GAME_FEATURE_STASH > 0
+	depotLocker->internalAddThing(Item::CreateItem(ITEM_SUPPLY_STASH));
+	#endif
 	depotLocker->internalAddThing(getDepotChest(depotId, true));
 	depotLockerMap[depotId] = depotLocker;
 	return depotLocker;
@@ -4126,6 +4129,48 @@ bool Player::hasLearnedInstantSpell(const std::string& spellName) const
 	}
 	return false;
 }
+
+#if GAME_FEATURE_STASH > 0
+uint32_t Player::getStashItemCount(uint16_t itemId) const
+{
+	auto it = stashItems.find(itemId);
+	if (it != stashItems.end()) {
+		return it->second;
+	}
+	return 0;
+}
+
+bool Player::addStashItem(uint16_t itemId, uint32_t itemCount)
+{
+	// just in-case check for possible overflow
+	auto it = stashItems.find(itemId);
+	if (it != stashItems.end()) {
+		if (it->second > std::numeric_limits<decltype(itemCount)>::max() - itemCount) {
+			return false; // overflow
+		} else {
+			it->second += itemCount;
+			return true;
+		}
+	}
+	stashItems[itemId] = itemCount;
+	return true;
+}
+
+bool Player::removeStashItem(uint16_t itemId, uint32_t itemCount)
+{
+	auto it = stashItems.find(itemId);
+	if (it != stashItems.end()) {
+		if (it->second == itemCount) {
+			stashItems.erase(it);
+			return true;
+		} else if (it->second > itemCount) {
+			it->second -= itemCount;
+			return true;
+		}
+	}
+	return false;
+}
+#endif
 
 bool Player::isInWar(const Player* player) const
 {

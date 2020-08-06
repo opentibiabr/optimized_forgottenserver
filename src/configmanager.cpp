@@ -198,6 +198,9 @@ bool ConfigManager::load()
 	#if GAME_FEATURE_PARTY_LIST > 0
 	integer[PARTY_LIST_MAX_DISTANCE] = getGlobalNumber(L, "partyListMaxDistance", 0);
 	#endif
+	#if GAME_FEATURE_STASH > 0
+	integer[MAX_SUPPLY_STASH_STOWED_ITEMS] = std::min<int32_t>(getGlobalNumber(L, "maxSupplyStashStowedItems", 2000), 10000);
+	#endif
 
 	loaded = true;
 	lua_close(L);

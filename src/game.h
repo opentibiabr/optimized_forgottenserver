@@ -352,6 +352,13 @@ class Game
 		void playerOpenChannel(Player* player, uint16_t channelId);
 		void playerCloseChannel(Player* player, uint16_t channelId);
 		void playerOpenPrivateChannel(Player* player, std::string& receiver);
+		#if GAME_FEATURE_STASH > 0
+		void playerStowItem(Player* player, Item* item, uint32_t count);
+		void playerStowItem(Player* player, const Position& pos, uint16_t spriteId, uint8_t stackpos, uint32_t count);
+		void playerStowContainer(Player* player, const Position& pos, uint16_t spriteId, uint8_t stackpos);
+		void playerStowStack(Player* player, const Position& pos, uint16_t spriteId, uint8_t stackpos);
+		void playerStashWithdraw(Player* player, uint16_t spriteId, uint32_t count, uint8_t stackpos);
+		#endif
 		#if GAME_FEATURE_QUEST_TRACKER > 0
 		void playerResetTrackedQuests(Player* player, std::vector<uint16_t>& quests);
 		#endif

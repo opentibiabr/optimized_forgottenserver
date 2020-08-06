@@ -479,12 +479,22 @@ bool Action::configureEvent(const pugi::xml_node& node)
 namespace {
 	bool enterMarket(Player* player, Item*, const Position&, Thing*, const Position&, bool)
 	{
-		if (player->getLastDepotId() == -1) {
+		if (player->isInMarket() || player->getLastDepotId() == -1) {
 			return false;
 		}
 
 		#if GAME_FEATURE_MARKET > 0
 		player->sendMarketEnter(player->getLastDepotId());
+		#endif
+		return true;
+	}
+	
+	bool enterStash(Player* player, Item*, const Position&, Thing*, const Position&, bool)
+	{
+		#if GAME_FEATURE_STASH > 0
+		player->sendSupplyStash();
+		#else
+		(void)player;
 		#endif
 		return true;
 	}
@@ -495,6 +505,8 @@ bool Action::loadFunction(const pugi::xml_attribute& attr, bool isScripted)
 	const char* functionName = attr.as_string();
 	if (strcasecmp(functionName, "market") == 0) {
 		function = enterMarket;
+	} else if (strcasecmp(functionName, "stash") == 0) {
+		function = enterStash;
 	} else {
 		if (!isScripted) {
 			std::cout << "[Warning - Action::loadFunction] Function \"" << functionName << "\" does not exist." << std::endl;

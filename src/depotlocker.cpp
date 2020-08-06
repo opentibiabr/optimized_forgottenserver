@@ -22,7 +22,9 @@
 #include "depotlocker.h"
 
 DepotLocker::DepotLocker(uint16_t type) :
-	#if GAME_FEATURE_MARKET > 0
+	#if GAME_FEATURE_STASH > 0
+	Container(type, 4), depotId(0) {}
+	#elif GAME_FEATURE_MARKET > 0
 	Container(type, 3), depotId(0) {}
 	#else
 	Container(type, 30), depotId(0) {}

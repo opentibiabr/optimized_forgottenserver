@@ -641,6 +641,22 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	}
 	#endif
 
+	#if GAME_FEATURE_STASH > 0
+	//load stash items
+	query.clear();
+	query << "SELECT `supplystash` FROM `players` WHERE `id` = " << player->getGUID();
+	if ((result = g_database.storeQuery(query))) {
+		attr = result->getStream("supplystash", attrSize);
+		propStream.init(attr, attrSize);
+
+		uint16_t itemId;
+		uint32_t itemCount;
+		while (propStream.read<uint16_t>(itemId) && propStream.read<uint32_t>(itemCount)) {
+			player->stashItems[itemId] = itemCount;
+		}
+	}
+	#endif
+
 	//load vip
 	query.clear();
 	query << "SELECT `player_id` FROM `account_viplist` WHERE `account_id` = " << player->getAccount();
@@ -911,7 +927,9 @@ bool IOLoginData::savePlayer(Player* player)
 			DepotLocker* depotLocker = it.second;
 			for (auto item = depotLocker->getReversedItems(), end = depotLocker->getReversedEnd(); item != end; ++item) {
 				uint16_t itemId = (*item)->getID();
-				#if GAME_FEATURE_MARKET > 0
+				#if GAME_FEATURE_STASH > 0
+				if (itemId == ITEM_DEPOT || itemId == ITEM_INBOX || itemId == ITEM_MARKET || itemId == ITEM_SUPPLY_STASH) {
+				#elif GAME_FEATURE_MARKET > 0
 				if (itemId == ITEM_DEPOT || itemId == ITEM_INBOX || itemId == ITEM_MARKET) {
 				#else
 				if (itemId == ITEM_DEPOT) {
@@ -953,6 +971,28 @@ bool IOLoginData::savePlayer(Player* player)
 
 	propWriteStream.clear();
 	if (!saveItems(player, itemList, query, propWriteStream, "inboxitems")) {
+		return false;
+	}
+	#endif
+
+	#if GAME_FEATURE_STASH > 0
+	//save stash items
+	propWriteStream.clear();
+	for (const auto& it : player->stashItems) {
+		propWriteStream.write<uint16_t>(it.first);
+		propWriteStream.write<uint32_t>(it.second);
+	}
+
+	attributes = propWriteStream.getStream(attributesSize);
+	query.clear();
+	if (attributesSize > 0) {
+		query << "UPDATE `players` SET `supplystash` = " << g_database.escapeBlob(attributes, attributesSize);
+	} else {
+		query << "UPDATE `players` SET `supplystash` = NULL";
+	}
+	query << " WHERE `id` = " << player->getGUID();
+
+	if (!g_database.executeQuery(query)) {
 		return false;
 	}
 	#endif

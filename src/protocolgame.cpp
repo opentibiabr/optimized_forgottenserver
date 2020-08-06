@@ -513,6 +513,9 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		case 0x14: logout(true, false); break;
 		case 0x1D: g_game.playerReceivePingBack(player); break;
 		case 0x1E: g_game.playerReceivePing(player); break;
+		#if GAME_FEATURE_STASH > 0
+		case 0x28: parseStashAction(msg); break;
+		#endif
 		case 0x32: parseExtendedOpcode(msg); break; //otclient extended opcode
 		case 0x64: parseAutoWalk(msg); break;
 		case 0x65: g_game.playerMove(player, DIRECTION_NORTH); break;
@@ -887,6 +890,45 @@ void ProtocolGame::parseOpenPrivateChannel(NetworkMessage& msg)
 		g_game.playerOpenPrivateChannel(player, receiver);
 	}
 }
+
+#if GAME_FEATURE_STASH > 0
+void ProtocolGame::parseStashAction(NetworkMessage& msg)
+{
+	Supply_Stash_Actions_t action = static_cast<Supply_Stash_Actions_t>(msg.getByte());
+	switch (action) {
+		case SUPPLY_STASH_ACTION_STOW_ITEM: {
+			Position pos = msg.getPosition();
+			uint16_t spriteId = msg.get<uint16_t>();
+			uint8_t stackpos = msg.getByte();
+			uint32_t count = static_cast<uint32_t>(msg.getByte());
+			g_game.playerStowItem(player, pos, spriteId, stackpos, count);
+			break;
+		}
+		case SUPPLY_STASH_ACTION_STOW_CONTAINER: {
+			Position pos = msg.getPosition();
+			uint16_t spriteId = msg.get<uint16_t>();
+			uint8_t stackpos = msg.getByte();
+			g_game.playerStowContainer(player, pos, spriteId, stackpos);
+			break;
+		}
+		case SUPPLY_STASH_ACTION_STOW_STACK: {
+			Position pos = msg.getPosition();
+			uint16_t spriteId = msg.get<uint16_t>();
+			uint8_t stackpos = msg.getByte();
+			g_game.playerStowStack(player, pos, spriteId, stackpos);
+			break;
+		}
+		case SUPPLY_STASH_ACTION_WITHDRAW: {
+			uint16_t spriteId = msg.get<uint16_t>();
+			uint32_t count = msg.get<uint32_t>();
+			uint8_t stackpos = msg.getByte(); // TODO: wtf is this variable
+			g_game.playerStashWithdraw(player, spriteId, count, stackpos);
+			break;
+		}
+		default: break;
+	}
+}
+#endif
 
 #if GAME_FEATURE_QUEST_TRACKER > 0
 void ProtocolGame::parseTrackedQuestFlags(NetworkMessage& msg)
@@ -1378,6 +1420,29 @@ void ProtocolGame::parseBugReport(NetworkMessage& msg)
 	g_game.playerReportBug(player, message, position, category);
 }
 
+#if GAME_FEATURE_RULEVIOLATION > 0
+void ProtocolGame::parseRuleViolation(NetworkMessage& msg)
+{
+	#if CLIENT_VERSION >= 772
+	std::string target = msg.getString();
+	uint8_t reason = msg.getByte();
+	uint8_t action = msg.getByte();
+	std::string comment = msg.getString();
+	uint32_t statementId = msg.get<uint32_t>();
+	bool ipBanishment = msg.getByte();
+	#else
+	std::string target = msg.getString();
+	uint8_t reason = msg.getByte();
+	std::string comment = msg.getString();
+	uint8_t action = msg.getByte();
+	uint32_t statementId = 0;
+	bool ipBanishment = msg.getByte();
+	#endif
+
+	g_game.playerRuleViolation(player, target, comment, reason, action, statementId, ipBanishment);
+}
+#endif
+
 void ProtocolGame::parseDebugAssert(NetworkMessage& msg)
 {
 	if (debugAssertSent) {
@@ -1618,6 +1683,40 @@ void ProtocolGame::sendTibiaTime(int32_t time)
 	playermsg.addByte(0xEF);
 	playermsg.addByte(time / 60);
 	playermsg.addByte(time % 60);
+	writeToOutputBuffer(playermsg);
+}
+#endif
+
+#if GAME_FEATURE_STASH > 0
+void ProtocolGame::sendSupplyStash(std::map<uint16_t, uint32_t>& supplyStashItems)
+{
+	playermsg.reset();
+	playermsg.addByte(0x29);
+
+	uint16_t itemsToSend = std::min<size_t>(supplyStashItems.size(), 0x2710);
+	playermsg.add<uint16_t>(itemsToSend);
+
+	uint16_t i = 0;
+	for (std::map<uint16_t, uint32_t>::const_iterator it = supplyStashItems.begin(); i < itemsToSend; ++it, ++i) {
+		playermsg.addItemId(it->first);
+		playermsg.add<uint32_t>(it->second);
+	}
+
+	uint16_t maxSlots = static_cast<uint16_t>(g_config.getNumber(ConfigManager::MAX_SUPPLY_STASH_STOWED_ITEMS));
+	if(itemsToSend >= maxSlots)
+		playermsg.add<uint16_t>(0);
+	else
+		playermsg.add<uint16_t>(maxSlots - itemsToSend);
+
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendSpecialContainersAvailable(bool supplyStashAvailable, bool marketAvailable)
+{
+	playermsg.reset();
+	playermsg.addByte(0x2A);
+	playermsg.addByte(supplyStashAvailable ? 0x01 : 0x00);
+	playermsg.addByte(marketAvailable ? 0x01 : 0x00);
 	writeToOutputBuffer(playermsg);
 }
 #endif

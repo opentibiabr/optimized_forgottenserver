@@ -2,4 +2,7 @@
 <actions>
 	<!-- Market -->
 	<action itemid="14405" function="market" />
+
+	<!-- Supply Stash -->
+	<action itemid="32450" function="stash" />
 </actions>

@@ -114,6 +114,9 @@ class ConfigManager
 			#if GAME_FEATURE_PARTY_LIST > 0
 			PARTY_LIST_MAX_DISTANCE,
 			#endif
+			#if GAME_FEATURE_STASH > 0
+			MAX_SUPPLY_STASH_STOWED_ITEMS,
+			#endif
 
 			LAST_INTEGER_CONFIG /* this must be the last one */
 		};

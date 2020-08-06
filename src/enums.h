@@ -619,6 +619,15 @@ enum Cipbia_Elementals_t : uint8_t {
 	CIPBIA_ELEMENTAL_HEALING = 7
 };
 
+#if GAME_FEATURE_STASH > 0
+enum Supply_Stash_Actions_t : uint8_t {
+	SUPPLY_STASH_ACTION_STOW_ITEM = 0,
+	SUPPLY_STASH_ACTION_STOW_CONTAINER = 1,
+	SUPPLY_STASH_ACTION_STOW_STACK = 2,
+	SUPPLY_STASH_ACTION_WITHDRAW = 3
+};
+#endif
+
 struct Outfit_t {
 	uint16_t lookTypeEx = 0;
 	#if GAME_FEATURE_MOUNTS > 0
