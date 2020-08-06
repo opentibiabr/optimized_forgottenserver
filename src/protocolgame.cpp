@@ -2489,9 +2489,11 @@ void ProtocolGame::sendTextMessage(const TextMessage& message)
 					playermsg.addByte(message.secondary.color);
 					playermsg.addString(std::to_string(message.secondary.value));
 				}
-				playermsg.addByte(0xB4);
-				playermsg.addByte(translateMessageClassToClient(MESSAGE_EVENT_DEFAULT));
-				playermsg.addString(message.text);
+				if (!message.text.empty()) {
+					playermsg.addByte(0xB4);
+					playermsg.addByte(translateMessageClassToClient(MESSAGE_EVENT_DEFAULT));
+					playermsg.addString(message.text);
+				}
 				writeToOutputBuffer(playermsg);
 				break;
 			}
@@ -2505,9 +2507,11 @@ void ProtocolGame::sendTextMessage(const TextMessage& message)
 				playermsg.addPosition(message.position);
 				playermsg.addByte(message.primary.color);
 				playermsg.addString(std::to_string(message.primary.value));
-				playermsg.addByte(0xB4);
-				playermsg.addByte(translateMessageClassToClient(MESSAGE_EVENT_DEFAULT));
-				playermsg.addString(message.text);
+				if (!message.text.empty()) {
+					playermsg.addByte(0xB4);
+					playermsg.addByte(translateMessageClassToClient(MESSAGE_EVENT_DEFAULT));
+					playermsg.addString(message.text);
+				}
 				writeToOutputBuffer(playermsg);
 				break;
 			}

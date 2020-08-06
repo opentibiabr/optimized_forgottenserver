@@ -4598,9 +4598,17 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 		addScheduledUpdates(PlayerUpdate_Skills);
 	}
 
-	std::ostringstream ss;
-	ss << std::fixed << std::setprecision(2) << "Your " << ucwords(getSkillName(skill)) << " skill changed from level " << oldSkillValue << " (with " << oldPercentToNextLevel << "% progress towards level " << (oldSkillValue + 1) << ") to level " << newSkillValue << " (with " << newPercentToNextLevel << "% progress towards level " << (newSkillValue + 1) << ')';
-	sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+	// change to int with 2-decimal precision
+	int64_t oldPercentToNextLevel_U64 = static_cast<int64_t>(oldPercentToNextLevel * 100.0);
+	int64_t newPercentToNextLevel_U64 = static_cast<int64_t>(newPercentToNextLevel * 100.0);
+
+	std::stringExtended ss(256);
+	ss << "Your " << ucwords(getSkillName(skill)) << " skill changed from level " << oldSkillValue << " (with " << oldPercentToNextLevel_U64;
+	ss.insert(ss.end() - 2, '.'); // add comma to fixed-precision percentage
+	ss << "% progress towards level " << (oldSkillValue + 1) << ") to level " << newSkillValue << " (with " << newPercentToNextLevel_U64;
+	ss.insert(ss.end() - 2, '.'); // add comma to fixed-precision percentage
+	ss << "% progress towards level " << (newSkillValue + 1) << ')';
+	sendTextMessage(MESSAGE_EVENT_ADVANCE, ss);
 	return sendUpdate;
 }
 

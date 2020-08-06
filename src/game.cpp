@@ -3799,14 +3799,13 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		realHealthChange = target->getHealth() - realHealthChange;
 
 		if (realHealthChange > 0 && !target->isInGhostMode()) {
-			std::stringstream ss;
-
-			ss << realHealthChange << (realHealthChange != 1 ? " hitpoints." : " hitpoint.");
-			std::string damageString = ss.str();
-
-			std::string spectatorMessage;
+			#if GAME_FEATURE_SERVER_LOG_DETAILS > 0
+			std::stringExtended damageString(32);
+			damageString << realHealthChange << (realHealthChange != 1 ? " hitpoints." : " hitpoint.");
+			#endif
 
 			TextMessage message;
+			message.type = MESSAGE_HEALED;
 			message.position = targetPos;
 			message.primary.value = realHealthChange;
 			message.primary.color = TEXTCOLOR_PASTELRED;
@@ -3815,42 +3814,45 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			map.getSpectators(spectators, targetPos, false, true);
 			for (Creature* spectator : spectators) {
 				Player* tmpPlayer = spectator->getPlayer();
+				#if GAME_FEATURE_SERVER_LOG_DETAILS > 0
 				if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
-					ss.str({});
-					ss << "You heal " << target->getNameDescription() << " for " << damageString;
+					std::stringExtended sink(target->getNameDescription().length() + damageString.length() + 16);
+					sink << "You heal " << target->getNameDescription() << " for " << damageString;
 					message.type = MESSAGE_HEALED;
-					message.text = ss.str();
+					message.text = std::move(static_cast<std::string&>(sink));
 				} else if (tmpPlayer == targetPlayer) {
-					ss.str({});
+					std::stringExtended sink(NETWORKMESSAGE_PLAYERNAME_MAXLENGTH + damageString.length() + 32);
 					if (!attacker) {
-						ss << "You were healed";
+						sink << "You were healed";
 					} else if (targetPlayer == attackerPlayer) {
-						ss << "You healed yourself";
+						sink << "You healed yourself";
 					} else {
-						ss << "You were healed by " << attacker->getNameDescription();
+						sink << "You were healed by " << attacker->getNameDescription();
 					}
-					ss << " for " << damageString;
+					sink << " for " << damageString;
 					message.type = MESSAGE_HEALED;
-					message.text = ss.str();
+					message.text = std::move(static_cast<std::string&>(sink));
 				} else {
-					if (spectatorMessage.empty()) {
-						ss.str({});
+					if (message.type != MESSAGE_HEALED_OTHERS) {
+						std::stringExtended sink;
 						if (!attacker) {
-							ss << ucfirst(target->getNameDescription()) << " was healed";
+							sink.reserve(target->getNameDescription().length() + damageString.length() + 32);
+							sink << target->getNameDescription() << " was healed";
 						} else {
-							ss << ucfirst(attacker->getNameDescription()) << " healed ";
+							sink.reserve(attacker->getNameDescription().length() + target->getNameDescription().length() + damageString.length() + 32);
+							sink << attacker->getNameDescription() << " healed ";
 							if (attacker == target) {
-								ss << (targetPlayer ? (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "herself" : "himself") : "itself");
+								sink << (targetPlayer ? (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "herself" : "himself") : "itself");
 							} else {
-								ss << target->getNameDescription();
+								sink << target->getNameDescription();
 							}
 						}
-						ss << " for " << damageString;
-						spectatorMessage = ss.str();
+						sink << " for " << damageString;
+						message.type = MESSAGE_HEALED_OTHERS;
+						message.text = std::move(static_cast<std::string&>(sink));
 					}
-					message.type = MESSAGE_HEALED_OTHERS;
-					message.text = spectatorMessage;
 				}
+				#endif
 				tmpPlayer->sendTextMessage(message);
 			}
 		}
@@ -3929,12 +3931,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				map.getSpectators(spectators, targetPos, true, true);
 				addMagicEffect(spectators, targetPos, CONST_ME_LOSEENERGY);
 
-				std::stringstream ss;
-
-				std::string damageString = std::to_string(manaDamage);
-
-				std::string spectatorMessage;
-
+				message.type = MESSAGE_DAMAGE_DEALT;
 				message.primary.value = manaDamage;
 				message.primary.color = TEXTCOLOR_BLUE;
 
@@ -3944,41 +3941,42 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 						continue;
 					}
 
+					#if GAME_FEATURE_SERVER_LOG_DETAILS > 0
 					if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
-						ss.str({});
-						ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana due to your attack.";
+						std::stringExtended sink(target->getNameDescription().length() + 64);
+						sink << ucfirst(target->getNameDescription()) << " loses " << manaDamage + " mana due to your attack.";
 						message.type = MESSAGE_DAMAGE_DEALT;
-						message.text = ss.str();
+						message.text = std::move(static_cast<std::string&>(sink));
 					} else if (tmpPlayer == targetPlayer) {
-						ss.str({});
-						ss << "You lose " << damageString << " mana";
+						std::stringExtended sink(NETWORKMESSAGE_PLAYERNAME_MAXLENGTH + 64);
+						sink << "You lose " << manaDamage << " mana";
 						if (!attacker) {
-							ss << '.';
+							sink << '.';
 						} else if (targetPlayer == attackerPlayer) {
-							ss << " due to your own attack.";
+							sink << " due to your own attack.";
 						} else {
-							ss << " due to an attack by " << attacker->getNameDescription() << '.';
+							sink << " due to an attack by " << attacker->getNameDescription() << '.';
 						}
 						message.type = MESSAGE_DAMAGE_RECEIVED;
-						message.text = ss.str();
+						message.text = std::move(static_cast<std::string&>(sink));
 					} else {
-						if (spectatorMessage.empty()) {
-							ss.str({});
-							ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana";
+						if (message.type != MESSAGE_DAMAGE_OTHERS) {
+							std::stringExtended sink(NETWORKMESSAGE_PLAYERNAME_MAXLENGTH + target->getNameDescription().length() + 64);
+							sink << ucfirst(target->getNameDescription()) << " loses " << manaDamage + " mana";
 							if (attacker) {
-								ss << " due to ";
+								sink << " due to ";
 								if (attacker == target) {
-									ss << (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own attack" : "his own attack");
+									sink << (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own attack" : "his own attack");
 								} else {
-									ss << "an attack by " << attacker->getNameDescription();
+									sink << "an attack by " << attacker->getNameDescription();
 								}
 							}
-							ss << '.';
-							spectatorMessage = ss.str();
+							sink << '.';
+							message.type = MESSAGE_DAMAGE_OTHERS;
+							message.text = std::move(static_cast<std::string&>(sink));
 						}
-						message.type = MESSAGE_DAMAGE_OTHERS;
-						message.text = spectatorMessage;
 					}
+					#endif
 					tmpPlayer->sendTextMessage(message);
 				}
 
@@ -4041,13 +4039,12 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 		}
 
+		message.type = MESSAGE_DAMAGE_DEALT;
 		if (message.primary.color != TEXTCOLOR_NONE || message.secondary.color != TEXTCOLOR_NONE) {
-			std::stringstream ss;
-
-			ss << realDamage << (realDamage != 1 ? " hitpoints" : " hitpoint");
-			std::string damageString = ss.str();
-
-			std::string spectatorMessage;
+			#if GAME_FEATURE_SERVER_LOG_DETAILS > 0
+			std::stringExtended damageString(32);
+			damageString << realDamage << (realDamage != 1 ? " hitpoints" : " hitpoint");
+			#endif
 
 			for (Creature* spectator : spectators) {
 				Player* tmpPlayer = spectator->getPlayer();
@@ -4055,47 +4052,46 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					continue;
 				}
 
+				#if GAME_FEATURE_SERVER_LOG_DETAILS > 0
 				if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
-					ss.str({});
-					ss << ucfirst(target->getNameDescription()) << " loses " << damageString << " due to your attack.";
+					std::stringExtended sink(target->getNameDescription().length() + damageString.length() + 32);
+					sink << ucfirst(target->getNameDescription()) << " loses " << damageString << " due to your attack.";
 					message.type = MESSAGE_DAMAGE_DEALT;
-					message.text = ss.str();
+					message.text = std::move(static_cast<std::string&>(sink));
 				} else if (tmpPlayer == targetPlayer) {
-					ss.str({});
-					ss << "You lose " << damageString;
+					std::stringExtended sink(NETWORKMESSAGE_PLAYERNAME_MAXLENGTH + damageString.length() + 32);
+					sink << "You lose " << damageString;
 					if (!attacker) {
-						ss << '.';
+						sink << '.';
 					} else if (targetPlayer == attackerPlayer) {
-						ss << " due to your own attack.";
+						sink << " due to your own attack.";
 					} else {
-						ss << " due to an attack by " << attacker->getNameDescription() << '.';
+						sink << " due to an attack by " << attacker->getNameDescription() << '.';
 					}
 					message.type = MESSAGE_DAMAGE_RECEIVED;
-					message.text = ss.str();
+					message.text = std::move(static_cast<std::string&>(sink));
 				} else {
-					message.type = MESSAGE_DAMAGE_OTHERS;
-
-					if (spectatorMessage.empty()) {
-						ss.str({});
-						ss << ucfirst(target->getNameDescription()) << " loses " << damageString;
+					if (message.type != MESSAGE_DAMAGE_OTHERS) {
+						std::stringExtended sink(NETWORKMESSAGE_PLAYERNAME_MAXLENGTH + target->getNameDescription().length() + damageString.length() + 32);
+						sink << ucfirst(target->getNameDescription()) << " loses " << damageString;
 						if (attacker) {
-							ss << " due to ";
+							sink << " due to ";
 							if (attacker == target) {
 								if (targetPlayer) {
-									ss << (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own attack" : "his own attack");
+									sink << (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own attack" : "his own attack");
 								} else {
-									ss << "its own attack";
+									sink << "its own attack";
 								}
 							} else {
-								ss << "an attack by " << attacker->getNameDescription();
+								sink << "an attack by " << attacker->getNameDescription();
 							}
 						}
-						ss << '.';
-						spectatorMessage = ss.str();
+						sink << '.';
+						message.type = MESSAGE_DAMAGE_OTHERS;
+						message.text = std::move(static_cast<std::string&>(sink));
 					}
-
-					message.text = spectatorMessage;
 				}
+				#endif
 				tmpPlayer->sendTextMessage(message);
 			}
 		}
@@ -4200,13 +4196,8 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage& 
 
 		targetPlayer->drainMana(attacker, manaLoss);
 
-		std::stringstream ss;
-
-		std::string damageString = std::to_string(manaLoss);
-
-		std::string spectatorMessage;
-
 		TextMessage message;
+		message.type = MESSAGE_DAMAGE_DEALT;
 		message.position = targetPos;
 		message.primary.value = manaLoss;
 		message.primary.color = TEXTCOLOR_BLUE;
@@ -4215,41 +4206,42 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage& 
 		map.getSpectators(spectators, targetPos, false, true);
 		for (Creature* spectator : spectators) {
 			Player* tmpPlayer = spectator->getPlayer();
+			#if GAME_FEATURE_SERVER_LOG_DETAILS > 0
 			if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
-				ss.str({});
-				ss << ucfirst(target->getNameDescription()) << " loses " << damageString << " mana due to your attack.";
+				std::stringExtended sink(target->getNameDescription().length() + 64);
+				sink << ucfirst(target->getNameDescription()) << " loses " << manaLoss << " mana due to your attack.";
 				message.type = MESSAGE_DAMAGE_DEALT;
-				message.text = ss.str();
+				message.text = std::move(static_cast<std::string&>(sink));
 			} else if (tmpPlayer == targetPlayer) {
-				ss.str({});
-				ss << "You lose " << damageString << " mana";
+				std::stringExtended sink(NETWORKMESSAGE_PLAYERNAME_MAXLENGTH + 64);
+				sink << "You lose " << manaLoss << " mana";
 				if (!attacker) {
-					ss << '.';
+					sink << '.';
 				} else if (targetPlayer == attackerPlayer) {
-					ss << " due to your own attack.";
+					sink << " due to your own attack.";
 				} else {
-					ss << " mana due to an attack by " << attacker->getNameDescription() << '.';
+					sink << " mana due to an attack by " << attacker->getNameDescription() << '.';
 				}
 				message.type = MESSAGE_DAMAGE_RECEIVED;
-				message.text = ss.str();
+				message.text = std::move(static_cast<std::string&>(sink));
 			} else {
-				if (spectatorMessage.empty()) {
-					ss.str({});
-					ss << ucfirst(target->getNameDescription()) << " loses " << damageString << " mana";
+				if (message.type != MESSAGE_DAMAGE_OTHERS) {
+					std::stringExtended sink(NETWORKMESSAGE_PLAYERNAME_MAXLENGTH + target->getNameDescription().length() + 64);
+					sink << ucfirst(target->getNameDescription()) << " loses " << manaLoss << " mana";
 					if (attacker) {
-						ss << " due to ";
+						sink << " due to ";
 						if (attacker == target) {
-							ss << (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own attack" : "his own attack");
+							sink << (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own attack" : "his own attack");
 						} else {
-							ss << "an attack by " << attacker->getNameDescription();
+							sink << "an attack by " << attacker->getNameDescription();
 						}
 					}
-					ss << '.';
-					spectatorMessage = ss.str();
+					sink << '.';
+					message.type = MESSAGE_DAMAGE_OTHERS;
+					message.text = std::move(static_cast<std::string&>(sink));
 				}
-				message.type = MESSAGE_DAMAGE_OTHERS;
-				message.text = spectatorMessage;
 			}
+			#endif
 			tmpPlayer->sendTextMessage(message);
 		}
 	}
