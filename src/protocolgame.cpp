@@ -300,6 +300,11 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 		clientVersion = 1121;
 	}
 	#endif
+	if (clientVersion >= 1240) {
+		if (msg.getLength() - msg.getBufferPosition() > 132) { // RSA + version string length + content revision + preview state)
+			msg.getString();
+		}
+	}
 	#if GAME_FEATURE_CONTENT_REVISION > 0
 	msg.skipBytes(2);
 	#endif
@@ -888,8 +893,9 @@ void ProtocolGame::parseTrackedQuestFlags(NetworkMessage& msg)
 {
 	std::vector<uint16_t> quests;
 	uint8_t missions = msg.getByte();
+	quests.resize(missions);
 	for (uint8_t i = 0; i < missions; ++i) {
-		quests.emplace_back(msg.get<uint16_t>());
+		quests[i] = msg.get<uint16_t>();
 	}
 	g_game.playerResetTrackedQuests(player, quests);
 }
@@ -2838,16 +2844,16 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	player->setInMarket(true);
 
 	std::map<uint16_t, uint32_t> depotItems;
-	std::forward_list<Container*> containerList { depotChest, player->getInbox() };
+	std::vector<Container*> containers{ depotChest, player->getInbox() };
 
+	size_t ic = 0;
 	do {
-		Container* container = containerList.front();
-		containerList.pop_front();
+		Container* container = containers[ic++];
 
 		for (Item* item : container->getItemList()) {
 			Container* c = item->getContainer();
 			if (c && !c->empty()) {
-				containerList.push_front(c);
+				containers.push_back(c);
 				continue;
 			}
 
@@ -2866,7 +2872,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 
 			depotItems[itemType.wareId] += Item::countByType(item, -1);
 		}
-	} while (!containerList.empty());
+	} while (ic < containers.size());
 
 	uint16_t itemsToSend = std::min<size_t>(depotItems.size(), std::numeric_limits<uint16_t>::max());
 	playermsg.add<uint16_t>(itemsToSend);

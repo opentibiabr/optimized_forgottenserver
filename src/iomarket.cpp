@@ -44,18 +44,17 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId
 
 	const int32_t marketOfferDuration = g_config.getNumber(ConfigManager::MARKET_OFFER_DURATION);
 
+	offerList.reserve(result->countResults());
 	do {
-		MarketOffer offer;
-		offer.amount = result->getNumber<uint16_t>("amount");
-		offer.price = result->getNumber<uint32_t>("price");
-		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
-		offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
+		uint32_t price = result->getNumber<uint32_t>("price");
+		uint32_t timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
+		uint16_t amount = result->getNumber<uint16_t>("amount");
+		uint16_t counter = result->getNumber<uint32_t>("id") & 0xFFFF;
 		if (result->getNumber<uint16_t>("anonymous") == 0) {
-			offer.playerName = result->getString("player_name");
+			offerList.emplace_back(price, timestamp, amount, counter, static_cast<uint16_t>(0), std::move(result->getString("player_name")));
 		} else {
-			offer.playerName = "Anonymous";
+			offerList.emplace_back(price, timestamp, amount, counter, static_cast<uint16_t>(0), "Anonymous");
 		}
-		offerList.push_back(offer);
 	} while (result->next());
 	return offerList;
 }
@@ -74,14 +73,14 @@ MarketOfferList IOMarket::getOwnOffers(MarketAction_t action, uint32_t playerId)
 		return offerList;
 	}
 
+	offerList.reserve(result->countResults());
 	do {
-		MarketOffer offer;
-		offer.amount = result->getNumber<uint16_t>("amount");
-		offer.price = result->getNumber<uint32_t>("price");
-		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
-		offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
-		offer.itemId = result->getNumber<uint16_t>("itemtype");
-		offerList.push_back(offer);
+		uint32_t price = result->getNumber<uint32_t>("price");
+		uint32_t timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
+		uint16_t amount = result->getNumber<uint16_t>("amount");
+		uint16_t counter = result->getNumber<uint32_t>("id") & 0xFFFF;
+		uint16_t itemId = result->getNumber<uint16_t>("itemtype");
+		offerList.emplace_back(price, timestamp, amount, counter, itemId, "");
 	} while (result->next());
 	return offerList;
 }
@@ -98,21 +97,19 @@ HistoryMarketOfferList IOMarket::getOwnHistory(MarketAction_t action, uint32_t p
 		return offerList;
 	}
 
+	offerList.reserve(result->countResults());
 	do {
-		HistoryMarketOffer offer;
-		offer.itemId = result->getNumber<uint16_t>("itemtype");
-		offer.amount = result->getNumber<uint16_t>("amount");
-		offer.price = result->getNumber<uint32_t>("price");
-		offer.timestamp = result->getNumber<uint32_t>("expires_at");
+		uint32_t timestamp = result->getNumber<uint32_t>("expires_at");
+		uint32_t price = result->getNumber<uint32_t>("price");
+		uint16_t itemId = result->getNumber<uint16_t>("itemtype");
+		uint16_t amount = result->getNumber<uint16_t>("amount");
 
 		MarketOfferState_t offerState = static_cast<MarketOfferState_t>(result->getNumber<uint16_t>("state"));
 		if (offerState == OFFERSTATE_ACCEPTEDEX) {
 			offerState = OFFERSTATE_ACCEPTED;
 		}
 
-		offer.state = offerState;
-
-		offerList.push_back(offer);
+		offerList.emplace_back(timestamp, price, itemId, amount, offerState);
 	} while (result->next());
 	return offerList;
 }
