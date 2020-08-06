@@ -479,11 +479,11 @@ bool Action::configureEvent(const pugi::xml_node& node)
 namespace {
 	bool enterMarket(Player* player, Item*, const Position&, Thing*, const Position&, bool)
 	{
+		#if GAME_FEATURE_MARKET > 0
 		if (player->isInMarket() || player->getLastDepotId() == -1) {
 			return false;
 		}
 
-		#if GAME_FEATURE_MARKET > 0
 		player->sendMarketEnter(player->getLastDepotId());
 		#endif
 		return true;

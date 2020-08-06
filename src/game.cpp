@@ -2016,7 +2016,7 @@ void Game::playerStowItem(Player* player, const Position& pos, uint16_t spriteId
 	}
 
 	Item* item = thing->getItem();
-	if (!item || item->getClientID() != spriteId && static_cast<uint32_t>(item->getItemCount()) >= count) {
+	if (!item || item->getClientID() != spriteId || static_cast<uint32_t>(item->getItemCount()) < count) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}

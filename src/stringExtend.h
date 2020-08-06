@@ -59,7 +59,7 @@ namespace std
 			inline void reserve(size_t count) noexcept {
 				outStr.reserve(count);
 			}
-			inline void insert(string::const_iterator it, string::value_type element) {
+			inline void insert(string::iterator it, string::value_type element) {
 				outStr.insert(it, element);
 			}
 			inline void push_back(string::value_type element) {
