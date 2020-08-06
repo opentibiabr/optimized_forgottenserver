@@ -5598,7 +5598,7 @@ bool Game::reloadCreatureScripts(bool fromLua, bool reload)
 	std::map<uint32_t, std::vector<std::string>> cacheCreaturesEvents;
 	#define cacheCreatures(container)																	\
 		do {																							\
-			for (const auto& it : players) {															\
+			for (const auto& it : container) {															\
 				CreatureEventList& creatureEvents = it.second->getCreatureEvents();						\
 				for (auto creatureEvent : creatureEvents) {												\
 					cacheCreaturesEvents[it.second->getID()].emplace_back(creatureEvent->getName());	\

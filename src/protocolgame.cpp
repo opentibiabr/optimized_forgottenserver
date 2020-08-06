@@ -3608,7 +3608,11 @@ void ProtocolGame::sendCreatureHealth(const Creature* creature, uint8_t healthPe
 	playermsg.addByte(0x8C);
 	playermsg.add<uint32_t>(creature->getID());
 	#if CLIENT_VERSION >= 1121
-	playermsg.addByte(healthPercent);
+	if (creature->isHealthHidden() && creature != player) {
+		playermsg.addByte(0x00);
+	} else {
+		playermsg.addByte(healthPercent);
+	}
 	#else
 	if (creature->isHealthHidden()) {
 		playermsg.addByte(0x00);
@@ -4433,9 +4437,13 @@ void ProtocolGame::AddCreature(const Creature* creature, bool known, uint32_t re
 	}
 
 	#if CLIENT_VERSION >= 1121
-	playermsg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
+	if (creatureType == CREATURETYPE_HIDDEN && creature != player) {
+		playermsg.addByte(0x00);
+	} else {
+		playermsg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
+	}
 	#else
-	if (creature->isHealthHidden()) {
+	if (creatureType == CREATURETYPE_HIDDEN) {
 		playermsg.addByte(0x00);
 	} else {
 		playermsg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
