@@ -1715,8 +1715,13 @@ void ProtocolGame::sendSpecialContainersAvailable(bool supplyStashAvailable, boo
 {
 	playermsg.reset();
 	playermsg.addByte(0x2A);
+	#if CLIENT_VERSION >= 1220
 	playermsg.addByte(supplyStashAvailable ? 0x01 : 0x00);
 	playermsg.addByte(marketAvailable ? 0x01 : 0x00);
+	#else
+	// on older versions they are merged in one bool so let's checker if we have stash or market available
+	playermsg.addByte((supplyStashAvailable || marketAvailable) ? 0x01 : 0x00);
+	#endif
 	writeToOutputBuffer(playermsg);
 }
 #endif

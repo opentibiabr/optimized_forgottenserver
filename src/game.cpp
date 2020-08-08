@@ -929,25 +929,29 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 			return;
 		}
 	}
-
-	if (!item->isPushable() || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
-		player->sendCancelMessage(RETURNVALUE_NOTMOVEABLE);
-		return;
-	}
-
+	
 	#if GAME_FEATURE_STASH > 0
 	if (Container* toCylinderContainer = toCylinder->getContainer()) {
 		if (toCylinderContainer->getDepotLocker()) {
 			Item* stashItem = toCylinderContainer->getItemByIndex(toPos.z);
 			if (stashItem && stashItem->getID() == ITEM_SUPPLY_STASH) {
-				if (item->getItemCount() >= count) {
-					playerStowItem(player, item, static_cast<uint32_t>(count));
+				if ((item->getContainer() || item->isPickupable()) && !item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+					if (fromPos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(fromPos, player->getPosition())) {
+						player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+					} else if (item->getItemCount() >= count) {
+						playerStowItem(player, item, static_cast<uint32_t>(count));
+					}
 				}
 				return;
 			}
 		}
 	}
 	#endif
+
+	if (!item->isPushable() || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+		player->sendCancelMessage(RETURNVALUE_NOTMOVEABLE);
+		return;
+	}
 
 	const Position& playerPos = player->getPosition();
 	const Position& mapFromPos = fromCylinder->getTile()->getPosition();
@@ -1929,7 +1933,8 @@ void Game::playerStowItem(Player* player, Item* item, uint32_t count)
 {
 	Container* container = item->getContainer();
 	if (!container) {
-		if (item->isStackable() && item->getID() != ITEM_GOLD_COIN && item->getID() != ITEM_PLATINUM_COIN && item->getID() != ITEM_CRYSTAL_COIN) {
+		if (item->isPickupable() && item->isStackable() && item->getID() != ITEM_GOLD_COIN && item->getID() != ITEM_PLATINUM_COIN
+			&& item->getID() != ITEM_CRYSTAL_COIN) {
 			if (player->getStashItemCount(item->getID()) == 0) {
 				size_t stowedItems = player->getStashItemCount();
 				if (stowedItems >= static_cast<size_t>(g_config.getNumber(ConfigManager::MAX_SUPPLY_STASH_STOWED_ITEMS))) {
@@ -1964,7 +1969,8 @@ void Game::playerStowItem(Player* player, Item* item, uint32_t count)
 		for (Item* tmpContainerItem : tmpContainer->getItemList()) {
 			if (Container* subContainer = tmpContainerItem->getContainer()) {
 				containers.push_back(subContainer);
-			} else if (tmpContainerItem->isStackable() && tmpContainerItem->getID() != ITEM_GOLD_COIN && tmpContainerItem->getID() != ITEM_PLATINUM_COIN && tmpContainerItem->getID() != ITEM_CRYSTAL_COIN) {
+			} else if (tmpContainerItem->isPickupable() && !tmpContainerItem->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) && tmpContainerItem->isStackable()
+				&& tmpContainerItem->getID() != ITEM_GOLD_COIN && tmpContainerItem->getID() != ITEM_PLATINUM_COIN && tmpContainerItem->getID() != ITEM_CRYSTAL_COIN) {
 				items.push_back(tmpContainerItem);
 			}
 		}
@@ -2020,6 +2026,11 @@ void Game::playerStowItem(Player* player, const Position& pos, uint16_t spriteId
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
+
+	if ((!item->getContainer() && !item->isPickupable()) || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
 	
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		// moving towards stow items means we'll loose supply stash availability
@@ -2048,6 +2059,11 @@ void Game::playerStowContainer(Player* player, const Position& pos, uint16_t spr
 		return;
 	}
 
+	if ((!item->getContainer() && !item->isPickupable()) || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		// moving towards stow items means we'll loose supply stash availability
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
@@ -2071,6 +2087,11 @@ void Game::playerStowStack(Player* player, const Position& pos, uint16_t spriteI
 
 	Item* item = thing->getItem();
 	if (!item || item->getClientID() != spriteId) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	if ((!item->getContainer() && !item->isPickupable()) || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
