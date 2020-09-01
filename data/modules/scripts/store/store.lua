@@ -534,6 +534,9 @@ function playerTransferCoins(resultId, playerId, amount)
 		omsg:addByte(1)
 		omsg:addU32(balance)
 		omsg:addU32(math.floor(balance / packages) * packages)
+		if(CLIENT_VERSION >= 1250) then
+			omsg:addU32(0)
+		end
 		omsg:addU32(0) -- tournament coins
 	else
 		omsg:addU32(balance)
@@ -577,6 +580,9 @@ function playerUpdateCoins(resultId, playerId)
 	omsg:addByte(1)
 	omsg:addU32(balance)
 	omsg:addU32(math.floor(balance / packages) * packages)
+	if(CLIENT_VERSION >= 1250) then
+		omsg:addU32(0)
+	end
 	if(CLIENT_VERSION >= 1215) then
 		omsg:addU32(0) -- tournament coins
 	end
@@ -966,6 +972,9 @@ function playerBuyStore(resultId, playerId, offerId, productType, extraInfo)
 		omsg:addByte(1)
 		omsg:addU32(balance)
 		omsg:addU32(math.floor(balance / packages) * packages)
+		if(CLIENT_VERSION >= 1250) then
+			omsg:addU32(0)
+		end
 		omsg:addU32(0) -- tournament coins
 	else
 		omsg:addU32(balance)

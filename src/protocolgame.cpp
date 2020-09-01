@@ -300,7 +300,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 		clientVersion = 1121;
 	}
 	#endif
-	if (clientVersion >= 1240) {
+	if (version >= 1240) {
 		if (msg.getLength() - msg.getBufferPosition() > 132) { // RSA + version string length + content revision + preview state)
 			msg.getString();
 		}
@@ -1419,29 +1419,6 @@ void ProtocolGame::parseBugReport(NetworkMessage& msg)
 
 	g_game.playerReportBug(player, message, position, category);
 }
-
-#if GAME_FEATURE_RULEVIOLATION > 0
-void ProtocolGame::parseRuleViolation(NetworkMessage& msg)
-{
-	#if CLIENT_VERSION >= 772
-	std::string target = msg.getString();
-	uint8_t reason = msg.getByte();
-	uint8_t action = msg.getByte();
-	std::string comment = msg.getString();
-	uint32_t statementId = msg.get<uint32_t>();
-	bool ipBanishment = msg.getByte();
-	#else
-	std::string target = msg.getString();
-	uint8_t reason = msg.getByte();
-	std::string comment = msg.getString();
-	uint8_t action = msg.getByte();
-	uint32_t statementId = 0;
-	bool ipBanishment = msg.getByte();
-	#endif
-
-	g_game.playerRuleViolation(player, target, comment, reason, action, statementId, ipBanishment);
-}
-#endif
 
 void ProtocolGame::parseDebugAssert(NetworkMessage& msg)
 {
@@ -3505,6 +3482,11 @@ void ProtocolGame::sendCreatureSay(const Creature* creature, SpeakClasses type, 
 	playermsg.add<uint32_t>(++statementId);
 	#endif
 	playermsg.addString(creature->getName());
+	#if CLIENT_VERSION >= 1250
+	if (statementId != 0) {
+		playermsg.addByte(0x00);//(Traded)
+	}
+	#endif
 
 	//Add level only for players
 	#if GAME_FEATURE_MESSAGE_LEVEL > 0
@@ -3541,17 +3523,32 @@ void ProtocolGame::sendToChannel(const Creature* creature, SpeakClasses type, co
 	#endif
 	if (!creature) {
 		playermsg.add<uint16_t>(0x00);
+		#if CLIENT_VERSION >= 1250
+		if (statementId != 0) {
+			playermsg.addByte(0x00);//(Traded)
+		}
+		#endif
 		#if GAME_FEATURE_MESSAGE_LEVEL > 0
 		playermsg.add<uint16_t>(0x00);
 		#endif
 	} else if (type == TALKTYPE_CHANNEL_R2) {
 		playermsg.add<uint16_t>(0x00);
+		#if CLIENT_VERSION >= 1250
+		if (statementId != 0) {
+			playermsg.addByte(0x00);//(Traded)
+		}
+		#endif
 		#if GAME_FEATURE_MESSAGE_LEVEL > 0
 		playermsg.add<uint16_t>(0x00);
 		#endif
 		type = TALKTYPE_CHANNEL_R1;
 	} else {
 		playermsg.addString(creature->getName());
+		#if CLIENT_VERSION >= 1250
+		if (statementId != 0) {
+			playermsg.addByte(0x00);//(Traded)
+		}
+		#endif
 
 		//Add level only for players
 		#if GAME_FEATURE_MESSAGE_LEVEL > 0
@@ -3584,11 +3581,21 @@ void ProtocolGame::sendPrivateMessage(const Player* speaker, SpeakClasses type, 
 	#endif
 	if (speaker) {
 		playermsg.addString(speaker->getName());
+		#if CLIENT_VERSION >= 1250
+		if (statementId != 0) {
+			playermsg.addByte(0x00);//(Traded)
+		}
+		#endif
 		#if GAME_FEATURE_MESSAGE_LEVEL > 0
 		playermsg.add<uint16_t>(speaker->getLevel());
 		#endif
 	} else {
 		playermsg.add<uint16_t>(0x00);
+		#if CLIENT_VERSION >= 1250
+		if (statementId != 0) {
+			playermsg.addByte(0x00);//(Traded)
+		}
+		#endif
 		#if GAME_FEATURE_MESSAGE_LEVEL > 0
 		playermsg.add<uint16_t>(0x00);
 		#endif
