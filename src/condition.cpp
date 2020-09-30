@@ -706,7 +706,28 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value)
 	}
 }
 
-void ConditionRegeneration::addCondition(Creature*, const Condition* condition)
+#if GAME_FEATURE_REGENERATION_TIME > 0
+bool ConditionRegeneration::startCondition(Creature* creature)
+{
+	if (!Condition::startCondition(creature)) {
+		return false;
+	}
+
+	if (Player* player = creature->getPlayer()) {
+		player->addScheduledUpdates(PlayerUpdate_Stats);
+	}
+	return true;
+}
+
+void ConditionRegeneration::endCondition(Creature* creature)
+{
+	if (Player* player = creature->getPlayer()) {
+		player->addScheduledUpdates(PlayerUpdate_Stats);
+	}
+}
+#endif
+
+void ConditionRegeneration::addCondition(Creature* creature, const Condition* condition)
 {
 	if (updateCondition(condition)) {
 		setTicks(condition->getTicks());
@@ -719,6 +740,14 @@ void ConditionRegeneration::addCondition(Creature*, const Condition* condition)
 		healthGain = conditionRegen.healthGain;
 		manaGain = conditionRegen.manaGain;
 	}
+
+	#if GAME_FEATURE_REGENERATION_TIME > 0
+	if (Player* player = creature->getPlayer()) {
+		player->addScheduledUpdates(PlayerUpdate_Stats);
+	}
+	#else
+	(void)creature;
+	#endif
 }
 
 bool ConditionRegeneration::unserializeProp(ConditionAttr_t attr, PropStream& propStream)

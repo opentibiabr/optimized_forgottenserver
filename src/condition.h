@@ -192,6 +192,10 @@ class ConditionRegeneration final : public ConditionGeneric
 		ConditionRegeneration(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff = false, uint32_t subId = 0):
 			ConditionGeneric(id, type, ticks, buff, subId) {}
 
+		#if GAME_FEATURE_REGENERATION_TIME > 0
+		bool startCondition(Creature* creature) override;
+		void endCondition(Creature* creature) override;
+		#endif
 		void addCondition(Creature* creature, const Condition* condition) override;
 		bool executeCondition(Creature* creature, int32_t interval) override;
 
