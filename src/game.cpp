@@ -1933,8 +1933,8 @@ void Game::playerStowItem(Player* player, Item* item, uint32_t count)
 {
 	Container* container = item->getContainer();
 	if (!container) {
-		if (item->isPickupable() && item->isStackable() && item->getID() != ITEM_GOLD_COIN && item->getID() != ITEM_PLATINUM_COIN
-			&& item->getID() != ITEM_CRYSTAL_COIN) {
+		const ItemType& it = Item::items[item->getID()];
+		if (it.pickupable && it.stackable && it.wareId != 0) {
 			if (player->getStashItemCount(item->getID()) == 0) {
 				size_t stowedItems = player->getStashItemCount();
 				if (stowedItems >= static_cast<size_t>(g_config.getNumber(ConfigManager::MAX_SUPPLY_STASH_STOWED_ITEMS))) {
@@ -1967,10 +1967,10 @@ void Game::playerStowItem(Player* player, Item* item, uint32_t count)
 	do {
 		Container* tmpContainer = containers[i++];
 		for (Item* tmpContainerItem : tmpContainer->getItemList()) {
+			const ItemType& it = Item::items[tmpContainerItem->getID()];
 			if (Container* subContainer = tmpContainerItem->getContainer()) {
 				containers.push_back(subContainer);
-			} else if (tmpContainerItem->isPickupable() && !tmpContainerItem->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) && tmpContainerItem->isStackable()
-				&& tmpContainerItem->getID() != ITEM_GOLD_COIN && tmpContainerItem->getID() != ITEM_PLATINUM_COIN && tmpContainerItem->getID() != ITEM_CRYSTAL_COIN) {
+			} else if (it.pickupable && it.stackable && it.wareId != 0 && !tmpContainerItem->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
 				items.push_back(tmpContainerItem);
 			}
 		}
@@ -2118,7 +2118,7 @@ void Game::playerStashWithdraw(Player* player, uint16_t spriteId, uint32_t count
 
 	if (!player->hasFlag(PlayerFlag_HasInfiniteCapacity)) {
 		uint32_t itemWeight = it.weight * count;
-		if (itemWeight <= player->getFreeCapacity()) {
+		if (itemWeight > player->getFreeCapacity()) {
 			player->sendCancelMessage(RETURNVALUE_NOTENOUGHCAPACITY);
 			return;
 		}
