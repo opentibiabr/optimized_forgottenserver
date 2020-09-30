@@ -453,7 +453,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 		uint32_t storage_key;
 		int32_t storage_value;
 		while (propStream.read<uint32_t>(storage_key) && propStream.read<int32_t>(storage_value)) {
-			player->storageMap[storage_key] = storage_value;
+			player->addStorageValue(storage_key, storage_value, true);
 		}
 	}
 
