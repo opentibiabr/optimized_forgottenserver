@@ -107,8 +107,9 @@ enum AccessHouseLevel_t {
 	HOUSE_OWNER = 3,
 };
 
-using HouseTileList = std::list<HouseTile*>;
-using HouseBedItemList = std::list<BedItem*>;
+using HouseTileList = std::vector<HouseTile*>;
+using HouseDoors = std::vector<Door*>;
+using HouseBedItemList = std::vector<BedItem*>;
 
 class HouseTransferItem final : public Item
 {
@@ -210,7 +211,7 @@ class House
 			return houseTiles;
 		}
 
-		const std::set<Door*>& getDoors() const {
+		const HouseDoors& getDoors() const {
 			return doorSet;
 		}
 
@@ -232,7 +233,7 @@ class House
 		Container transfer_container{ITEM_LOCKER1};
 
 		HouseTileList houseTiles;
-		std::set<Door*> doorSet;
+		HouseDoors doorSet;
 		HouseBedItemList bedsList;
 
 		std::string houseName;
@@ -253,7 +254,7 @@ class House
 		bool isLoaded = false;
 };
 
-using HouseMap = std::map<uint32_t, House*>;
+using HouseMap = std::map<uint32_t, House>;
 
 enum RentPeriod_t {
 	RENTPERIOD_DAILY,
@@ -267,11 +268,6 @@ class Houses
 {
 	public:
 		Houses() = default;
-		~Houses() {
-			for (const auto& it : houseMap) {
-				delete it.second;
-			}
-		}
 
 		// non-copyable
 		Houses(const Houses&) = delete;
@@ -280,12 +276,10 @@ class Houses
 		House* addHouse(uint32_t id) {
 			auto it = houseMap.find(id);
 			if (it != houseMap.end()) {
-				return it->second;
+				return &it->second;
 			}
 
-			House* house = new House(id);
-			houseMap[id] = house;
-			return house;
+			return &houseMap.emplace(id, id).first->second;
 		}
 
 		House* getHouse(uint32_t houseId) {
@@ -293,7 +287,7 @@ class Houses
 			if (it == houseMap.end()) {
 				return nullptr;
 			}
-			return it->second;
+			return &it->second;
 		}
 
 		House* getHouseByPlayerId(uint32_t playerId);
@@ -302,7 +296,7 @@ class Houses
 
 		void payHouses(RentPeriod_t rentPeriod) const;
 
-		const HouseMap& getHouses() const {
+		HouseMap& getHouses() {
 			return houseMap;
 		}
 
