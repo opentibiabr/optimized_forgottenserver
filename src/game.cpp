@@ -5295,9 +5295,15 @@ void Game::playerCreateMarketOffer(Player* player, uint8_t type, uint16_t sprite
 	uint64_t fee = (price / 100.) * amount;
 	if (fee < 20) {
 		fee = 20;
+	#if CLIENT_VERSION >= 1220
+	} else if (fee > 100000) {
+		fee = 100000;
+	}
+	#else
 	} else if (fee > 1000) {
 		fee = 1000;
 	}
+	#endif
 
 	if (type == MARKETACTION_SELL) {
 		if (fee > player->bankBalance) {
