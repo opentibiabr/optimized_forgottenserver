@@ -4256,9 +4256,11 @@ PartyShields_t Player::getPartyShield(const Player* player) const
 		return SHIELD_WHITEYELLOW;
 	}
 
+	#if CLIENT_VERSION >= 1000
 	if (player->party) {
 		return SHIELD_GRAY;
 	}
+	#endif
 
 	return SHIELD_NONE;
 }
