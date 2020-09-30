@@ -316,6 +316,9 @@ class ProtocolGame final : public Protocol
 		void sendMarketBrowseOwnHistory(const HistoryMarketOfferList& buyOffers, const HistoryMarketOfferList& sellOffers);
 		void sendMarketDetail(uint16_t itemId);
 		#endif
+		#if GAME_FEATURE_ANALYTICS > 0
+		void sendMarketStatistics();
+		#endif
 		void sendTradeItemRequest(const std::string& traderName, const Item* item, bool ack);
 		void sendCloseTrade();
 

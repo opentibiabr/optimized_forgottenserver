@@ -593,6 +593,9 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		#if GAME_FEATURE_QUEST_TRACKER > 0
 		case 0xD0: parseTrackedQuestFlags(msg); break;
 		#endif
+		#if GAME_FEATURE_ANALYTICS > 0
+		case 0xD1: /* request market statistics */; break;
+		#endif
 		case 0xD2: g_game.playerRequestOutfit(player); break;
 		case 0xD3: parseSetOutfit(msg); break;
 		#if GAME_FEATURE_MOUNTS > 0
@@ -3327,6 +3330,50 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 }
 #endif
 
+#if GAME_FEATURE_ANALYTICS > 0
+void ProtocolGame::sendMarketStatistics()
+{
+	// Statistics are updated on server startup so it does make sense to have them cached
+
+	static NetworkMessage statisticsmsg;
+	if (statisticsmsg.getLength() == 0) {
+		std::map<uint16_t, uint32_t> items;
+
+		auto& purchaseStatistics = IOMarket::getInstance().getPurchaseStatistics();
+		auto& saleStatistics = IOMarket::getInstance().getSaleStatistics();
+		
+		#define cacheStatistics(container, container2)														\
+			do {																							\
+				for (auto& it : container) {																\
+					uint16_t itemId = it.first;																\
+					MarketStatistics* statistics = &it.second;												\
+					uint32_t avgPrice = (statistics->totalPrice / statistics->numTransactions);				\
+					uint32_t division = 0;																	\
+					auto cit = container2.find(itemId);														\
+					if (cit != container2.end()) {															\
+						statistics = &cit->second;															\
+						avgPrice += (statistics->totalPrice / statistics->numTransactions);					\
+						division = 1;																		\
+					}																						\
+					items[itemId] = (avgPrice >> division);													\
+				}																							\
+			} while(0)
+
+		cacheStatistics(purchaseStatistics, saleStatistics);
+		cacheStatistics(saleStatistics, purchaseStatistics);
+		#undef cacheStatistics
+
+		statisticsmsg.addByte(0xCD);
+		statisticsmsg.add<uint16_t>(items.size());
+		for (const auto& it : items) {
+			statisticsmsg.addItemId(it.first);
+			statisticsmsg.add<uint32_t>(it.second);
+		}
+	}
+	writeToOutputBuffer(statisticsmsg);
+}
+#endif
+
 void ProtocolGame::sendQuestLog()
 {
 	playermsg.reset();
@@ -4029,6 +4076,9 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 
 	#if CLIENT_VERSION >= 950
 	sendBasicData();
+	#endif
+	#if GAME_FEATURE_ANALYTICS > 0
+	sendMarketStatistics();
 	#endif
 	player->sendIcons();
 }
