@@ -2917,9 +2917,19 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopInfo>& shop, const std
 void ProtocolGame::sendMarketEnter(uint32_t depotId)
 {
 	playermsg.reset();
+	#if CLIENT_VERSION >= 1250
+	playermsg.addByte(0xEE);
+	playermsg.addByte(0x00);
+	playermsg.add<uint64_t>(player->getBankBalance());
+	playermsg.addByte(0xEE);
+	playermsg.addByte(0x01);
+	playermsg.add<uint64_t>(0);//player->getMoney() - TODO
+	#endif
 	playermsg.addByte(0xF6);
 
+	#if CLIENT_VERSION < 1250
 	playermsg.add<uint64_t>(player->getBankBalance());
+	#endif
 	playermsg.addByte(std::min<uint32_t>(IOMarket::getPlayerOfferCount(player->getGUID()), std::numeric_limits<uint8_t>::max()));
 
 	DepotChest* depotChest = player->getDepotChest(depotId, false);
@@ -4127,7 +4137,7 @@ void ProtocolGame::sendMoveCreature(const Creature* creature, const Position& ne
 			}
 			writeToOutputBuffer(playermsg);
 		}
-	} else if (canSee(oldPos) && canSee(creature->getPosition())) {
+	} else if (canSee(oldPos) && canSee(newPos)) {
 		if (teleport || (oldPos.z == 7 && newPos.z >= 8) || oldStackPos >= 10) {
 			sendRemoveTileThing(oldPos, oldStackPos);
 			sendAddCreature(creature, newPos, newStackPos, false);
@@ -4136,12 +4146,12 @@ void ProtocolGame::sendMoveCreature(const Creature* creature, const Position& ne
 			playermsg.addByte(0x6D);
 			playermsg.addPosition(oldPos);
 			playermsg.addByte(oldStackPos);
-			playermsg.addPosition(creature->getPosition());
+			playermsg.addPosition(newPos);
 			writeToOutputBuffer(playermsg);
 		}
 	} else if (canSee(oldPos)) {
 		sendRemoveTileThing(oldPos, oldStackPos);
-	} else if (canSee(creature->getPosition())) {
+	} else if (canSee(newPos)) {
 		sendAddCreature(creature, newPos, newStackPos, false);
 	}
 }
@@ -4283,7 +4293,10 @@ void ProtocolGame::sendTextWindow(uint32_t windowTextId, Item* item, uint16_t ma
 	} else {
 		playermsg.add<uint16_t>(0x00);
 	}
-	
+
+	#if CLIENT_VERSION >= 1250
+	playermsg.addByte(0x00);//Traded
+	#endif
 	#if GAME_FEATURE_WRITABLE_DATE > 0
 	time_t writtenDate = item->getDate();
 	if (writtenDate != 0) {
@@ -4305,6 +4318,9 @@ void ProtocolGame::sendTextWindow(uint32_t windowTextId, uint32_t itemId, const 
 	playermsg.add<uint16_t>(text.size());
 	playermsg.addString(text);
 	playermsg.add<uint16_t>(0x00);
+	#if CLIENT_VERSION >= 1250
+	playermsg.addByte(0x00);//Traded
+	#endif
 	#if GAME_FEATURE_WRITABLE_DATE > 0
 	playermsg.add<uint16_t>(0x00);
 	#endif
