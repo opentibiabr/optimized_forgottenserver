@@ -1392,6 +1392,9 @@ void LuaScriptInterface::registerFunctions()
 	#if GAME_FEATURE_PARTY_LIST > 0
 	registerEnum(GAME_FEATURE_PARTY_LIST)
 	#endif
+	#if GAME_FEATURE_HIGHSCORES > 0
+	registerEnum(GAME_FEATURE_HIGHSCORES)
+	#endif
 	#if GAME_FEATURE_DOUBLE_HEALTH > 0
 	registerEnum(GAME_FEATURE_DOUBLE_HEALTH)
 	#endif

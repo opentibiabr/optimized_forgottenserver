@@ -284,6 +284,10 @@
 #define GAME_FEATURE_PARTY_LIST 1
 #endif
 
+#if CLIENT_VERSION >= 1240
+#define GAME_FEATURE_HIGHSCORES 1
+#endif
+
 //robinhood hash map is faster variant of hash map than std::unordered_map but it depends on std::unordered_map implementation
 //compared with visual studio stl library it is at least 2x faster
 #define GAME_FEATURE_ROBINHOOD_HASH_MAP 0

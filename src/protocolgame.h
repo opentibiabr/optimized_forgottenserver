@@ -137,6 +137,10 @@ class ProtocolGame final : public Protocol
 		void parseCyclopediaHouseAction(NetworkMessage& msg);
 		void parseCyclopediaCharacterInfo(NetworkMessage& msg);
 
+		#if GAME_FEATURE_HIGHSCORES > 0
+		void parseHighscores(NetworkMessage& msg);
+		#endif
+
 		void parseTournamentLeaderboard(NetworkMessage& msg);
 
 		void parseBugReport(NetworkMessage& msg);
@@ -287,6 +291,11 @@ class ProtocolGame final : public Protocol
 		void sendCyclopediaCharacterInspection();
 		void sendCyclopediaCharacterBadges();
 		void sendCyclopediaCharacterTitles();
+
+		#if GAME_FEATURE_HIGHSCORES > 0
+		void sendHighscoresNoData();
+		void sendHighscores(std::vector<HighscoreCharacter>& characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
+		#endif
 
 		void sendTournamentLeaderboard();
 

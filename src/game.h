@@ -325,6 +325,10 @@ class Game
 		void playerCyclopediaRace(Player* player, uint16_t monsterId);
 		void playerCyclopediaCharacterInfo(Player* player, CyclopediaCharacterInfoType_t characterInfoType);
 
+		#if GAME_FEATURE_HIGHSCORES > 0
+		void playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string& worldName, uint16_t page, uint8_t entriesPerPage);
+		#endif
+
 		void playerTournamentLeaderboard(Player* player, uint8_t leaderboardType);
 
 		bool internalStartTrade(Player* player, Player* tradePartner, Item* tradeItem);

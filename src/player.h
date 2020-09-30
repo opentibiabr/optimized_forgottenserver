@@ -123,6 +123,10 @@ enum PlayerUpdateFlags : uint32_t {
 	PlayerUpdate_Sale = 1 << 5
 };
 
+enum PlayerAsyncOngoingTaskFlags : uint64_t {
+	PlayerAsyncTask_Highscore = 1 << 0
+};
+
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr int32_t PLAYER_MAX_SPEED = 1500;
@@ -1327,6 +1331,18 @@ class Player final : public Creature, public Cylinder
 				client->sendCyclopediaCharacterTitles();
 			}
 		}
+		#if GAME_FEATURE_HIGHSCORES > 0
+		void sendHighscoresNoData() {
+			if (client) {
+				client->sendHighscoresNoData();
+			}
+		}
+		void sendHighscores(std::vector<HighscoreCharacter>& characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages) {
+			if (client) {
+				client->sendHighscores(characters, categoryId, vocationId, page, pages);
+			}
+		}
+		#endif
 		void sendTournamentLeaderboard() {
 			if (client) {
 				client->sendTournamentLeaderboard();
@@ -1403,6 +1419,16 @@ class Player final : public Creature, public Cylinder
 		void resetScheduledUpdates() {
 			scheduledUpdates = 0;
 			scheduledUpdate = false;
+		}
+
+		void addAsyncOngoingTask(uint64_t flags) {
+			asyncOngoingTasks |= flags;
+		}
+		bool hasAsyncOngoingTask(uint64_t flags) const {
+			return (asyncOngoingTasks & flags);
+		}
+		void resetAsyncOngoingTask(uint64_t flags) {
+			asyncOngoingTasks &= ~(flags);
 		}
 
 	private:
@@ -1500,6 +1526,7 @@ class Player final : public Creature, public Cylinder
 		uint64_t actionTaskEvent = 0;
 		uint64_t nextStepEvent = 0;
 		uint64_t walkTaskEvent = 0;
+		uint64_t asyncOngoingTasks = 0;
 		int64_t lastFailedFollow = 0;
 		int64_t skullTicks = 0;
 		int64_t lastWalkthroughAttempt = 0;
