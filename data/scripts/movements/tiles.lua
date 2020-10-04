@@ -74,7 +74,7 @@ function tile.onStepOut(creature, item, position, fromPosition)
 		return true
 	end
 
-	if GAME_FEATURE_STASH and (creature:isSupplyStashAvailable() or creature:isMarketAvailable()) then
+	if GAME_FEATURE_STASH and creature:isPlayer() and (creature:isSupplyStashAvailable() or creature:isMarketAvailable()) then
 		creature:setSpecialContainersAvailable(false, false)
 	end
 
