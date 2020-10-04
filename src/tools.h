@@ -106,4 +106,16 @@ int tfs_strcmp(const char* s1, const char* s2);
 #define tfs_strcmp strcmp
 #endif
 
+constexpr double fast_pow(double base, uint32_t exp) {
+	double result = 1.0;
+	while (exp) {
+		if (exp & 1) {
+			result *= base;
+		}
+		exp >>= 1;
+		base *= base;
+	}
+	return result;
+}
+
 #endif
