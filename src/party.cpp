@@ -596,4 +596,21 @@ void Party::updatePlayerMana(const Player* player, uint8_t manaPercent)
 		leader->sendPartyPlayerMana(player, manaPercent);
 	}
 }
+
+#if GAME_FEATURE_PLAYER_VOCATIONS > 0
+void Party::updatePlayerVocation(const Player* player)
+{
+	int32_t maxDistance = g_config.getNumber(ConfigManager::PARTY_LIST_MAX_DISTANCE);
+	for (Player* member : memberList) {
+		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
+		if (condition) {
+			member->sendPartyPlayerVocation(player);
+		}
+	}
+	bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), leader->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), leader->getPosition()) <= maxDistance));
+	if (condition) {
+		leader->sendPartyPlayerVocation(player);
+	}
+}
+#endif
 #endif

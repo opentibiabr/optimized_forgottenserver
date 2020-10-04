@@ -111,6 +111,9 @@ bool Player::setVocation(uint16_t vocId, bool internal /*=false*/)
 		#if CLIENT_VERSION >= 950
 		sendBasicData();
 		#endif
+		#if GAME_FEATURE_PLAYER_VOCATIONS > 0
+		g_game.addPlayerVocation(this);
+		#endif
 	}
 	return true;
 }

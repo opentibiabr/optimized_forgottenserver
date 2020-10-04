@@ -1045,6 +1045,20 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		#endif
+		#if GAME_FEATURE_PLAYER_VOCATIONS > 0
+		#if GAME_FEATURE_PARTY_LIST > 0
+		void sendPartyPlayerVocation(const Player* player) const {
+			if (client) {
+				client->sendPartyPlayerVocation(player);
+			}
+		}
+		#endif
+		void sendPlayerVocation(const Player* player) const {
+			if (client) {
+				client->sendPlayerVocation(player);
+			}
+		}
+		#endif
 		void sendDistanceShoot(const Position& from, const Position& to, unsigned char type) const {
 			if (client) {
 				client->sendDistanceShoot(from, to, type);

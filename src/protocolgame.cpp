@@ -3914,7 +3914,7 @@ void ProtocolGame::sendPartyCreatureUpdate(const Creature* target)
 	playermsg.addByte(0x8B);
 	playermsg.add<uint32_t>(cid);
 	playermsg.addByte(0);//creature update
-	AddCreature(player, known, removedKnown);
+	AddCreature(target, known, removedKnown);
 	writeToOutputBuffer(playermsg);
 }
 
@@ -3928,7 +3928,7 @@ void ProtocolGame::sendPartyCreatureShield(const Creature* target)
 
 	playermsg.reset();
 	playermsg.addByte(0x91);
-	playermsg.add<uint32_t>(target->getID());
+	playermsg.add<uint32_t>(cid);
 	playermsg.addByte(player->getPartyShield(target->getPlayer()));
 	writeToOutputBuffer(playermsg);
 }
@@ -3947,7 +3947,7 @@ void ProtocolGame::sendPartyCreatureSkull(const Creature* target)
 
 	playermsg.reset();
 	playermsg.addByte(0x90);
-	playermsg.add<uint32_t>(target->getID());
+	playermsg.add<uint32_t>(cid);
 	playermsg.addByte(player->getSkullClient(target));
 	writeToOutputBuffer(playermsg);
 }
@@ -3994,6 +3994,36 @@ void ProtocolGame::sendPartyCreatureShowStatus(const Creature* target, bool show
 	playermsg.add<uint32_t>(cid);
 	playermsg.addByte(12);//show status
 	playermsg.addByte((showStatus ? 0x01 : 0x00));
+	writeToOutputBuffer(playermsg);
+}
+#endif
+
+#if GAME_FEATURE_PLAYER_VOCATIONS > 0
+#if GAME_FEATURE_PARTY_LIST > 0
+void ProtocolGame::sendPartyPlayerVocation(const Player* target)
+{
+	uint32_t cid = target->getID();
+	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+		sendPartyCreatureUpdate(target);
+		return;
+	}
+
+	playermsg.reset();
+	playermsg.addByte(0x8B);
+	playermsg.add<uint32_t>(cid);
+	playermsg.addByte(13);//vocation
+	playermsg.addByte(target->getVocation()->getClientId());
+	writeToOutputBuffer(playermsg);
+}
+#endif
+
+void ProtocolGame::sendPlayerVocation(const Player* target)
+{
+	playermsg.reset();
+	playermsg.addByte(0x8B);
+	playermsg.add<uint32_t>(target->getID());
+	playermsg.addByte(13);//vocation
+	playermsg.addByte(target->getVocation()->getClientId());
 	writeToOutputBuffer(playermsg);
 }
 #endif
@@ -4806,7 +4836,7 @@ void ProtocolGame::AddCreature(const Creature* creature, bool known, uint32_t re
 	#else
 	playermsg.addByte(creatureType); // Type (for summons)
 	#endif
-	#if CLIENT_VERSION >= 1220
+	#if GAME_FEATURE_PLAYER_VOCATIONS > 0
 	if (creatureType == CREATURETYPE_PLAYER) {
 		playermsg.addByte(creature->getPlayer()->getVocation()->getClientId());
 	}

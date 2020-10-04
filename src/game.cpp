@@ -4545,6 +4545,26 @@ void Game::addPlayerMana(const Player* target)
 }
 #endif
 
+#if GAME_FEATURE_PLAYER_VOCATIONS > 0
+void Game::addPlayerVocation(const Player* target)
+{
+	#if GAME_FEATURE_PARTY_LIST > 0
+	if (Party* party = target->getParty()) {
+		party->updatePlayerVocation(target);
+	}
+	#endif
+
+	SpectatorVector spectators;
+	map.getSpectators(spectators, target->getPosition(), true, true);
+
+	for (Creature* spectator : spectators) {
+		if (Player* tmpPlayer = spectator->getPlayer()) {
+			tmpPlayer->sendPlayerVocation(target);
+		}
+	}
+}
+#endif
+
 void Game::addMagicEffect(const Position& pos, uint8_t effect)
 {
 	SpectatorVector spectators;

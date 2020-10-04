@@ -247,6 +247,12 @@ class ProtocolGame final : public Protocol
 		void sendPartyPlayerMana(const Player* target, uint8_t manaPercent);
 		void sendPartyCreatureShowStatus(const Creature* target, bool showStatus);
 		#endif
+		#if GAME_FEATURE_PLAYER_VOCATIONS > 0
+		#if GAME_FEATURE_PARTY_LIST > 0
+		void sendPartyPlayerVocation(const Player* target);
+		#endif
+		void sendPlayerVocation(const Player* target);
+		#endif
 		void sendSkills();
 		void sendPing();
 		void sendPingBack();
