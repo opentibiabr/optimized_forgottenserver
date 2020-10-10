@@ -21,6 +21,7 @@
 
 #include "pugicast.h"
 #include "decay.h"
+#include "ban.h"
 
 #include "modules.h"
 #include "actions.h"
@@ -1905,6 +1906,12 @@ void Game::playerOpenChannel(Player* player, uint16_t channelId)
 		users = nullptr;
 	}
 
+	#if GAME_FEATURE_RULEVIOLATION > 0
+	if (channel->getId() == 3) {
+		player->sendRuleViolationChannel(channel->getId());
+		return;
+	}
+	#endif
 	player->sendChannel(channel->getId(), channel->getName(), users, invitedUsers);
 }
 
@@ -1927,6 +1934,326 @@ void Game::playerOpenPrivateChannel(Player* player, std::string& receiver)
 
 	player->sendOpenPrivateChannel(receiver);
 }
+
+#if GAME_FEATURE_RULEVIOLATION > 0
+void Game::playerRuleViolation(Player* player, const std::string& target, const std::string& comment, uint8_t reason, uint8_t, uint32_t, bool ipBanishment)
+{
+	if (!player->isAccessPlayer()) {
+		return;
+	}
+
+	std::string reasonStr;
+	#if CLIENT_VERSION >= 726 && CLIENT_VERSION <= 730
+	switch (reason) {
+		case 0: reasonStr = "Insulting name"; break;
+		case 1: reasonStr = "Name containing parts of sentences"; break;
+		case 2: reasonStr = "Name with nonsensical letter combination"; break;
+		case 3: reasonStr = "Badly formatted name"; break;
+		case 4: reasonStr = "Name not describing person"; break;
+		case 5: reasonStr = "Name of celebrity"; break;
+		case 6: reasonStr = "Name referring to country"; break;
+		case 7: reasonStr = "Name to fake identity"; break;
+		case 8: reasonStr = "Name to fake official position"; break;
+		case 9: reasonStr = "Insulting statements"; break;
+		case 10: reasonStr = "Spamming"; break;
+		case 11: reasonStr = "Off-topic advertisment"; break;
+		case 12: reasonStr = "Real money advertisment"; break;
+		case 13: reasonStr = "Off-topic channel use"; break;
+		case 14: reasonStr = "Inciting rule violation"; break;
+		case 15: reasonStr = "Bug abuse"; break;
+		case 16: reasonStr = "Game weakness abuse"; break;
+		case 17: reasonStr = "Macro use"; break;
+		case 18: reasonStr = "Using modified client"; break;
+		case 19: reasonStr = "Hacking attempt"; break;
+		case 20: reasonStr = "Multi-clienting"; break;
+		case 21: reasonStr = "Account trading"; break;
+		case 22: reasonStr = "Account sharing"; break;
+		case 23: reasonStr = "Threatening gamemaster"; break;
+		case 24: reasonStr = "Pretending official position"; break;
+		case 25: reasonStr = "Pretending to have influence on staff"; break;
+		case 26: reasonStr = "False reports"; break;
+		case 27: reasonStr = "Excessive unjustified player killing"; break;
+		case 28: reasonStr = "Destructive behaviour"; break;
+		case 29: reasonStr = "Invalid payment"; break;
+		default: reasonStr = "Unknown reason"; break;
+	}
+	#elif CLIENT_VERSION >= 820
+	switch (reason) {
+		case 0: reasonStr = "Offensive Name"; break;
+		case 1: reasonStr = "Invalid Name Format"; break;
+		case 2: reasonStr = "Unsuitable Name"; break;
+		case 3: reasonStr = "Name Inciting Rule Violation"; break;
+		case 4: reasonStr = "Offensive Statement"; break;
+		case 5: reasonStr = "Spamming"; break;
+		case 6: reasonStr = "Illegal Advertising"; break;
+		case 7: reasonStr = "Off-Topic Public Statement"; break;
+		case 8: reasonStr = "Non-English Public Statement"; break;
+		case 9: reasonStr = "Inciting Rule Violation"; break;
+		case 10: reasonStr = "Bug Abuse"; break;
+		case 11: reasonStr = "Game Weakness Abuse"; break;
+		case 12: reasonStr = "Using Unofficial Software to Play"; break;
+		case 13: reasonStr = "Hacking"; break;
+		case 14: reasonStr = "Multi-Clienting"; break;
+		case 15: reasonStr = "Account Trading or Sharing"; break;
+		case 16: reasonStr = "Threatening Gamemaster"; break;
+		case 17: reasonStr = "Pretending to Have Influence on Rule Enforcement"; break;
+		case 18: reasonStr = "False Report to Gamemaster"; break;
+		case 19: reasonStr = "Destructive Behaviour"; break;
+		case 20: reasonStr = "Excessive Unjustified Player Killing"; break;
+		case 21: reasonStr = "Invalid Payment"; break;
+		case 22: reasonStr = "Spoiling Auction"; break;
+		default: reasonStr = "Unknown reason"; break;
+	}
+	#else
+	switch (reason) {
+		case 0: reasonStr = "Offensive name"; break;
+		case 1: reasonStr = "Name containing part of sentence"; break;
+		case 2: reasonStr = "Name with nonsensical letter combination"; break;
+		case 3: reasonStr = "Invalid name format"; break;
+		case 4: reasonStr = "Name not describing person"; break;
+		case 5: reasonStr = "Name of celebrity"; break;
+		case 6: reasonStr = "Name referring to country"; break;
+		case 7: reasonStr = "Name to fake player identity"; break;
+		case 8: reasonStr = "Name to fake official position"; break;
+		case 9: reasonStr = "Offensive statement"; break;
+		case 10: reasonStr = "Spamming"; break;
+		case 11: reasonStr = "Advertisement not related to game"; break;
+		case 12: reasonStr = "Real money advertisement"; break;
+		case 13: reasonStr = "Non-English public statement"; break;
+		case 14: reasonStr = "Off-topic public statement"; break;
+		case 15: reasonStr = "Inciting rule violation"; break;
+		case 16: reasonStr = "Bug abuse"; break;
+		case 17: reasonStr = "Game weakness abuse"; break;
+		case 18: reasonStr = "Macro use"; break;
+		case 19: reasonStr = "Using unofficial software to play"; break;
+		case 20: reasonStr = "Hacking"; break;
+		case 21: reasonStr = "Multi-clienting"; break;
+		case 22: reasonStr = "Account trading"; break;
+		case 23: reasonStr = "Account sharing"; break;
+		case 24: reasonStr = "Threatening gamemaster"; break;
+		case 25: reasonStr = "Pretending to have official position"; break;
+		case 26: reasonStr = "Pretending to have influence on gamemaster"; break;
+		case 27: reasonStr = "False report to gamemaster"; break;
+		case 28: reasonStr = "Excessive unjustified player killing"; break;
+		case 29: reasonStr = "Destructive behaviour"; break;
+		case 30: reasonStr = "Spoiling auction"; break;
+		case 31: reasonStr = "Invalid payment"; break;
+		default: reasonStr = "Unknown reason"; break;
+	}
+	#endif
+
+	time_t timeBan = 7 * 86400;
+	time_t timeNow = time(nullptr);
+	if (!comment.empty()) {
+		std::string::size_type end = 0;
+		if (comment.front() == '{' && (end = comment.find('}')) != std::string::npos) {
+			timeBan = 0;
+
+			StringVector timeVec = explodeString(comment.substr(1, end - 1), ";");
+			for (const std::string& timeStr : timeVec) {
+				StringVector timer = explodeString(timeStr, ",");
+				uint32_t time = 1;
+				if (timer.size() > 1) {
+					try {
+						time = std::stoul(timer[1]);
+					} catch (const std::invalid_argument&) {
+						time = 0;
+					} catch (const std::out_of_range&) {
+						time = 0;
+					}
+				}
+
+				if (!timer.empty() && !timer[0].empty()) {
+					if (timer[0].front() == 's') {
+						timeBan += (time);
+					} else if (timer[0].front() == 'm') {
+						timeBan += (time * 60);
+					} else if (timer[0].front() == 'h') {
+						timeBan += (time * 3600);
+					} else if (timer[0].front() == 'd') {
+						timeBan += (time * 86400);
+					} else if (timer[0].front() == 'w') {
+						timeBan += (time * 604800);
+					} else if (timer[0].front() == 'm') {
+						timeBan += (time * 2592000);
+					} else if (timer[0].front() == 'y') {
+						timeBan += (time * 31536000);
+					}
+				}
+			}
+
+			++end;
+		}
+
+		std::string commentStr = comment.substr(end);
+		if (!commentStr.empty()) {
+			reasonStr.push_back('(');
+			reasonStr.append(commentStr);
+			reasonStr.push_back(')');
+		}
+	}
+	BanInfo banInfo;
+
+	Player* targetPlayer = getPlayerByName(target);
+	if (ipBanishment) {
+		uint32_t targetIp;
+		if (targetPlayer) {
+			targetIp = targetPlayer->getIP();
+		} else {
+			targetIp = IOBan::getAccountLastIP(target);
+		}
+
+		if (targetIp == 0) {
+			player->sendCancelMessage("A player with this name does not exist.");
+			return;
+		}
+
+		if (IOBan::isIpBanned(targetIp, banInfo)) {
+			player->sendCancelMessage((targetPlayer ? targetPlayer->getName() : target) + " is already IP banned.");
+			if (targetPlayer) {
+				targetPlayer->kickPlayer(true);
+			}
+			return;
+		}
+
+		std::stringExtended query(256);
+		query << "INSERT INTO `ip_bans` (`ip`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" << targetIp << ", " << g_database.escapeString(reasonStr) << ", " << timeNow << ", " << (timeNow + timeBan) << ", " << player->getGUID() << ")";
+		g_databaseTasks.addTask(std::move(static_cast<std::string&>(query)));
+
+		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, (targetPlayer ? targetPlayer->getName() : target) + " has been IP banned.");
+		if (targetPlayer) {
+			targetPlayer->kickPlayer(true);
+		}
+	} else {
+		uint32_t targetAccId;
+		if (targetPlayer) {
+			targetAccId = targetPlayer->getAccount();
+		} else {
+			targetAccId = IOBan::getAccountID(target);
+		}
+
+		if (targetAccId == 0) {
+			player->sendCancelMessage("A player with this name does not exist.");
+			return;
+		}
+
+		if (IOBan::isAccountBanned(targetAccId, banInfo)) {
+			player->sendCancelMessage((targetPlayer ? targetPlayer->getName() : target) + " is already banned.");
+			if (targetPlayer) {
+				targetPlayer->kickPlayer(true);
+			}
+			return;
+		}
+
+		std::stringExtended query(256);
+		query << "INSERT INTO `account_bans` (`account_id`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" << targetAccId << ", " << g_database.escapeString(reasonStr) << ", " << timeNow << ", " << (timeNow + timeBan) << ", " << player->getGUID() << ")";
+		g_databaseTasks.addTask(std::move(static_cast<std::string&>(query)));
+
+		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, (targetPlayer ? targetPlayer->getName() : target) + " has been banned.");
+		if (targetPlayer) {
+			targetPlayer->kickPlayer(true);
+		}
+	}
+}
+
+void Game::playerProcessRuleViolation(Player* player, const std::string& target)
+{
+	if (!player->hasFlag(PlayerFlag_CanAnswerRuleViolations)) {
+		return;
+	}
+
+	if (Player* reporter = getPlayerByName(target)) {
+		auto it = ruleViolations.find(reporter->getName());
+		if (it != ruleViolations.end() && it->second.gamemaster == 0) {
+			it->second.gamemaster = player->getID();
+			if (ChatChannel* channel = g_chat->getChannelById(3)) {
+				const UsersMap& users = channel->getUsers();
+				for (const auto& uit : users) {
+					uit.second->sendRuleViolationRemove(reporter->getName());
+				}
+			}
+		}
+	}
+}
+
+void Game::playerCloseRuleViolation(Player* player, const std::string& target)
+{
+	if (!player->hasFlag(PlayerFlag_CanAnswerRuleViolations)) {
+		return;
+	}
+
+	if (Player* reporter = getPlayerByName(target)) {
+		auto it = ruleViolations.find(reporter->getName());
+		if (it != ruleViolations.end()) {
+			reporter->sendRuleViolationLock();
+			if (ChatChannel* channel = g_chat->getChannelById(3)) {
+				const UsersMap& users = channel->getUsers();
+				for (const auto& uit : users) {
+					uit.second->sendRuleViolationRemove(reporter->getName());
+				}
+			}
+			ruleViolations.erase(it);
+		}
+	}
+}
+
+void Game::playerCancelRuleViolation(Player* player)
+{
+	auto it = ruleViolations.find(player->getName());
+	if (it != ruleViolations.end()) {
+		if (Player* gamemaster = getPlayerByID(it->second.gamemaster)) {
+			gamemaster->sendRuleViolationCancel(player->getName());
+		} else if (ChatChannel* channel = g_chat->getChannelById(3)) {
+			const UsersMap& users = channel->getUsers();
+			for (const auto& uit : users) {
+				uit.second->sendRuleViolationRemove(player->getName());
+			}
+		}
+		ruleViolations.erase(it);
+	}
+}
+
+void Game::playerReportRuleViolation(Player* player, const std::string& text)
+{
+	playerCancelRuleViolation(player);
+	ruleViolations.emplace(std::piecewise_construct, std::forward_as_tuple(player->getName()), std::forward_as_tuple(player, text, OTSYS_TIME()));
+
+	if (ChatChannel* channel = g_chat->getChannelById(3)) {
+		const UsersMap& users = channel->getUsers();
+		for (const auto& uit : users) {
+			uit.second->sendChannelMessage(player, text, TALKTYPE_RVR_CHANNEL, 0);
+		}
+	}
+}
+
+void Game::playerContinueReport(Player* player, const std::string& text)
+{
+	auto it = ruleViolations.find(player->getName());
+	if (it != ruleViolations.end()) {
+		if (Player* gamemaster = getPlayerByID(it->second.gamemaster)) {
+			gamemaster->sendPrivateMessage(player, TALKTYPE_RVR_CONTINUE, text);
+			player->sendCancelMessage("Message sent to Gamemaster.");
+		}
+	}
+}
+
+void Game::playerCheckRuleViolation(Player* player)
+{
+	playerCancelRuleViolation(player);
+	if (player->hasFlag(PlayerFlag_CanAnswerRuleViolations)) {
+		for (auto it = ruleViolations.begin(); it != ruleViolations.end(); ++it) {
+			RuleViolation& rvr = it->second;
+			if (rvr.gamemaster == player->getID()) {
+				if (Player* owner = g_game.getPlayerByID(rvr.owner)) {
+					owner->sendRuleViolationLock();
+				}
+				ruleViolations.erase(it);
+				break;
+			}
+		}
+	}
+}
+#endif
 
 #if GAME_FEATURE_STASH > 0
 void Game::playerStowItem(Player* player, Item* item, uint32_t count)
@@ -3515,6 +3842,9 @@ void Game::playerSay(Player* player, uint16_t channelId, SpeakClasses type,
 
 		case TALKTYPE_PRIVATE_TO:
 		case TALKTYPE_PRIVATE_RED_TO:
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		case TALKTYPE_RVR_ANSWER:
+		#endif
 			playerSpeakTo(player, type, receiver, text);
 			break;
 
@@ -3531,6 +3861,16 @@ void Game::playerSay(Player* player, uint16_t channelId, SpeakClasses type,
 		case TALKTYPE_BROADCAST:
 			playerBroadcastMessage(player, text);
 			break;
+
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		case TALKTYPE_RVR_CHANNEL:
+			playerReportRuleViolation(player, text);
+			break;
+
+		case TALKTYPE_RVR_CONTINUE:
+			playerContinueReport(player, text);
+			break;
+		#endif
 
 		default:
 			break;
@@ -3620,7 +3960,13 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string& r
 	if (type == TALKTYPE_PRIVATE_RED_TO && (player->hasFlag(PlayerFlag_CanTalkRedPrivate) || player->getAccountType() >= ACCOUNT_TYPE_GAMEMASTER)) {
 		type = TALKTYPE_PRIVATE_RED_FROM;
 	} else {
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		if (type != TALKTYPE_RVR_ANSWER) {
+			type = TALKTYPE_PRIVATE_FROM;
+		}
+		#else
 		type = TALKTYPE_PRIVATE_FROM;
+		#endif
 	}
 
 	toPlayer->sendPrivateMessage(player, type, text);

@@ -22,6 +22,10 @@
 
 #include "definitions.h"
 
+#if CLIENT_VERSION <= 860
+#define GAME_FEATURE_RULEVIOLATION 1
+#endif
+
 #if CLIENT_VERSION >= 770
 #define GAME_FEATURE_XTEA 1
 #define GAME_FEATURE_RSA1024 1

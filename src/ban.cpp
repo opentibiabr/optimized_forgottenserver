@@ -121,3 +121,29 @@ bool IOBan::isPlayerNamelocked(uint32_t playerId)
 	query << "SELECT 1 FROM `player_namelocks` WHERE `player_id` = " << playerId;
 	return g_database.storeQuery(query).get() != nullptr;
 }
+
+uint32_t IOBan::getAccountID(const std::string& playerName)
+{
+	const std::string& escapedName = g_database.escapeString(playerName);
+	std::stringExtended query(escapedName.length() + 64);
+	query << "SELECT `account_id` FROM `players` WHERE `name` = " << escapedName;
+
+	DBResult_ptr result = g_database.storeQuery(query);
+	if (!result) {
+		return 0;
+	}
+	return result->getNumber<uint32_t>("account_id");
+}
+
+uint32_t IOBan::getAccountLastIP(const std::string& playerName)
+{
+	const std::string& escapedName = g_database.escapeString(playerName);
+	std::stringExtended query(escapedName.length() + 64);
+	query << "SELECT `lastip` FROM `players` WHERE `name` = " << escapedName;
+
+	DBResult_ptr result = g_database.storeQuery(query);
+	if (!result) {
+		return 0;
+	}
+	return result->getNumber<uint32_t>("lastip");
+}

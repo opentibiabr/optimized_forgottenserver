@@ -485,6 +485,8 @@ namespace {
 		}
 
 		player->sendMarketEnter(player->getLastDepotId());
+		#else
+		(void)player;
 		#endif
 		return true;
 	}

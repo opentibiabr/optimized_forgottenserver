@@ -1303,6 +1303,9 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 		}
 
 		g_chat->removeUserFromAllChannels(*this);
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		g_game.playerCheckRuleViolation(this);
+		#endif
 
 		std::cout << getName() << " has logged out." << std::endl;
 

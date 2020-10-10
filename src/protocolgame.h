@@ -144,6 +144,9 @@ class ProtocolGame final : public Protocol
 		void parseTournamentLeaderboard(NetworkMessage& msg);
 
 		void parseBugReport(NetworkMessage& msg);
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		void parseRuleViolation(NetworkMessage& msg);
+		#endif
 		void parseDebugAssert(NetworkMessage& msg);
 		void parseRuleViolationReport(NetworkMessage& msg);
 
@@ -212,6 +215,10 @@ class ProtocolGame final : public Protocol
 		void parseOpenChannel(NetworkMessage& msg);
 		void parseOpenPrivateChannel(NetworkMessage& msg);
 		void parseCloseChannel(NetworkMessage& msg);
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		void parseProcessRuleViolation(NetworkMessage& msg);
+		void parseCloseRuleViolation(NetworkMessage& msg);
+		#endif
 
 		#if GAME_FEATURE_STASH > 0
 		//Stash Actions
@@ -230,6 +237,13 @@ class ProtocolGame final : public Protocol
 		void sendCreatePrivateChannel(uint16_t channelId, const std::string& channelName);
 		void sendChannelsDialog();
 		void sendChannel(uint16_t channelId, const std::string& channelName, const UsersMap* channelUsers, const InvitedMap* invitedUsers);
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		void sendRuleViolationChannel(uint16_t channelId);
+		void sendRuleViolationRemove(const std::string& target);
+		void sendRuleViolationCancel(const std::string& target);
+		void sendRuleViolationLock();
+		void sendChannelMessage(const Player* target, const std::string& text, SpeakClasses type, uint32_t time);
+		#endif
 		void sendOpenPrivateChannel(const std::string& receiver);
 		void sendToChannel(const Creature* creature, SpeakClasses type, const std::string& text, uint16_t channelId);
 		void sendPrivateMessage(const Player* speaker, SpeakClasses type, const std::string& text);

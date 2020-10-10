@@ -52,6 +52,9 @@ class IOBan
 		static bool isAccountBanned(uint32_t accountId, BanInfo& banInfo);
 		static bool isIpBanned(uint32_t clientIP, BanInfo& banInfo);
 		static bool isPlayerNamelocked(uint32_t playerId);
+
+		static uint32_t getAccountID(const std::string& playerName);
+		static uint32_t getAccountLastIP(const std::string& playerName);
 };
 
 #endif

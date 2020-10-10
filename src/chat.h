@@ -34,7 +34,7 @@ class ChatChannel
 	public:
 		ChatChannel() = default;
 		ChatChannel(uint16_t channelId, std::string channelName):
-			id{channelId}, name{std::move(channelName)} {}
+			id(channelId), name(std::move(channelName)) {}
 
 		virtual ~ChatChannel() = default;
 
@@ -117,7 +117,7 @@ class PrivateChatChannel final : public ChatChannel
 		uint32_t owner = 0;
 };
 
-using ChannelList = std::list<ChatChannel*>;
+using ChannelList = std::vector<ChatChannel*>;
 
 class Chat
 {
@@ -152,6 +152,7 @@ class Chat
 		}
 
 	private:
+		std::vector<uint16_t> cachedChannels;
 		std::map<uint16_t, ChatChannel> normalChannels;
 		std::map<uint16_t, PrivateChatChannel> privateChannels;
 		std::map<Party*, ChatChannel> partyChannels;

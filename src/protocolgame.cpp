@@ -564,6 +564,11 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		case 0x98: parseOpenChannel(msg); break;
 		case 0x99: parseCloseChannel(msg); break;
 		case 0x9A: parseOpenPrivateChannel(msg); break;
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		case 0x9B: parseProcessRuleViolation(msg); break;
+		case 0x9C: parseCloseRuleViolation(msg); break;
+		case 0x9D: g_game.playerCancelRuleViolation(player); break;
+		#endif
 		case 0x9E: g_game.playerCloseNpcChannel(player); break;
 		case 0xA0: parseFightModes(msg); break;
 		case 0xA1: parseAttack(msg); break;
@@ -613,7 +618,11 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		case 0xE3: parseCyclopediaRace(msg); break;
 		case 0xE5: parseCyclopediaCharacterInfo(msg); break;
 		case 0xE6: parseBugReport(msg); break;
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		case 0xE7: parseRuleViolation(msg); break;
+		#else
 		case 0xE7: /* thank you */ break;
+		#endif
 		case 0xE8: parseDebugAssert(msg); break;
 		case 0xF0: g_game.playerShowQuestLog(player); break;
 		case 0xF1: parseQuestLine(msg); break;
@@ -898,6 +907,24 @@ void ProtocolGame::parseOpenPrivateChannel(NetworkMessage& msg)
 	}
 }
 
+#if GAME_FEATURE_RULEVIOLATION > 0
+void ProtocolGame::parseProcessRuleViolation(NetworkMessage& msg)
+{
+	std::string target = msg.getString();
+	if (!target.empty() && target.length() <= NETWORKMESSAGE_PLAYERNAME_MAXLENGTH) {
+		g_game.playerProcessRuleViolation(player, target);
+	}
+}
+
+void ProtocolGame::parseCloseRuleViolation(NetworkMessage& msg)
+{
+	std::string target = msg.getString();
+	if (!target.empty() && target.length() <= NETWORKMESSAGE_PLAYERNAME_MAXLENGTH) {
+		g_game.playerCloseRuleViolation(player, target);
+	}
+}
+#endif
+
 #if GAME_FEATURE_STASH > 0
 void ProtocolGame::parseStashAction(NetworkMessage& msg)
 {
@@ -1112,6 +1139,9 @@ void ProtocolGame::parseSay(NetworkMessage& msg)
 	switch (type) {
 		case TALKTYPE_PRIVATE_TO:
 		case TALKTYPE_PRIVATE_RED_TO:
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		case TALKTYPE_RVR_ANSWER:
+		#endif
 			receiver = msg.getString();
 			channelId = 0;
 			break;
@@ -1442,6 +1472,29 @@ void ProtocolGame::parseBugReport(NetworkMessage& msg)
 
 	g_game.playerReportBug(player, message, position, category);
 }
+
+#if GAME_FEATURE_RULEVIOLATION > 0
+void ProtocolGame::parseRuleViolation(NetworkMessage& msg)
+{
+	#if CLIENT_VERSION >= 772
+	std::string target = msg.getString();
+	uint8_t reason = msg.getByte();
+	uint8_t action = msg.getByte();
+	std::string comment = msg.getString();
+	uint32_t statementId = msg.get<uint32_t>();
+	bool ipBanishment = msg.getByte();
+	#else
+	std::string target = msg.getString();
+	uint8_t reason = msg.getByte();
+	std::string comment = msg.getString();
+	uint8_t action = msg.getByte();
+	uint32_t statementId = 0;
+	bool ipBanishment = msg.getByte();
+	#endif
+
+	g_game.playerRuleViolation(player, target, comment, reason, action, statementId, ipBanishment);
+}
+#endif
 
 void ProtocolGame::parseDebugAssert(NetworkMessage& msg)
 {
@@ -2823,6 +2876,79 @@ void ProtocolGame::sendChannel(uint16_t channelId, const std::string& channelNam
 	writeToOutputBuffer(playermsg);
 }
 
+#if GAME_FEATURE_RULEVIOLATION > 0
+void ProtocolGame::sendRuleViolationChannel(uint16_t channelId)
+{
+	playermsg.reset();
+	playermsg.addByte(0xAE);
+	playermsg.add<uint16_t>(channelId);
+	writeToOutputBuffer(playermsg);
+
+	auto& ruleViolations = g_game.getRuleViolations();
+	for (auto it = ruleViolations.begin(); it != ruleViolations.end();) {
+		RuleViolation& rvr = it->second;
+		if (Player* owner = g_game.getPlayerByID(rvr.owner)) {
+			if (rvr.gamemaster == 0) {
+				sendChannelMessage(owner, rvr.message, TALKTYPE_RVR_CHANNEL, ((OTSYS_TIME() - rvr.time) / 1000) & 0xFFFFFFFF);
+			}
+
+			++it;
+		} else {
+			it = ruleViolations.erase(it);
+		}
+	}
+}
+
+void ProtocolGame::sendRuleViolationRemove(const std::string& target)
+{
+	playermsg.reset();
+	playermsg.addByte(0xAF);
+	playermsg.addString(target);
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendRuleViolationCancel(const std::string& target)
+{
+	playermsg.reset();
+	playermsg.addByte(0xB0);
+	playermsg.addString(target);
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendRuleViolationLock()
+{
+	playermsg.reset();
+	playermsg.addByte(0xB1);
+	writeToOutputBuffer(playermsg);
+}
+
+void ProtocolGame::sendChannelMessage(const Player* target, const std::string& text, SpeakClasses type, uint32_t time)
+{
+	uint8_t talkType = translateSpeakClassToClient(type);
+	if (talkType == TALKTYPE_NONE) {
+		return;
+	}
+
+	playermsg.reset();
+	playermsg.addByte(0xAA);
+	#if GAME_FEATURE_MESSAGE_STATEMENT > 0
+	playermsg.add<uint32_t>(0x00);
+	#endif
+	playermsg.addString(target->getName());
+	#if GAME_FEATURE_MESSAGE_LEVEL > 0
+	playermsg.add<uint16_t>(0x00);
+	#endif
+	playermsg.addByte(talkType);
+	#if CLIENT_VERSION >= 713
+	playermsg.add<uint32_t>(time);
+	#else
+	(void)time;
+	#endif
+	playermsg.addString(text);
+	writeToOutputBuffer(playermsg);
+}
+#endif
+
 void ProtocolGame::sendChannelMessage(const std::string& author, const std::string& text, SpeakClasses type, uint16_t channel)
 {
 	uint8_t talkType = translateSpeakClassToClient(type);
@@ -3748,6 +3874,29 @@ void ProtocolGame::sendPrivateMessage(const Player* speaker, SpeakClasses type, 
 	playermsg.add<uint32_t>(++statementId);
 	#endif
 	if (speaker) {
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		if (type == TALKTYPE_RVR_ANSWER) {
+			playermsg.addString("Gamemaster");
+			#if CLIENT_VERSION >= 1250
+			if (statementId != 0) {
+				playermsg.addByte(0x00);//(Traded)
+			}
+			#endif
+			#if GAME_FEATURE_MESSAGE_LEVEL > 0
+			playermsg.add<uint16_t>(0);
+			#endif
+		} else {
+			playermsg.addString(speaker->getName());
+			#if CLIENT_VERSION >= 1250
+			if (statementId != 0) {
+				playermsg.addByte(0x00);//(Traded)
+			}
+			#endif
+			#if GAME_FEATURE_MESSAGE_LEVEL > 0
+			playermsg.add<uint16_t>(speaker->getLevel());
+			#endif
+		}
+		#else
 		playermsg.addString(speaker->getName());
 		#if CLIENT_VERSION >= 1250
 		if (statementId != 0) {
@@ -3756,6 +3905,7 @@ void ProtocolGame::sendPrivateMessage(const Player* speaker, SpeakClasses type, 
 		#endif
 		#if GAME_FEATURE_MESSAGE_LEVEL > 0
 		playermsg.add<uint16_t>(speaker->getLevel());
+		#endif
 		#endif
 	} else {
 		playermsg.add<uint16_t>(0x00);
@@ -4198,6 +4348,27 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	#if GAME_FEATURE_LOGIN_PENDING > 0
 	playermsg.addByte(0x0A); // sendPendingStateEntered
 	playermsg.addByte(0x0F); // sendWorldEnter
+	#endif
+
+	#if GAME_FEATURE_RULEVIOLATION > 0
+	if (player->isAccessPlayer()) {
+		playermsg.addByte(0x0B);
+		#if CLIENT_VERSION >= 726 && CLIENT_VERSION <= 730
+		for (int32_t i = 0; i < 30; ++i) {
+		#elif CLIENT_VERSION >= 850
+		for (int32_t i = 0; i < 20; ++i) {
+		#elif CLIENT_VERSION >= 820
+		for (int32_t i = 0; i < 23; ++i) {
+		#else
+		for (int32_t i = 0; i < 32; ++i) {
+		#endif
+			#if CLIENT_VERSION >= 772
+			playermsg.addByte(0x84);
+			#else
+			playermsg.addByte(0x44);
+			#endif
+		}
+	}
 	#endif
 
 	//gameworld settings

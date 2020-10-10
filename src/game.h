@@ -72,6 +72,27 @@ enum LightState_t {
 
 static constexpr int32_t EVENT_LIGHTINTERVAL = 10000;
 
+#if GAME_FEATURE_RULEVIOLATION > 0
+struct RuleViolation
+{
+	RuleViolation(Player* owner, const std::string& text, int64_t time) :
+		owner(owner->getID()), message(text), time(time) {}
+
+	// non-copyable
+	RuleViolation(const RuleViolation&) = delete;
+	RuleViolation& operator=(const RuleViolation&) = delete;
+
+	// non-moveable
+	RuleViolation(RuleViolation&&) = delete;
+	RuleViolation& operator=(RuleViolation&&) = delete;
+
+	std::string message;
+	int64_t time;
+	uint32_t owner;
+	uint32_t gamemaster = 0;
+};
+#endif
+
 /**
   * Main Game class.
   * This class is responsible to control everything that happens
@@ -356,6 +377,16 @@ class Game
 		void playerOpenChannel(Player* player, uint16_t channelId);
 		void playerCloseChannel(Player* player, uint16_t channelId);
 		void playerOpenPrivateChannel(Player* player, std::string& receiver);
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		void playerRuleViolation(Player* player, const std::string& target, const std::string& comment, uint8_t reason, uint8_t action, uint32_t statementId, bool ipBanishment);
+		void playerProcessRuleViolation(Player* player, const std::string& target);
+		void playerCloseRuleViolation(Player* player, const std::string& target);
+		void playerCancelRuleViolation(Player* player);
+		void playerReportRuleViolation(Player* player, const std::string& text);
+		void playerContinueReport(Player* player, const std::string& text);
+		void playerCheckRuleViolation(Player* player);
+		std::unordered_map<std::string, RuleViolation>& getRuleViolations() {return ruleViolations;}
+		#endif
 		#if GAME_FEATURE_STASH > 0
 		void playerStowItem(Player* player, Item* item, uint32_t count);
 		void playerStowItem(Player* player, const Position& pos, uint16_t spriteId, uint8_t stackpos, uint32_t count);
@@ -569,6 +600,9 @@ class Game
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string& receiver, const std::string& text);
 		void playerSpeakToNpc(Player* player, const std::string& text);
 
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		std::unordered_map<std::string, RuleViolation> ruleViolations;
+		#endif
 		std::unordered_map<uint32_t, Player*> players;
 		std::unordered_map<std::string, Player*> mappedPlayerNames;
 		std::unordered_map<uint32_t, Npc*> npcs;
