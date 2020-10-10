@@ -616,6 +616,33 @@
 <monster id="1866" name="freakish lost soul" looktype="1268" head="0" body="74" legs="0" feet="83" addons="0" />
 <monster id="1880" name="cursed prospector" looktype="1268" head="0" body="19" legs="0" feet="38" addons="0" />
 <monster id="1885" name="evil prospector" looktype="1268" head="0" body="14" legs="0" feet="34" addons="0" />
+<monster id="1926" name="bony sea devil" looktype="1294" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="1927" name="many faces" looktype="1296" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="1928" name="cloak of terror" looktype="1295" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="1929" name="vibrant phantom" looktype="1298" head="85" body="85" legs="88" feet="91" addons="0" />
+<monster id="1930" name="brachiodemon" looktype="1299" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="1931" name="branchy crawler" looktype="1297" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="1932" name="capricious phantom" looktype="1298" head="81" body="114" legs="85" feet="83" addons="0" />
+<monster id="1933" name="infernal phantom" looktype="1298" head="114" body="80" legs="94" feet="78" addons="0" />
+<monster id="1938" name="infernal demon" looktype="1313" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="1939" name="rotten golem" looktype="1312" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="1940" name="turbulent elemental" looktype="1314" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="1941" name="courage leech" looktype="1315" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="1945" name="mould phantom" looktype="1298" head="106" body="60" legs="131" feet="116" addons="0" />
+<monster id="1946" name="druid's apparition" looktype="148" head="114" body="48" legs="114" feet="95" addons="0" />
+<monster id="1947" name="knight's apparition" looktype="131" head="19" body="76" legs="74" feet="114" addons="0" />
+<monster id="1948" name="paladin's apparition" looktype="129" head="57" body="42" legs="114" feet="114" addons="0" />
+<monster id="1949" name="sorcerer's apparition" looktype="138" head="95" body="114" legs="52" feet="76" addons="0" />
+<monster id="1962" name="distorted phantom" looktype="1298" head="113" body="94" legs="132" feet="76" addons="0" />
+<monster id="1963" name="werehyaena" looktype="1300" head="57" body="77" legs="1" feet="1" addons="0" />
+<monster id="1964" name="werehyaena shaman" looktype="1300" head="0" body="0" legs="94" feet="95" addons="0" />
+<monster id="1965" name="werelion" looktype="1301" head="58" body="2" legs="94" feet="10" addons="3" />
+<monster id="1966" name="werelioness" looktype="1301" head="0" body="2" legs="0" feet="94" addons="0" />
+<monster id="1967" name="white lion" looktype="1290" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="1972" name="usurper knight" looktype="1316" head="76" body="57" legs="76" feet="95" addons="1" />
+<monster id="1973" name="usurper archer" looktype="1316" head="76" body="57" legs="76" feet="95" addons="2" />
+<monster id="1974" name="usurper warlock" looktype="1316" head="57" body="2" legs="21" feet="95" addons="0" />
+<monster id="1979" name="agrestic chicken" looktype="111" head="0" body="0" legs="0" feet="0" addons="0" />
 
 # achievements
 <achievement id="2" name="Chorister" description="Lalalala... you now know the cult's hymn sung in Liberty Bay by heart. Not that hard, considering that it mainly consists of two notes and repetitive lyrics." grade="1" />
@@ -918,6 +945,11 @@
 <achievement id="506" name="Falconer" description="A true beastmaster learns the language of his animal companions. Now you as well can bolster your unique bond with nature and help preserve the balance of life as a proud falconer." grade="1" />
 <achievement id="507" name="Steppe Elegance" description="Champion of the wildlands, a swift strider among the creatures of the wild. The elegant nature of the gallop, this envoy of speed has mastered, indicates the precise understanding of its terrain and environment." grade="1" />
 <achievement id="508" name="Beyonder" description="Adventurous beyond death, you travelled the Netherworld. Although you had just the ghost of a chance you survived and even came back from the realm of the dead." grade="1" />
+<achievement id="510" name="Drama in Darama" description="If a pride of lions and a pack of hyaenas feud, it is not called a catfight but a ... whatsoever. For sure, it caused a lot of drama in the Darama Desert." grade="1" />
+<achievement id="512" name="Lionheart" description="You bested the maleficent duo Drume and Fugue and restored order to the besieged town of Bounac. You conquered the exotic stronghold of the Order of the Cobra and bested the undead knights of the Order of the Falcon. A true knight in heart and mind." grade="1" />
+<achievement id="514" name="You got Horse Power" description="Brought back to the realm of the living this magnificent creature will carry you through death and everything that lays beyond." grade="3" />
+<achievement id="515" name="Unleash the Beast" description="You defeated the manifestation of Goshnar's evil traits by fighting your way through beasts you didn't even want to imagine. It transformed you and now you can also look the part. " grade="3" />
+<achievement id="516" name="Well Roared, Lion!" description="You helped Domizian and thus proved yourself worthy to enter the werelion sanctum underneath Lion's Rock.You faced the mighty werelions there and one of the rare white lions even chose to accompany you." grade="1" />
 
 # houses
 <house id="10001" name="Spiritkeep" city="Thais" x="32264" y="32314" z="7" rent="500000" sqms="378" beds="23" guildHall="yes" shop="no" />
@@ -1073,7 +1105,7 @@
 <house id="19016" name="Antimony Lane 3" city="Rathleton" x="33626" y="31917" z="6" rent="400000" sqms="77" beds="3" guildHall="no" shop="no" />
 <house id="19017" name="Antimony Lane 4" city="Rathleton" x="33614" y="31918" z="6" rent="400000" sqms="110" beds="3" guildHall="no" shop="no" />
 <house id="19018" name="Rathleton Plaza 4" city="Rathleton" x="33604" y="31909" z="6" rent="400000" sqms="109" beds="2" guildHall="no" shop="no" />
-<house id="20001" name="Moonkeep" city="Carlin" x="32424" y="31764" z="7" rent="250000" sqms="288" beds="16" guildHall="yes" shop="no" />
+<house id="20001" name="Moonkeep" city="Carlin" x="32424" y="31764" z="7" rent="250000" sqms="289" beds="16" guildHall="yes" shop="no" />
 <house id="20002" name="House of Recreation" city="Carlin" x="32280" y="31827" z="7" rent="500000" sqms="401" beds="16" guildHall="yes" shop="no" />
 <house id="20003" name="Nordic Stronghold" city="Carlin" x="32296" y="31668" z="7" rent="250000" sqms="410" beds="21" guildHall="yes" shop="no" />
 <house id="20004" name="Druids Retreat A" city="Carlin" x="32278" y="31725" z="7" rent="50000" sqms="31" beds="2" guildHall="no" shop="no" />
@@ -1845,6 +1877,7 @@
 <house id="63010" name="Meriana Beach" city="Liberty Bay" x="32383" y="32578" z="7" rent="150000" sqms="146" beds="3" guildHall="no" shop="no" />
 <house id="63011" name="The Yeah Beach Project" city="Liberty Bay" x="32293" y="32554" z="7" rent="150000" sqms="115" beds="3" guildHall="no" shop="no" />
 <house id="63012" name="Ivory Mansion" city="Liberty Bay" x="32353" y="32843" z="7" rent="800000" sqms="265" beds="7" guildHall="no" shop="no" />
+<house id="63013" name="Lion's Head Reef" city="Liberty Bay" x="32362" y="32501" z="7" rent="400000" sqms="142" beds="5" guildHall="no" shop="no" />
 <house id="64001" name="Freedom Street 1" city="Liberty Bay" x="32317" y="32811" z="7" rent="200000" sqms="47" beds="2" guildHall="no" shop="no" />
 <house id="64002" name="Freedom Street 2" city="Liberty Bay" x="32332" y="32812" z="7" rent="400000" sqms="115" beds="4" guildHall="no" shop="no" />
 <house id="64003" name="Trader's Point 1" city="Liberty Bay" x="32306" y="32820" z="7" rent="200000" sqms="42" beds="2" guildHall="no" shop="no" />
