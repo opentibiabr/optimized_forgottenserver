@@ -1737,7 +1737,11 @@ void Player::addManaSpent(uint64_t amount)
 	}
 
 	if (sendUpdateStats) {
+		#if CLIENT_VERSION >= 1200
+		addScheduledUpdates(PlayerUpdate_Skills);
+		#else
 		addScheduledUpdates(PlayerUpdate_Stats);
+		#endif
 	}
 }
 

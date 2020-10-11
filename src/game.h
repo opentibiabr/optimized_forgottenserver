@@ -76,7 +76,7 @@ static constexpr int32_t EVENT_LIGHTINTERVAL = 10000;
 struct RuleViolation
 {
 	RuleViolation(Player* owner, const std::string& text, int64_t time) :
-		owner(owner->getID()), message(text), time(time) {}
+		message(text), time(time), owner(owner->getID()) {}
 
 	// non-copyable
 	RuleViolation(const RuleViolation&) = delete;

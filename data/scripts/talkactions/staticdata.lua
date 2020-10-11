@@ -218,10 +218,10 @@ function talk.onSay(player, words, param)
 					file:write("\n\n# houses")
 					for i = 1, #houses do
 						local house = houses[i]
-						if house.description then
-							file:write("\n<house id=\""..house.id.."\" name=\""..house.name.."\" city=\""..house.city.."\" x=\""..house.position.x.."\" y=\""..house.position.y.."\" z=\""..house.position.z.."\" rent=\""..house.rent.."\" sqms=\""..house.SQMs.."\" beds=\""..house.beds.."\" guildHall=\""..(house.isGuildHall and "yes" or "no").."\" shop=\""..(house.isShop and "yes" or "no").."\" />")
-						else
+						if house.description and house.description:len() > 0 then
 							file:write("\n<house id=\""..house.id.."\" name=\""..house.name.."\" city=\""..house.city.."\" description=\""..house.description.."\" x=\""..house.position.x.."\" y=\""..house.position.y.."\" z=\""..house.position.z.."\" rent=\""..house.rent.."\" sqms=\""..house.SQMs.."\" beds=\""..house.beds.."\" guildHall=\""..(house.isGuildHall and "yes" or "no").."\" shop=\""..(house.isShop and "yes" or "no").."\" />")
+						else
+							file:write("\n<house id=\""..house.id.."\" name=\""..house.name.."\" city=\""..house.city.."\" x=\""..house.position.x.."\" y=\""..house.position.y.."\" z=\""..house.position.z.."\" rent=\""..house.rent.."\" sqms=\""..house.SQMs.."\" beds=\""..house.beds.."\" guildHall=\""..(house.isGuildHall and "yes" or "no").."\" shop=\""..(house.isShop and "yes" or "no").."\" />")
 						end
 					end
 
