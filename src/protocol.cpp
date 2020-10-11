@@ -160,10 +160,10 @@ void Protocol::XTEA_encrypt(OutputMessage& msg) const
 	}
 	#if defined(__AVX512F__)
 	while (readPos <= messageLength) {
-		const __m512i data0 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m512i data1 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 64)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m512i data3 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 128)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m512i data4 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 192)), _MM_SHUFFLE(3, 1, 2, 0));
+		const __m512i data0 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos)), _MM_PERM_DBCA);
+		const __m512i data1 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 64)), _MM_PERM_DBCA);
+		const __m512i data3 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 128)), _MM_PERM_DBCA);
+		const __m512i data4 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 192)), _MM_PERM_DBCA);
 		__m512i vdata0 = _mm512_unpacklo_epi64(data0, data1);
 		__m512i vdata1 = _mm512_unpackhi_epi64(data0, data1);
 		__m512i vdata3 = _mm512_unpacklo_epi64(data3, data4);
@@ -185,8 +185,8 @@ void Protocol::XTEA_encrypt(OutputMessage& msg) const
 	}
 	messageLength += 128;
 	if (readPos <= messageLength) {
-		const __m512i data0 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m512i data1 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 64)), _MM_SHUFFLE(3, 1, 2, 0));
+		const __m512i data0 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos)), _MM_PERM_DBCA);
+		const __m512i data1 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 64)), _MM_PERM_DBCA);
 		__m512i vdata0 = _mm512_unpacklo_epi64(data0, data1);
 		__m512i vdata1 = _mm512_unpackhi_epi64(data0, data1);
 		for (int32_t i = 0; i < 32; ++i) {
@@ -336,10 +336,10 @@ bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 	}
 	#if defined(__AVX512F__)
 	while (readPos <= messageLength) {
-		const __m512i data0 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m512i data1 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 64)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m512i data2 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 128)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m512i data3 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 192)), _MM_SHUFFLE(3, 1, 2, 0));
+		const __m512i data0 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos)), _MM_PERM_DBCA);
+		const __m512i data1 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 64)), _MM_PERM_DBCA);
+		const __m512i data2 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 128)), _MM_PERM_DBCA);
+		const __m512i data3 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 192)), _MM_PERM_DBCA);
 		__m512i vdata0 = _mm512_unpacklo_epi64(data0, data1);
 		__m512i vdata1 = _mm512_unpackhi_epi64(data0, data1);
 		__m512i vdata2 = _mm512_unpacklo_epi64(data2, data3);
@@ -361,8 +361,8 @@ bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 	}
 	messageLength += 128;
 	if (readPos <= messageLength) {
-		const __m512i data0 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m512i data1 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 64)), _MM_SHUFFLE(3, 1, 2, 0));
+		const __m512i data0 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos)), _MM_PERM_DBCA);
+		const __m512i data1 = _mm512_shuffle_epi32(_mm512_loadu_si512(reinterpret_cast<const void*>(buffer + readPos + 64)), _MM_PERM_DBCA);
 		__m512i vdata0 = _mm512_unpacklo_epi64(data0, data1);
 		__m512i vdata1 = _mm512_unpackhi_epi64(data0, data1);
 		for (int32_t i = 0; i < 32; ++i) {
