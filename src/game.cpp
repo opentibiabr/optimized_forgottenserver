@@ -4545,7 +4545,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					#if GAME_FEATURE_SERVER_LOG_DETAILS > 0
 					if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
 						std::stringExtended sink(target->getNameDescription().length() + 64);
-						sink << ucfirst(target->getNameDescription()) << " loses " << manaDamage + " mana due to your attack.";
+						sink << ucfirst(target->getNameDescription()) << " loses " << manaDamage << " mana due to your attack.";
 						message.type = MESSAGE_DAMAGE_DEALT;
 						message.text = std::move(static_cast<std::string&>(sink));
 					} else if (tmpPlayer == targetPlayer) {
@@ -4563,7 +4563,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					} else {
 						if (message.type != MESSAGE_DAMAGE_OTHERS) {
 							std::stringExtended sink(NETWORKMESSAGE_PLAYERNAME_MAXLENGTH + target->getNameDescription().length() + 64);
-							sink << ucfirst(target->getNameDescription()) << " loses " << manaDamage + " mana";
+							sink << ucfirst(target->getNameDescription()) << " loses " << manaDamage << " mana";
 							if (attacker) {
 								sink << " due to ";
 								if (attacker == target) {
