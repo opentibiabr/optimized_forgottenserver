@@ -1641,7 +1641,7 @@ int64_t OTSYS_TIME()
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-SpellGroup_t stringToSpellGroup(std::string value)
+SpellGroup_t stringToSpellGroup(const std::string& value)
 {
 	std::string tmpStr = asLowerCaseString(value);
 	if (!tfs_strcmp(tmpStr.c_str(), "attack") || !tfs_strcmp(tmpStr.c_str(), "1")) {

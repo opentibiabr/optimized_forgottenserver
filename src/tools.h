@@ -96,7 +96,7 @@ const char* getReturnMessage(ReturnValue value);
 
 int64_t OTSYS_TIME();
 
-SpellGroup_t stringToSpellGroup(std::string value);
+SpellGroup_t stringToSpellGroup(const std::string& value);
 
 #if defined(__SSE4_2__)
 int tfs_strncmp(const char* s1, const char* s2, size_t n);
