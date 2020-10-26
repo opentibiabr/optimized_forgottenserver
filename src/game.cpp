@@ -5545,7 +5545,7 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 	if (player->hasAsyncOngoingTask(PlayerAsyncTask_Highscore)) {
 		return;
 	}
-	
+
 	std::string categoryName;
 	switch (category) {
 		case HIGHSCORE_CATEGORY_FIST_FIGHTING: categoryName = "skill_fist"; break;
@@ -5567,7 +5567,7 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 	if (type == HIGHSCORE_GETENTRIES) {
 		uint32_t startPage = (static_cast<uint32_t>(page - 1) * static_cast<uint32_t>(entriesPerPage));
 		uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
-		query << "SELECT *, @row AS `entries` FROM (SELECT *, (@row := @row + 1) AS `rn` FROM (SELECT `id`, `name`, `level`, `vocation`, `" << categoryName << "` AS `points`, @curRank := IF(@prevRank = `" << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` ORDER BY `" << categoryName << "` DESC) `t`";
+		query << "SELECT *, @row AS `entries`, " << page << " AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn` FROM (SELECT `id`, `name`, `level`, `vocation`, `" << categoryName << "` AS `points`, @curRank := IF(@prevRank = `" << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` ORDER BY `" << categoryName << "` DESC) `t`";
 		if (vocation != 0xFFFFFFFF) {
 			bool firstVocation = true;
 
@@ -5586,14 +5586,29 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 		}
 		query << ") `T` WHERE `rn` > " << startPage << " AND `rn` <= " << endPage;
 	} else if (type == HIGHSCORE_OURRANK) {
-		page = 0;
-		vocation = 0xFFFFFFFF;
-		query << "SELECT *, 0 AS `entries` FROM (SELECT `id`, `name`, `level`, `vocation`, `" << categoryName << "` AS `points`, @curRank := IF(@prevRank = `" << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL) `r` ORDER BY `" << categoryName << "` DESC) `T` WHERE `id` = " << player->getGUID();
-		//TODO: navigate to the real page we are in, for now only show our rank
+		std::string entriesStr = std::to_string(entriesPerPage);
+		query << "SELECT *, @row AS `entries`, (@ourRow DIV " << entriesStr << ") + 1 AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn`, @ourRow := IF(`id` = " << player->getGUID() << ", @row - 1, @ourRow) AS `rw` FROM (SELECT `id`, `name`, `level`, `vocation`, `" << categoryName << "` AS `points`, @curRank := IF(@prevRank = `" << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0, @ourRow := 0) `r` ORDER BY `" << categoryName << "` DESC) `t`";
+		if (vocation != 0xFFFFFFFF) {
+			bool firstVocation = true;
+
+			const auto& vocationsMap = g_vocations.getVocations();
+			for (const auto& it : vocationsMap) {
+				const Vocation& voc = it.second;
+				if (voc.getFromVocation() == vocation) {
+					if (firstVocation) {
+						query << " WHERE `vocation` = " << voc.getId();
+						firstVocation = false;
+					} else {
+						query << " OR `vocation` = " << voc.getId();
+					}
+				}
+			}
+		}
+		query << ") `T` WHERE `rn` > ((@ourRow DIV " << entriesStr << ") * " << entriesStr << ") AND `rn` <= (((@ourRow DIV " << entriesStr << ") * " << entriesStr << ") + " << entriesStr << ")";
 	}
 
 	uint32_t playerID = player->getID();
-	std::function<void(DBResult_ptr, bool)> callback = [playerID, category, vocation, page, entriesPerPage](DBResult_ptr result, bool) {
+	std::function<void(DBResult_ptr, bool)> callback = [playerID, category, vocation, entriesPerPage](DBResult_ptr result, bool) {
 		Player* player = g_game.getPlayerByID(playerID);
 		if (!player) {
 			return;
@@ -5605,6 +5620,7 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 			return;
 		}
 
+		uint16_t page = result->getNumber<uint16_t>("page");
 		uint32_t pages = result->getNumber<uint32_t>("entries");
 		pages += entriesPerPage - 1;
 		pages /= entriesPerPage;
