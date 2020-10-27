@@ -68,8 +68,13 @@ void ProtocolGame::login(const std::string& accountName, const std::string& pass
 #endif
 {
 	//dispatcher thread
+	auto connection = getConnection();
+	if (!connection) {
+		return;
+	}
+
 	BanInfo banInfo;
-	if (IOBan::isIpBanned(getIP(), banInfo)) {
+	if (IOBan::isIpBanned(connection->getIP(), banInfo)) {
 		if (banInfo.reason.empty()) {
 			banInfo.reason = "(none)";
 		}
@@ -2132,10 +2137,10 @@ void ProtocolGame::sendCyclopediaRace(uint16_t monsterId)
 					bool monsterHaveActiveCharm = false;
 					playermsg.addByte((monsterHaveActiveCharm ? 0x01 : 0x00));
 					if (monsterHaveActiveCharm) {
-						playermsg.addByte(0); // ??
-						playermsg.add<uint32_t>(0); // ??
+						playermsg.addByte(0); // charmId
+						playermsg.add<uint32_t>(0); // charmRemoveCost
 					} else {
-						playermsg.addByte(0); // ??
+						playermsg.addByte(0); // canSetCharm - bool
 					}
 				}
 				writeToOutputBuffer(playermsg);
