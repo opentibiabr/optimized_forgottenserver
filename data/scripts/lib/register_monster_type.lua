@@ -10,7 +10,8 @@ setmetatable(registerMonsterType,
 })
 
 MonsterType.register = function(self, mask)
-	return registerMonsterType(self, mask)
+	registerMonsterType(self, mask)
+	self:shrinkToFit()
 end
 
 registerMonsterType.description = function(mtype, mask)

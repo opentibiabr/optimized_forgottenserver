@@ -650,7 +650,7 @@ std::string LuaScriptInterface::popString(lua_State* L)
 		return std::string();
 	}
 
-	std::string str(getString(L, -1));
+	std::string str = getString(L, -1);
 	lua_pop(L, 1);
 	return str;
 }
@@ -977,7 +977,11 @@ void LuaScriptInterface::pushLoot(lua_State* L, const std::vector<LootBlock>& lo
 		setField(L, "subType", lootBlock.subType);
 		setField(L, "maxCount", lootBlock.countmax);
 		setField(L, "actionId", lootBlock.actionId);
-		setField(L, "text", lootBlock.text);
+		if (lootBlock.text) {
+			setField(L, "text", *lootBlock.text);
+		} else {
+			setField(L, "text", "");
+		}
 
 		pushLoot(L, lootBlock.childLoot);
 		lua_setfield(L, -2, "childLoot");
@@ -3137,6 +3141,8 @@ void LuaScriptInterface::registerFunctions()
 	registerMethod("MonsterType", "changeTargetChance", LuaScriptInterface::luaMonsterTypeChangeTargetChance);
 	registerMethod("MonsterType", "changeTargetSpeed", LuaScriptInterface::luaMonsterTypeChangeTargetSpeed);
 
+	registerMethod("MonsterType", "shrinkToFit", LuaScriptInterface::luaMonsterTypeShrinkToFit);
+
 	// Loot
 	registerClass("Loot", "", LuaScriptInterface::luaCreateLoot);
 	registerMetaMethod("Loot", "__gc", LuaScriptInterface::luaDeleteLoot);
@@ -5208,7 +5214,7 @@ int LuaScriptInterface::luaVariantCreate(lua_State* L)
 		variant.number = getNumber<uint32_t>(L, 2);
 	} else if (isString(L, 2)) {
 		variant.type = VARIANT_STRING;
-		variant.text = getString(L, 2);
+		variant.text = std::move(getString(L, 2));
 	}
 	pushVariant(L, variant);
 	return 1;
@@ -7104,9 +7110,9 @@ int LuaScriptInterface::luaItemSetCustomAttribute(lua_State* L) {
 
 	std::string key;
 	if (isNumber(L, 2)) {
-		key = boost::lexical_cast<std::string>(getNumber<int64_t>(L, 2));
+		key = std::move(boost::lexical_cast<std::string>(getNumber<int64_t>(L, 2)));
 	} else if (isString(L, 2)) {
-		key = getString(L, 2);
+		key = std::move(getString(L, 2));
 	} else {
 		lua_pushnil(L);
 		return 1;
@@ -8607,7 +8613,7 @@ int LuaScriptInterface::luaPlayerSetName(lua_State* L)
 	// player:setName(newName)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		player->setName(getString(L, 2));
+		player->setName(std::move(getString(L, 2)));
 		g_game.updateCreatureData(player);
 		pushBoolean(L, true);
 	} else {
@@ -9931,7 +9937,7 @@ int LuaScriptInterface::luaPlayerShowTextDialog(lua_State* L)
 
 	int parameters = lua_gettop(L);
 	if (parameters >= 3) {
-		text = getString(L, 3);
+		text = std::move(getString(L, 3));
 	}
 
 	Item* item;
@@ -9994,7 +10000,7 @@ int LuaScriptInterface::luaPlayerSendTextMessage(lua_State* L)
 
 	int parameters = lua_gettop(L);
 
-	TextMessage message(getNumber<MessageClasses>(L, 2), getString(L, 3));
+	TextMessage message(getNumber<MessageClasses>(L, 2), std::move(getString(L, 3)));
 	if (parameters == 4) {
 		uint16_t channelId = getNumber<uint16_t>(L, 4);
 		ChatChannel* channel = g_chat->getChannel(*player, channelId);
@@ -13294,7 +13300,7 @@ int32_t LuaScriptInterface::luaMonsterTypeName(lua_State* L)
 		if (lua_gettop(L) == 1) {
 			pushString(L, monsterType->name);
 		} else {
-			monsterType->name = getString(L, 2);
+			monsterType->name = std::move(getString(L, 2));
 			pushBoolean(L, true);
 		}
 	} else {
@@ -13311,7 +13317,7 @@ int LuaScriptInterface::luaMonsterTypeNameDescription(lua_State* L)
 		if (lua_gettop(L) == 1) {
 			pushString(L, monsterType->nameDescription);
 		} else {
-			monsterType->nameDescription = getString(L, 2);
+			monsterType->nameDescription = std::move(getString(L, 2));
 			pushBoolean(L, true);
 		}
 	} else {
@@ -13536,7 +13542,7 @@ int LuaScriptInterface::luaMonsterTypeAddAttack(lua_State* L)
 		if (spell) {
 			spellBlock_t sb;
 			if (g_monsters.deserializeSpell(spell, sb, monsterType->name)) {
-				monsterType->info.attackSpells.push_back(std::move(sb));
+				monsterType->info.attackSpells.emplace_back(std::move(sb));
 			} else {
 				std::cout << monsterType->name << std::endl;
 				std::cout << "[Warning - Monsters::loadMonster] Cant load spell. " << spell->name << std::endl;
@@ -13560,7 +13566,6 @@ int LuaScriptInterface::luaMonsterTypeGetDefenseList(lua_State* L)
 	}
 
 	lua_createtable(L, monsterType->info.defenseSpells.size(), 0);
-
 
 	int index = 0;
 	for (const auto& spellBlock : monsterType->info.defenseSpells) {
@@ -13590,7 +13595,7 @@ int LuaScriptInterface::luaMonsterTypeAddDefense(lua_State* L)
 		if (spell) {
 			spellBlock_t sb;
 			if (g_monsters.deserializeSpell(spell, sb, monsterType->name)) {
-				monsterType->info.defenseSpells.push_back(std::move(sb));
+				monsterType->info.defenseSpells.emplace_back(std::move(sb));
 			} else {
 				std::cout << monsterType->name << std::endl;
 				std::cout << "[Warning - Monsters::loadMonster] Cant load spell. " << spell->name << std::endl;
@@ -13660,12 +13665,12 @@ int LuaScriptInterface::luaMonsterTypeAddVoice(lua_State* L)
 	// monsterType:addVoice(sentence, interval, chance, yell)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
-		voiceBlock_t voice;
-		voice.text = getString(L, 2);
+		monsterType->info.voiceVector.emplace_back();
+		voiceBlock_t& voice = monsterType->info.voiceVector.back();
+		voice.text = std::move(getString(L, 2));
 		monsterType->info.yellSpeedTicks = getNumber<uint32_t>(L, 3);
 		monsterType->info.yellChance = getNumber<uint32_t>(L, 4);
 		voice.yellText = getBoolean(L, 5);
-		monsterType->info.voiceVector.push_back(voice);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -13727,7 +13732,7 @@ int LuaScriptInterface::luaMonsterTypeRegisterEvent(lua_State* L)
 	// monsterType:registerEvent(name)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
-		monsterType->info.scripts.push_back(getString(L, 2));
+		monsterType->info.scripts.emplace_back(std::move(getString(L, 2)));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -13790,11 +13795,11 @@ int LuaScriptInterface::luaMonsterTypeAddSummon(lua_State* L)
 	// monsterType:addSummon(name, interval, chance)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
-		summonBlock_t summon;
-		summon.name = getString(L, 2);
+		monsterType->info.summons.emplace_back();
+		summonBlock_t& summon = monsterType->info.summons.back();;
+		summon.name = std::move(getString(L, 2));
 		summon.chance = getNumber<int32_t>(L, 3);
 		summon.speed = getNumber<int32_t>(L, 4);
-		monsterType->info.summons.push_back(summon);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -14075,6 +14080,24 @@ int LuaScriptInterface::luaMonsterTypeChangeTargetSpeed(lua_State* L)
 	return 1;
 }
 
+int LuaScriptInterface::luaMonsterTypeShrinkToFit(lua_State* L)
+{
+	// monstertype:shrinkToFit()
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		monsterType->info.summons.shrink_to_fit();
+		monsterType->info.lootItems.shrink_to_fit();
+		monsterType->info.attackSpells.shrink_to_fit();
+		monsterType->info.defenseSpells.shrink_to_fit();
+		monsterType->info.voiceVector.shrink_to_fit();
+		monsterType->info.scripts.shrink_to_fit();
+		pushBoolean(L, true);
+	} else {
+		pushBoolean(L, false);
+	}
+	return 1;
+}
+
 // Loot
 int LuaScriptInterface::luaCreateLoot(lua_State* L)
 {
@@ -14180,7 +14203,7 @@ int LuaScriptInterface::luaLootSetDescription(lua_State* L)
 	// loot:setDescription(desc)
 	Loot* loot = getUserdata<Loot>(L, 1);
 	if (loot) {
-		loot->lootBlock.text = getString(L, 2);
+		loot->lootBlock.text.reset(new std::string(getString(L, 2)));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -14193,7 +14216,7 @@ int LuaScriptInterface::luaLootAddChildLoot(lua_State* L)
 	// loot:addChildLoot(loot)
 	Loot* loot = getUserdata<Loot>(L, 1);
 	if (loot) {
-		loot->lootBlock.childLoot.push_back(getUserdata<Loot>(L, 2)->lootBlock);
+		loot->lootBlock.childLoot.emplace_back(std::move(getUserdata<Loot>(L, 2)->lootBlock));
 	} else {
 		lua_pushnil(L);
 	}
@@ -14230,7 +14253,7 @@ int LuaScriptInterface::luaMonsterSpellSetType(lua_State* L)
 	// monsterSpell:setType(type)
 	MonsterSpell* spell = getUserdata<MonsterSpell>(L, 1);
 	if (spell) {
-		spell->name = getString(L, 2);
+		spell->name = std::move(getString(L, 2));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -14243,7 +14266,7 @@ int LuaScriptInterface::luaMonsterSpellSetScriptName(lua_State* L)
 	// monsterSpell:setScriptName(name)
 	MonsterSpell* spell = getUserdata<MonsterSpell>(L, 1);
 	if (spell) {
-		spell->scriptName = getString(L, 2);
+		spell->scriptName = std::move(getString(L, 2));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -14725,7 +14748,7 @@ int LuaScriptInterface::luaSpellCreate(lua_State* L)
 	SpellType_t type = getNumber<SpellType_t>(L, 2);
 
 	if (isString(L, 2)) {
-		std::string tmp = asLowerCaseString(getString(L, 2));
+		std::string tmp = asLowerCaseString(std::move(getString(L, 2)));
 		if (!tfs_strcmp(tmp.c_str(), "instant")) {
 			type = SPELL_INSTANT;
 		} else if (!tfs_strcmp(tmp.c_str(), "rune")) {
@@ -14862,7 +14885,7 @@ int LuaScriptInterface::luaSpellName(lua_State* L)
 		if (lua_gettop(L) == 1) {
 			pushString(L, spell->getName());
 		} else {
-			spell->setName(getString(L, 2));
+			spell->setName(std::move(getString(L, 2)));
 			pushBoolean(L, true);
 		}
 	} else {

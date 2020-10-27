@@ -490,7 +490,9 @@ void Monster::onCreatureLeave(Creature* creature)
 
 bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAULT*/)
 {
-	std::list<Creature*> resultList;
+	std::vector<Creature*> resultList;
+	resultList.reserve(targetList.size());
+
 	const Position& myPos = getPosition();
 
 	for (Creature* creature : targetList) {
@@ -1013,7 +1015,6 @@ bool Monster::pushItem(Item* item)
 		{-1,  0},          {1,  0},
 		{-1,  1}, {0,  1}, {1,  1}
 	} };
-
 	std::shuffle(relList.begin(), relList.end(), getRandomGenerator());
 
 	for (const auto& it : relList) {
@@ -1087,7 +1088,7 @@ void Monster::pushCreatures(Tile* tile)
 		Monster* lastPushedMonster = nullptr;
 
 		for (size_t i = 0; i < creatures->size();) {
-			Monster* monster = creatures->at(i)->getMonster();
+			Monster* monster = (*creatures)[i]->getMonster();
 			if (monster && monster->isPushable()) {
 				if (monster != lastPushedMonster && Monster::pushCreature(monster)) {
 					lastPushedMonster = monster;
@@ -1872,37 +1873,36 @@ void Monster::updateLookDirection()
 				newDir = DIRECTION_SOUTH;
 			}
 		} else {
-			Direction dir = getDirection();
 			if (offsetx < 0 && offsety < 0) {
-				if (dir == DIRECTION_SOUTH) {
+				if (newDir == DIRECTION_SOUTH) {
 					newDir = DIRECTION_WEST;
-				} else if (dir == DIRECTION_NORTH) {
+				} else if (newDir == DIRECTION_NORTH) {
 					newDir = DIRECTION_WEST;
-				} else if (dir == DIRECTION_EAST) {
+				} else if (newDir == DIRECTION_EAST) {
 					newDir = DIRECTION_NORTH;
 				}
 			} else if (offsetx < 0 && offsety > 0) {
-				if (dir == DIRECTION_NORTH) {
+				if (newDir == DIRECTION_NORTH) {
 					newDir = DIRECTION_WEST;
-				} else if (dir == DIRECTION_SOUTH) {
+				} else if (newDir == DIRECTION_SOUTH) {
 					newDir = DIRECTION_WEST;
-				} else if (dir == DIRECTION_EAST) {
+				} else if (newDir == DIRECTION_EAST) {
 					newDir = DIRECTION_SOUTH;
 				}
 			} else if (offsetx > 0 && offsety < 0) {
-				if (dir == DIRECTION_SOUTH) {
+				if (newDir == DIRECTION_SOUTH) {
 					newDir = DIRECTION_EAST;
-				} else if (dir == DIRECTION_NORTH) {
+				} else if (newDir == DIRECTION_NORTH) {
 					newDir = DIRECTION_EAST;
-				} else if (dir == DIRECTION_WEST) {
+				} else if (newDir == DIRECTION_WEST) {
 					newDir = DIRECTION_NORTH;
 				}
 			} else {
-				if (dir == DIRECTION_NORTH) {
+				if (newDir == DIRECTION_NORTH) {
 					newDir = DIRECTION_EAST;
-				} else if (dir == DIRECTION_SOUTH) {
+				} else if (newDir == DIRECTION_SOUTH) {
 					newDir = DIRECTION_EAST;
-				} else if (dir == DIRECTION_WEST) {
+				} else if (newDir == DIRECTION_WEST) {
 					newDir = DIRECTION_SOUTH;
 				}
 			}

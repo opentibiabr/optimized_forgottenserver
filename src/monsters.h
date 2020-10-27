@@ -26,24 +26,37 @@ const uint32_t MAX_LOOTCHANCE = 100000;
 const uint32_t MAX_STATICWALK = 100;
 
 struct LootBlock {
-	uint16_t id;
-	uint32_t countmax;
-	uint32_t chance;
+	LootBlock() = default;
 
-	//optional
-	int32_t subType;
-	int32_t actionId;
-	std::string text;
+	// non-copyable
+	LootBlock(const LootBlock&) = delete;
+	LootBlock& operator=(const LootBlock&) = delete;
+
+	// moveable
+	LootBlock(LootBlock&& rhs) noexcept :
+		childLoot(std::move(rhs.childLoot)), chance(rhs.chance), subType(rhs.subType), actionId(rhs.actionId), countmax(rhs.countmax), id(rhs.id) {text.reset(rhs.text.release());}
+	LootBlock& operator=(LootBlock&& rhs) noexcept {
+		if (this != &rhs) {
+			childLoot = std::move(rhs.childLoot);
+			text.reset(rhs.text.release());
+			chance = rhs.chance;
+			subType = rhs.subType;
+			actionId = rhs.actionId;
+			countmax = rhs.countmax;
+			id = rhs.id;
+		}
+		return *this;
+	}
 
 	std::vector<LootBlock> childLoot;
-	LootBlock() {
-		id = 0;
-		countmax = 1;
-		chance = 0;
+	std::unique_ptr<std::string> text;
 
-		subType = -1;
-		actionId = -1;
-	}
+	uint32_t chance = 0;
+	int32_t subType = -1;
+	int32_t actionId = -1;
+
+	uint16_t countmax = 1;
+	uint16_t id = 0;
 };
 
 class Loot {
@@ -58,6 +71,26 @@ class Loot {
 };
 
 struct summonBlock_t {
+	summonBlock_t() = default;
+
+	// non-copyable
+	summonBlock_t(const summonBlock_t&) = delete;
+	summonBlock_t& operator=(const summonBlock_t&) = delete;
+
+	// moveable
+	summonBlock_t(summonBlock_t&& rhs) noexcept :
+		name(std::move(rhs.name)), chance(rhs.chance), speed(rhs.speed), max(rhs.max), force(rhs.force) {}
+	summonBlock_t& operator=(summonBlock_t&& rhs) noexcept {
+		if (this != &rhs) {
+			name = std::move(rhs.name);
+			chance = rhs.chance;
+			speed = rhs.speed;
+			max = rhs.max;
+			force = rhs.force;
+		}
+		return *this;
+	}
+
 	std::string name;
 	uint32_t chance;
 	uint32_t speed;
@@ -69,18 +102,27 @@ class BaseSpell;
 struct spellBlock_t {
 	constexpr spellBlock_t() = default;
 	~spellBlock_t();
-	spellBlock_t(const spellBlock_t& other) = delete;
-	spellBlock_t& operator=(const spellBlock_t& other) = delete;
-	spellBlock_t(spellBlock_t&& other) :
-		spell(other.spell),
-		chance(other.chance),
-		speed(other.speed),
-		range(other.range),
-		minCombatValue(other.minCombatValue),
-		maxCombatValue(other.maxCombatValue),
-		combatSpell(other.combatSpell),
-		isMelee(other.isMelee) {
-		other.spell = nullptr;
+
+	// non-copyable
+	spellBlock_t(const spellBlock_t&) = delete;
+	spellBlock_t& operator=(const spellBlock_t&) = delete;
+
+	// moveable
+	spellBlock_t(spellBlock_t&& rhs) noexcept : spell(rhs.spell), chance(rhs.chance), speed(rhs.speed), range(rhs.range), minCombatValue(rhs.minCombatValue),
+		maxCombatValue(rhs.maxCombatValue), combatSpell(rhs.combatSpell), isMelee(rhs.isMelee) {rhs.spell = nullptr;}
+	spellBlock_t& operator=(spellBlock_t&& rhs) noexcept {
+		if (this != &rhs) {
+			spell = rhs.spell;
+			chance = rhs.chance;
+			speed = rhs.speed;
+			range = rhs.range;
+			minCombatValue = rhs.minCombatValue;
+			maxCombatValue = rhs.maxCombatValue;
+			combatSpell = rhs.combatSpell;
+			isMelee = rhs.isMelee;
+			rhs.spell = nullptr;
+		}
+		return *this;
 	}
 
 	BaseSpell* spell = nullptr;
@@ -94,6 +136,22 @@ struct spellBlock_t {
 };
 
 struct voiceBlock_t {
+	voiceBlock_t() = default;
+
+	// non-copyable
+	voiceBlock_t(const voiceBlock_t&) = delete;
+	voiceBlock_t& operator=(const voiceBlock_t&) = delete;
+
+	// moveable
+	voiceBlock_t(voiceBlock_t&& rhs) noexcept : text(std::move(rhs.text)), yellText(rhs.yellText) {}
+	voiceBlock_t& operator=(voiceBlock_t&& rhs) noexcept {
+		if (this != &rhs) {
+			text = std::move(rhs.text);
+			yellText = rhs.yellText;
+		}
+		return *this;
+	}
+
 	std::string text;
 	bool yellText;
 };
@@ -104,21 +162,12 @@ class MonsterType
 		LuaScriptInterface* scriptInterface;
 
 		std::map<CombatType_t, int32_t> elementMap;
-
 		std::vector<voiceBlock_t> voiceVector;
-
 		std::vector<LootBlock> lootItems;
 		std::vector<std::string> scripts;
 		std::vector<spellBlock_t> attackSpells;
 		std::vector<spellBlock_t> defenseSpells;
 		std::vector<summonBlock_t> summons;
-
-		Skulls_t skull = SKULL_NONE;
-		Outfit_t outfit = {};
-		RaceType_t race = RACE_BLOOD;
-
-		LightInfo light = {};
-		uint16_t lookcorpse = 0;
 
 		uint64_t experience = 0;
 
@@ -144,6 +193,12 @@ class MonsterType
 		int32_t changeTargetChance = 0;
 		int32_t defense = 0;
 		int32_t armor = 0;
+
+		uint16_t lookcorpse = 0;
+		Outfit_t outfit = {};
+		LightInfo light = {};
+		Skulls_t skull = SKULL_NONE;
+		RaceType_t race = RACE_BLOOD;
 
 		bool canPushItems = false;
 		bool canPushCreatures = false;
@@ -178,7 +233,7 @@ class MonsterType
 
 		MonsterInfo info;
 
-		void loadLoot(MonsterType* monsterType, LootBlock lootblock);
+		void loadLoot(MonsterType* monsterType, LootBlock& lootblock);
 };
 
 class MonsterSpell
@@ -186,6 +241,7 @@ class MonsterSpell
 	public:
 		MonsterSpell() = default;
 
+		// non-copyable
 		MonsterSpell(const MonsterSpell&) = delete;
 		MonsterSpell& operator=(const MonsterSpell&) = delete;
 
@@ -229,6 +285,7 @@ class Monsters
 {
 	public:
 		Monsters() = default;
+
 		// non-copyable
 		Monsters(const Monsters&) = delete;
 		Monsters& operator=(const Monsters&) = delete;

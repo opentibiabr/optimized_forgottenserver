@@ -41,19 +41,12 @@ spellBlock_t::~spellBlock_t()
 	}
 }
 
-void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock)
+void MonsterType::loadLoot(MonsterType* monsterType, LootBlock& lootBlock)
 {
-	if (lootBlock.childLoot.empty()) {
-		bool isContainer = Item::items[lootBlock.id].isContainer();
-		if (isContainer) {
-			for (LootBlock child : lootBlock.childLoot) {
-				lootBlock.childLoot.push_back(child);
-			}
-		}
-		monsterType->info.lootItems.push_back(lootBlock);
-	} else {
-		monsterType->info.lootItems.push_back(lootBlock);
+	if (!lootBlock.childLoot.empty()) {
+		lootBlock.childLoot.shrink_to_fit();
 	}
+	monsterType->info.lootItems.emplace_back(std::move(lootBlock));
 }
 
 bool Monsters::loadRaces()
@@ -1185,7 +1178,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 			} else {
 				vb.yellText = false;
 			}
-			mType->info.voiceVector.emplace_back(vb);
+			mType->info.voiceVector.emplace_back(std::move(vb));
 		}
 	}
 
@@ -1264,7 +1257,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				sb.chance = chance;
 				sb.max = max;
 				sb.force = force;
-				mType->info.summons.emplace_back(sb);
+				mType->info.summons.emplace_back(std::move(sb));
 			} else {
 				std::cout << "[Warning - Monsters::loadMonster] Missing summon name. " << file << std::endl;
 			}
@@ -1312,7 +1305,7 @@ bool Monsters::loadLootItem(const pugi::xml_node& node, LootBlock& lootBlock)
 	}
 
 	if ((attr = node.attribute("countmax"))) {
-		lootBlock.countmax = std::max<int32_t>(1, pugi::cast<int32_t>(attr.value()));
+		lootBlock.countmax = pugi::cast<int32_t>(attr.value());
 	} else {
 		lootBlock.countmax = 1;
 	}
@@ -1342,19 +1335,20 @@ bool Monsters::loadLootItem(const pugi::xml_node& node, LootBlock& lootBlock)
 	}
 
 	if ((attr = node.attribute("text"))) {
-		lootBlock.text = attr.as_string();
+		lootBlock.text.reset(new std::string(attr.as_string()));
 	}
 	return true;
 }
 
 void Monsters::loadLootContainer(const pugi::xml_node& node, LootBlock& lBlock)
 {
-	for (auto subNode : node.children()) {
+	for (auto subNode : (node.child("inside") ? node.child("inside").children() : node.children())) {
 		LootBlock lootBlock;
 		if (loadLootItem(subNode, lootBlock)) {
 			lBlock.childLoot.emplace_back(std::move(lootBlock));
 		}
 	}
+	lBlock.childLoot.shrink_to_fit();
 }
 
 std::string Monsters::getRaceName(uint16_t raceId)

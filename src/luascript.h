@@ -1316,6 +1316,8 @@ class LuaScriptInterface
 		static int luaMonsterTypeChangeTargetChance(lua_State* L);
 		static int luaMonsterTypeChangeTargetSpeed(lua_State* L);
 
+		static int luaMonsterTypeShrinkToFit(lua_State* L);
+
 		// Loot
 		static int luaCreateLoot(lua_State* L);
 		static int luaDeleteLoot(lua_State* L);
