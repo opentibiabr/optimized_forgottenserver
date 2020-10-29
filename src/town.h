@@ -62,7 +62,7 @@ class Towns
 		Towns& operator=(const Towns&) = delete;
 
 		Town* addTown(uint32_t townId) {
-			return &townMap.emplace(townId, townId).first->second;
+			return &townMap.emplace(std::piecewise_construct, std::forward_as_tuple(townId), std::forward_as_tuple(townId)).first->second;
 		}
 
 		Town* getTown(const std::string& townName) {

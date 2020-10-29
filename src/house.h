@@ -279,7 +279,7 @@ class Houses
 				return &it->second;
 			}
 
-			return &houseMap.emplace(id, id).first->second;
+			return &houseMap.emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(id)).first->second;
 		}
 
 		House* getHouse(uint32_t houseId) {
