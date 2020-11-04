@@ -1496,9 +1496,18 @@ uint32_t Map::clean() const
 
 	size_t count = toRemove.size();
 	for (Item* item : toRemove) {
-		g_game.internalRemoveItem(item, -1);
+		#if GAME_FEATURE_FASTER_CLEAN > 0
+		g_game.internalCleanItem(item);
+		#else
+		g_game.internalRemoveItem(item);
+		#endif
 	}
-	toRemove.clear();
+
+	#if GAME_FEATURE_FASTER_CLEAN > 0
+	for (const auto& it : g_game.getPlayers()) {
+		it.second->sendMapDescription();
+	}
+	#endif
 
 	if (g_game.getGameState() == GAME_STATE_MAINTAIN) {
 		g_game.setGameState(GAME_STATE_NORMAL);

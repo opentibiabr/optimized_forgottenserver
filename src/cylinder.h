@@ -44,6 +44,9 @@ enum cylinderlink_t {
 	LINK_PARENT,
 	LINK_TOPPARENT,
 	LINK_NEAR,
+	#if GAME_FEATURE_FASTER_CLEAN > 0
+	LINK_CLEAN,
+	#endif
 };
 
 class Cylinder : virtual public Thing

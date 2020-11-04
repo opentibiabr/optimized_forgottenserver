@@ -301,4 +301,8 @@
 //if disabled it'll fallback to Bresenham's line algorithm
 #define GAME_FEATURE_XIAOLIN_WU_SIGHT_CLEAR 1
 
+//Up-to 1000x faster map cleaning but since it omits lua script checks you might want to disable it when you use some systems
+//that require item movement scripts
+#define GAME_FEATURE_FASTER_CLEAN 1
+
 #endif

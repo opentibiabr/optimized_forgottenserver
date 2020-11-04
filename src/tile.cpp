@@ -1120,6 +1120,55 @@ void Tile::removeThing(Thing* thing, uint32_t count)
 	}
 }
 
+#if GAME_FEATURE_FASTER_CLEAN > 0
+void Tile::cleanItem(Item* item, int32_t index, uint32_t count)
+{
+	if (index == -1) {
+		return;
+	}
+
+	if (item == ground) {
+		ground->setParent(nullptr);
+		ground = nullptr;
+		return;
+	}
+
+	TileItemVector* items = getItemList();
+	if (!items) {
+		return;
+	}
+
+	const ItemType& itemType = Item::items[item->getID()];
+	if (itemType.alwaysOnTop) {
+		auto it = std::find(items->getBeginTopItem(), items->getEndTopItem(), item);
+		if (it == items->getEndTopItem()) {
+			return;
+		}
+
+		item->setParent(nullptr);
+		items->erase(it);
+		items->addTopItemCount(-1);
+	} else {
+		auto end = ItemVector::reverse_iterator(items->getBeginDownItem());
+		auto it = std::find(ItemVector::reverse_iterator(items->getEndDownItem()), end, item);
+		if (it == end) {
+			return;
+		}
+
+		if (itemType.stackable && count != item->getItemCount()) {
+			uint8_t newCount = static_cast<uint8_t>(std::max<int32_t>(0, static_cast<int32_t>(item->getItemCount() - count)));
+			item->setItemCount(newCount);
+			return;
+		} else {
+			item->setParent(nullptr);
+			items->erase(std::next(it).base());
+		}
+	}
+
+	resetTileFlags(item);
+}
+#endif
+
 void Tile::removeCreature(Creature* creature)
 {
 	g_game.map.getMapSector(tilePos.x, tilePos.y)->removeCreature(creature);
@@ -1404,12 +1453,16 @@ void Tile::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t 
 	}
 }
 
-void Tile::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, cylinderlink_t)
+void Tile::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, cylinderlink_t link /*= LINK_OWNER*/)
 {
 	SpectatorVector spectators;
 	g_game.map.getSpectators(spectators, getPosition(), true, true);
 
+	#if GAME_FEATURE_FASTER_CLEAN > 0
+	if (getThingCount() > 8 && link != LINK_CLEAN) {
+	#else
 	if (getThingCount() > 8) {
+	#endif
 		onUpdateTile(spectators);
 	}
 
@@ -1417,14 +1470,20 @@ void Tile::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32
 		spectator->getPlayer()->postRemoveNotification(thing, newParent, index, LINK_NEAR);
 	}
 
-	//calling movement scripts
-	Creature* creature = thing->getCreature();
-	if (creature) {
-		g_moveEvents->onCreatureMove(creature, this, MOVE_EVENT_STEP_OUT);
-	} else {
-		Item* item = thing->getItem();
-		if (item) {
-			g_moveEvents->onItemMove(item, this, false);
+	#if GAME_FEATURE_FASTER_CLEAN > 0
+	if (link != LINK_CLEAN) {
+	#else
+	{
+	#endif
+		//calling movement scripts
+		Creature* creature = thing->getCreature();
+		if (creature) {
+			g_moveEvents->onCreatureMove(creature, this, MOVE_EVENT_STEP_OUT);
+		} else {
+			Item* item = thing->getItem();
+			if (item) {
+				g_moveEvents->onItemMove(item, this, false);
+			}
 		}
 	}
 }

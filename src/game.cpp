@@ -1375,6 +1375,59 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 	return RETURNVALUE_NOERROR;
 }
 
+#if GAME_FEATURE_FASTER_CLEAN > 0
+ReturnValue Game::internalCleanItem(Item* item, int32_t count /*= -1*/)
+{
+	Cylinder* cylinder = item->getParent();
+	if (cylinder == nullptr) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	#if GAME_FEATURE_BROWSEFIELD > 0
+	Tile* fromTile = cylinder->getTile();
+	if (fromTile) {
+		auto it = browseFields.find(fromTile);
+		if (it != browseFields.end() && it->second == cylinder) {
+			cylinder = fromTile;
+		}
+	}
+	#endif
+
+	if (count == -1) {
+		count = item->getItemCount();
+	}
+
+	//check if we can remove this item
+	ReturnValue ret = cylinder->queryRemove(*item, count, FLAG_IGNORENOTMOVEABLE);
+	if (ret != RETURNVALUE_NOERROR) {
+		return ret;
+	}
+
+	if (!item->canRemove()) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	int32_t index = cylinder->getThingIndex(item);
+
+	//remove the item
+	Tile* tile = cylinder->getTile();
+	if (tile) {
+		tile->cleanItem(item, index, count);
+	} else {
+		cylinder->removeThing(item, count);
+	}
+
+	if (item->isRemoved()) {
+		item->onRemoved();
+		item->stopDecaying();
+		ReleaseItem(item);
+	}
+
+	cylinder->postRemoveNotification(item, nullptr, index, LINK_CLEAN);
+	return RETURNVALUE_NOERROR;
+}
+#endif
+
 ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnMap /*= true*/, slots_t slot /*= CONST_SLOT_WHEREEVER*/)
 {
 	uint32_t remainderCount = 0;

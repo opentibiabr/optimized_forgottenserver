@@ -798,6 +798,11 @@ class Player final : public Creature, public Cylinder
 				client->sendUpdateTile(tile, pos);
 			}
 		}
+		void sendMapDescription() {
+			if (client) {
+				client->sendMapDescription(getPosition());
+			}
+		}
 
 		void sendChannelMessage(const std::string& author, const std::string& text, SpeakClasses type, uint16_t channel) {
 			if (client) {

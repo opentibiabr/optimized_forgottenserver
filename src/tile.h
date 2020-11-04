@@ -301,6 +301,9 @@ class Tile : public Cylinder
 		void replaceThing(uint32_t index, Thing* thing) override final;
 
 		void removeThing(Thing* thing, uint32_t count) override final;
+		#if GAME_FEATURE_FASTER_CLEAN > 0
+		void cleanItem(Item* item, int32_t index, uint32_t count);
+		#endif
 
 		void removeCreature(Creature* creature);
 
