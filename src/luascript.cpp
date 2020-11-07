@@ -769,6 +769,12 @@ Position LuaScriptInterface::getPosition(lua_State* L, int32_t arg)
 Outfit_t LuaScriptInterface::getOutfit(lua_State* L, int32_t arg)
 {
 	Outfit_t outfit;
+	#if GAME_FEATURE_MOUNT_COLORS > 0
+	outfit.lookMountFeet = getField<uint8_t>(L, arg, "lookMountFeet");
+	outfit.lookMountLegs = getField<uint8_t>(L, arg, "lookMountLegs");
+	outfit.lookMountBody = getField<uint8_t>(L, arg, "lookMountBody");
+	outfit.lookMountHead = getField<uint8_t>(L, arg, "lookMountHead");
+	#endif
 	#if GAME_FEATURE_MOUNTS > 0
 	outfit.lookMount = getField<uint16_t>(L, arg, "lookMount");
 	#endif
@@ -785,8 +791,10 @@ Outfit_t LuaScriptInterface::getOutfit(lua_State* L, int32_t arg)
 	#else
 	outfit.lookType = getField<uint8_t>(L, arg, "lookType");
 	#endif
-	
-	#if GAME_FEATURE_MOUNTS > 0
+
+	#if GAME_FEATURE_MOUNT_COLORS > 0
+	lua_pop(L, 12);
+	#elif GAME_FEATURE_MOUNTS > 0
 	lua_pop(L, 8);
 	#else
 	lua_pop(L, 7);
@@ -947,7 +955,9 @@ void LuaScriptInterface::pushPosition(lua_State* L, const Position& position, in
 
 void LuaScriptInterface::pushOutfit(lua_State* L, const Outfit_t& outfit)
 {
-	#if GAME_FEATURE_MOUNTS > 0
+	#if GAME_FEATURE_MOUNT_COLORS > 0
+	lua_createtable(L, 0, 12);
+	#elif GAME_FEATURE_MOUNTS > 0
 	lua_createtable(L, 0, 8);
 	#else
 	lua_createtable(L, 0, 7);
@@ -961,6 +971,12 @@ void LuaScriptInterface::pushOutfit(lua_State* L, const Outfit_t& outfit)
 	setField(L, "lookAddons", outfit.lookAddons);
 	#if GAME_FEATURE_MOUNTS > 0
 	setField(L, "lookMount", outfit.lookMount);
+	#endif
+	#if GAME_FEATURE_MOUNT_COLORS > 0
+	setField(L, "lookMountHead", outfit.lookMountHead);
+	setField(L, "lookMountBody", outfit.lookMountBody);
+	setField(L, "lookMountLegs", outfit.lookMountLegs);
+	setField(L, "lookMountFeet", outfit.lookMountFeet);
 	#endif
 }
 
@@ -1402,11 +1418,20 @@ void LuaScriptInterface::registerFunctions()
 	#if GAME_FEATURE_DOUBLE_HEALTH > 0
 	registerEnum(GAME_FEATURE_DOUBLE_HEALTH)
 	#endif
+	#if GAME_FEATURE_MOUNT_COLORS > 0
+	registerEnum(GAME_FEATURE_MOUNT_COLORS)
+	#endif
+	#if GAME_FEATURE_FAMILIARS > 0
+	registerEnum(GAME_FEATURE_FAMILIARS)
+	#endif
 	#if GAME_FEATURE_ROBINHOOD_HASH_MAP > 0
 	registerEnum(GAME_FEATURE_ROBINHOOD_HASH_MAP)
 	#endif
 	#if GAME_FEATURE_XIAOLIN_WU_SIGHT_CLEAR > 0
 	registerEnum(GAME_FEATURE_XIAOLIN_WU_SIGHT_CLEAR)
+	#endif
+	#if GAME_FEATURE_FASTER_CLEAN > 0
+	registerEnum(GAME_FEATURE_FASTER_CLEAN)
 	#endif
 
 	// Enums
@@ -13079,11 +13104,17 @@ int LuaScriptInterface::luaConditionSetFormula(lua_State* L)
 int LuaScriptInterface::luaConditionSetOutfit(lua_State* L)
 {
 	// condition:setOutfit(outfit)
-	// condition:setOutfit(lookTypeEx, lookType, lookHead, lookBody, lookLegs, lookFeet[, lookAddons[, lookMount]])
+	// condition:setOutfit(lookTypeEx, lookType, lookHead, lookBody, lookLegs, lookFeet[, lookAddons[, lookMount[, lookMountHead[, lookMountBody[, lookMountLegs[, lookMountFeet]]]]]])
 	Outfit_t outfit;
 	if (isTable(L, 2)) {
 		outfit = getOutfit(L, 2);
 	} else {
+		#if GAME_FEATURE_MOUNT_COLORS > 0
+		outfit.lookMountFeet = getNumber<uint8_t>(L, 13, outfit.lookMountFeet);
+		outfit.lookMountLegs = getNumber<uint8_t>(L, 12, outfit.lookMountLegs);
+		outfit.lookMountBody = getNumber<uint8_t>(L, 11, outfit.lookMountBody);
+		outfit.lookMountHead = getNumber<uint8_t>(L, 10, outfit.lookMountHead);
+		#endif
 		#if GAME_FEATURE_MOUNTS > 0
 		outfit.lookMount = getNumber<uint16_t>(L, 9, outfit.lookMount);
 		#endif
