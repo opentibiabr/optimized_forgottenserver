@@ -370,6 +370,13 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg)
 	}
 
 	std::string characterName = msg.getString();
+	#if CLIENT_VERSION >= 1252
+	if (operatingSystem == CLIENTOS_NEW_LINUX) {
+		//TODO: check what new info for linux is send
+		msg.getString();
+		msg.getString();
+	}
+	#endif
 	#else
 	#if GAME_FEATURE_ACCOUNT_NAME > 0
 	std::string accountName = msg.getString();

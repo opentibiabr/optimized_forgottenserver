@@ -202,6 +202,7 @@ bool Quests::loadFromXml()
 				}
 				++stateId;
 			}
+			mission.states.shrink_to_fit();
 
 			#if GAME_FEATURE_QUEST_TRACKER > 0
 			pugi::xml_attribute idAttribute = missionNode.attribute("id");
