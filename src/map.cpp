@@ -755,15 +755,9 @@ bool Map::isSightClear(const Position& fromPos, const Position& toPos, bool floo
 		return false;
 	}
 
-	// Perform checking destination first
-	const Tile* tile = getTile(toPos.x, toPos.y, (fromPos.z > toPos.z ? toPos.z : fromPos.z));
-	if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
-		return false;
-	} else {
-		// Check if we even need to perform line checking
-		if (fromPos.z == toPos.z && Position::areInRange<1, 1>(fromPos, toPos)) {
-			return true;
-		}
+	// Check if we even need to perform line checking
+	if (fromPos.z == toPos.z && Position::areInRange<1, 1>(fromPos, toPos)) {
+		return true;
 	}
 
 	// Cast two converging rays and see if either yields a result.
