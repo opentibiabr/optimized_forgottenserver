@@ -107,11 +107,8 @@ class PropStream
 				return false;
 			}
 
-			char* str = new char[strLen + 1];
-			memcpy(str, p, strLen);
-			str[strLen] = 0;
-			ret.assign(str, strLen);
-			delete[] str;
+			ret.resize(strLen);
+			memcpy(&ret[0], p, strLen);
 			p += strLen;
 			return true;
 		}
@@ -126,11 +123,8 @@ class PropStream
 				return false;
 			}
 
-			char* str = new char[strLen + 1];
-			memcpy(str, p, strLen);
-			str[strLen] = 0;
-			ret.assign(str, strLen);
-			delete[] str;
+			ret.resize(strLen);
+			memcpy(&ret[0], p, strLen);
 			p += strLen;
 			return true;
 		}
