@@ -61,7 +61,7 @@ bool Ban::acceptConnection(uint32_t clientIP)
 bool IOBan::isAccountBanned(uint32_t accountId, BanInfo& banInfo)
 {
 	std::stringExtended query(256);
-	query << "SELECT `reason`, `expires_at`, `banned_at`, `banned_by`, (SELECT `name` FROM `players` WHERE `id` = `banned_by`) AS `name` FROM `account_bans` WHERE `account_id` = " << accountId;
+	query << "SELECT `reason`, `expires_at`, `banned_at`, `banned_by`, (SELECT `name` FROM `players` WHERE `id` = `banned_by`) AS `name` FROM `account_bans` WHERE `account_id` = " << accountId << " LIMIT 1";
 
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
@@ -82,8 +82,8 @@ bool IOBan::isAccountBanned(uint32_t accountId, BanInfo& banInfo)
 	}
 
 	banInfo.expiresAt = expiresAt;
-	banInfo.reason = result->getString("reason");
-	banInfo.bannedBy = result->getString("name");
+	banInfo.reason = std::move(result->getString("reason"));
+	banInfo.bannedBy = std::move(result->getString("name"));
 	return true;
 }
 
@@ -94,7 +94,7 @@ bool IOBan::isIpBanned(uint32_t clientIP, BanInfo& banInfo)
 	}
 
 	std::stringExtended query(140);
-	query << "SELECT `reason`, `expires_at`, (SELECT `name` FROM `players` WHERE `id` = `banned_by`) AS `name` FROM `ip_bans` WHERE `ip` = " << clientIP;
+	query << "SELECT `reason`, `expires_at`, (SELECT `name` FROM `players` WHERE `id` = `banned_by`) AS `name` FROM `ip_bans` WHERE `ip` = " << clientIP << " LIMIT 1";
 
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
@@ -110,15 +110,15 @@ bool IOBan::isIpBanned(uint32_t clientIP, BanInfo& banInfo)
 	}
 
 	banInfo.expiresAt = expiresAt;
-	banInfo.reason = result->getString("reason");
-	banInfo.bannedBy = result->getString("name");
+	banInfo.reason = std::move(result->getString("reason"));
+	banInfo.bannedBy = std::move(result->getString("name"));
 	return true;
 }
 
 bool IOBan::isPlayerNamelocked(uint32_t playerId)
 {
 	std::stringExtended query(128);
-	query << "SELECT 1 FROM `player_namelocks` WHERE `player_id` = " << playerId;
+	query << "SELECT 1 FROM `player_namelocks` WHERE `player_id` = " << playerId << " LIMIT 1";
 	return g_database.storeQuery(query).get() != nullptr;
 }
 
@@ -126,7 +126,7 @@ uint32_t IOBan::getAccountID(const std::string& playerName)
 {
 	const std::string& escapedName = g_database.escapeString(playerName);
 	std::stringExtended query(escapedName.length() + 64);
-	query << "SELECT `account_id` FROM `players` WHERE `name` = " << escapedName;
+	query << "SELECT `account_id` FROM `players` WHERE `name` = " << escapedName << " LIMIT 1";
 
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
@@ -139,7 +139,7 @@ uint32_t IOBan::getAccountLastIP(const std::string& playerName)
 {
 	const std::string& escapedName = g_database.escapeString(playerName);
 	std::stringExtended query(escapedName.length() + 64);
-	query << "SELECT `lastip` FROM `players` WHERE `name` = " << escapedName;
+	query << "SELECT `lastip` FROM `players` WHERE `name` = " << escapedName << " LIMIT 1";
 
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {

@@ -207,7 +207,7 @@ void IOMarket::checkExpiredOffers()
 uint32_t IOMarket::getPlayerOfferCount(uint32_t playerId)
 {
 	std::stringExtended query(128);
-	query << "SELECT COUNT(*) AS `count` FROM `market_offers` WHERE `player_id` = " << playerId;
+	query << "SELECT COUNT(*) AS `count` FROM `market_offers` WHERE `player_id` = " << playerId << " LIMIT 1";
 	
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
@@ -241,7 +241,7 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter)
 	offer.itemId = result->getNumber<uint16_t>("itemtype");
 	offer.playerId = result->getNumber<uint32_t>("player_id");
 	if (result->getNumber<uint16_t>("anonymous") == 0) {
-		offer.playerName = result->getString("player_name");
+		offer.playerName = std::move(result->getString("player_name"));
 	} else {
 		offer.playerName = "Anonymous";
 	}
@@ -296,7 +296,7 @@ bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state)
 	const int32_t marketOfferDuration = g_config.getNumber(ConfigManager::MARKET_OFFER_DURATION);
 
 	std::stringExtended query(128);
-	query << "SELECT `player_id`, `sale`, `itemtype`, `amount`, `price`, `created` FROM `market_offers` WHERE `id` = " << offerId;
+	query << "SELECT `player_id`, `sale`, `itemtype`, `amount`, `price`, `created` FROM `market_offers` WHERE `id` = " << offerId << " LIMIT 1";
 
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {

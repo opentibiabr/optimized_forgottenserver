@@ -32,14 +32,14 @@ Account IOLoginData::loadAccount(uint32_t accno)
 	Account account;
 
 	std::stringExtended query(128);
-	query << "SELECT `id`, `name`, `password`, `type`, `premdays`, `lastday` FROM `accounts` WHERE `id` = " << accno;
+	query << "SELECT `id`, `name`, `password`, `type`, `premdays`, `lastday` FROM `accounts` WHERE `id` = " << accno << " LIMIT 1";
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
 		return account;
 	}
 
 	account.id = result->getNumber<uint32_t>("id");
-	account.name = result->getString("name");
+	account.name = std::move(result->getString("name"));
 	account.accountType = static_cast<AccountType_t>(result->getNumber<int32_t>("type"));
 	account.premiumDays = result->getNumber<uint16_t>("premdays");
 	account.lastDay = result->getNumber<time_t>("lastday");
@@ -86,7 +86,7 @@ bool IOLoginData::loginserverAuthentication(const std::string& name, const std::
 {
 	const std::string& escapedName = g_database.escapeString(name);
 	std::stringExtended query(escapedName.length() + static_cast<size_t>(128));
-	query << "SELECT `id`, `name`, `password`, `secret`, `type`, `premdays`, `lastday` FROM `accounts` WHERE `name` = " << escapedName;
+	query << "SELECT `id`, `name`, `password`, `secret`, `type`, `premdays`, `lastday` FROM `accounts` WHERE `name` = " << escapedName << " LIMIT 1";
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
 		return false;
@@ -97,8 +97,8 @@ bool IOLoginData::loginserverAuthentication(const std::string& name, const std::
 	}
 
 	account.id = result->getNumber<uint32_t>("id");
-	account.name = result->getString("name");
-	account.key = decodeSecret(result->getString("secret"));
+	account.name = std::move(result->getString("name"));
+	account.key = std::move(decodeSecret(result->getString("secret")));
 	account.accountType = static_cast<AccountType_t>(result->getNumber<int32_t>("type"));
 	account.premiumDays = result->getNumber<uint16_t>("premdays");
 	account.lastDay = result->getNumber<time_t>("lastday");
@@ -107,9 +107,10 @@ bool IOLoginData::loginserverAuthentication(const std::string& name, const std::
 	query << "SELECT `name`, `deletion` FROM `players` WHERE `account_id` = " << account.id;
 	result = g_database.storeQuery(query);
 	if (result) {
+		account.characters.reserve(result->countResults());
 		do {
 			if (result->getNumber<uint64_t>("deletion") == 0) {
-				account.characters.push_back(result->getString("name"));
+				account.characters.emplace_back(std::move(result->getString("name")));
 			}
 		} while (result->next());
 		std::sort(account.characters.begin(), account.characters.end());
@@ -128,9 +129,9 @@ uint32_t IOLoginData::gameworldAuthentication(const std::string& accountName, co
 	std::stringExtended query(std::max<size_t>(escapedAccountName.length(), escapedCharacterName.length()) + static_cast<size_t>(128));
 
 	#if GAME_FEATURE_SESSIONKEY > 0
-	query << "SELECT `id`, `password`, `secret` FROM `accounts` WHERE `name` = " << escapedAccountName;
+	query << "SELECT `id`, `password`, `secret` FROM `accounts` WHERE `name` = " << escapedAccountName << " LIMIT 1";
 	#else
-	query << "SELECT `id`, `password` FROM `accounts` WHERE `name` = " << escapedAccountName;
+	query << "SELECT `id`, `password` FROM `accounts` WHERE `name` = " << escapedAccountName << " LIMIT 1";
 	#endif
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
@@ -158,7 +159,7 @@ uint32_t IOLoginData::gameworldAuthentication(const std::string& accountName, co
 	uint32_t accountId = result->getNumber<uint32_t>("id");
 
 	query.clear();
-	query << "SELECT `account_id`, `name`, `deletion` FROM `players` WHERE `name` = " << escapedCharacterName;
+	query << "SELECT `account_id`, `name`, `deletion` FROM `players` WHERE `name` = " << escapedCharacterName << " LIMIT 1";
 	result = g_database.storeQuery(query);
 	if (!result) {
 		return 0;
@@ -167,14 +168,14 @@ uint32_t IOLoginData::gameworldAuthentication(const std::string& accountName, co
 	if (result->getNumber<uint32_t>("account_id") != accountId || result->getNumber<uint64_t>("deletion") != 0) {
 		return 0;
 	}
-	characterName = result->getString("name");
+	characterName = std::move(result->getString("name"));
 	return accountId;
 }
 
 AccountType_t IOLoginData::getAccountType(uint32_t accountId)
 {
 	std::stringExtended query(64);
-	query << "SELECT `type` FROM `accounts` WHERE `id` = " << accountId;
+	query << "SELECT `type` FROM `accounts` WHERE `id` = " << accountId << " LIMIT 1";
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
 		return ACCOUNT_TYPE_NORMAL;
@@ -213,7 +214,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
 	if (!g_config.getBoolean(ConfigManager::FREE_PREMIUM)) {
 		query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
 	}
-	query << " FROM `players` WHERE `name` = " << escapedName;
+	query << " FROM `players` WHERE `name` = " << escapedName << " LIMIT 1";
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
 		return false;
@@ -239,11 +240,11 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
 	}
 
 	query.clear();
-	query << "SELECT `guild_id`, `rank_id`, `nick` FROM `guild_membership` WHERE `player_id` = " << player->getGUID();
+	query << "SELECT `guild_id`, `rank_id`, `nick` FROM `guild_membership` WHERE `player_id` = " << player->getGUID() << " LIMIT 1";
 	if ((result = g_database.storeQuery(query))) {
 		uint32_t guildId = result->getNumber<uint32_t>("guild_id");
 		uint32_t playerRankId = result->getNumber<uint32_t>("rank_id");
-		player->guildNick = result->getString("nick");
+		player->guildNick = std::move(result->getString("nick"));
 
 		Guild* guild = g_game.getGuild(guildId);
 		if (!guild) {
@@ -257,7 +258,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
 			const GuildRank* rank = guild->getRankById(playerRankId);
 			if (!rank) {
 				query.clear();
-				query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `id` = " << playerRankId;
+				query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `id` = " << playerRankId << " LIMIT 1";
 				if ((result = g_database.storeQuery(query))) {
 					guild->addRank(result->getNumber<uint32_t>("id"), result->getString("name"), result->getNumber<uint16_t>("level"));
 				}
@@ -273,7 +274,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
 			IOGuild::getWarList(guildId, player->guildWarVector);
 
 			query.clear();
-			query << "SELECT COUNT(*) AS `members` FROM `guild_membership` WHERE `guild_id` = " << guildId;
+			query << "SELECT COUNT(*) AS `members` FROM `guild_membership` WHERE `guild_id` = " << guildId << " LIMIT 1";
 			if ((result = g_database.storeQuery(query))) {
 				guild->setMemberCount(result->getNumber<uint32_t>("members"));
 			}
@@ -285,7 +286,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
 bool IOLoginData::loadPlayerById(Player* player, uint32_t id)
 {
 	std::stringExtended query(1024);
-	query << "SELECT `id`, `name`, `account_id`, `group_id`, `sex`, `vocation`, `experience`, `level`, `maglevel`, `health`, `healthmax`, `blessings`, `mana`, `manamax`, `manaspent`, `soul`, `lookbody`, `lookfeet`, `lookhead`, `looklegs`, `looktype`, `lookaddons`, `lookmountbody`, `lookmountfeet`, `lookmounthead`, `lookmountlegs`, `looktype`, `posx`, `posy`, `posz`, `cap`, `lastlogin`, `lastlogout`, `lastip`, `conditions`, `spells`, `storages`, `skulltime`, `skull`, `town_id`, `balance`, `offlinetraining_time`, `offlinetraining_skill`, `stamina`, `skill_fist`, `skill_fist_tries`, `skill_club`, `skill_club_tries`, `skill_sword`, `skill_sword_tries`, `skill_axe`, `skill_axe_tries`, `skill_dist`, `skill_dist_tries`, `skill_shielding`, `skill_shielding_tries`, `skill_fishing`, `skill_fishing_tries`, `direction` FROM `players` WHERE `id` = " << id;
+	query << "SELECT `id`, `name`, `account_id`, `group_id`, `sex`, `vocation`, `experience`, `level`, `maglevel`, `health`, `healthmax`, `blessings`, `mana`, `manamax`, `manaspent`, `soul`, `lookbody`, `lookfeet`, `lookhead`, `looklegs`, `looktype`, `lookaddons`, `lookmountbody`, `lookmountfeet`, `lookmounthead`, `lookmountlegs`, `looktype`, `posx`, `posy`, `posz`, `cap`, `lastlogin`, `lastlogout`, `lastip`, `conditions`, `spells`, `storages`, `skulltime`, `skull`, `town_id`, `balance`, `offlinetraining_time`, `offlinetraining_skill`, `stamina`, `skill_fist`, `skill_fist_tries`, `skill_club`, `skill_club_tries`, `skill_sword`, `skill_sword_tries`, `skill_axe`, `skill_axe_tries`, `skill_dist`, `skill_dist_tries`, `skill_shielding`, `skill_shielding_tries`, `skill_fishing`, `skill_fishing_tries`, `direction` FROM `players` WHERE `id` = " << id << " LIMIT 1";
 	return loadPlayer(player, g_database.storeQuery(query));
 }
 
@@ -293,7 +294,7 @@ bool IOLoginData::loadPlayerByName(Player* player, const std::string& name)
 {
 	const std::string& escapedName = g_database.escapeString(name);
 	std::stringExtended query(escapedName.length() + static_cast<size_t>(1024));
-	query << "SELECT `id`, `name`, `account_id`, `group_id`, `sex`, `vocation`, `experience`, `level`, `maglevel`, `health`, `healthmax`, `blessings`, `mana`, `manamax`, `manaspent`, `soul`, `lookbody`, `lookfeet`, `lookhead`, `looklegs`, `looktype`, `lookaddons`, `lookmountbody`, `lookmountfeet`, `lookmounthead`, `lookmountlegs`, `looktype`, `posx`, `posy`, `posz`, `cap`, `lastlogin`, `lastlogout`, `lastip`, `conditions`, `spells`, `storages`, `skulltime`, `skull`, `town_id`, `balance`, `offlinetraining_time`, `offlinetraining_skill`, `stamina`, `skill_fist`, `skill_fist_tries`, `skill_club`, `skill_club_tries`, `skill_sword`, `skill_sword_tries`, `skill_axe`, `skill_axe_tries`, `skill_dist`, `skill_dist_tries`, `skill_shielding`, `skill_shielding_tries`, `skill_fishing`, `skill_fishing_tries`, `direction` FROM `players` WHERE `name` = " << escapedName;
+	query << "SELECT `id`, `name`, `account_id`, `group_id`, `sex`, `vocation`, `experience`, `level`, `maglevel`, `health`, `healthmax`, `blessings`, `mana`, `manamax`, `manaspent`, `soul`, `lookbody`, `lookfeet`, `lookhead`, `looklegs`, `looktype`, `lookaddons`, `lookmountbody`, `lookmountfeet`, `lookmounthead`, `lookmountlegs`, `looktype`, `posx`, `posy`, `posz`, `cap`, `lastlogin`, `lastlogout`, `lastip`, `conditions`, `spells`, `storages`, `skulltime`, `skull`, `town_id`, `balance`, `offlinetraining_time`, `offlinetraining_skill`, `stamina`, `skill_fist`, `skill_fist_tries`, `skill_club`, `skill_club_tries`, `skill_sword`, `skill_sword_tries`, `skill_axe`, `skill_axe_tries`, `skill_dist`, `skill_dist_tries`, `skill_shielding`, `skill_shielding_tries`, `skill_fishing`, `skill_fishing_tries`, `direction` FROM `players` WHERE `name` = " << escapedName << " LIMIT 1";
 	return loadPlayer(player, g_database.storeQuery(query));
 }
 
@@ -376,7 +377,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	Account acc = loadAccount(accno);
 
 	player->setGUID(result->getNumber<uint32_t>("id"));
-	player->name = result->getString("name");
+	player->name = std::move(result->getString("name"));
 	player->accountNumber = accno;
 
 	player->accountType = acc.accountType;
@@ -552,7 +553,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	ItemBlockList itemMap;
 
 	std::stringExtended query(128);
-	query << "SELECT `items` FROM `players` WHERE `id` = " << player->getGUID();
+	query << "SELECT `items` FROM `players` WHERE `id` = " << player->getGUID() << " LIMIT 1";
 	if ((result = g_database.storeQuery(query))) {
 		attr = result->getStream("items", attrSize);
 		propStream.init(attr, attrSize);
@@ -585,7 +586,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	itemMap.clear();
 
 	query.clear();
-	query << "SELECT `depotlockeritems` FROM `players` WHERE `id` = " << player->getGUID();
+	query << "SELECT `depotlockeritems` FROM `players` WHERE `id` = " << player->getGUID() << " LIMIT 1";
 	if ((result = g_database.storeQuery(query))) {
 		attr = result->getStream("depotlockeritems", attrSize);
 		propStream.init(attr, attrSize);
@@ -609,7 +610,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	itemMap.clear();
 
 	query.clear();
-	query << "SELECT `depotitems` FROM `players` WHERE `id` = " << player->getGUID();
+	query << "SELECT `depotitems` FROM `players` WHERE `id` = " << player->getGUID() << " LIMIT 1";
 	if ((result = g_database.storeQuery(query))) {
 		attr = result->getStream("depotitems", attrSize);
 		propStream.init(attr, attrSize);
@@ -634,7 +635,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	itemMap.clear();
 
 	query.clear();
-	query << "SELECT `inboxitems` FROM `players` WHERE `id` = " << player->getGUID();
+	query << "SELECT `inboxitems` FROM `players` WHERE `id` = " << player->getGUID() << " LIMIT 1";
 	if ((result = g_database.storeQuery(query))) {
 		attr = result->getStream("inboxitems", attrSize);
 		propStream.init(attr, attrSize);
@@ -650,7 +651,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	#if GAME_FEATURE_STASH > 0
 	//load stash items
 	query.clear();
-	query << "SELECT `supplystash` FROM `players` WHERE `id` = " << player->getGUID();
+	query << "SELECT `supplystash` FROM `players` WHERE `id` = " << player->getGUID() << " LIMIT 1";
 	if ((result = g_database.storeQuery(query))) {
 		attr = result->getStream("supplystash", attrSize);
 		propStream.init(attr, attrSize);
@@ -764,7 +765,7 @@ bool IOLoginData::savePlayer(Player* player)
 	}
 
 	std::stringExtended query(2048);
-	query << "SELECT `save` FROM `players` WHERE `id` = " << player->getGUID();
+	query << "SELECT `save` FROM `players` WHERE `id` = " << player->getGUID() << " LIMIT 1";
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
 		return false;
@@ -1016,7 +1017,7 @@ bool IOLoginData::savePlayer(Player* player)
 std::string IOLoginData::getNameByGuid(uint32_t guid)
 {
 	std::stringExtended query(64);
-	query << "SELECT `name` FROM `players` WHERE `id` = " << guid;
+	query << "SELECT `name` FROM `players` WHERE `id` = " << guid << " LIMIT 1";
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
 		return std::string();
@@ -1028,7 +1029,7 @@ uint32_t IOLoginData::getGuidByName(const std::string& name)
 {
 	const std::string& escapedName = g_database.escapeString(name);
 	std::stringExtended query(escapedName.length() + static_cast<size_t>(64));
-	query << "SELECT `id` FROM `players` WHERE `name` = " << escapedName;
+	query << "SELECT `id` FROM `players` WHERE `name` = " << escapedName << " LIMIT 1";
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
 		return 0;
@@ -1040,13 +1041,13 @@ bool IOLoginData::getGuidByNameEx(uint32_t& guid, bool& specialVip, std::string&
 {
 	const std::string& escapedName = g_database.escapeString(name);
 	std::stringExtended query(escapedName.length() + static_cast<size_t>(128));
-	query << "SELECT `name`, `id`, `group_id`, `account_id` FROM `players` WHERE `name` = " << escapedName;
+	query << "SELECT `name`, `id`, `group_id`, `account_id` FROM `players` WHERE `name` = " << escapedName << " LIMIT 1";
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
 		return false;
 	}
 
-	name = result->getString("name");
+	name = std::move(result->getString("name"));
 	guid = result->getNumber<uint32_t>("id");
 	Group* group = g_game.groups.getGroup(result->getNumber<uint16_t>("group_id"));
 
@@ -1065,14 +1066,14 @@ bool IOLoginData::formatPlayerName(std::string& name)
 {
 	const std::string& escapedName = g_database.escapeString(name);
 	std::stringExtended query(escapedName.length() + static_cast<size_t>(64));
-	query << "SELECT `name` FROM `players` WHERE `name` = " << escapedName;
+	query << "SELECT `name` FROM `players` WHERE `name` = " << escapedName << " LIMIT 1";
 
 	DBResult_ptr result = g_database.storeQuery(query);
 	if (!result) {
 		return false;
 	}
 
-	name = result->getString("name");
+	name = std::move(result->getString("name"));
 	return true;
 }
 

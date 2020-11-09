@@ -5309,16 +5309,16 @@ void Game::updatePremium(Account& account)
 
 void Game::loadMotdNum()
 {
-	DBResult_ptr result = g_database.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_num'");
+	DBResult_ptr result = g_database.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_num' LIMIT 1");
 	if (result) {
 		motdNum = result->getNumber<uint32_t>("value");
 	} else {
 		g_database.executeQuery("INSERT INTO `server_config` (`config`, `value`) VALUES ('motd_num', '0')");
 	}
 
-	result = g_database.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_hash'");
+	result = g_database.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_hash' LIMIT 1");
 	if (result) {
-		motdHash = result->getString("value");
+		motdHash = std::move(result->getString("value"));
 		if (motdHash != transformToSHA1(g_config.getString(ConfigManager::MOTD))) {
 			++motdNum;
 		}
@@ -5688,7 +5688,7 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 			} else {
 				characterVocation = 0;
 			}
-			characters.emplace_back(result->getString("name"), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation);
+			characters.emplace_back(std::move(result->getString("name")), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation);
 		} while (result->next());
 		player->sendHighscores(characters, category, vocation, page, static_cast<uint16_t>(pages));
 	};
