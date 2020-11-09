@@ -159,8 +159,8 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 
 Items::Items()
 {
-	items.reserve(30000);
-	reverseItemMap.reserve(30000);
+	items.reserve(65000);
+	reverseItemMap.reserve(65000);
 }
 
 void Items::clear()
@@ -172,8 +172,8 @@ void Items::clear()
 bool Items::reload()
 {
 	clear();
-	items.reserve(30000);
-	reverseItemMap.reserve(30000);
+	items.reserve(65000);
+	reverseItemMap.reserve(65000);
 	loadFromOtb("data/items/" + std::to_string(CLIENT_VERSION) + "/items.otb");
 	if (!loadFromXml()) {
 		return false;
