@@ -67,8 +67,8 @@ class MoveEvents final : public BaseEvents
 
 		MoveEvent* getEvent(Item* item, MoveEvent_t eventType);
 
-		bool registerLuaEvent(MoveEvent_ptr event);
-		bool registerLuaFunction(MoveEvent_ptr event);
+		bool registerLuaEvent(MoveEvent_ptr& event);
+		bool registerLuaFunction(MoveEvent_ptr& event);
 		void clear(bool fromLua) override final;
 
 	private:

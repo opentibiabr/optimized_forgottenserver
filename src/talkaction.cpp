@@ -68,16 +68,39 @@ Event_ptr TalkActions::getEvent(const std::string& nodeName)
 
 bool TalkActions::registerEvent(Event_ptr event, const pugi::xml_node&)
 {
-	TalkAction_ptr talkAction{static_cast<TalkAction*>(event.release())}; // event is guaranteed to be a TalkAction
-	talkActions.emplace(talkAction->getWords(), std::move(talkAction));
+	TalkAction_ptr talkAction{ static_cast<TalkAction*>(event.release()) }; // event is guaranteed to be a TalkAction
+	std::vector<std::string>& wordsMap = talkAction->getWordsMap();
+	if (!wordsMap.empty()) {
+		for (std::string& words : wordsMap) {
+			auto result = talkActions.emplace(words, talkAction);
+			if (!result.second) {
+				std::cout << "[Warning - Spells::registerEvent] Duplicate registered talkaction with words: " << words << std::endl;
+			}
+		}
+		wordsMap.clear();
+		wordsMap.shrink_to_fit();
+	}
 	return true;
 }
 
-bool TalkActions::registerLuaEvent(TalkAction* event)
+bool TalkActions::registerLuaEvent(TalkAction_ptr& event)
 {
-	TalkAction_ptr talkAction{ event };
-	talkActions.emplace(talkAction->getWords(), std::move(talkAction));
-	return true;
+	bool result = false;
+
+	std::vector<std::string>& wordsMap = event->getWordsMap();
+	if (!wordsMap.empty()) {
+		for (std::string& words : wordsMap) {
+			auto res = talkActions.emplace(words, event);
+			if (!res.second) {
+				std::cout << "[Warning - Spells::registerEvent] Duplicate registered talkaction with words: " << words << std::endl;
+				continue;
+			}
+			result = true;
+		}
+		wordsMap.clear();
+		wordsMap.shrink_to_fit();
+	}
+	return result;
 }
 
 TalkActionResult_t TalkActions::playerSaySpell(Player* player, SpeakClasses type, const std::string& words) const
@@ -99,7 +122,7 @@ TalkActionResult_t TalkActions::playerSaySpell(Player* player, SpeakClasses type
 			return TALKACTION_CONTINUE;
 		}
 
-		if (it->second->executeSay(player, param, type)) {
+		if (it->second->executeSay(player, words, param, type)) {
 			return TALKACTION_CONTINUE;
 		} else {
 			return TALKACTION_BREAK;
@@ -121,7 +144,9 @@ bool TalkAction::configureEvent(const pugi::xml_node& node)
 		separator = pugi::cast<char>(separatorAttribute.value());
 	}
 
-	words = wordsAttribute.as_string();
+	for (std::string& word : explodeString(wordsAttribute.as_string(), ";")) {
+		setWords(std::move(word));
+	}
 	return true;
 }
 
@@ -130,7 +155,7 @@ std::string TalkAction::getScriptEventName() const
 	return "onSay";
 }
 
-bool TalkAction::executeSay(Player* player, const std::string& param, SpeakClasses type) const
+bool TalkAction::executeSay(Player* player, const std::string& word, const std::string& param, SpeakClasses type) const
 {
 	//onSay(player, words, param, type)
 	if (!scriptInterface->reserveScriptEnv()) {
@@ -148,7 +173,7 @@ bool TalkAction::executeSay(Player* player, const std::string& param, SpeakClass
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
 
-	LuaScriptInterface::pushString(L, words);
+	LuaScriptInterface::pushString(L, word);
 	LuaScriptInterface::pushString(L, param);
 	lua_pushnumber(L, type);
 

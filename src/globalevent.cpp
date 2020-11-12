@@ -73,7 +73,7 @@ Event_ptr GlobalEvents::getEvent(const std::string& nodeName)
 
 bool GlobalEvents::registerEvent(Event_ptr event, const pugi::xml_node&)
 {
-	GlobalEvent_ptr globalEvent{static_cast<GlobalEvent*>(event.release())}; //event is guaranteed to be a GlobalEvent
+	GlobalEvent_ptr globalEvent{ static_cast<GlobalEvent*>(event.release()) }; //event is guaranteed to be a GlobalEvent
 
 	std::string name = globalEvent->getName();
 	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {

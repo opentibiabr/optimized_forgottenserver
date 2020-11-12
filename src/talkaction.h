@@ -25,7 +25,7 @@
 #include "const.h"
 
 class TalkAction;
-using TalkAction_ptr = std::unique_ptr<TalkAction>;
+using TalkAction_ptr = std::shared_ptr<TalkAction>;
 
 enum TalkActionResult_t {
 	TALKACTION_CONTINUE,
@@ -40,11 +40,15 @@ class TalkAction : public Event
 
 		bool configureEvent(const pugi::xml_node& node) override;
 
+		std::vector<std::string>& getWordsMap() {
+			return wordsMap;
+		}
 		const std::string& getWords() const {
 			return words;
 		}
 		void setWords(std::string word) {
 			words = word;
+			wordsMap.emplace_back(std::move(word));
 		}
 		char getSeparator() const {
 			return separator;
@@ -54,12 +58,13 @@ class TalkAction : public Event
 		}
 
 		//scripting
-		bool executeSay(Player* player, const std::string& param, SpeakClasses type) const;
+		bool executeSay(Player* player, const std::string& word, const std::string& param, SpeakClasses type) const;
 		//
 
 	private:
 		std::string getScriptEventName() const override;
 
+		std::vector<std::string> wordsMap;
 		std::string words;
 		char separator = '"';
 };
@@ -76,7 +81,7 @@ class TalkActions final : public BaseEvents
 
 		TalkActionResult_t playerSaySpell(Player* player, SpeakClasses type, const std::string& words) const;
 
-		bool registerLuaEvent(TalkAction* event);
+		bool registerLuaEvent(TalkAction_ptr& event);
 		void clear(bool fromLua) override final;
 
 	private:

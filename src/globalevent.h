@@ -96,7 +96,7 @@ class GlobalEvent final : public Event
 			return name;
 		}
 		void setName(std::string eventName) {
-			name = eventName;
+			name = std::move(eventName);
 		}
 
 		uint32_t getInterval() const {

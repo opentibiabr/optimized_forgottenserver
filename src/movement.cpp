@@ -118,77 +118,197 @@ bool MoveEvents::registerEvent(Event_ptr event, const pugi::xml_node& node)
 
 	pugi::xml_attribute attr;
 	if ((attr = node.attribute("itemid"))) {
-		uint16_t id = pugi::cast<uint16_t>(attr.value());
-		if (moveEvent->getEventType() == MOVE_EVENT_EQUIP) {
-			ItemType& it = Item::items.getItemType(id);
-			it.wieldInfo = moveEvent->getWieldInfo();
-			it.minReqLevel = moveEvent->getReqLevel();
-			it.minReqMagicLevel = moveEvent->getReqMagLv();
-			it.vocationString = moveEvent->getVocationString();
+		for (std::string& itemId : explodeString(attr.as_string(), ";")) {
+			try {
+				std::vector<int32_t> itemIds = vectorAtoi(explodeString(itemId, "-"));
+				addEvent(moveEvent, static_cast<uint16_t>(itemIds[0]), itemIdMap);
+				if (moveEvent->getEventType() == MOVE_EVENT_EQUIP) {
+					ItemType& it = Item::items.getItemType(itemIds[0]);
+					it.wieldInfo = moveEvent->getWieldInfo();
+					it.minReqLevel = moveEvent->getReqLevel();
+					it.minReqMagicLevel = moveEvent->getReqMagLv();
+					it.vocationString = moveEvent->getVocationString();
+				}
+
+				if (itemIds.size() > 1) {
+					while (itemIds[0] < itemIds[1]) {
+						addEvent(moveEvent, static_cast<uint16_t>(++itemIds[0]), itemIdMap);
+						if (moveEvent->getEventType() == MOVE_EVENT_EQUIP) {
+							ItemType& it = Item::items.getItemType(itemIds[0]);
+							it.wieldInfo = moveEvent->getWieldInfo();
+							it.minReqLevel = moveEvent->getReqLevel();
+							it.minReqMagicLevel = moveEvent->getReqMagLv();
+							it.vocationString = moveEvent->getVocationString();
+						}
+					}
+				}
+			} catch (const std::invalid_argument&) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered itemid have invalid id: " << itemId << std::endl;
+				continue;
+			} catch (const std::out_of_range&) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered itemid have too long id: " << itemId << std::endl;
+				continue;
+			}
 		}
-		addEvent(moveEvent, id, itemIdMap);
 	} else if ((attr = node.attribute("fromid"))) {
-		uint16_t id = pugi::cast<uint16_t>(attr.value());
-		uint16_t endId = pugi::cast<uint16_t>(node.attribute("toid").value());
-
-		addEvent(moveEvent, id, itemIdMap);
-		if (moveEvent->getEventType() == MOVE_EVENT_EQUIP) {
-			ItemType& it = Item::items.getItemType(id);
-			it.wieldInfo = moveEvent->getWieldInfo();
-			it.minReqLevel = moveEvent->getReqLevel();
-			it.minReqMagicLevel = moveEvent->getReqMagLv();
-			it.vocationString = moveEvent->getVocationString();
-
-			while (++id <= endId) {
-				addEvent(moveEvent, id, itemIdMap);
-
-				ItemType& tit = Item::items.getItemType(id);
-				tit.wieldInfo = moveEvent->getWieldInfo();
-				tit.minReqLevel = moveEvent->getReqLevel();
-				tit.minReqMagicLevel = moveEvent->getReqMagLv();
-				tit.vocationString = moveEvent->getVocationString();
-			}
-		} else {
-			while (++id <= endId) {
-				addEvent(moveEvent, id, itemIdMap);
-			}
-		}
-	} else if ((attr = node.attribute("uniqueid"))) {
-		addEvent(moveEvent, pugi::cast<uint16_t>(attr.value()), uniqueIdMap);
-	} else if ((attr = node.attribute("fromuid"))) {
-		uint16_t id = pugi::cast<uint16_t>(attr.value());
-		uint16_t endId = pugi::cast<uint16_t>(node.attribute("touid").value());
-		addEvent(moveEvent, id, uniqueIdMap);
-		while (++id <= endId) {
-			addEvent(moveEvent, id, uniqueIdMap);
-		}
-	} else if ((attr = node.attribute("actionid"))) {
-		addEvent(moveEvent, pugi::cast<uint16_t>(attr.value()), actionIdMap);
-	} else if ((attr = node.attribute("fromaid"))) {
-		uint16_t id = pugi::cast<uint16_t>(attr.value());
-		uint16_t endId = pugi::cast<uint16_t>(node.attribute("toaid").value());
-		addEvent(moveEvent, id, actionIdMap);
-		while (++id <= endId) {
-			addEvent(moveEvent, id, actionIdMap);
-		}
-	} else if ((attr = node.attribute("pos"))) {
-		std::vector<int32_t> posList = vectorAtoi(explodeString(attr.as_string(), ";"));
-		if (posList.size() < 3) {
+		pugi::xml_attribute toIdAttribute = node.attribute("toid");
+		if (!toIdAttribute) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Missing toid in fromid: " << attr.as_string() << std::endl;
 			return false;
 		}
 
-		Position pos(static_cast<uint16_t>(posList[0]), static_cast<uint16_t>(posList[1]), static_cast<uint8_t>(posList[2]));
-		addEvent(moveEvent, pos, positionMap);
+		try {
+			std::vector<int32_t> fromIds = vectorAtoi(explodeString(attr.as_string(), ";"));
+			std::vector<int32_t> toIds = vectorAtoi(explodeString(toIdAttribute.as_string(), ";"));
+			if (fromIds.size() != toIds.size()) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromid - toid) is malformed: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+				return false;
+			}
+
+			for (size_t i = 0, end = fromIds.size(); i < end; ++i) {
+				addEvent(moveEvent, static_cast<uint16_t>(fromIds[i]), itemIdMap);
+				if (moveEvent->getEventType() == MOVE_EVENT_EQUIP) {
+					ItemType& it = Item::items.getItemType(fromIds[i]);
+					it.wieldInfo = moveEvent->getWieldInfo();
+					it.minReqLevel = moveEvent->getReqLevel();
+					it.minReqMagicLevel = moveEvent->getReqMagLv();
+					it.vocationString = moveEvent->getVocationString();
+				}
+
+				while (fromIds[i] < toIds[i]) {
+					addEvent(moveEvent, static_cast<uint16_t>(++fromIds[i]), itemIdMap);
+					if (moveEvent->getEventType() == MOVE_EVENT_EQUIP) {
+						ItemType& it = Item::items.getItemType(fromIds[i]);
+						it.wieldInfo = moveEvent->getWieldInfo();
+						it.minReqLevel = moveEvent->getReqLevel();
+						it.minReqMagicLevel = moveEvent->getReqMagLv();
+						it.vocationString = moveEvent->getVocationString();
+					}
+				}
+			}
+		} catch (const std::invalid_argument&) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromid - toid) have invalid ids: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+		} catch (const std::out_of_range&) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromid - toid) have too long ids: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+		}
+	} else if ((attr = node.attribute("uniqueid"))) {
+		for (std::string& uniqueId : explodeString(attr.as_string(), ";")) {
+			try {
+				std::vector<int32_t> uniqueIds = vectorAtoi(explodeString(uniqueId, "-"));
+				addEvent(moveEvent, static_cast<uint16_t>(uniqueIds[0]), uniqueIdMap);
+				if (uniqueIds.size() > 1) {
+					while (uniqueIds[0] < uniqueIds[1]) {
+						addEvent(moveEvent, static_cast<uint16_t>(++uniqueIds[0]), uniqueIdMap);
+					}
+				}
+			} catch (const std::invalid_argument&) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered uniqueid have invalid id: " << uniqueId << std::endl;
+				continue;
+			} catch (const std::out_of_range&) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered uniqueid have too long id: " << uniqueId << std::endl;
+				continue;
+			}
+		}
+	} else if ((attr = node.attribute("fromuid"))) {
+		pugi::xml_attribute toIdAttribute = node.attribute("touid");
+		if (!toIdAttribute) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Missing touid in fromuid: " << attr.as_string() << std::endl;
+			return false;
+		}
+
+		try {
+			std::vector<int32_t> fromIds = vectorAtoi(explodeString(attr.as_string(), ";"));
+			std::vector<int32_t> toIds = vectorAtoi(explodeString(toIdAttribute.as_string(), ";"));
+			if (fromIds.size() != toIds.size()) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromuid - touid) is malformed: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+				return false;
+			}
+
+			for (size_t i = 0, end = fromIds.size(); i < end; ++i) {
+				addEvent(moveEvent, static_cast<uint16_t>(fromIds[i]), uniqueIdMap);
+				while (fromIds[i] < toIds[i]) {
+					addEvent(moveEvent, static_cast<uint16_t>(++fromIds[i]), uniqueIdMap);
+				}
+			}
+		} catch (const std::invalid_argument&) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromuid - touid) have invalid ids: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+		} catch (const std::out_of_range&) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromuid - touid) have too long ids: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+		}
+	} else if ((attr = node.attribute("actionid"))) {
+		for (std::string& actionId : explodeString(attr.as_string(), ";")) {
+			try {
+				std::vector<int32_t> actionIds = vectorAtoi(explodeString(actionId, "-"));
+				addEvent(moveEvent, static_cast<uint16_t>(actionIds[0]), actionIdMap);
+				if (actionIds.size() > 1) {
+					while (actionIds[0] < actionIds[1]) {
+						addEvent(moveEvent, static_cast<uint16_t>(++actionIds[0]), actionIdMap);
+					}
+				}
+			} catch (const std::invalid_argument&) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered actionid have invalid id: " << actionId << std::endl;
+				continue;
+			} catch (const std::out_of_range&) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered actionid have too long id: " << actionId << std::endl;
+				continue;
+			}
+		}
+	} else if ((attr = node.attribute("fromaid"))) {
+		pugi::xml_attribute toIdAttribute = node.attribute("toaid");
+		if (!toIdAttribute) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Missing toaid in fromaid: " << attr.as_string() << std::endl;
+			return false;
+		}
+
+		try {
+			std::vector<int32_t> fromIds = vectorAtoi(explodeString(attr.as_string(), ";"));
+			std::vector<int32_t> toIds = vectorAtoi(explodeString(toIdAttribute.as_string(), ";"));
+			if (fromIds.size() != toIds.size()) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromaid - toaid) is malformed: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+				return false;
+			}
+
+			for (size_t i = 0, end = fromIds.size(); i < end; ++i) {
+				addEvent(moveEvent, static_cast<uint16_t>(fromIds[i]), actionIdMap);
+				while (fromIds[i] < toIds[i]) {
+					addEvent(moveEvent, static_cast<uint16_t>(++fromIds[i]), actionIdMap);
+				}
+			}
+		} catch (const std::invalid_argument&) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromaid - toaid) have invalid ids: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+		} catch (const std::out_of_range&) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromaid - toaid) have too long ids: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+		}
+	} else if ((attr = node.attribute("pos"))) {
+		for (std::string& position : explodeString(attr.as_string(), ";")) {
+			try {
+				std::vector<int32_t> posList = vectorAtoi(explodeString(position, ","));
+				if (posList.size() < 3) {
+					std::cout << "[Warning - MoveEvents::registerEvent] Registered position don't have x/y/z coordinates: " << position << std::endl;
+					continue;
+				}
+
+				Position pos(static_cast<uint16_t>(posList[0]), static_cast<uint16_t>(posList[1]), static_cast<uint8_t>(posList[2]));
+				addEvent(moveEvent, pos, positionMap);
+			} catch (const std::invalid_argument&) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered position have invalid coordinates: " << position << std::endl;
+				continue;
+			} catch (const std::out_of_range&) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered position have too long coordinates: " << position << std::endl;
+				continue;
+			}
+		}
 	} else {
 		return false;
 	}
 	return true;
 }
 
-bool MoveEvents::registerLuaFunction(MoveEvent_ptr event)
+bool MoveEvents::registerLuaFunction(MoveEvent_ptr& event)
 {
-	if (!event->getItemIdRange().empty()) {
-		for (uint16_t itemId : event->getItemIdRange()) {
+	std::vector<uint16_t>& itemIdRange = event->getItemIdRange();
+	if (!itemIdRange.empty()) {
+		for (uint16_t itemId : itemIdRange) {
 			if (event->getEventType() == MOVE_EVENT_EQUIP) {
 				ItemType& it = Item::items.getItemType(itemId);
 				it.wieldInfo = event->getWieldInfo();
@@ -199,18 +319,22 @@ bool MoveEvents::registerLuaFunction(MoveEvent_ptr event)
 
 			addEvent(event, itemId, itemIdMap);
 		}
+		itemIdRange.clear();
+		itemIdRange.shrink_to_fit();
 	} else {
 		return false;
 	}
 	return true;
 }
 
-bool MoveEvents::registerLuaEvent(MoveEvent_ptr event)
+bool MoveEvents::registerLuaEvent(MoveEvent_ptr& event)
 {
 	bool result = false;
-	if (!event->getItemIdRange().empty()) {
+
+	std::vector<uint16_t>& itemIdRange = event->getItemIdRange();
+	if (!itemIdRange.empty()) {
 		result = true;
-		for (uint16_t itemId : event->getItemIdRange()) {
+		for (uint16_t itemId : itemIdRange) {
 			if (event->getEventType() == MOVE_EVENT_EQUIP) {
 				ItemType& it = Item::items.getItemType(itemId);
 				it.wieldInfo = event->getWieldInfo();
@@ -221,27 +345,38 @@ bool MoveEvents::registerLuaEvent(MoveEvent_ptr event)
 
 			addEvent(event, itemId, itemIdMap);
 		}
+		itemIdRange.clear();
+		itemIdRange.shrink_to_fit();
 	}
 
-	if (!event->getActionIdRange().empty()) {
+	std::vector<uint16_t>& actionIdRange = event->getActionIdRange();
+	if (!actionIdRange.empty()) {
 		result = true;
-		for (uint16_t actionId : event->getActionIdRange()) {
+		for (uint16_t actionId : actionIdRange) {
 			addEvent(event, actionId, actionIdMap);
 		}
+		actionIdRange.clear();
+		actionIdRange.shrink_to_fit();
 	}
 
-	if (!event->getUniqueIdRange().empty()) {
+	std::vector<uint16_t>& uniqueIdRange = event->getUniqueIdRange();
+	if (!uniqueIdRange.empty()) {
 		result = true;
-		for (uint16_t uniqueId : event->getUniqueIdRange()) {
+		for (uint16_t uniqueId : uniqueIdRange) {
 			addEvent(event, uniqueId, uniqueIdMap);
 		}
+		uniqueIdRange.clear();
+		uniqueIdRange.shrink_to_fit();
 	}
 
-	if (!event->getPosList().empty()) {
+	std::vector<Position>& posList = event->getPosList();
+	if (!posList.empty()) {
 		result = true;
-		for (const Position& pos : event->getPosList()) {
+		for (const Position& pos : posList) {
 			addEvent(event, pos, positionMap);
 		}
+		posList.clear();
+		posList.shrink_to_fit();
 	}
 	
 	return result;

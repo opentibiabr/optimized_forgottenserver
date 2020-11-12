@@ -126,6 +126,12 @@ bool Spells::registerEvent(Event_ptr event, const pugi::xml_node&)
 	if (instant) {
 		InstantSpell_ptr instptr{ static_cast<InstantSpell*>(event.release()) };
 
+		std::vector<std::string>& wordsMap = instant->getWordsMap();
+		if (!wordsMap.empty()) {
+			wordsMap.clear();
+			wordsMap.shrink_to_fit();
+		}
+
 		std::string words = instant->getWords();
 		auto result = instants.emplace(words, std::move(instptr));
 		if (!result.second) {
@@ -151,6 +157,12 @@ bool Spells::registerInstantLuaEvent(InstantSpell* event)
 {
 	InstantSpell_ptr instant{ event };
 	if (instant) {
+		std::vector<std::string>& wordsMap = instant->getWordsMap();
+		if (!wordsMap.empty()) {
+			wordsMap.clear();
+			wordsMap.shrink_to_fit();
+		}
+
 		std::string words = instant->getWords();
 		auto result = instants.emplace(words, std::move(instant));
 		if (!result.second) {
@@ -164,7 +176,7 @@ bool Spells::registerInstantLuaEvent(InstantSpell* event)
 
 bool Spells::registerRuneLuaEvent(RuneSpell* event)
 {
-	RuneSpell_ptr rune { event };
+	RuneSpell_ptr rune{ event };
 	if (rune) {
 		uint16_t runeId = rune->getRuneItemId();
 		auto result = runes.emplace(runeId, std::move(*rune));

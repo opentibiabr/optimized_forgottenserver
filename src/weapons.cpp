@@ -50,7 +50,7 @@ const Weapon* Weapons::getWeapon(const Item* item) const
 	if (it == weapons.end()) {
 		return nullptr;
 	}
-	return it->second;
+	return it->second.get();
 }
 
 void Weapons::clear(bool fromLua)
@@ -90,7 +90,7 @@ void Weapons::loadDefaults()
 			case WEAPON_CLUB: {
 				WeaponMelee* weapon = new WeaponMelee(&scriptInterface);
 				weapon->configureWeapon(it);
-				weapons[i] = weapon;
+				weapons[i].reset(weapon);
 				break;
 			}
 
@@ -102,7 +102,7 @@ void Weapons::loadDefaults()
 
 				WeaponDistance* weapon = new WeaponDistance(&scriptInterface);
 				weapon->configureWeapon(it);
-				weapons[i] = weapon;
+				weapons[i].reset(weapon);
 				break;
 			}
 
@@ -126,18 +126,14 @@ Event_ptr Weapons::getEvent(const std::string& nodeName)
 
 bool Weapons::registerEvent(Event_ptr event, const pugi::xml_node&)
 {
-	Weapon* weapon = static_cast<Weapon*>(event.release()); //event is guaranteed to be a Weapon
-
-	auto result = weapons.emplace(weapon->getID(), weapon);
-	if (!result.second) {
-		std::cout << "[Warning - Weapons::registerEvent] Duplicate registered item with id: " << weapon->getID() << std::endl;
-	}
-	return result.second;
+	Weapon* weapon = static_cast<Weapon*>(event.release());
+	weapons[weapon->getID()].reset(weapon);
+	return true;
 }
 
-bool Weapons::registerLuaEvent(Weapon* event)
+bool Weapons::registerLuaEvent(Weapon* weapon)
 {
-	weapons[event->getID()] = event;
+	weapons[weapon->getID()].reset(weapon);
 	return true;
 }
 

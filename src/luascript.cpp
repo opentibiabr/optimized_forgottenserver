@@ -2070,6 +2070,7 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(TILESTATE_FLOORCHANGE_SOUTH_ALT)
 	registerEnum(TILESTATE_FLOORCHANGE_EAST_ALT)
 	registerEnum(TILESTATE_SUPPORTS_HANGABLE)
+	registerEnum(TILESTATE_BLOCKPROJECTILE)
 
 	registerEnum(WEAPON_NONE)
 	registerEnum(WEAPON_SWORD)
@@ -10056,17 +10057,18 @@ int LuaScriptInterface::luaPlayerSendTextMessage(lua_State* L)
 int LuaScriptInterface::luaPlayerSendChannelMessage(lua_State* L)
 {
 	// player:sendChannelMessage(author, text, type, channelId)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
 	uint16_t channelId = getNumber<uint16_t>(L, 5);
 	SpeakClasses type = getNumber<SpeakClasses>(L, 4);
 	const std::string& text = getString(L, 3);
 	const std::string& author = getString(L, 2);
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		player->sendChannelMessage(author, text, type, channelId);
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
+	player->sendChannelMessage(author, text, type, channelId);
+	pushBoolean(L, true);
 	return 1;
 }
 
@@ -15644,12 +15646,6 @@ int LuaScriptInterface::luaActionRegister(lua_State* L)
 		} else {
 			pushBoolean(L, g_actions->registerLuaEvent(action));
 		}
-		action->getActionIdRange().clear();
-		action->getActionIdRange().shrink_to_fit();
-		action->getItemIdRange().clear();
-		action->getItemIdRange().shrink_to_fit();
-		action->getUniqueIdRange().clear();
-		action->getUniqueIdRange().shrink_to_fit();
 		*actionPtr = nullptr; // Remove luascript reference
 	} else {
 		lua_pushnil(L);
@@ -15792,10 +15788,9 @@ int LuaScriptInterface::luaTalkactionRegister(lua_State* L)
 	// talkAction:register()
 	TalkAction** talkPtr = getRawUserdata<TalkAction>(L, 1);
 	if (talkPtr && *talkPtr) {
-		TalkAction* talk = *talkPtr;
+		TalkAction_ptr talk{ *talkPtr };
 		if (!talk->isScripted()) {
 			pushBoolean(L, false);
-			delete talk;
 		} else {
 			pushBoolean(L, g_talkActions->registerLuaEvent(talk));
 		}
@@ -15974,14 +15969,6 @@ int LuaScriptInterface::luaMoveEventRegister(lua_State* L)
 		} else {
 			pushBoolean(L, g_moveEvents->registerLuaEvent(moveEvent));
 		}
-		moveEvent->getItemIdRange().clear();
-		moveEvent->getItemIdRange().shrink_to_fit();
-		moveEvent->getActionIdRange().clear();
-		moveEvent->getActionIdRange().shrink_to_fit();
-		moveEvent->getUniqueIdRange().clear();
-		moveEvent->getUniqueIdRange().shrink_to_fit();
-		moveEvent->getPosList().clear();
-		moveEvent->getPosList().shrink_to_fit();
 		*moveeventPtr = nullptr; // Remove luascript reference
 	} else {
 		lua_pushnil(L);

@@ -87,13 +87,30 @@ bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node)
 
 	pugi::xml_attribute attr;
 	if ((attr = node.attribute("itemid"))) {
-		uint16_t id = pugi::cast<uint16_t>(attr.value());
+		for (std::string& itemId : explodeString(attr.as_string(), ";")) {
+			try {
+				std::vector<int32_t> itemIds = vectorAtoi(explodeString(itemId, "-"));
+				auto result = useItemMap.emplace(static_cast<uint16_t>(itemIds[0]), action);
+				if (!result.second) {
+					std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with id: " << itemIds[0] << std::endl;
+				}
 
-		auto result = useItemMap.emplace(id, action);
-		if (!result.second) {
-			std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with id: " << id << std::endl;
+				if (itemIds.size() > 1) {
+					while (itemIds[0] < itemIds[1]) {
+						result = useItemMap.emplace(static_cast<uint16_t>(++itemIds[0]), action);
+						if (!result.second) {
+							std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with id: " << itemIds[0] << std::endl;
+						}
+					}
+				}
+			} catch (const std::invalid_argument&) {
+				std::cout << "[Warning - Actions::registerEvent] Registered itemid have invalid id: " << itemId << std::endl;
+				continue;
+			} catch (const std::out_of_range&) {
+				std::cout << "[Warning - Actions::registerEvent] Registered itemid have too long id: " << itemId << std::endl;
+				continue;
+			}
 		}
-		return result.second;
 	} else if ((attr = node.attribute("fromid"))) {
 		pugi::xml_attribute toIdAttribute = node.attribute("toid");
 		if (!toIdAttribute) {
@@ -101,102 +118,161 @@ bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node)
 			return false;
 		}
 
-		uint16_t fromId = pugi::cast<uint16_t>(attr.value());
-		uint16_t iterId = fromId;
-		uint16_t toId = pugi::cast<uint16_t>(toIdAttribute.value());
+		try {
+			std::vector<int32_t> fromIds = vectorAtoi(explodeString(attr.as_string(), ";"));
+			std::vector<int32_t> toIds = vectorAtoi(explodeString(toIdAttribute.as_string(), ";"));
+			if (fromIds.size() != toIds.size()) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromid - toid) is malformed: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+				return false;
+			}
 
-		auto result = useItemMap.emplace(iterId, action);
-		if (!result.second) {
-			std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with id: " << iterId << " in fromid: " << fromId << ", toid: " << toId << std::endl;
+			for (size_t i = 0, end = fromIds.size(); i < end; ++i) {
+				auto result = useItemMap.emplace(static_cast<uint16_t>(fromIds[i]), action);
+				if (!result.second) {
+					std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with id: " << fromIds[i] << " in range(fromid - toid): (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+				}
+
+				while (fromIds[i] < toIds[i]) {
+					result = useItemMap.emplace(static_cast<uint16_t>(++fromIds[i]), action);
+					if (!result.second) {
+						std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with id: " << fromIds[i] << " in range(fromid - toid): (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+					}
+				}
+			}
+		} catch (const std::invalid_argument&) {
+			std::cout << "[Warning - Actions::registerEvent] Registered range(fromid - toid) have invalid ids: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+		} catch (const std::out_of_range&) {
+			std::cout << "[Warning - Actions::registerEvent] Registered range(fromid - toid) have too long ids: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
 		}
+	} else if ((attr = node.attribute("uniqueid"))) {
+		for (std::string& uniqueId : explodeString(attr.as_string(), ";")) {
+			try {
+				std::vector<int32_t> uniqueIds = vectorAtoi(explodeString(uniqueId, "-"));
+				auto result = uniqueItemMap.emplace(static_cast<uint16_t>(uniqueIds[0]), action);
+				if (!result.second) {
+					std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with uniqueid: " << uniqueIds[0] << std::endl;
+				}
 
-		bool success = result.second;
-		while (++iterId <= toId) {
-			result = useItemMap.emplace(iterId, action);
-			if (!result.second) {
-				std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with id: " << iterId << " in fromid: " << fromId << ", toid: " << toId << std::endl;
+				if (uniqueIds.size() > 1) {
+					while (uniqueIds[0] < uniqueIds[1]) {
+						result = uniqueItemMap.emplace(static_cast<uint16_t>(++uniqueIds[0]), action);
+						if (!result.second) {
+							std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with uniqueid: " << uniqueIds[0] << std::endl;
+						}
+					}
+				}
+			} catch (const std::invalid_argument&) {
+				std::cout << "[Warning - Actions::registerEvent] Registered uniqueid have invalid id: " << uniqueId << std::endl;
+				continue;
+			} catch (const std::out_of_range&) {
+				std::cout << "[Warning - Actions::registerEvent] Registered uniqueid have too long id: " << uniqueId << std::endl;
 				continue;
 			}
-			success = true;
 		}
-		return success;
-	} else if ((attr = node.attribute("uniqueid"))) {
-		uint16_t uid = pugi::cast<uint16_t>(attr.value());
-
-		auto result = uniqueItemMap.emplace(uid, action);
-		if (!result.second) {
-			std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with uniqueid: " << uid << std::endl;
-		}
-		return result.second;
 	} else if ((attr = node.attribute("fromuid"))) {
-		pugi::xml_attribute toUidAttribute = node.attribute("touid");
-		if (!toUidAttribute) {
+		pugi::xml_attribute toIdAttribute = node.attribute("touid");
+		if (!toIdAttribute) {
 			std::cout << "[Warning - Actions::registerEvent] Missing touid in fromuid: " << attr.as_string() << std::endl;
 			return false;
 		}
 
-		uint16_t fromUid = pugi::cast<uint16_t>(attr.value());
-		uint16_t iterUid = fromUid;
-		uint16_t toUid = pugi::cast<uint16_t>(toUidAttribute.value());
+		try {
+			std::vector<int32_t> fromIds = vectorAtoi(explodeString(attr.as_string(), ";"));
+			std::vector<int32_t> toIds = vectorAtoi(explodeString(toIdAttribute.as_string(), ";"));
+			if (fromIds.size() != toIds.size()) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromuid - touid) is malformed: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+				return false;
+			}
 
-		auto result = uniqueItemMap.emplace(iterUid, action);
-		if (!result.second) {
-			std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with unique id: " << iterUid << " in fromuid: " << fromUid << ", touid: " << toUid << std::endl;
+			for (size_t i = 0, end = fromIds.size(); i < end; ++i) {
+				auto result = uniqueItemMap.emplace(static_cast<uint16_t>(fromIds[i]), action);
+				if (!result.second) {
+					std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with unique id: " << fromIds[i] << " in range(fromuid - touid): (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+				}
+
+				while (fromIds[i] < toIds[i]) {
+					result = uniqueItemMap.emplace(static_cast<uint16_t>(++fromIds[i]), action);
+					if (!result.second) {
+						std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with unique id: " << fromIds[i] << " in range(fromuid - touid): (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+					}
+				}
+			}
+		} catch (const std::invalid_argument&) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromuid - touid) have invalid ids: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+		} catch (const std::out_of_range&) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromuid - touid) have too long ids: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
 		}
+	} else if ((attr = node.attribute("actionid"))) {
+		for (std::string& actionId : explodeString(attr.as_string(), ";")) {
+			try {
+				std::vector<int32_t> actionIds = vectorAtoi(explodeString(actionId, "-"));
+				auto result = actionItemMap.emplace(static_cast<uint16_t>(actionIds[0]), action);
+				if (!result.second) {
+					std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with actionid: " << actionIds[0] << std::endl;
+				}
 
-		bool success = result.second;
-		while (++iterUid <= toUid) {
-			result = uniqueItemMap.emplace(iterUid, action);
-			if (!result.second) {
-				std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with unique id: " << iterUid << " in fromuid: " << fromUid << ", touid: " << toUid << std::endl;
+				if (actionIds.size() > 1) {
+					while (actionIds[0] < actionIds[1]) {
+						result = actionItemMap.emplace(static_cast<uint16_t>(++actionIds[0]), action);
+						if (!result.second) {
+							std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with actionid: " << actionIds[0] << std::endl;
+						}
+					}
+				}
+			} catch (const std::invalid_argument&) {
+				std::cout << "[Warning - Actions::registerEvent] Registered actionid have invalid id: " << actionId << std::endl;
+				continue;
+			} catch (const std::out_of_range&) {
+				std::cout << "[Warning - Actions::registerEvent] Registered actionid have too long id: " << actionId << std::endl;
 				continue;
 			}
-			success = true;
 		}
-		return success;
-	} else if ((attr = node.attribute("actionid"))) {
-		uint16_t aid = pugi::cast<uint16_t>(attr.value());
-
-		auto result = actionItemMap.emplace(aid, action);
-		if (!result.second) {
-			std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with actionid: " << aid << std::endl;
-		}
-		return result.second;
 	} else if ((attr = node.attribute("fromaid"))) {
-		pugi::xml_attribute toAidAttribute = node.attribute("toaid");
-		if (!toAidAttribute) {
+		pugi::xml_attribute toIdAttribute = node.attribute("toaid");
+		if (!toIdAttribute) {
 			std::cout << "[Warning - Actions::registerEvent] Missing toaid in fromaid: " << attr.as_string() << std::endl;
 			return false;
 		}
 
-		uint16_t fromAid = pugi::cast<uint16_t>(attr.value());
-		uint16_t iterAid = fromAid;
-		uint16_t toAid = pugi::cast<uint16_t>(toAidAttribute.value());
-
-		auto result = actionItemMap.emplace(iterAid, action);
-		if (!result.second) {
-			std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with action id: " << iterAid << " in fromaid: " << fromAid << ", toaid: " << toAid << std::endl;
-		}
-
-		bool success = result.second;
-		while (++iterAid <= toAid) {
-			result = actionItemMap.emplace(iterAid, action);
-			if (!result.second) {
-				std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with action id: " << iterAid << " in fromaid: " << fromAid << ", toaid: " << toAid << std::endl;
-				continue;
+		try {
+			std::vector<int32_t> fromIds = vectorAtoi(explodeString(attr.as_string(), ";"));
+			std::vector<int32_t> toIds = vectorAtoi(explodeString(toIdAttribute.as_string(), ";"));
+			if (fromIds.size() != toIds.size()) {
+				std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromaid - toaid) is malformed: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+				return false;
 			}
-			success = true;
+
+			for (size_t i = 0, end = fromIds.size(); i < end; ++i) {
+				auto result = actionItemMap.emplace(static_cast<uint16_t>(fromIds[i]), action);
+				if (!result.second) {
+					std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with action id: " << fromIds[i] << " in range(fromaid - toaid): (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+				}
+
+				while (fromIds[i] < toIds[i]) {
+					result = actionItemMap.emplace(static_cast<uint16_t>(++fromIds[i]), action);
+					if (!result.second) {
+						std::cout << "[Warning - Actions::registerEvent] Duplicate registered item with action id: " << fromIds[i] << " in range(fromaid - toaid): (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+					}
+				}
+			}
+		} catch (const std::invalid_argument&) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromaid - toaid) have invalid ids: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
+		} catch (const std::out_of_range&) {
+			std::cout << "[Warning - MoveEvents::registerEvent] Registered range(fromaid - toaid) have too long ids: (" << attr.as_string() << " - " << toIdAttribute.as_string() << ")" << std::endl;
 		}
-		return success;
+	} else {
+		return false;
 	}
-	return false;
+	return true;
 }
 
-bool Actions::registerLuaEvent(Action_ptr event)
+bool Actions::registerLuaEvent(Action_ptr& event)
 {
 	bool result = false;
-	if (!event->getItemIdRange().empty()) {
-		for (uint16_t itemId : event->getItemIdRange()) {
+
+	std::vector<uint16_t>& itemIdRange = event->getItemIdRange();
+	if (!itemIdRange.empty()) {
+		for (uint16_t itemId : itemIdRange) {
 			auto res = useItemMap.emplace(itemId, event);
 			if (!res.second) {
 				std::cout << "[Warning - Actions::registerLuaEvent] Duplicate registered item with id: " << itemId << " in range from id: " << event->getItemIdRange()[0] << ", to id: " << event->getItemIdRange()[event->getItemIdRange().size() - 1] << std::endl;
@@ -204,10 +280,13 @@ bool Actions::registerLuaEvent(Action_ptr event)
 			}
 			result = true;
 		}
+		itemIdRange.clear();
+		itemIdRange.shrink_to_fit();
 	}
 
-	if (!event->getActionIdRange().empty()) {
-		for (uint16_t actionId : event->getActionIdRange()) {
+	std::vector<uint16_t>& actionIdRange = event->getActionIdRange();
+	if (!actionIdRange.empty()) {
+		for (uint16_t actionId : actionIdRange) {
 			auto res = actionItemMap.emplace(actionId, event);
 			if (!res.second) {
 				std::cout << "[Warning - Actions::registerLuaEvent] Duplicate registered item with aid: " << actionId << " in range from aid: " << event->getActionIdRange()[0] << ", to aid: " << event->getActionIdRange()[event->getActionIdRange().size() - 1] << std::endl;
@@ -215,10 +294,13 @@ bool Actions::registerLuaEvent(Action_ptr event)
 			}
 			result = true;
 		}
+		actionIdRange.clear();
+		actionIdRange.shrink_to_fit();
 	}
 
-	if (!event->getUniqueIdRange().empty()) {
-		for (uint16_t uniqueId : event->getUniqueIdRange()) {
+	std::vector<uint16_t>& uniqueIdRange = event->getUniqueIdRange();
+	if (!uniqueIdRange.empty()) {
+		for (uint16_t uniqueId : uniqueIdRange) {
 			auto res = uniqueItemMap.emplace(uniqueId, event);
 			if (!res.second) {
 				std::cout << "[Warning - Actions::registerLuaEvent] Duplicate registered item with uid: " << uniqueId << " in range from uid: " << event->getUniqueIdRange()[0] << ", to uid: " << event->getUniqueIdRange()[event->getUniqueIdRange().size() - 1] << std::endl;
@@ -226,6 +308,8 @@ bool Actions::registerLuaEvent(Action_ptr event)
 			}
 			result = true;
 		}
+		uniqueIdRange.clear();
+		uniqueIdRange.shrink_to_fit();
 	}
 
 	if (!result) {

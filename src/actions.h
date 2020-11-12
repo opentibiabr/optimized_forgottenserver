@@ -118,7 +118,7 @@ class Actions final : public BaseEvents
 		ReturnValue canUse(const Player* player, const Position& pos, const Item* item);
 		ReturnValue canUseFar(const Creature* creature, const Position& toPos, bool checkLineOfSight, bool checkFloor);
 
-		bool registerLuaEvent(Action_ptr event);
+		bool registerLuaEvent(Action_ptr& event);
 		void clear(bool fromLua) override final;
 
 	private:
