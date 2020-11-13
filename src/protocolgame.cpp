@@ -628,7 +628,9 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		case 0xE1: g_game.playerMonsterCyclopedia(player); break;
 		case 0xE2: parseCyclopediaMonsters(msg); break;
 		case 0xE3: parseCyclopediaRace(msg); break;
+		#if GAME_FEATURE_CYCLOPEDIA_CHARACTERINFO > 0
 		case 0xE5: parseCyclopediaCharacterInfo(msg); break;
+		#endif
 		case 0xE6: parseBugReport(msg); break;
 		#if GAME_FEATURE_RULEVIOLATION > 0
 		case 0xE7: parseRuleViolation(msg); break;
@@ -1421,18 +1423,31 @@ void ProtocolGame::parseCyclopediaHouseAction(NetworkMessage& msg)
 	}*/
 }
 
+#if GAME_FEATURE_CYCLOPEDIA_CHARACTERINFO > 0
 void ProtocolGame::parseCyclopediaCharacterInfo(NetworkMessage& msg)
 {
+	uint32_t characterID;
+
 	CyclopediaCharacterInfoType_t characterInfoType;
-	if (version >= 1215) {
-		msg.get<uint32_t>();
-		characterInfoType = static_cast<CyclopediaCharacterInfoType_t>(msg.getByte());
-	} else {
-		characterInfoType = static_cast<CyclopediaCharacterInfoType_t>(msg.getByte());
+	#if CLIENT_VERSION >= 1215
+	characterID = msg.get<uint32_t>();
+	characterInfoType = static_cast<CyclopediaCharacterInfoType_t>(msg.getByte());
+	#else
+	characterID = 0;
+	characterInfoType = static_cast<CyclopediaCharacterInfoType_t>(msg.getByte());
+	#endif
+	uint16_t entries = 0, page = 0;
+	if (characterInfoType == CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS || characterInfoType == CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS) {
+		entries = msg.get<uint16_t>();
+		page = msg.get<uint16_t>();
 	}
 
-	g_game.playerCyclopediaCharacterInfo(player, characterInfoType);
+	if (characterID == 0) {
+		characterID = player->getID();
+	}
+	g_game.playerCyclopediaCharacterInfo(player, characterID, characterInfoType, entries, page);
 }
+#endif
 
 #if GAME_FEATURE_HIGHSCORES > 0
 void ProtocolGame::parseHighscores(NetworkMessage& msg)
@@ -2203,22 +2218,30 @@ void ProtocolGame::sendCyclopediaBonusEffects()
 	writeToOutputBuffer(playermsg);
 }
 
+#if GAME_FEATURE_CYCLOPEDIA_CHARACTERINFO > 0
+void ProtocolGame::sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode)
+{
+	playermsg.reset();
+	playermsg.addByte(0xDA);
+	playermsg.addByte(static_cast<uint8_t>(characterInfoType));
+	playermsg.addByte(errorCode);
+	writeToOutputBuffer(playermsg);
+}
+
 void ProtocolGame::sendCyclopediaCharacterBaseInformation()
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
-	if (version >= 1215) {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_BASEINFORMATION);
-		playermsg.addByte(0x00); // No data available
-	} else {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_BASEINFORMATION);
-	}
+	playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_BASEINFORMATION);
+	#if CLIENT_VERSION >= 1215
+	playermsg.addByte(0x00); // No data available
+	#endif
 	playermsg.addString(player->getName());
 	playermsg.addString(player->getVocation()->getVocName());
 	playermsg.add<uint16_t>(player->getLevel());
 	AddOutfit(player->getDefaultOutfit());
 
-	playermsg.addByte(0x00); // ??
+	playermsg.addByte(0x00); // hide stamina
 	playermsg.addByte(0x00); // enable store summary & character titles
 	playermsg.addString(""); // character title
 	writeToOutputBuffer(playermsg);
@@ -2228,19 +2251,17 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
-	if (version >= 1215) {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_GENERALSTATS);
-		playermsg.addByte(0x00); // No data available
-	} else {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_GENERALSTATS);
-	}
+	playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_GENERALSTATS);
+	#if CLIENT_VERSION >= 1215
+	playermsg.addByte(0x00); // No data available
+	#endif
 	playermsg.add<uint64_t>(player->getExperience());
 	playermsg.add<uint16_t>(player->getLevel());
 	playermsg.addByte(player->getLevelPercent());
 	playermsg.add<uint16_t>(100); // base xp gain rate
-	if (version >= 1215) {
-		playermsg.add<int32_t>(0); // tournament xp factor
-	}
+	#if CLIENT_VERSION >= 1215
+	playermsg.add<int32_t>(0); // tournament xp factor
+	#endif
 	playermsg.add<uint16_t>(0); // low level bonus
 	playermsg.add<uint16_t>(0); // xp boost
 	playermsg.add<uint16_t>(100); // stamina multiplier (100 = x1.0)
@@ -2265,23 +2286,23 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	playermsg.addByte(1); // Magic Level hardcoded skill id
 	playermsg.add<uint16_t>(player->getMagicLevel());
 	playermsg.add<uint16_t>(player->getBaseMagicLevel());
-	if (version >= 1200) {
-		playermsg.add<uint16_t>(player->getBaseMagicLevel());//loyalty bonus
-		playermsg.add<uint16_t>(player->getMagicLevelPercent() * 100);
-	} else {
-		playermsg.addByte(player->getMagicLevelPercent());
-	}
+	#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+	playermsg.add<uint16_t>(player->getBaseMagicLevel());//loyalty bonus
+	playermsg.add<uint16_t>(player->getMagicLevelPercent() * 100);
+	#else
+	playermsg.addByte(player->getMagicLevelPercent());
+	#endif
 	for (uint8_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) { //TODO: check if all clients have the same hardcoded skill ids
 		static const uint8_t HardcodedSkillIds[] = {11, 9, 8, 10, 7, 6, 13};
 		playermsg.addByte(HardcodedSkillIds[i]);
 		playermsg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 		playermsg.add<uint16_t>(player->getBaseSkill(i));
-		if (version >= 1200) {
-			playermsg.add<uint16_t>(player->getBaseSkill(i));//loyalty bonus
-			playermsg.add<uint16_t>(player->getSkillPercent(i) * 100);
-		} else {
-			playermsg.addByte(player->getSkillPercent(i));
-		}
+		#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+		playermsg.add<uint16_t>(player->getBaseSkill(i));//loyalty bonus
+		playermsg.add<uint16_t>(player->getSkillPercent(i) * 100);
+		#else
+		playermsg.addByte(player->getSkillPercent(i));
+		#endif
 	}
 	writeToOutputBuffer(playermsg);
 }
@@ -2290,21 +2311,23 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
-	if (version >= 1215) {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
-		playermsg.addByte(0x00); // No data available
-	} else {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
-	}
+	playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
+	#if CLIENT_VERSION >= 1215
+	playermsg.addByte(0x00); // No data available
+	#endif
 	for (uint8_t i = SPECIALSKILL_FIRST; i <= SPECIALSKILL_LAST; ++i) {
 		playermsg.add<uint16_t>(std::min<int32_t>(100, player->varSpecialSkills[i]));
 		playermsg.add<uint16_t>(0);
 	}
 	uint8_t haveBlesses = 0;
-	uint8_t blessings = (version >= 1130 ? 8 : 6);
-	for (uint8_t i = 1; i < blessings; i++) {
+	#if CLIENT_VERSION >= 1130
+	uint8_t blessings = 8;
+	#else
+	uint8_t blessings = 6;
+	#endif
+	for (uint8_t i = 1; i < blessings; ++i) {
 		if (player->hasBlessing(i)) {
-			haveBlesses++;
+			++haveBlesses;
 		}
 	}
 	playermsg.addByte(haveBlesses);
@@ -2323,12 +2346,10 @@ void ProtocolGame::sendCyclopediaCharacterRecentDeaths()
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
-	if (version >= 1215) {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS);
-		playermsg.addByte(0x00); // No data available
-	} else {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS);
-	}
+	playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS);
+	#if CLIENT_VERSION >= 1215
+	playermsg.addByte(0x00); // No data available
+	#endif
 	playermsg.add<uint16_t>(0); // current page
 	playermsg.add<uint16_t>(0); // available pages
 	playermsg.add<uint16_t>(0); // deaths
@@ -2339,12 +2360,10 @@ void ProtocolGame::sendCyclopediaCharacterRecentPvPKills()
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
-	if (version >= 1215) {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS);
-		playermsg.addByte(0x00); // No data available
-	} else {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS);
-	}
+	playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS);
+	#if CLIENT_VERSION >= 1215
+	playermsg.addByte(0x00); // No data available
+	#endif
 	playermsg.add<uint16_t>(0); // current page
 	playermsg.add<uint16_t>(0); // available pages
 	playermsg.add<uint16_t>(0); // kills
@@ -2355,12 +2374,10 @@ void ProtocolGame::sendCyclopediaCharacterAchievements()
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
-	if (version >= 1215) {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS);
-		playermsg.addByte(0x00); // No data available
-	} else {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS);
-	}
+	playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS);
+	#if CLIENT_VERSION >= 1215
+	playermsg.addByte(0x00); // No data available
+	#endif
 	playermsg.add<uint16_t>(0); // total points
 	playermsg.add<uint16_t>(0); // total secret achievements
 	playermsg.add<uint16_t>(0); // achievements
@@ -2371,12 +2388,10 @@ void ProtocolGame::sendCyclopediaCharacterItemSummary()
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
-	if (version >= 1215) {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY);
-		playermsg.addByte(0x00); // No data available
-	} else {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY);
-	}
+	playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY);
+	#if CLIENT_VERSION >= 1215
+	playermsg.addByte(0x00); // No data available
+	#endif
 	playermsg.add<uint16_t>(0); // ??
 	playermsg.add<uint16_t>(0); // ??
 	playermsg.add<uint16_t>(0); // ??
@@ -2389,17 +2404,15 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts()
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
-	if (version >= 1215) {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITSMOUNTS);
-		playermsg.addByte(0x00); // No data available
-	} else {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITSMOUNTS);
-	}
+	playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITSMOUNTS);
+	#if CLIENT_VERSION >= 1215
+	playermsg.addByte(0x00); // No data available
+	#endif
 	Outfit_t currentOutfit = player->getDefaultOutfit();
 
 	uint16_t outfitSize = 0;
 	auto startOutfits = playermsg.getBufferPosition();
-	playermsg.add<uint16_t>(outfitSize);
+	playermsg.skipBytes(2);
 
 	const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
 	for (const Outfit& outfit : outfits) {
@@ -2428,7 +2441,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts()
 
 	uint16_t mountSize = 0;
 	auto startMounts = playermsg.getBufferPosition();
-	playermsg.add<uint16_t>(mountSize);
+	playermsg.skipBytes(2);
 	for (const Mount& mount : g_game.mounts.getMounts()) {
 		#if GAME_FEATURE_MOUNTS > 0
 		if (player->hasMount(&mount)) {
@@ -2460,7 +2473,6 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts()
 	playermsg.add<uint16_t>(outfitSize);
 	playermsg.setBufferPosition(startMounts);
 	playermsg.add<uint16_t>(mountSize);
-	playermsg.setLength(playermsg.getLength() - 4); // decrease four extra bytes we made
 	writeToOutputBuffer(playermsg);
 }
 
@@ -2468,12 +2480,10 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary()
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
-	if (version >= 1215) {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_STORESUMMARY);
-		playermsg.addByte(0x00); // No data available
-	} else {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_STORESUMMARY);
-	}
+	playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_STORESUMMARY);
+	#if CLIENT_VERSION >= 1215
+	playermsg.addByte(0x00); // No data available
+	#endif
 	playermsg.add<uint32_t>(0); // ??
 	playermsg.add<uint32_t>(0); // ??
 	playermsg.addByte(0x00); // ??
@@ -2492,19 +2502,17 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
-	if (version >= 1215) {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_INSPECTION);
-		playermsg.addByte(0x00); // No data available
-	} else {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_INSPECTION);
-	}
+	playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_INSPECTION);
+	#if CLIENT_VERSION >= 1215
+	playermsg.addByte(0x00); // No data available
+	#endif
 	uint8_t inventoryItems = 0;
 	auto startInventory = playermsg.getBufferPosition();
-	playermsg.addByte(inventoryItems);
+	playermsg.skipBytes(1);
 	for (std::underlying_type<slots_t>::type slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_AMMO; slot++) {
 		Item* inventoryItem = player->getInventoryItem(static_cast<slots_t>(slot));
 		if (inventoryItem) {
-			inventoryItems++;
+			++inventoryItems;
 
 			playermsg.addByte(slot);
 			playermsg.addString(inventoryItem->getName());
@@ -2537,7 +2545,6 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 	}
 	playermsg.setBufferPosition(startInventory);
 	playermsg.addByte(inventoryItems);
-	playermsg.setLength(playermsg.getLength() - 1); // decrease one extra byte we made
 	writeToOutputBuffer(playermsg);
 }
 
@@ -2545,12 +2552,10 @@ void ProtocolGame::sendCyclopediaCharacterBadges()
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
-	if (version >= 1215) {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_BADGES);
-		playermsg.addByte(0x00); // No data available
-	} else {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_BADGES);
-	}
+	playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_BADGES);
+	#if CLIENT_VERSION >= 1215
+	playermsg.addByte(0x00); // No data available
+	#endif
 	playermsg.addByte(0x00); // enable badges
 	writeToOutputBuffer(playermsg);
 }
@@ -2559,16 +2564,15 @@ void ProtocolGame::sendCyclopediaCharacterTitles()
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
-	if (version >= 1215) {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_TITLES);
-		playermsg.addByte(0x00); // No data available
-	} else {
-		playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_TITLES);
-	}
+	playermsg.addByte(CYCLOPEDIA_CHARACTERINFO_TITLES);
+	#if CLIENT_VERSION >= 1215
+	playermsg.addByte(0x00); // No data available
+	#endif
 	playermsg.addByte(0x00); // ??
 	playermsg.addByte(0x00); // ??
 	writeToOutputBuffer(playermsg);
 }
+#endif
 
 #if GAME_FEATURE_HIGHSCORES > 0
 void ProtocolGame::sendHighscoresNoData()
@@ -3590,9 +3594,9 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		playermsg.add<uint16_t>(0x00);
 	}
 
-	if (version > 1099) {
-		playermsg.add<uint16_t>(0x00);
-	}
+	#if GAME_FEATURE_IMBUING > 0
+	playermsg.add<uint16_t>(0x00);
+	#endif
 
 	MarketStatistics* statistics = IOMarket::getInstance().getPurchaseStatistics(itemId);
 	if (statistics) {

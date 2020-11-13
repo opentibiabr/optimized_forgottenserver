@@ -5574,8 +5574,15 @@ void Game::playerCyclopediaRace(Player* player, uint16_t monsterId)
 	player->sendCyclopediaRace(monsterId);
 }
 
-void Game::playerCyclopediaCharacterInfo(Player* player, CyclopediaCharacterInfoType_t characterInfoType)
+#if GAME_FEATURE_CYCLOPEDIA_CHARACTERINFO > 0
+void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t, uint16_t)
 {
+	if (characterID != player->getID()) {
+		//For now allow viewing only our character since we don't have tournaments supported
+		player->sendCyclopediaCharacterNoData(characterInfoType, 2);
+		return;
+	}
+
 	switch (characterInfoType) {
 		case CYCLOPEDIA_CHARACTERINFO_BASEINFORMATION: player->sendCyclopediaCharacterBaseInformation(); break;
 		case CYCLOPEDIA_CHARACTERINFO_GENERALSTATS: player->sendCyclopediaCharacterGeneralStats(); break;
@@ -5589,8 +5596,10 @@ void Game::playerCyclopediaCharacterInfo(Player* player, CyclopediaCharacterInfo
 		case CYCLOPEDIA_CHARACTERINFO_INSPECTION: player->sendCyclopediaCharacterInspection(); break;
 		case CYCLOPEDIA_CHARACTERINFO_BADGES: player->sendCyclopediaCharacterBadges(); break;
 		case CYCLOPEDIA_CHARACTERINFO_TITLES: player->sendCyclopediaCharacterTitles(); break;
+		default: player->sendCyclopediaCharacterNoData(characterInfoType, 1); break;
 	}
 }
+#endif
 
 #if GAME_FEATURE_HIGHSCORES > 0
 void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string&, uint16_t page, uint8_t entriesPerPage)

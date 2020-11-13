@@ -347,7 +347,9 @@ class Game
 		void playerMonsterCyclopedia(Player* player);
 		void playerCyclopediaMonsters(Player* player, const std::string& race);
 		void playerCyclopediaRace(Player* player, uint16_t monsterId);
-		void playerCyclopediaCharacterInfo(Player* player, CyclopediaCharacterInfoType_t characterInfoType);
+		#if GAME_FEATURE_CYCLOPEDIA_CHARACTERINFO > 0
+		void playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entries, uint16_t page);
+		#endif
 
 		#if GAME_FEATURE_HIGHSCORES > 0
 		void playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string& worldName, uint16_t page, uint8_t entriesPerPage);

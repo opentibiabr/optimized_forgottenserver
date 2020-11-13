@@ -135,8 +135,9 @@ class ProtocolGame final : public Protocol
 		void parseCyclopediaMonsters(NetworkMessage& msg);
 		void parseCyclopediaRace(NetworkMessage& msg);
 		void parseCyclopediaHouseAction(NetworkMessage& msg);
+		#if GAME_FEATURE_CYCLOPEDIA_CHARACTERINFO > 0
 		void parseCyclopediaCharacterInfo(NetworkMessage& msg);
-
+		#endif
 		#if GAME_FEATURE_HIGHSCORES > 0
 		void parseHighscores(NetworkMessage& msg);
 		#endif
@@ -299,6 +300,9 @@ class ProtocolGame final : public Protocol
 		void sendCyclopediaMonsters(const std::string& race);
 		void sendCyclopediaRace(uint16_t monsterId);
 		void sendCyclopediaBonusEffects();
+
+		#if GAME_FEATURE_CYCLOPEDIA_CHARACTERINFO > 0
+		void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode);
 		void sendCyclopediaCharacterBaseInformation();
 		void sendCyclopediaCharacterGeneralStats();
 		void sendCyclopediaCharacterCombatStats();
@@ -311,7 +315,7 @@ class ProtocolGame final : public Protocol
 		void sendCyclopediaCharacterInspection();
 		void sendCyclopediaCharacterBadges();
 		void sendCyclopediaCharacterTitles();
-
+		#endif
 		#if GAME_FEATURE_HIGHSCORES > 0
 		void sendHighscoresNoData();
 		void sendHighscores(std::vector<HighscoreCharacter>& characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);

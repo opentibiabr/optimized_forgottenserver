@@ -1317,6 +1317,12 @@ class Player final : public Creature, public Cylinder
 				client->sendCyclopediaBonusEffects();
 			}
 		}
+		#if GAME_FEATURE_CYCLOPEDIA_CHARACTERINFO > 0
+		void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode) {
+			if (client) {
+				client->sendCyclopediaCharacterNoData(characterInfoType, errorCode);
+			}
+		}
 		void sendCyclopediaCharacterBaseInformation() {
 			if (client) {
 				client->sendCyclopediaCharacterBaseInformation();
@@ -1377,6 +1383,7 @@ class Player final : public Creature, public Cylinder
 				client->sendCyclopediaCharacterTitles();
 			}
 		}
+		#endif
 		#if GAME_FEATURE_HIGHSCORES > 0
 		void sendHighscoresNoData() {
 			if (client) {
