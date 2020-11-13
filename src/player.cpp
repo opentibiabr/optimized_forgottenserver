@@ -729,9 +729,9 @@ bool Player::getStorageValue(const uint32_t key, int32_t& value) const
 #if GAME_FEATURE_QUEST_TRACKER > 0
 size_t Player::getAllowedTrackedQuestCount() const
 {
-	if(isPremium())
+	if (isPremium()) {
 		return g_config.getNumber(ConfigManager::MAX_TRACKED_QUESTS_PREMIUM);
-
+	}
 	return g_config.getNumber(ConfigManager::MAX_TRACKED_QUESTS);
 }
 

@@ -511,8 +511,7 @@ uint32_t Protocol::getIP() const
 
 void Protocol::enableCompression()
 {
-	if(!compreesionEnabled)
-	{
+	if (!compreesionEnabled) {
 		int32_t compressionLevel = g_config.getNumber(ConfigManager::COMPRESSION_LEVEL);
 		if (compressionLevel != 0) {
 			defStream.reset(new z_stream);

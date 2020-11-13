@@ -184,7 +184,7 @@ class MoveEvent final : public Event
 		void addPosList(Position pos) {
 			posList.emplace_back(pos);
 		}
-		std::string getSlotName() {
+		const std::string& getSlotName() const {
 			return slotName;
 		}
 		void setSlotName(std::string name) {

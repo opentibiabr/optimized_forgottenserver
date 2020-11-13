@@ -211,18 +211,23 @@ Spell* Spells::getSpellByName(const std::string& name)
 	return spell;
 }
 
-RuneSpell* Spells::getRuneSpell(uint32_t id)
+RuneSpell* Spells::getRuneSpell(uint16_t id)
 {
 	auto it = runes.find(id);
 	if (it == runes.end()) {
-		for (auto& rune : runes) {
-			if (rune.second.getId() == id) {
-				return &rune.second;
-			}
-		}
 		return nullptr;
 	}
 	return &it->second;
+}
+
+RuneSpell* Spells::getRuneSpellById(uint8_t id)
+{
+	for (auto& rune : runes) {
+		if (rune.second.getId() == id) {
+			return &rune.second;
+		}
+	}
+	return nullptr;
 }
 
 RuneSpell* Spells::getRuneSpellByName(const std::string& name)
@@ -244,7 +249,7 @@ InstantSpell* Spells::getInstantSpell(const std::string& words)
 	return nullptr;
 }
 
-InstantSpell* Spells::getInstantSpellById(uint32_t spellId)
+InstantSpell* Spells::getInstantSpellById(uint8_t spellId)
 {
 	for (auto& it : instants) {
 		if (it.second->getId() == spellId) {

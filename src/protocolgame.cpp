@@ -1345,8 +1345,9 @@ void ProtocolGame::parseCyclopediaMonsters(NetworkMessage& msg)
 	std::string race;
 	if (version >= 1215) {
 		uint8_t type = msg.getByte();
-		if(type != 0)
+		if (type != 0) {
 			return;
+		}
 
 		race = msg.getString();
 	} else {
@@ -1456,15 +1457,12 @@ void ProtocolGame::parseHighscores(NetworkMessage& msg)
 void ProtocolGame::parseTournamentLeaderboard(NetworkMessage& msg)
 {
 	uint8_t ledaerboardType = msg.getByte();
-	if(ledaerboardType == 0)
-	{
+	if (ledaerboardType == 0) {
 		const std::string worldName = msg.getString();
 		uint16_t currentPage = msg.get<uint16_t>();
 		(void)worldName;
 		(void)currentPage;
-	}
-	else if(ledaerboardType == 1)
-	{
+	} else if (ledaerboardType == 1) {
 		const std::string worldName = msg.getString();
 		const std::string characterName = msg.getString();
 		(void)worldName;
@@ -1648,13 +1646,10 @@ void ProtocolGame::parseSeekInContainer(NetworkMessage& msg)
 void ProtocolGame::parseInspectionObject(NetworkMessage& msg)
 {
 	uint8_t inspectionType = msg.getByte();
-	if(inspectionType == INSPECT_NORMALOBJECT)
-	{
+	if (inspectionType == INSPECT_NORMALOBJECT) {
 		Position pos = msg.getPosition();
 		g_game.playerInspectItem(player, pos);
-	}
-	else if(inspectionType == INSPECT_NPCTRADE || inspectionType == INSPECT_CYCLOPEDIA)
-	{
+	} else if (inspectionType == INSPECT_NPCTRADE || inspectionType == INSPECT_CYCLOPEDIA) {
 		uint16_t itemId = msg.get<uint16_t>();
 		uint16_t itemCount = msg.getByte();
 		g_game.playerInspectItem(player, itemId, itemCount, (inspectionType == INSPECT_CYCLOPEDIA));
@@ -1786,10 +1781,11 @@ void ProtocolGame::sendSupplyStash(std::map<uint16_t, uint32_t>& supplyStashItem
 	}
 
 	uint16_t maxSlots = static_cast<uint16_t>(g_config.getNumber(ConfigManager::MAX_SUPPLY_STASH_STOWED_ITEMS));
-	if(itemsToSend >= maxSlots)
+	if (itemsToSend >= maxSlots) {
 		playermsg.add<uint16_t>(0);
-	else
+	} else {
 		playermsg.add<uint16_t>(maxSlots - itemsToSend);
+	}
 
 	writeToOutputBuffer(playermsg);
 }
@@ -5630,8 +5626,9 @@ uint8_t ProtocolGame::translateSpeakClassToClient(SpeakClasses talkType)
 {
 	#if CLIENT_VERSION >= 1055
 	#if CLIENT_VERSION >= 1200
-	if(talkType == TALKTYPE_BOOSTED_CREATURE)
+	if (talkType == TALKTYPE_BOOSTED_CREATURE) {
 		return 0x31;
+	}
 	#endif
 	switch (talkType) {
 		case TALKTYPE_SAY: return 0x01;
@@ -5823,8 +5820,9 @@ uint8_t ProtocolGame::translateMessageClassToClient(MessageClasses messageType)
 {
 	#if CLIENT_VERSION >= 1055
 	#if CLIENT_VERSION >= 1094
-	if(messageType == MESSAGE_MANA)
+	if (messageType == MESSAGE_MANA) {
 		return 0x2B;
+	}
 	#endif
 	switch (messageType) {
 		case MESSAGE_STATUS_CONSOLE_BLUE: return 0x04;

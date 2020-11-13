@@ -12083,7 +12083,7 @@ int LuaScriptInterface::luaHouseGetItems(lua_State* L)
 	int index = 0;
 	for (Tile* tile : tiles) {
 		TileItemVector* itemVector = tile->getItemList();
-		if(itemVector) {
+		if (itemVector) {
 			for (auto it = itemVector->rbegin(), end = itemVector->rend(); it != end; ++it) {
 				Item* item = (*it);
 				pushUserdata<Item>(L, item);
@@ -14778,13 +14778,56 @@ int LuaScriptInterface::luaSpellCreate(lua_State* L)
 		return 1;
 	}
 
-	SpellType_t type = getNumber<SpellType_t>(L, 2);
+	SpellType_t type = SPELL_UNDEFINED;
+	if (isNumber(L, 2)) {
+		uint16_t id = getNumber<uint16_t>(L, 2);
+		if (id <= SPELL_RUNE) {
+			type = static_cast<SpellType_t>(id);
+		} else {
+			RuneSpell* rune = g_spells->getRuneSpell(id);
+			if (rune) {
+				pushUserdata<Spell>(L, rune);
+				setMetatable(L, -1, "Spell");
+				return 1;
+			}
+			rune = g_spells->getRuneSpellById(static_cast<uint8_t>(id));
+			if (rune) {
+				pushUserdata<Spell>(L, rune);
+				setMetatable(L, -1, "Spell");
+				return 1;
+			}
+			InstantSpell* instant = g_spells->getInstantSpellById(static_cast<uint8_t>(id));
+			if (instant) {
+				pushUserdata<Spell>(L, instant);
+				setMetatable(L, -1, "Spell");
+				return 1;
+			}
+		}
+	} else if (isString(L, 2)) {
+		std::string name = getString(L, 2);
+		InstantSpell* instant = g_spells->getInstantSpellByName(name);
+		if (instant) {
+			pushUserdata<Spell>(L, instant);
+			setMetatable(L, -1, "Spell");
+			return 1;
+		}
+		instant = g_spells->getInstantSpell(name);
+		if (instant) {
+			pushUserdata<Spell>(L, instant);
+			setMetatable(L, -1, "Spell");
+			return 1;
+		}
+		RuneSpell* rune = g_spells->getRuneSpellByName(name);
+		if (rune) {
+			pushUserdata<Spell>(L, rune);
+			setMetatable(L, -1, "Spell");
+			return 1;
+		}
 
-	if (isString(L, 2)) {
-		std::string tmp = asLowerCaseString(std::move(getString(L, 2)));
-		if (!tfs_strcmp(tmp.c_str(), "instant")) {
+		std::string typeName = asLowerCaseString(std::move(name));
+		if (!tfs_strcmp(typeName.c_str(), "instant")) {
 			type = SPELL_INSTANT;
-		} else if (!tfs_strcmp(tmp.c_str(), "rune")) {
+		} else if (!tfs_strcmp(typeName.c_str(), "rune")) {
 			type = SPELL_RUNE;
 		}
 	}
@@ -14795,52 +14838,13 @@ int LuaScriptInterface::luaSpellCreate(lua_State* L)
 		pushUserdata<Spell>(L, spell);
 		setMetatable(L, -1, "Spell");
 		spell->spellType = SPELL_INSTANT;
-		return 1;
 	} else if (type == SPELL_RUNE) {
 		RuneSpell* spell = new RuneSpell(getScriptEnv()->getScriptInterface());
 		spell->fromLua = true;
 		pushUserdata<Spell>(L, spell);
 		setMetatable(L, -1, "Spell");
 		spell->spellType = SPELL_RUNE;
-		return 1;
 	}
-
-	// isNumber(L, 2) doesn't work here for some reason, maybe a bug?
-	if (getNumber<uint32_t>(L, 2)) {
-		InstantSpell* instant = g_spells->getInstantSpellById(getNumber<uint32_t>(L, 2));
-		if (instant) {
-			pushUserdata<Spell>(L, instant);
-			setMetatable(L, -1, "Spell");
-			return 1;
-		}
-		RuneSpell* rune = g_spells->getRuneSpell(getNumber<uint32_t>(L, 2));
-		if (rune) {
-			pushUserdata<Spell>(L, rune);
-			setMetatable(L, -1, "Spell");
-			return 1;
-		}
-	} else if (isString(L, 2)) {
-		std::string arg = getString(L, 2);
-		InstantSpell* instant = g_spells->getInstantSpellByName(arg);
-		if (instant) {
-			pushUserdata<Spell>(L, instant);
-			setMetatable(L, -1, "Spell");
-			return 1;
-		}
-		instant = g_spells->getInstantSpell(arg);
-		if (instant) {
-			pushUserdata<Spell>(L, instant);
-			setMetatable(L, -1, "Spell");
-			return 1;
-		}
-		RuneSpell* rune = g_spells->getRuneSpellByName(arg);
-		if (rune) {
-			pushUserdata<Spell>(L, rune);
-			setMetatable(L, -1, "Spell");
-			return 1;
-		}
-	}
-	lua_pushnil(L);
 	return 1;
 }
 

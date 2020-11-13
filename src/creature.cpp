@@ -1272,7 +1272,7 @@ void Creature::executeConditions(uint32_t interval)
 	while (it < conditions.size()) {
 		Condition* condition = conditions[it];
 		if (condition->getType() == CONDITION_NONE) { // Check if it was scheduled to be safely removed
-			std::swap(conditions[it], conditions.back());
+			conditions[it] = conditions.back();
 			conditions.pop_back();
 
 			delete condition;
@@ -1280,7 +1280,7 @@ void Creature::executeConditions(uint32_t interval)
 		}
 
 		if (!condition->executeCondition(this, interval)) {
-			std::swap(conditions[it], conditions.back());
+			conditions[it] = conditions.back();
 			conditions.pop_back();
 
 			condition->endCondition(this);

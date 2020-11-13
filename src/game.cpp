@@ -4185,7 +4185,7 @@ void Game::checkCreatures(size_t index)
 			creature->inCheckCreaturesVector = false;
 			ReleaseCreature(creature);
 
-			std::swap(checkCreatureList[it], checkCreatureList.back());
+			checkCreatureList[it] = checkCreatureList.back();
 			checkCreatureList.pop_back();
 			--end;
 		}
