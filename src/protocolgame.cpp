@@ -3702,6 +3702,24 @@ void ProtocolGame::sendImpactTracking(CombatType_t combatType, int32_t impact, c
 	writeToOutputBuffer(playermsg);
 }
 #endif
+
+void ProtocolGame::sendKillTracking(const std::string& name, const Outfit_t& outfit, const Container* container)
+{
+	playermsg.reset();
+	playermsg.addByte(0xD1);
+	playermsg.addString(name);
+	playermsg.add<uint16_t>(outfit.lookType ? outfit.lookType : 19);
+	playermsg.addByte(outfit.lookHead);
+	playermsg.addByte(outfit.lookBody);
+	playermsg.addByte(outfit.lookLegs);
+	playermsg.addByte(outfit.lookFeet);
+	playermsg.addByte(outfit.lookAddons);
+	playermsg.addByte(container->size());
+	for (const Item* item : container->getItemList()) {
+		AddItem(item);
+	}
+	writeToOutputBuffer(playermsg);
+}
 #endif
 
 void ProtocolGame::sendQuestLog()

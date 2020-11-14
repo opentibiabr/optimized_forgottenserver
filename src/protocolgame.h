@@ -355,6 +355,7 @@ class ProtocolGame final : public Protocol
 		#if GAME_FEATURE_ANALYTICS_IMPACT_TRACKING_EXTENDED > 0
 		void sendImpactTracking(CombatType_t combatType, int32_t impact, const std::string& cause);
 		#endif
+		void sendKillTracking(const std::string& name, const Outfit_t& outfit, const Container* container);
 		#endif
 		void sendTradeItemRequest(const std::string& traderName, const Item* item, bool ack);
 		void sendCloseTrade();
