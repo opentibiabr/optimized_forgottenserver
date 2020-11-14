@@ -3666,6 +3666,42 @@ void ProtocolGame::sendMarketStatistics()
 	}
 	writeToOutputBuffer(statisticsmsg);
 }
+
+void ProtocolGame::sendImpactTracking(bool healing, int32_t impact)
+{
+	playermsg.reset();
+	playermsg.addByte(0xCC);
+	playermsg.addByte(healing ? 0x00 : 0x01);
+	playermsg.add<uint32_t>(impact);
+	writeToOutputBuffer(playermsg);
+}
+
+#if GAME_FEATURE_ANALYTICS_IMPACT_TRACKING_EXTENDED > 0
+void ProtocolGame::sendImpactTracking(CombatType_t combatType, int32_t impact, const std::string& cause)
+{
+	playermsg.reset();
+	playermsg.addByte(0xCC);
+	playermsg.addByte(cause.empty() ? 0x01 : 0x02);
+	playermsg.add<uint32_t>(impact);
+	switch (combatType) {
+		case COMBAT_PHYSICALDAMAGE: playermsg.addByte(CIPBIA_ELEMENTAL_PHYSICAL); break;
+		case COMBAT_ENERGYDAMAGE: playermsg.addByte(CIPBIA_ELEMENTAL_ENERGY); break;
+		case COMBAT_EARTHDAMAGE: playermsg.addByte(CIPBIA_ELEMENTAL_EARTH); break;
+		case COMBAT_FIREDAMAGE: playermsg.addByte(CIPBIA_ELEMENTAL_FIRE); break;
+		case COMBAT_LIFEDRAIN: playermsg.addByte(CIPBIA_ELEMENTAL_LIFEDRAIN); break;
+		case COMBAT_HEALING: playermsg.addByte(CIPBIA_ELEMENTAL_HEALING); break;
+		case COMBAT_DROWNDAMAGE: playermsg.addByte(CIPBIA_ELEMENTAL_DROWN); break;
+		case COMBAT_ICEDAMAGE: playermsg.addByte(CIPBIA_ELEMENTAL_ICE); break;
+		case COMBAT_HOLYDAMAGE: playermsg.addByte(CIPBIA_ELEMENTAL_HOLY); break;
+		case COMBAT_DEATHDAMAGE: playermsg.addByte(CIPBIA_ELEMENTAL_DEATH); break;
+		default: playermsg.addByte(CIPBIA_ELEMENTAL_UNDEFINED); break;
+	}
+	if (!cause.empty()) {
+		playermsg.addString(cause);
+	}
+	writeToOutputBuffer(playermsg);
+}
+#endif
 #endif
 
 void ProtocolGame::sendQuestLog()

@@ -1401,6 +1401,20 @@ class Player final : public Creature, public Cylinder
 				client->sendTournamentLeaderboard();
 			}
 		}
+		#if GAME_FEATURE_ANALYTICS > 0
+		void sendImpactTracking(bool healing, int32_t impact) {
+			if (client) {
+				client->sendImpactTracking(healing, impact);
+			}
+		}
+		#if GAME_FEATURE_ANALYTICS_IMPACT_TRACKING_EXTENDED > 0
+		void sendImpactTracking(CombatType_t combatType, int32_t impact, const std::string& cause) {
+			if (client) {
+				client->sendImpactTracking(combatType, impact, cause);
+			}
+		}
+		#endif
+		#endif
 		void sendQuestLog() {
 			if (client) {
 				client->sendQuestLog();

@@ -4453,6 +4453,12 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		realHealthChange = target->getHealth() - realHealthChange;
 
 		if (realHealthChange > 0 && !target->isInGhostMode()) {
+			#if GAME_FEATURE_ANALYTICS > 0
+			if (targetPlayer) {
+				targetPlayer->sendImpactTracking(true, realHealthChange);
+			}
+			#endif
+
 			#if GAME_FEATURE_SERVER_LOG_DETAILS > 0
 			std::stringExtended damageString(32);
 			damageString << realHealthChange << (realHealthChange != 1 ? " hitpoints." : " hitpoint.");
@@ -4695,6 +4701,31 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		message.type = MESSAGE_DAMAGE_DEALT;
 		if (message.primary.color != TEXTCOLOR_NONE || message.secondary.color != TEXTCOLOR_NONE) {
+			#if GAME_FEATURE_ANALYTICS > 0
+			if (attackerPlayer) {
+				#if GAME_FEATURE_ANALYTICS_IMPACT_TRACKING_EXTENDED > 0
+				attackerPlayer->sendImpactTracking(damage.primary.type, damage.primary.value, "");
+				if (damage.secondary.type != COMBAT_NONE) {
+					attackerPlayer->sendImpactTracking(damage.secondary.type, damage.secondary.value, "");
+				}
+				#else
+				attackerPlayer->sendImpactTracking(false, realDamage);
+				#endif
+			}
+			#endif
+			#if GAME_FEATURE_ANALYTICS_IMPACT_TRACKING_EXTENDED > 0
+			if (targetPlayer) {
+				std::string cause = "field item"; //I don't have access to test server so it might be called something else
+				if (attacker) {
+					cause = attacker->getName();
+				}
+				targetPlayer->sendImpactTracking(damage.primary.type, damage.primary.value, cause);
+				if (damage.secondary.type != COMBAT_NONE) {
+					attackerPlayer->sendImpactTracking(damage.secondary.type, damage.secondary.value, cause);
+				}
+			}
+			#endif
+
 			#if GAME_FEATURE_SERVER_LOG_DETAILS > 0
 			std::stringExtended damageString(32);
 			damageString << realDamage << (realDamage != 1 ? " hitpoints" : " hitpoint");
