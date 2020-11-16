@@ -306,8 +306,8 @@ class ProtocolGame final : public Protocol
 		void sendCyclopediaCharacterBaseInformation();
 		void sendCyclopediaCharacterGeneralStats();
 		void sendCyclopediaCharacterCombatStats();
-		void sendCyclopediaCharacterRecentDeaths();
-		void sendCyclopediaCharacterRecentPvPKills();
+		void sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry>& entries);
+		void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry>& entries);
 		void sendCyclopediaCharacterAchievements();
 		void sendCyclopediaCharacterItemSummary();
 		void sendCyclopediaCharacterOutfitsMounts();
@@ -318,7 +318,7 @@ class ProtocolGame final : public Protocol
 		#endif
 		#if GAME_FEATURE_HIGHSCORES > 0
 		void sendHighscoresNoData();
-		void sendHighscores(std::vector<HighscoreCharacter>& characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
+		void sendHighscores(const std::vector<HighscoreCharacter>& characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
 		#endif
 
 		void sendTournamentLeaderboard();

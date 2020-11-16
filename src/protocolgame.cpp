@@ -1436,16 +1436,16 @@ void ProtocolGame::parseCyclopediaCharacterInfo(NetworkMessage& msg)
 	characterID = 0;
 	characterInfoType = static_cast<CyclopediaCharacterInfoType_t>(msg.getByte());
 	#endif
-	uint16_t entries = 0, page = 0;
+	uint16_t entriesPerPage = 0, page = 0;
 	if (characterInfoType == CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS || characterInfoType == CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS) {
-		entries = msg.get<uint16_t>();
-		page = msg.get<uint16_t>();
+		entriesPerPage = std::min<uint16_t>(30, std::max<uint16_t>(5, msg.get<uint16_t>()));
+		page = std::max<uint16_t>(1, msg.get<uint16_t>());
 	}
 
 	if (characterID == 0) {
-		characterID = player->getID();
+		characterID = player->getGUID();
 	}
-	g_game.playerCyclopediaCharacterInfo(player, characterID, characterInfoType, entries, page);
+	g_game.playerCyclopediaCharacterInfo(player, characterID, characterInfoType, entriesPerPage, page);
 }
 #endif
 
@@ -1462,7 +1462,7 @@ void ProtocolGame::parseHighscores(NetworkMessage& msg)
 	msg.getByte();//BattlEye World Type
 	#endif
 	if (type == HIGHSCORE_GETENTRIES) {
-		page = msg.get<uint16_t>();
+		page = std::max<uint16_t>(1, msg.get<uint16_t>());
 	}
 	uint8_t entriesPerPage = std::min<uint8_t>(30, std::max<uint8_t>(5, msg.getByte()));
 	g_game.playerHighscores(player, type, category, vocation, worldName, page, entriesPerPage);
@@ -2342,7 +2342,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	writeToOutputBuffer(playermsg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterRecentDeaths()
+void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry>& entries)
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
@@ -2350,13 +2350,18 @@ void ProtocolGame::sendCyclopediaCharacterRecentDeaths()
 	#if CLIENT_VERSION >= 1215
 	playermsg.addByte(0x00); // No data available
 	#endif
-	playermsg.add<uint16_t>(0); // current page
-	playermsg.add<uint16_t>(0); // available pages
-	playermsg.add<uint16_t>(0); // deaths
+	playermsg.add<uint16_t>(page);
+	playermsg.add<uint16_t>(pages);
+
+	playermsg.add<uint16_t>(entries.size());
+	for (const RecentDeathEntry& entry : entries) {
+		playermsg.add<uint32_t>(entry.timestamp);
+		playermsg.addString(entry.cause);
+	}
 	writeToOutputBuffer(playermsg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterRecentPvPKills()
+void ProtocolGame::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry>& entries)
 {
 	playermsg.reset();
 	playermsg.addByte(0xDA);
@@ -2364,9 +2369,15 @@ void ProtocolGame::sendCyclopediaCharacterRecentPvPKills()
 	#if CLIENT_VERSION >= 1215
 	playermsg.addByte(0x00); // No data available
 	#endif
-	playermsg.add<uint16_t>(0); // current page
-	playermsg.add<uint16_t>(0); // available pages
-	playermsg.add<uint16_t>(0); // kills
+	playermsg.add<uint16_t>(page);
+	playermsg.add<uint16_t>(pages);
+
+	playermsg.add<uint16_t>(entries.size());
+	for (const RecentPvPKillEntry& entry : entries) {
+		playermsg.add<uint32_t>(entry.timestamp);
+		playermsg.addString(entry.description);
+		playermsg.addByte(entry.status);
+	}
 	writeToOutputBuffer(playermsg);
 }
 
@@ -2583,7 +2594,7 @@ void ProtocolGame::sendHighscoresNoData()
 	writeToOutputBuffer(playermsg);
 }
 
-void ProtocolGame::sendHighscores(std::vector<HighscoreCharacter>& characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages)
+void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter>& characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages)
 {
 	playermsg.reset();
 	playermsg.addByte(0xB1);
@@ -2648,7 +2659,7 @@ void ProtocolGame::sendHighscores(std::vector<HighscoreCharacter>& characters, u
 	playermsg.add<uint16_t>(pages); // Pages
 
 	playermsg.addByte(characters.size()); // Character Count
-	for (HighscoreCharacter& character : characters) {
+	for (const HighscoreCharacter& character : characters) {
 		playermsg.add<uint32_t>(character.rank); // Rank
 		playermsg.addString(character.name); // Character Name
 		playermsg.addString(""); // Probably Character Title(not visible in window)
