@@ -579,7 +579,7 @@ class Game
 		std::unordered_map<Tile*, Container*> browseFields;
 		#endif
 
-		void internalRemoveItems(std::vector<Item*> itemList, uint32_t amount, bool stackable);
+		void internalRemoveItems(std::vector<Item*>& itemList, uint32_t amount, bool stackable);
 
 		BedItem* getBedBySleeper(uint32_t guid) const;
 		void setBedSleeper(BedItem* bed, uint32_t guid);

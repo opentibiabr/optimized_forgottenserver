@@ -1430,13 +1430,16 @@ ReturnValue Game::internalCleanItem(Item* item, int32_t count /*= -1*/)
 
 ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnMap /*= true*/, slots_t slot /*= CONST_SLOT_WHEREEVER*/)
 {
-	uint32_t remainderCount = 0;
-	ReturnValue ret = internalAddItem(player, item, static_cast<int32_t>(slot), 0, false, remainderCount);
-	if (remainderCount != 0) {
-		Item* remainderItem = Item::CreateItem(item->getID(), remainderCount);
-		ReturnValue remaindRet = internalAddItem(player->getTile(), remainderItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
-		if (remaindRet != RETURNVALUE_NOERROR) {
-			ReleaseItem(remainderItem);
+	ReturnValue ret = RETURNVALUE_NOTPOSSIBLE;
+	if (item->isPickupable()) {
+		uint32_t remainderCount = 0;
+		ret = internalAddItem(player, item, static_cast<int32_t>(slot), 0, false, remainderCount);
+		if (remainderCount != 0) {
+			Item* remainderItem = Item::CreateItem(item->getID(), remainderCount);
+			ReturnValue remaindRet = internalAddItem(player->getTile(), remainderItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
+			if (remaindRet != RETURNVALUE_NOERROR) {
+				ReleaseItem(remainderItem);
+			}
 		}
 	}
 
@@ -1455,6 +1458,8 @@ Item* Game::findItemOfType(Cylinder* cylinder, uint16_t itemId,
 	}
 
 	std::vector<Container*> containers;
+	containers.reserve(32);
+
 	for (size_t i = cylinder->getFirstIndex(), j = cylinder->getLastIndex(); i < j; ++i) {
 		Thing* thing = cylinder->getThing(i);
 		if (!thing) {
@@ -1478,9 +1483,9 @@ Item* Game::findItemOfType(Cylinder* cylinder, uint16_t itemId,
 		}
 	}
 
-	size_t i = 0;
-	while (i < containers.size()) {
-		Container* container = containers[i++];
+	size_t i = static_cast<size_t>(-1);
+	while (++i < containers.size()) {
+		Container* container = containers[i];
 		for (Item* item : container->getItemList()) {
 			if (item->getID() == itemId && (subType == -1 || subType == item->getSubType())) {
 				return item;
@@ -1506,10 +1511,12 @@ bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*
 	}
 
 	std::vector<Container*> containers;
+	containers.reserve(32);
 
-	std::multimap<uint32_t, Item*> moneyMap;
+	std::vector<std::pair<uint32_t, Item*>> moneyMap;
+	moneyMap.reserve(32);
+
 	uint64_t moneyCount = 0;
-
 	for (size_t i = cylinder->getFirstIndex(), j = cylinder->getLastIndex(); i < j; ++i) {
 		Thing* thing = cylinder->getThing(i);
 		if (!thing) {
@@ -1528,32 +1535,38 @@ bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*
 			const uint32_t worth = item->getWorth();
 			if (worth != 0) {
 				moneyCount += worth;
-				moneyMap.emplace(worth, item);
-			}
-		}
-	}
-
-	size_t i = 0;
-	while (i < containers.size()) {
-		Container* container = containers[i++];
-		for (Item* item : container->getItemList()) {
-			Container* tmpContainer = item->getContainer();
-			if (tmpContainer) {
-				containers.push_back(tmpContainer);
-			} else {
-				const uint32_t worth = item->getWorth();
-				if (worth != 0) {
-					moneyCount += worth;
-					moneyMap.emplace(worth, item);
-				}
+				moneyMap.emplace_back(worth, item);
 			}
 		}
 	}
 
 	if (moneyCount < money) {
-		return false;
+		size_t i = static_cast<size_t>(-1);
+		while (++i < containers.size()) {
+			Container* container = containers[i];
+			for (Item* item : container->getItemList()) {
+				Container* tmpContainer = item->getContainer();
+				if (tmpContainer) {
+					containers.push_back(tmpContainer);
+				} else {
+					const uint32_t worth = item->getWorth();
+					if (worth != 0) {
+						moneyCount += worth;
+						moneyMap.emplace_back(worth, item);
+						if (moneyCount >= money) {
+							goto HaveMoney;
+						}
+					}
+				}
+			}
+		}
+
+		if (moneyCount < money) {
+			return false;
+		}
 	}
 
+	HaveMoney:
 	for (const auto& moneyEntry : moneyMap) {
 		Item* item = moneyEntry.second;
 		if (moneyEntry.first < money) {
@@ -1873,7 +1886,7 @@ void Game::playerMove(Player* player, Direction direction)
 	player->resetIdleTime();
 	player->stopNextWalkActionTask();
 
-	player->startAutoWalk(std::vector<Direction> { direction });
+	player->startAutoWalk(std::vector<Direction>{ direction });
 }
 
 bool Game::playerBroadcastMessage(Player* player, const std::string& text) const
@@ -2341,11 +2354,14 @@ void Game::playerStowItem(Player* player, Item* item, uint32_t count)
 	}
 
 	std::vector<Item*> items;
+	items.reserve(std::max<size_t>(32, container->size()));
+
 	std::vector<Container*> containers{ container };
+	containers.reserve(32);
 
 	size_t i = 0;
 	do {
-		Container* tmpContainer = containers[i++];
+		Container* tmpContainer = containers[i];
 		for (Item* tmpContainerItem : tmpContainer->getItemList()) {
 			const ItemType& it = Item::items[tmpContainerItem->getID()];
 			if (Container* subContainer = tmpContainerItem->getContainer()) {
@@ -2354,7 +2370,7 @@ void Game::playerStowItem(Player* player, Item* item, uint32_t count)
 				items.push_back(tmpContainerItem);
 			}
 		}
-	} while (i < containers.size());
+	} while (++i < containers.size());
 
 	if (items.empty()) {
 		player->sendCancelMessage("There is nothing to stow in this container.");
@@ -3443,10 +3459,12 @@ void Game::playerLookInTrade(Player* player, bool lookAtCounterOffer, uint8_t in
 		return;
 	}
 
-	std::vector<const Container*> containers {tradeContainer};
+	std::vector<const Container*> containers{ tradeContainer };
+	containers.reserve(32);
+
 	size_t i = 0;
-	while (i < containers.size()) {
-		const Container* container = containers[i++];
+	do {
+		const Container* container = containers[i];
 		for (Item* item : container->getItemList()) {
 			Container* tmpContainer = item->getContainer();
 			if (tmpContainer) {
@@ -3458,7 +3476,7 @@ void Game::playerLookInTrade(Player* player, bool lookAtCounterOffer, uint8_t in
 				return;
 			}
 		}
-	}
+	} while (++i < containers.size());
 }
 
 void Game::playerCloseTrade(Player* player)
@@ -6250,14 +6268,15 @@ void Game::playerAcceptMarketOffer(Player* player, uint32_t timestamp, uint16_t 
 std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotChest* depotChest, Inbox* inbox)
 {
 	std::vector<Item*> itemList;
-	uint16_t count = 0;
+	itemList.reserve(std::max<size_t>(32, depotChest->size() + inbox->size()));
 
 	std::vector<Container*> containers{ depotChest, inbox };
+	containers.reserve(32);
 
+	uint16_t count = 0;
 	size_t i = 0;
 	do {
-		Container* container = containers[i++];
-
+		Container* container = containers[i];
 		for (Item* item : container->getItemList()) {
 			Container* c = item->getContainer();
 			if (c && !c->empty()) {
@@ -6285,7 +6304,7 @@ std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientC
 				return itemList;
 			}
 		}
-	} while (i < containers.size());
+	} while (++i < containers.size());
 
 	itemList.clear();
 	return itemList;
@@ -6479,7 +6498,7 @@ void Game::decreaseBrowseFieldRef(const Position& pos)
 }
 #endif
 
-void Game::internalRemoveItems(std::vector<Item*> itemList, uint32_t amount, bool stackable)
+void Game::internalRemoveItems(std::vector<Item*>& itemList, uint32_t amount, bool stackable)
 {
 	if (stackable) {
 		for (Item* item : itemList) {
