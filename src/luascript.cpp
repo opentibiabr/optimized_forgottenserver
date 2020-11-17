@@ -16002,35 +16002,31 @@ int LuaScriptInterface::luaMoveEventSlot(lua_State* L)
 	MoveEvent* moveevent = getUserdata<MoveEvent>(L, 1);
 	if (moveevent) {
 		if (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP) {
-			if (!moveevent->getSlotName().empty()) {
-				std::string slotName = getString(L, 2);
-				std::string tmpStr = asLowerCaseString(slotName);
-				tmpStr = asLowerCaseString(moveevent->getSlotName());
-				if (!tfs_strcmp(tmpStr.c_str(), "head")) {
-					moveevent->setSlot(SLOTP_HEAD);
-				} else if (!tfs_strcmp(tmpStr.c_str(), "necklace")) {
-					moveevent->setSlot(SLOTP_NECKLACE);
-				} else if (!tfs_strcmp(tmpStr.c_str(), "backpack")) {
-					moveevent->setSlot(SLOTP_BACKPACK);
-				} else if (!tfs_strcmp(tmpStr.c_str(), "armor") || !tfs_strcmp(tmpStr.c_str(), "body")) {
-					moveevent->setSlot(SLOTP_ARMOR);
-				} else if (!tfs_strcmp(tmpStr.c_str(), "right-hand")) {
-					moveevent->setSlot(SLOTP_RIGHT);
-				} else if (!tfs_strcmp(tmpStr.c_str(), "left-hand")) {
-					moveevent->setSlot(SLOTP_LEFT);
-				} else if (!tfs_strcmp(tmpStr.c_str(), "hand") || !tfs_strcmp(tmpStr.c_str(), "shield")) {
-					moveevent->setSlot(SLOTP_RIGHT | SLOTP_LEFT);
-				} else if (!tfs_strcmp(tmpStr.c_str(), "legs")) {
-					moveevent->setSlot(SLOTP_LEGS);
-				} else if (!tfs_strcmp(tmpStr.c_str(), "feet")) {
-					moveevent->setSlot(SLOTP_FEET);
-				} else if (!tfs_strcmp(tmpStr.c_str(), "ring")) {
-					moveevent->setSlot(SLOTP_RING);
-				} else if (!tfs_strcmp(tmpStr.c_str(), "ammo")) {
-					moveevent->setSlot(SLOTP_AMMO);
-				} else {
-					std::cout << "[Warning - MoveEvent::configureMoveEvent] Unknown slot type: " << moveevent->getSlotName() << std::endl;
-				}
+			std::string slotName = asLowerCaseString(getString(L, 2));
+			if (!tfs_strcmp(slotName.c_str(), "head")) {
+				moveevent->setSlot(SLOTP_HEAD);
+			} else if (!tfs_strcmp(slotName.c_str(), "necklace")) {
+				moveevent->setSlot(SLOTP_NECKLACE);
+			} else if (!tfs_strcmp(slotName.c_str(), "backpack")) {
+				moveevent->setSlot(SLOTP_BACKPACK);
+			} else if (!tfs_strcmp(slotName.c_str(), "armor") || !tfs_strcmp(slotName.c_str(), "body")) {
+				moveevent->setSlot(SLOTP_ARMOR);
+			} else if (!tfs_strcmp(slotName.c_str(), "right-hand")) {
+				moveevent->setSlot(SLOTP_RIGHT);
+			} else if (!tfs_strcmp(slotName.c_str(), "left-hand")) {
+				moveevent->setSlot(SLOTP_LEFT);
+			} else if (!tfs_strcmp(slotName.c_str(), "hand") || !tfs_strcmp(slotName.c_str(), "shield")) {
+				moveevent->setSlot(SLOTP_RIGHT | SLOTP_LEFT);
+			} else if (!tfs_strcmp(slotName.c_str(), "legs")) {
+				moveevent->setSlot(SLOTP_LEGS);
+			} else if (!tfs_strcmp(slotName.c_str(), "feet")) {
+				moveevent->setSlot(SLOTP_FEET);
+			} else if (!tfs_strcmp(slotName.c_str(), "ring")) {
+				moveevent->setSlot(SLOTP_RING);
+			} else if (!tfs_strcmp(slotName.c_str(), "ammo")) {
+				moveevent->setSlot(SLOTP_AMMO);
+			} else {
+				std::cout << "[Warning - MoveEvent::configureMoveEvent] Unknown slot type: " << slotName << std::endl;
 			}
 		}
 		pushBoolean(L, true);

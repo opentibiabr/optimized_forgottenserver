@@ -44,7 +44,6 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 		void threadMain();
 
 	private:
-		std::thread thread;
 		uint64_t lastEventId = 0;
 		uint64_t dispatcherCycle = 0;
 		std::map<uint64_t, boost::asio::deadline_timer> eventIds;

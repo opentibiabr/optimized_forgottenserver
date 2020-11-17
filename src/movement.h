@@ -184,12 +184,6 @@ class MoveEvent final : public Event
 		void addPosList(Position pos) {
 			posList.emplace_back(pos);
 		}
-		const std::string& getSlotName() const {
-			return slotName;
-		}
-		void setSlotName(std::string name) {
-			slotName = std::move(name);
-		}
 		void setSlot(uint32_t s) {
 			slot = s;
 		}
@@ -236,7 +230,6 @@ class MoveEvent final : public Event
 		std::string getScriptEventName() const override;
 
 		uint32_t slot = SLOTP_WHEREEVER;
-		std::string slotName;
 
 		//onEquip information
 		uint32_t reqLevel = 0;
