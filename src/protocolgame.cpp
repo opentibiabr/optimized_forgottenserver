@@ -2850,9 +2850,13 @@ void ProtocolGame::sendBasicData()
 
 	std::vector<uint16_t> spells = g_spells->getSpellsByVocation(player->getVocationId());
 	playermsg.add<uint16_t>(spells.size());
-	for (auto spellId : spells) {
+	for (uint16_t spellId : spells) {
 		playermsg.addByte(spellId);
 	}
+	#if GAME_FEATURE_NEW_MAGIC_SHIELD > 0
+	//bool - determine whether magic shield is active or not
+	playermsg.addByte(0);
+	#endif
 	writeToOutputBuffer(playermsg);
 }
 #endif
@@ -5356,6 +5360,11 @@ void ProtocolGame::AddPlayerStats()
 	#if GAME_FEATURE_DETAILED_EXPERIENCE_BONUS > 0
 	playermsg.add<uint16_t>(0); // xp boost time (seconds)
 	playermsg.addByte(0); // enables exp boost in the store
+	#endif
+
+	#if GAME_FEATURE_NEW_MAGIC_SHIELD > 0
+	playermsg.add<uint16_t>(0); // remaining mana shield
+	playermsg.add<uint16_t>(0); // total mana shield
 	#endif
 }
 
