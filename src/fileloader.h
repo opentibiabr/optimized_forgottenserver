@@ -63,7 +63,7 @@ struct LoadError : std::exception {
 
 struct InvalidOTBFormat final : LoadError {
 	const char* what() const noexcept override {
-		return "Invalid OTBM file format";
+		return "Invalid OTB file format";
 	}
 };
 

@@ -190,12 +190,11 @@ constexpr auto OTBI = OTB::Identifier{{'O','T', 'B', 'I'}};
 bool Items::loadFromOtb(const std::string& file)
 {
 	if (!fs::exists(file)) {
-		std::cout << "[Error - Items::loadFromOtb] Failed to load " << file << ": File doesn't exist." << std::endl;
+		std::cout << "[Fatal Error - Items::loadFromOtb] Failed to load " << file << ": File doesn't exist." << std::endl;
 		return false;
 	}
 
 	OTB::Loader loader{file, OTBI};
-
 	auto& root = loader.parseTree();
 
 	PropStream props;

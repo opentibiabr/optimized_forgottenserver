@@ -30,9 +30,14 @@ extern Game g_game;
 
 bool Map::loadMap(const std::string& identifier, bool loadHouses)
 {
-	IOMap loader;
-	if (!loader.loadMap(this, identifier)) {
-		std::cout << "[Fatal - Map::loadMap] " << loader.getLastErrorString() << std::endl;
+	try {
+		IOMap loader;
+		if (!loader.loadMap(this, identifier)) {
+			std::cout << "[Fatal Error - Map::loadMap] " << loader.getLastErrorString() << std::endl;
+			return false;
+		}
+	} catch (std::exception const& e) {
+		std::cout << "[Fatal Error - Map::loadMap] " << e.what() << std::endl;
 		return false;
 	}
 
