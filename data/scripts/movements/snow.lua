@@ -6,7 +6,7 @@ local snow = MoveEvent()
 snow:type("stepout")
 
 function snow.onStepOut(creature, item, position, fromPosition)
-	if creature:isPlayer() and creature:isInGhostMode() then
+	if not creature:isPlayer() or creature:isInGhostMode() then
 		return true
 	end
 
