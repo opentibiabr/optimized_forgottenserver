@@ -179,7 +179,7 @@ class Weapon : public Event
 			wieldInfo |= info;
 		}
 
-		void addVocWeaponMap(std::string vocName) {
+		void addVocWeaponMap(const std::string& vocName) {
 			int32_t vocationId = g_vocations.getVocationId(vocName);
 			if (vocationId != -1) {
 				vocWeaponMap[vocationId] = true;
@@ -189,8 +189,8 @@ class Weapon : public Event
 		const std::string& getVocationString() const {
 			return vocationString;
 		}
-		void setVocationString(const std::string& str) {
-			vocationString = str;
+		void setVocationString(std::string str) {
+			vocationString = std::move(str);
 		}
 
 		WeaponAction_t action = WEAPONACTION_NONE;

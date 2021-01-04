@@ -3672,8 +3672,7 @@ int LuaScriptInterface::luaDoPlayerAddItem(lua_State* L)
 
 		if (--itemCount == 0) {
 			if (newItem->getParent()) {
-				uint32_t uid = getScriptEnv()->addThing(newItem);
-				lua_pushnumber(L, uid);
+				lua_pushnumber(L, getScriptEnv()->addThing(newItem));
 				return 1;
 			} else {
 				//stackable item stacked with existing object, newItem will be released
@@ -6521,7 +6520,7 @@ int LuaScriptInterface::luaModalWindowAddChoice(lua_State* L)
 	ModalWindow* window = getUserdata<ModalWindow>(L, 1);
 	if (window) {
 		window->choices.emplace_back(std::move(text), id);
-		window->buttons.shrink_to_fit();
+		window->choices.shrink_to_fit();
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -11360,10 +11359,10 @@ int LuaScriptInterface::luaGuildGetMotd(lua_State* L)
 int LuaScriptInterface::luaGuildSetMotd(lua_State* L)
 {
 	// guild:setMotd(motd)
-	const std::string& motd = getString(L, 2);
+	std::string motd = getString(L, 2);
 	Guild* guild = getUserdata<Guild>(L, 1);
 	if (guild) {
-		guild->setMotd(motd);
+		guild->setMotd(std::move(motd));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -15302,13 +15301,12 @@ int LuaScriptInterface::luaSpellVocation(lua_State* L)
 	if (spell) {
 		if (lua_gettop(L) == 1) {
 			lua_createtable(L, 0, 0);
-			auto it = 0;
-			for (auto voc : spell->getVocMap()) {
+			size_t it = 0;
+			for (const auto& voc : spell->getVocMap()) {
 				++it;
 				std::string s = std::to_string(it);
-				char const *pchar = s.c_str();
-				std::string name = g_vocations.getVocation(voc.first)->getVocName();
-				setField(L, pchar, name);
+				const std::string& name = g_vocations.getVocation(voc.first)->getVocName();
+				setField(L, s.c_str(), name);
 			}
 			setMetatable(L, -1, "Spell");
 		} else {
@@ -15358,7 +15356,7 @@ int LuaScriptInterface::luaSpellWords(lua_State* L)
 			if (lua_gettop(L) == 3) {
 				sep = getString(L, 3);
 			}
-			spell->setWords(getString(L, 2));
+			spell->setWords(std::move(getString(L, 2)));
 			spell->setSeparator((sep.empty() ? '"' : sep[0]));
 			pushBoolean(L, true);
 		}
@@ -15824,7 +15822,7 @@ int LuaScriptInterface::luaCreateCreatureEvent(lua_State* L)
 	// CreatureEvent(eventName)
 	CreatureEvent* creature = new CreatureEvent(getScriptEnv()->getScriptInterface());
 	if (creature) {
-		creature->setName(getString(L, 2));
+		creature->setName(std::move(getString(L, 2)));
 		creature->fromLua = true;
 		pushUserdata<CreatureEvent>(L, creature);
 		setMetatable(L, -1, "CreatureEvent");
@@ -16002,7 +16000,7 @@ int LuaScriptInterface::luaMoveEventSlot(lua_State* L)
 	MoveEvent* moveevent = getUserdata<MoveEvent>(L, 1);
 	if (moveevent) {
 		if (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP) {
-			std::string slotName = asLowerCaseString(getString(L, 2));
+			std::string slotName = asLowerCaseString(std::move(getString(L, 2)));
 			if (!tfs_strcmp(slotName.c_str(), "head")) {
 				moveevent->setSlot(SLOTP_HEAD);
 			} else if (!tfs_strcmp(slotName.c_str(), "necklace")) {
@@ -16096,9 +16094,9 @@ int LuaScriptInterface::luaMoveEventVocation(lua_State* L)
 		}
 		if (showInDescription) {
 			if (moveevent->getVocationString().empty()) {
-				tmp = asLowerCaseString(getString(L, 2));
+				tmp = std::move(asLowerCaseString(std::move(getString(L, 2))));
 				tmp += "s";
-				moveevent->setVocationString(tmp);
+				moveevent->setVocationString(std::move(tmp));
 			} else {
 				tmp = moveevent->getVocationString();
 				if (lastVoc) {
@@ -16106,9 +16104,9 @@ int LuaScriptInterface::luaMoveEventVocation(lua_State* L)
 				} else {
 					tmp += ", ";
 				}
-				tmp += asLowerCaseString(getString(L, 2));
+				tmp += asLowerCaseString(std::move(getString(L, 2)));
 				tmp += "s";
-				moveevent->setVocationString(tmp);
+				moveevent->setVocationString(std::move(tmp));
 			}
 		}
 		pushBoolean(L, true);
@@ -16668,9 +16666,9 @@ int LuaScriptInterface::luaWeaponVocation(lua_State* L)
 
 		if (showInDescription) {
 			if (weapon->getVocationString().empty()) {
-				tmp = asLowerCaseString(getString(L, 2));
+				tmp = std::move(asLowerCaseString(std::move(getString(L, 2))));
 				tmp += "s";
-				weapon->setVocationString(tmp);
+				weapon->setVocationString(std::move(tmp));
 			} else {
 				tmp = weapon->getVocationString();
 				if (lastVoc) {
@@ -16678,9 +16676,9 @@ int LuaScriptInterface::luaWeaponVocation(lua_State* L)
 				} else {
 					tmp += ", ";
 				}
-				tmp += asLowerCaseString(getString(L, 2));
+				tmp += asLowerCaseString(std::move(getString(L, 2)));
 				tmp += "s";
-				weapon->setVocationString(tmp);
+				weapon->setVocationString(std::move(tmp));
 			}
 		}
 		pushBoolean(L, true);

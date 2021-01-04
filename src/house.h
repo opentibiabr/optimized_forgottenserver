@@ -155,7 +155,7 @@ class House
 		}
 
 		void setName(std::string houseName) {
-			this->houseName = houseName;
+			this->houseName = std::move(houseName);
 		}
 		const std::string& getName() const {
 			return houseName;

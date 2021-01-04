@@ -78,7 +78,7 @@ static void processSHA1MessageBlock(const uint8_t* messageBlock, uint32_t* H)
 	#if defined(__SHA__)
 	const __m128i MASK = _mm_set_epi64x(0x0001020304050607ULL, 0x08090A0B0C0D0E0FULL);
 
-	__m128i ABCD = _mm_load_si128(reinterpret_cast<const __m128i*>(H));
+	__m128i ABCD = _mm_loadu_si128(reinterpret_cast<const __m128i*>(H));
 	__m128i E0 = _mm_set_epi32(H[4], 0, 0, 0);
 	ABCD = _mm_shuffle_epi32(ABCD, 0x1B);
 
@@ -87,20 +87,20 @@ static void processSHA1MessageBlock(const uint8_t* messageBlock, uint32_t* H)
 	__m128i E0_SAVE = E0;
 
 	// Rounds 0-3
-	__m128i MSG0 = _mm_shuffle_epi8(_mm_load_si128(reinterpret_cast<const __m128i*>(messageBlock + 0)), MASK);
+	__m128i MSG0 = _mm_shuffle_epi8(_mm_loadu_si128(reinterpret_cast<const __m128i*>(messageBlock + 0)), MASK);
 	E0 = _mm_add_epi32(E0, MSG0);
 	__m128i E1 = ABCD;
 	ABCD = _mm_sha1rnds4_epu32(ABCD, E0, 0);
 
 	// Rounds 4-7
-	__m128i MSG1 = _mm_shuffle_epi8(_mm_load_si128(reinterpret_cast<const __m128i*>(messageBlock + 16)), MASK);
+	__m128i MSG1 = _mm_shuffle_epi8(_mm_loadu_si128(reinterpret_cast<const __m128i*>(messageBlock + 16)), MASK);
 	E1 = _mm_sha1nexte_epu32(E1, MSG1);
 	E0 = ABCD;
 	ABCD = _mm_sha1rnds4_epu32(ABCD, E1, 0);
 	MSG0 = _mm_sha1msg1_epu32(MSG0, MSG1);
 
 	// Rounds 8-11
-	__m128i MSG2 = _mm_shuffle_epi8(_mm_load_si128(reinterpret_cast<const __m128i*>(messageBlock + 32)), MASK);
+	__m128i MSG2 = _mm_shuffle_epi8(_mm_loadu_si128(reinterpret_cast<const __m128i*>(messageBlock + 32)), MASK);
 	E0 = _mm_sha1nexte_epu32(E0, MSG2);
 	E1 = ABCD;
 	ABCD = _mm_sha1rnds4_epu32(ABCD, E0, 0);
@@ -108,7 +108,7 @@ static void processSHA1MessageBlock(const uint8_t* messageBlock, uint32_t* H)
 	MSG0 = _mm_xor_si128(MSG0, MSG2);
 
 	// Rounds 12-15
-	__m128i MSG3 = _mm_shuffle_epi8(_mm_load_si128(reinterpret_cast<const __m128i*>(messageBlock + 48)), MASK);
+	__m128i MSG3 = _mm_shuffle_epi8(_mm_loadu_si128(reinterpret_cast<const __m128i*>(messageBlock + 48)), MASK);
 	E1 = _mm_sha1nexte_epu32(E1, MSG3);
 	E0 = ABCD;
 	MSG0 = _mm_sha1msg2_epu32(MSG0, MSG3);
@@ -244,7 +244,7 @@ static void processSHA1MessageBlock(const uint8_t* messageBlock, uint32_t* H)
 
 	// Save state
 	ABCD = _mm_shuffle_epi32(ABCD, 0x1B);
-	_mm_store_si128(reinterpret_cast<__m128i*>(H), ABCD);
+	_mm_storeu_si128(reinterpret_cast<__m128i*>(H), ABCD);
 	H[4] = _mm_extract_epi32(E0, 3);
 	#else
 	auto circularShift = [](int32_t bits, uint32_t value) {

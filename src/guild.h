@@ -66,8 +66,8 @@ class Guild
 		const std::string& getMotd() const {
 			return motd;
 		}
-		void setMotd(const std::string& motd) {
-			this->motd = motd;
+		void setMotd(std::string motd) {
+			this->motd = std::move(motd);
 		}
 
 	private:

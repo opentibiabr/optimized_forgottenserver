@@ -4896,95 +4896,127 @@ void ProtocolGame::sendOutfitWindow()
 	#endif
 
 	#if GAME_FEATURE_OUTFITS > 0
-	std::vector<ProtocolOutfit> protocolOutfits;
+	auto startOutfits = playermsg.getBufferPosition();
+	#if GAME_FEATURE_OUTFITS_U16 > 0
+	uint16_t limitOutfits = std::numeric_limits<uint16_t>::max();
+	uint16_t outfitSize = 0;
+	playermsg.skipBytes(2);
+	#else
+	#if CLIENT_VERSION < 800
+	uint8_t limitOutfits = 15;
+	#elif CLIENT_VERSION < 870
+	uint8_t limitOutfits = 25;
+	#elif CLIENT_VERSION < 1062
+	uint8_t limitOutfits = 50;
+	#else
+	uint8_t limitOutfits = std::numeric_limits<uint8_t>::max();
+	#endif
+	uint8_t outfitSize = 0;
+	playermsg.skipBytes(1);
+	#endif
+
 	if (player->isAccessPlayer()) {
-		static const std::string gmOutfitName = "Gamemaster";
-		protocolOutfits.emplace_back(gmOutfitName, 75, 0);
-		
+		playermsg.add<uint16_t>(75);
+		playermsg.addString("Gamemaster");
+		playermsg.addByte(0);
+		#if GAME_FEATURE_OUTFITS_TYPE > 0
+		playermsg.addByte(0x00);
+		#endif
+		++outfitSize;
+
 		#if CLIENT_VERSION >= 800
-		static const std::string csOutfitName = "Customer Support";
-		protocolOutfits.emplace_back(csOutfitName, 266, 0);
+		playermsg.add<uint16_t>(266);
+		playermsg.addString("Customer Support");
+		playermsg.addByte(0);
+		#if GAME_FEATURE_OUTFITS_TYPE > 0
+		playermsg.addByte(0x00);
+		#endif
+		++outfitSize;
 		#endif
 
 		#if CLIENT_VERSION >= 830
-		static const std::string cmOutfitName = "Community Manager";
-		protocolOutfits.emplace_back(cmOutfitName, 302, 0);
+		playermsg.add<uint16_t>(302);
+		playermsg.addString("Community Manager");
+		playermsg.addByte(0);
+		#if GAME_FEATURE_OUTFITS_TYPE > 0
+		playermsg.addByte(0x00);
+		#endif
+		++outfitSize;
 		#endif
 	}
 
 	const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
-	protocolOutfits.reserve(outfits.size());
 	for (const Outfit& outfit : outfits) {
 		uint8_t addons;
 		if (!player->getOutfitAddons(outfit, addons)) {
 			continue;
 		}
-		protocolOutfits.emplace_back(outfit.name, outfit.lookType, addons);
-		#if CLIENT_VERSION < 800
-		if (protocolOutfits.size() == 15) {
-			break;
-		}
-		#elif CLIENT_VERSION < 870
-		if (protocolOutfits.size() == 25) {
-			break;
-		}
-		#elif CLIENT_VERSION < 1062
-		if (protocolOutfits.size() == 50) {
-			break;
-		}
-		#endif
-	}
 
-	#if CLIENT_VERSION >= 1185
-	playermsg.add<uint16_t>(protocolOutfits.size());
-	#else
-	playermsg.addByte(protocolOutfits.size());
-	#endif
-
-	for (const ProtocolOutfit& outfit : protocolOutfits) {
 		playermsg.add<uint16_t>(outfit.lookType);
 		playermsg.addString(outfit.name);
-		playermsg.addByte(outfit.addons);
-		#if CLIENT_VERSION >= 1185
+		playermsg.addByte(addons);
+		#if GAME_FEATURE_OUTFITS_TYPE > 0
 		playermsg.addByte(0x00);
 		#endif
-	}
-
-	#if GAME_FEATURE_MOUNTS > 0
-	std::vector<const Mount*> protocolMounts;
-	const auto& mounts = g_game.mounts.getMounts();
-	protocolMounts.reserve(mounts.size());
-	for (const Mount& mount : mounts) {
-		if (player->hasMount(&mount)) {
-			protocolMounts.push_back(&mount);
-		}
-		#if CLIENT_VERSION < 1062
-		if (mounts.size() == 50) {
+		if (++outfitSize == limitOutfits) {
 			break;
 		}
-		#endif
 	}
 	
-	#if CLIENT_VERSION >= 1185
-	playermsg.add<uint16_t>(protocolMounts.size());
+	auto endOutfits = playermsg.getBufferPosition();
+	playermsg.setBufferPosition(startOutfits);
+	#if GAME_FEATURE_MOUNTS_U16 > 0
+	playermsg.add<uint16_t>(outfitSize);
 	#else
-	playermsg.addByte(protocolMounts.size());
+	playermsg.addByte(outfitSize);
+	#endif
+	playermsg.setBufferPosition(endOutfits);
+
+	#if GAME_FEATURE_MOUNTS > 0
+	auto startMounts = playermsg.getBufferPosition();
+	#if GAME_FEATURE_MOUNTS_U16 > 0
+	uint16_t limitMounts = std::numeric_limits<uint16_t>::max();
+	uint16_t mountSize = 0;
+	playermsg.skipBytes(2);
+	#else
+	#if CLIENT_VERSION < 1062
+	uint8_t limitMounts = 50;
+	#else
+	uint8_t limitMounts = std::numeric_limits<uint8_t>::max();
+	#endif
+	uint8_t mountSize = 0;
+	playermsg.skipBytes(1);
 	#endif
 
-	for (const Mount* mount : protocolMounts) {
-		playermsg.add<uint16_t>(mount->clientId);
-		playermsg.addString(mount->name);
-		#if CLIENT_VERSION >= 1185
-		playermsg.addByte(0x00);
-		#endif
+	const auto& mounts = g_game.mounts.getMounts();
+	for (const Mount& mount : mounts) {
+		if (player->hasMount(&mount)) {
+			playermsg.add<uint16_t>(mount.clientId);
+			playermsg.addString(mount.name);
+			#if GAME_FEATURE_OUTFITS_TYPE > 0
+			playermsg.addByte(0x00);
+			#endif
+			if (++mountSize == limitMounts) {
+				break;
+			}
+		}
 	}
+
+	auto endMounts = playermsg.getBufferPosition();
+	playermsg.setBufferPosition(startMounts);
+	#if GAME_FEATURE_MOUNTS_U16 > 0
+	playermsg.add<uint16_t>(mountSize);
+	#else
+	playermsg.addByte(mountSize);
+	#endif
+	playermsg.setBufferPosition(endMounts);
 	#endif
 
 	#if GAME_FEATURE_FAMILIARS > 0
 	playermsg.add<uint16_t>(0);
 	#endif
 	
-	#if CLIENT_VERSION >= 1185
+	#if GAME_FEATURE_OUTFITS_TYPE > 0
 	playermsg.addByte(0x00);//Try outfit
 	playermsg.addByte(mounted ? 0x01 : 0x00);
 	#endif
@@ -5204,8 +5236,8 @@ void ProtocolGame::AddCreature(const Creature* creature, bool known, uint32_t re
 	playermsg.add<uint16_t>(creature->getStepSpeed());
 	#endif
 
-	#if CLIENT_VERSION >= 1240
-	playermsg.addByte(0);//icons
+	#if GAME_FEATURE_STATE_ICONS > 0
+	playermsg.addByte(0);
 	#endif
 
 	playermsg.addByte(player->getSkullClient(creature));

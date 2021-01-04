@@ -201,7 +201,7 @@ bool Weapon::configureEvent(const pugi::xml_node& node)
 		wieldUnproperly = attr.as_bool();
 	}
 
-	std::list<std::string> vocStringList;
+	std::vector<std::string> vocStringList;
 	for (auto vocationNode : node.children()) {
 		if (!(attr = vocationNode.attribute("name"))) {
 			continue;
@@ -216,7 +216,7 @@ bool Weapon::configureEvent(const pugi::xml_node& node)
 			}
 
 			if (vocationNode.attribute("showInDescription").as_bool(true)) {
-				vocStringList.push_back(asLowerCaseString(attr.as_string()));
+				vocStringList.emplace_back(std::move(asLowerCaseString(attr.as_string())));
 			}
 		}
 	}

@@ -189,7 +189,7 @@ bool Quests::loadFromXml()
 					mission.descriptions.emplace(missionId, missionStateNode.attribute("description").as_string());
 				}
 			} else {
-				mission.mainDescription = mainDescription;
+				mission.mainDescription = std::move(mainDescription);
 			}
 
 			int32_t stateId = 0;

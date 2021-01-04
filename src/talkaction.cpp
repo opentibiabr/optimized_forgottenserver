@@ -122,7 +122,7 @@ TalkActionResult_t TalkActions::playerSaySpell(Player* player, SpeakClasses type
 			return TALKACTION_CONTINUE;
 		}
 
-		if (it->second->executeSay(player, words, param, type)) {
+		if (it->second->executeSay(player, instantWords, param, type)) {
 			return TALKACTION_CONTINUE;
 		} else {
 			return TALKACTION_BREAK;

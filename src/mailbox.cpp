@@ -170,11 +170,9 @@ bool Mailbox::getReceiver(Item* item, std::string& name, uint32_t& depotId) cons
 		return false;
 	}
 
-	std::string playerName; playerName.reserve(text.length());
+	name.reserve(text.length());
 	std::string townName; townName.reserve(text.length());
-	getMailDetails(text, playerName, townName);
-
-	name = std::move(playerName);
+	getMailDetails(text, name, townName);
 	trimString(name);
 
 	#if GAME_FEATURE_MARKET > 0
