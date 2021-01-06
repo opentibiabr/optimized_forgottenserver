@@ -70,6 +70,7 @@ local function ReadProtobufString(file)
 end
 
 function talk.onSay(player, words, param)
+	local staticData1260 = false
 	if player:getGroup():getAccess() then
 		if param ~= "" then
 			local file = io.open("data/for-future/" .. param, "rb")
@@ -105,8 +106,33 @@ function talk.onSay(player, words, param)
 										monster.outfit.looktype = ReadProtobufVariant(file)
 									elseif tagHigh == 2 and tagLow == 16 then -- optional uint32 lookhead = 2;
 										monster.outfit.lookhead = ReadProtobufVariant(file)
-									elseif tagHigh == 3 and tagLow == 24 then -- optional uint32 lookbody = 3;
-										monster.outfit.lookbody = ReadProtobufVariant(file)
+									elseif tagHigh == 2 and tagLow == 18 then -- optional OutfitLook lookhead = 2;
+										staticData1260 = true
+
+										local outfitLookLimit = ReadProtobufSize(file)
+										outfitLookLimit = outfitLookLimit + file:seek("cur", 0)
+										while file:seek("cur", 0) < outfitLookLimit do
+											tag = ReadProtobufTag(file)
+											tagHigh = bit.rshift(tag, 3)
+											tagLow = bit.band(tag, 0xFF)
+											if tagHigh == 1 and tagLow == 8 then -- optional uint32 lookhead = 1;
+												monster.outfit.lookhead = ReadProtobufVariant(file)
+											elseif tagHigh == 2 and tagLow == 16 then -- optional uint32 lookbody = 2;
+												monster.outfit.lookbody = ReadProtobufVariant(file)
+											elseif tagHigh == 3 and tagLow == 24 then -- optional uint32 looklegs = 3;
+												monster.outfit.looklegs = ReadProtobufVariant(file)
+											elseif tagHigh == 4 and tagLow == 32 then -- optional uint32 lookfeet = 4;
+												monster.outfit.lookfeet = ReadProtobufVariant(file)
+											else
+												break
+											end
+										end
+									elseif tagHigh == 3 and tagLow == 24 then -- optional uint32 lookbody = 3; or optional uint32 lookaddons = 3;
+										if staticData1260 then
+											monster.outfit.lookaddons = ReadProtobufVariant(file)
+										else
+											monster.outfit.lookbody = ReadProtobufVariant(file)
+										end
 									elseif tagHigh == 4 and tagLow == 32 then -- optional uint32 looklegs = 4;
 										monster.outfit.looklegs = ReadProtobufVariant(file)
 									elseif tagHigh == 5 and tagLow == 40 then -- optional uint32 lookfeet = 5;
@@ -206,7 +232,11 @@ function talk.onSay(player, words, param)
 					file:write("# monsters")
 					for i = 1, #monsters do
 						local monster = monsters[i]
-						file:write("\n<monster id=\""..monster.id.."\" name=\""..monster.name.."\" looktype=\""..monster.outfit.looktype.."\" head=\""..monster.outfit.lookhead.."\" body=\""..monster.outfit.lookbody.."\" legs=\""..monster.outfit.looklegs.."\" feet=\""..monster.outfit.lookfeet.."\" addons=\""..monster.outfit.lookaddons.."\" />")
+						if monster.outfit.looktype == 0 then
+							file:write("\n<monster id=\""..monster.id.."\" name=\""..monster.name.."\" looktypeex=\""..(monster.outfit.lookhead > 0 and monster.outfit.lookhead or monster.outfit.lookbody > 0 and monster.outfit.lookbody or monster.outfit.looklegs > 0 and monster.outfit.looklegs or monster.outfit.lookfeet).."\" addons=\""..monster.outfit.lookaddons.."\" />")
+						else
+							file:write("\n<monster id=\""..monster.id.."\" name=\""..monster.name.."\" looktype=\""..monster.outfit.looktype.."\" head=\""..monster.outfit.lookhead.."\" body=\""..monster.outfit.lookbody.."\" legs=\""..monster.outfit.looklegs.."\" feet=\""..monster.outfit.lookfeet.."\" addons=\""..monster.outfit.lookaddons.."\" />")
+						end
 					end
 
 					file:write("\n\n# achievements")

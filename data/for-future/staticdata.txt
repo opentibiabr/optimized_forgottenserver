@@ -299,7 +299,7 @@
 <monster id="674" name="brimstone bug" looktype="352" head="0" body="0" legs="0" feet="0" addons="0" />
 <monster id="675" name="souleater" looktype="355" head="0" body="0" legs="0" feet="0" addons="0" />
 <monster id="679" name="bane bringer" looktype="310" head="0" body="0" legs="0" feet="0" addons="0" />
-<monster id="680" name="cake golem" looktype="0" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="680" name="cake golem" looktypeex="6393" addons="0" />
 <monster id="691" name="berrypest" looktype="349" head="0" body="0" legs="0" feet="0" addons="0" />
 <monster id="693" name="boar" looktype="380" head="0" body="0" legs="0" feet="0" addons="0" />
 <monster id="694" name="stampor" looktype="381" head="0" body="0" legs="0" feet="0" addons="0" />
@@ -643,6 +643,12 @@
 <monster id="1973" name="usurper archer" looktype="1316" head="76" body="57" legs="76" feet="95" addons="2" />
 <monster id="1974" name="usurper warlock" looktype="1316" head="57" body="2" legs="21" feet="95" addons="0" />
 <monster id="1979" name="agrestic chicken" looktype="111" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="2024" name="exotic cave spider" looktype="1344" head="0" body="0" legs="0" feet="0" addons="0" />
+<monster id="2036" name="pirat cutthroat" looktype="1346" head="2" body="96" legs="78" feet="96" addons="1" />
+<monster id="2037" name="pirat scoundrel" looktype="1346" head="97" body="119" legs="80" feet="80" addons="0" />
+<monster id="2038" name="pirat bombardier" looktype="1346" head="57" body="125" legs="86" feet="67" addons="2" />
+<monster id="2039" name="pirat mate" looktype="1346" head="0" body="95" legs="95" feet="113" addons="3" />
+<monster id="2051" name="exotic bat" looktype="1373" head="0" body="0" legs="0" feet="0" addons="0" />
 
 # achievements
 <achievement id="2" name="Chorister" description="Lalalala... you now know the cult's hymn sung in Liberty Bay by heart. Not that hard, considering that it mainly consists of two notes and repetitive lyrics." grade="1" />
@@ -950,6 +956,8 @@
 <achievement id="514" name="You got Horse Power" description="Brought back to the realm of the living this magnificent creature will carry you through death and everything that lays beyond." grade="3" />
 <achievement id="515" name="Unleash the Beast" description="You defeated the manifestation of Goshnar's evil traits by fighting your way through beasts you didn't even want to imagine. It transformed you and now you can also look the part. " grade="3" />
 <achievement id="516" name="Well Roared, Lion!" description="You helped Domizian and thus proved yourself worthy to enter the werelion sanctum underneath Lion's Rock.You faced the mighty werelions there and one of the rare white lions even chose to accompany you." grade="1" />
+<achievement id="518" name="Honorary Rascoohan" description="When in Rascacoon, do as the Rascoohans do!" grade="1" />
+<achievement id="519" name="Release the Kraken" description="Riding around on this squishy companion gives you the feeling of flying through the air... uhm... swimming through the seven seas!" grade="1" />
 
 # houses
 <house id="10001" name="Spiritkeep" city="Thais" x="32264" y="32314" z="7" rent="500000" sqms="378" beds="23" guildHall="yes" shop="no" />

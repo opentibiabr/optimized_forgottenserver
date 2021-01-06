@@ -8,11 +8,15 @@ message Staticdata {
 
 message Outfit {
  optional uint32 looktype = 1;
- optional uint32 lookhead = 2;
- optional uint32 lookbody = 3;
- optional uint32 looklegs = 4;
- optional uint32 lookfeet = 5;
- optional uint32 lookaddons = 6;
+ optional OutfitLook lookoutfit = 2;
+ optional uint32 lookaddons = 3;
+}
+
+message OutfitLook {
+ optional uint32 lookhead = 1;
+ optional uint32 lookbody = 2;
+ optional uint32 looklegs = 3;
+ optional uint32 lookfeet = 4;
 }
 
 message Creature {
