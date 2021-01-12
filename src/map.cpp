@@ -587,14 +587,11 @@ bool Map::canThrowObjectTo(const Position& fromPos, const Position& toPos, bool 
 	return isSightClear(fromPos, toPos, false);
 }
 
-bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const
+bool Map::checkSightLine(Position start, Position destination) const
 {
-	if (fromPos == toPos) {
+	if (start == destination) {
 		return true;
 	}
-
-	Position start(fromPos.z > toPos.z ? toPos : fromPos);
-	Position destination(fromPos.z > toPos.z ? fromPos : toPos);
 
 	int32_t distanceX = Position::getDistanceX(start, destination);
 	int32_t distanceY = Position::getDistanceY(start, destination);
@@ -621,29 +618,24 @@ bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const
 				return false;
 			}
 		}
-	} else if (distanceX == distanceY) {
-		// Diagonal line
-		const uint16_t deltaX = (start.x < destination.x ? 0x0001 : 0xFFFF);
-		const uint16_t deltaY = (start.y < destination.y ? 0x0001 : 0xFFFF);
-		while (--distanceX) {
-			start.x += deltaX;
-			start.y += deltaY;
-
-			const Tile* tile = getTile(start.x, start.y, start.z);
-			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
-				return false;
-			}
-		}
 	} else {
-		const uint16_t deltaX = (start.x < destination.x ? 0x0001 : 0xFFFF);
-		const uint16_t deltaY = (start.y < destination.y ? 0x0001 : 0xFFFF);
-
-		#if GAME_FEATURE_XIAOLIN_WU_SIGHT_CLEAR > 0
-		// Xiaolin Wu's line algorithm
+		// Xiaolin Wu's line algorithm - https://en.wikipedia.org/wiki/Xiaolin_Wu%27s_line_algorithm
+		// based on Michael Abrash's implementation - https://www.amazon.com/gp/product/1576101746/102-5103244-8168911
 		uint16_t eAdj, eAcc = 0;
+		uint16_t deltaX = 0x0001;
+		uint16_t deltaY = 0x0001;
 
 		if (distanceY > distanceX) {
 			eAdj = (static_cast<uint32_t>(distanceX) << 16) / static_cast<uint32_t>(distanceY);
+
+			if (start.y > destination.y) {
+				std::swap(start.x, destination.x);
+				std::swap(start.y, destination.y);
+			}
+			if (start.x > destination.x) {
+				deltaX = 0xFFFF;
+				start.x += deltaX;
+			}
 
 			while (--distanceY) {
 				uint16_t xIncrease = 0, eAccTemp = eAcc;
@@ -667,6 +659,15 @@ bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const
 		} else {
 			eAdj = (static_cast<uint32_t>(distanceY) << 16) / static_cast<uint32_t>(distanceX);
 
+			if (start.x > destination.x) {
+				std::swap(start.x, destination.x);
+				std::swap(start.y, destination.y);
+			}
+			if (start.y > destination.y) {
+				deltaY = 0xFFFF;
+				start.y += deltaY;
+			}
+
 			while (--distanceX) {
 				uint16_t yIncrease = 0, eAccTemp = eAcc;
 				eAcc += eAdj;
@@ -687,86 +688,59 @@ bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const
 				start.y += yIncrease;
 			}
 		}
-		#else
-		// Bresenham's line algorithm
-		int32_t distance, delta, d1Increase, d2Increase;
-		uint16_t x1Increase, x2Increase;
-		uint16_t y1Increase, y2Increase;
-
-		if (distanceX >= distanceY) {
-			distance = distanceX;
-			delta = (2 * distanceY) - distanceX;
-			d1Increase = distanceY * 2;
-			d2Increase = (distanceY - distanceX) * 2;
-			x1Increase = deltaX;
-			x2Increase = deltaX;
-			y1Increase = 0;
-			y2Increase = deltaY;
-		} else {
-			distance = distanceY;
-			delta = (2 * distanceX) - distanceY;
-			d1Increase = distanceX * 2;
-			d2Increase = (distanceX - distanceY) * 2;
-			x1Increase = 0;
-			x2Increase = deltaX;
-			y1Increase = deltaY;
-			y2Increase = deltaY;
-		}
-
-		while (--distance) {
-			uint16_t xIncrease = 0, yIncrease = 0;
-			if (delta < 0) {
-				delta += d1Increase;
-				xIncrease = x1Increase;
-				yIncrease = y1Increase;
-			} else {
-				delta += d2Increase;
-				xIncrease = x2Increase;
-				yIncrease = y2Increase;
-			}
-
-			const Tile* tile = getTile(start.x + xIncrease, start.y + yIncrease, start.z);
-			if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
-				if (Position::areInRange<1, 1>(start, destination)) {
-					break;
-				} else {
-					return false;
-				}
-			}
-
-			start.x += xIncrease;
-			start.y += yIncrease;
-		}
-		#endif
 	}
-	
-	// now we need to perform a jump between floors to see if everything is clear (literally)
-	while (start.z != destination.z) {
-		// use destination x and y because we might end up with different start x and y values
-		const Tile* tile = getTile(destination.x, destination.y, start.z);
-		if (tile && tile->getThingCount() > 0) {
-			return false;
-		}
-
-		start.z++;
-	}
-	
 	return true;
 }
 
 bool Map::isSightClear(const Position& fromPos, const Position& toPos, bool floorCheck) const
 {
+	// Check if this sight line should be even possible
 	if (floorCheck && fromPos.z != toPos.z) {
 		return false;
 	}
 
 	// Check if we even need to perform line checking
-	if (fromPos.z == toPos.z && Position::areInRange<1, 1>(fromPos, toPos)) {
+	if (fromPos.z == toPos.z && (Position::areInRange<1, 1>(fromPos, toPos)) || (!floorCheck && fromPos.z == 0)) {
 		return true;
 	}
 
-	// Cast two converging rays and see if either yields a result.
-	return checkSightLine(fromPos, toPos) || checkSightLine(toPos, fromPos);
+	// We can only throw one floor up
+	if (fromPos.z > toPos.z && Position::getDistanceZ(fromPos, toPos) > 1) {
+		return false;
+	}
+
+	// Perform check for current floor
+	bool sightClear = checkSightLine(fromPos, toPos);
+	if (floorCheck || (fromPos.z == toPos.z && sightClear)) {
+		return sightClear;
+	}
+
+	uint8_t startZ;
+	if (sightClear && (fromPos.z < toPos.z || fromPos.z == toPos.z)) {
+		startZ = fromPos.z;
+	} else {
+		// Check if we can throw above obstacle
+		const Tile* tile = getTile(fromPos.x, fromPos.y, fromPos.z - 1);
+		if ((tile && (tile->getGround() || tile->hasFlag(TILESTATE_BLOCKPROJECTILE))) || !checkSightLine(Position(fromPos.x, fromPos.y, fromPos.z - 1), Position(toPos.x, toPos.y, toPos.z - 1))) {
+			return false;
+		}
+
+		// We can throw above obstacle
+		if (fromPos.z > toPos.z) {
+			return true;
+		}
+
+		startZ = fromPos.z - 1;
+	}
+
+	// now we need to perform a jump between floors to see if everything is clear (literally)
+	for (; startZ != toPos.z; ++startZ) {
+		const Tile* tile = getTile(toPos.x, toPos.y, startZ);
+		if (tile && (tile->getGround() || tile->hasFlag(TILESTATE_BLOCKPROJECTILE))) {
+			return false;
+		}
+	}
+	return true;
 }
 
 const Tile* Map::canWalkTo(const Creature& creature, const Position& pos) const

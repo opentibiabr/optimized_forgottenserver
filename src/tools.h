@@ -107,6 +107,7 @@ int tfs_strcmp(const char* s1, const char* s2);
 #endif
 
 static inline double fast_pow(double base, uint32_t exp) {
+	// Exponentiation by squaring algorithm - https://en.wikipedia.org/wiki/Exponentiation_by_squaring
 	double result = 1.0;
 	while (exp) {
 		if (exp & 1) {

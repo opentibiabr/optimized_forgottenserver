@@ -218,7 +218,7 @@ class Map
 		  *	\returns The result if there is no obstacles
 		  */
 		bool isSightClear(const Position& fromPos, const Position& toPos, bool floorCheck) const;
-		bool checkSightLine(const Position& fromPos, const Position& toPos) const;
+		bool checkSightLine(Position start, Position destination) const;
 
 		const Tile* canWalkTo(const Creature& creature, const Position& pos) const;
 
