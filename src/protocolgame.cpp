@@ -2289,7 +2289,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	playermsg.add<uint16_t>(player->getBaseMagicLevel());
 	#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
 	playermsg.add<uint16_t>(player->getBaseMagicLevel());//loyalty bonus
-	playermsg.add<uint16_t>(player->getMagicLevelPercent() * 100);
+	playermsg.add<uint16_t>(player->getMagicLevelPercent());
 	#else
 	playermsg.addByte(player->getMagicLevelPercent());
 	#endif
@@ -2300,7 +2300,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 		playermsg.add<uint16_t>(player->getBaseSkill(i));
 		#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
 		playermsg.add<uint16_t>(player->getBaseSkill(i));//loyalty bonus
-		playermsg.add<uint16_t>(player->getSkillPercent(i) * 100);
+		playermsg.add<uint16_t>(player->getSkillPercent(i));
 		#else
 		playermsg.addByte(player->getSkillPercent(i));
 		#endif
@@ -5407,7 +5407,7 @@ void ProtocolGame::AddPlayerSkills()
 	playermsg.add<uint16_t>(player->getMagicLevel());
 	playermsg.add<uint16_t>(player->getBaseMagicLevel());
 	playermsg.add<uint16_t>(player->getBaseMagicLevel());//loyalty bonus
-	playermsg.add<uint16_t>(player->getMagicLevelPercent() * 100);
+	playermsg.add<uint16_t>(player->getMagicLevelPercent());
 	#endif
 
 	for (uint8_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
@@ -5427,7 +5427,7 @@ void ProtocolGame::AddPlayerSkills()
 
 		#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
 		playermsg.add<uint16_t>(player->getBaseSkill(i));//loyalty bonus
-		playermsg.add<uint16_t>(static_cast<uint16_t>(player->getSkillPercent(i)) * 100);
+		playermsg.add<uint16_t>(player->getSkillPercent(i));
 		#else
 		playermsg.addByte(player->getSkillPercent(i));
 		#endif

@@ -501,7 +501,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count)
 
 	uint32_t newPercent;
 	if (nextReqTries > currReqTries) {
-		newPercent = Player::getPercentLevel(skills[skill].tries, nextReqTries);
+		newPercent = Player::getPercentSkillLevel(skills[skill].tries, nextReqTries);
 	} else {
 		newPercent = 0;
 	}
@@ -1727,7 +1727,7 @@ void Player::addManaSpent(uint64_t amount)
 
 	uint8_t oldPercent = magLevelPercent;
 	if (nextReqMana > currReqMana) {
-		magLevelPercent = Player::getPercentLevel(manaSpent, nextReqMana);
+		magLevelPercent = Player::getPercentSkillLevel(manaSpent, nextReqMana);
 	} else {
 		magLevelPercent = 0;
 	}
@@ -1923,13 +1923,52 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 	addScheduledUpdates(PlayerUpdate_Stats);
 }
 
+#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+uint16_t Player::getPercentSkillLevel(uint64_t count, uint64_t nextLevelCount)
+#else
+uint8_t Player::getPercentSkillLevel(uint64_t count, uint64_t nextLevelCount)
+#endif
+{
+	if (nextLevelCount == 0) {
+		return 0;
+	}
+
+	#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+	uint16_t result;
+	if (nextLevelCount > 1000000000000000ULL) {
+		result = count / (nextLevelCount / 10000);
+	} else {
+		result = (count * 10000) / nextLevelCount;
+	}
+	if (result > 10000) {
+		return 0;
+	}
+	#else
+	uint8_t result;
+	if (nextLevelCount > 100000000000000000ULL) {
+		result = count / (nextLevelCount / 100);
+	} else {
+		result = (count * 100) / nextLevelCount;
+	}
+	if (result > 100) {
+		return 0;
+	}
+	#endif
+	return result;
+}
+
 uint8_t Player::getPercentLevel(uint64_t count, uint64_t nextLevelCount)
 {
 	if (nextLevelCount == 0) {
 		return 0;
 	}
 
-	uint8_t result = (count * 100) / nextLevelCount;
+	uint8_t result;
+	if (nextLevelCount > 100000000000000000ULL) {
+		result = count / (nextLevelCount / 100);
+	} else {
+		result = (count * 100) / nextLevelCount;
+	}
 	if (result > 100) {
 		return 0;
 	}
@@ -2121,7 +2160,7 @@ void Player::death(Creature* lastHitCreature)
 
 		uint64_t nextReqMana = vocation->getReqMana(magLevel + 1);
 		if (nextReqMana > vocation->getReqMana(magLevel)) {
-			magLevelPercent = Player::getPercentLevel(manaSpent, nextReqMana);
+			magLevelPercent = Player::getPercentSkillLevel(manaSpent, nextReqMana);
 		} else {
 			magLevelPercent = 0;
 		}
@@ -2151,7 +2190,7 @@ void Player::death(Creature* lastHitCreature)
 			}
 
 			skills[i].tries = std::max<int32_t>(0, skills[i].tries - lostSkillTries);
-			skills[i].percent = Player::getPercentLevel(skills[i].tries, vocation->getReqSkillTries(i, skills[i].level));
+			skills[i].percent = Player::getPercentSkillLevel(skills[i].tries, vocation->getReqSkillTries(i, skills[i].level));
 		}
 
 		//Level loss
@@ -4584,7 +4623,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 
 		uint8_t newPercent;
 		if (nextReqMana > currReqMana) {
-			newPercent = Player::getPercentLevel(manaSpent, nextReqMana);
+			newPercent = Player::getPercentSkillLevel(manaSpent, nextReqMana);
 			newPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
 		} else {
 			newPercent = 0;
@@ -4639,7 +4678,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 
 		uint8_t newPercent;
 		if (nextReqTries > currReqTries) {
-			newPercent = Player::getPercentLevel(skills[skill].tries, nextReqTries);
+			newPercent = Player::getPercentSkillLevel(skills[skill].tries, nextReqTries);
 			newPercentToNextLevel = static_cast<long double>(skills[skill].tries * 100) / nextReqTries;
 		} else {
 			newPercent = 0;

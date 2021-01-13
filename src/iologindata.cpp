@@ -474,7 +474,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	}
 
 	player->manaSpent = manaSpent;
-	player->magLevelPercent = Player::getPercentLevel(player->manaSpent, nextManaCount);
+	player->magLevelPercent = Player::getPercentSkillLevel(player->manaSpent, nextManaCount);
 
 	player->health = result->getNumber<int32_t>("health");
 	player->healthMax = result->getNumber<int32_t>("healthmax");
@@ -546,7 +546,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
 		player->skills[i].level = skillLevel;
 		player->skills[i].tries = skillTries;
-		player->skills[i].percent = Player::getPercentLevel(skillTries, nextSkillTries);
+		player->skills[i].percent = Player::getPercentSkillLevel(skillTries, nextSkillTries);
 	}
 
 	//load inventory items

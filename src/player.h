@@ -111,7 +111,11 @@ struct OutfitEntry {
 struct Skill {
 	uint64_t tries = 0;
 	uint16_t level = 10;
+	#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+	uint16_t percent = 0;
+	#else
 	uint8_t percent = 0;
+	#endif
 };
 
 enum PlayerUpdateFlags : uint32_t {
@@ -466,7 +470,11 @@ class Player final : public Creature, public Cylinder
 		uint32_t getBaseMagicLevel() const {
 			return magLevel;
 		}
+		#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+		uint16_t getMagicLevelPercent() const {
+		#else
 		uint8_t getMagicLevelPercent() const {
+		#endif
 			return magLevelPercent;
 		}
 		uint8_t getSoul() const {
@@ -688,7 +696,11 @@ class Player final : public Creature, public Cylinder
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
 		}
+		#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+		uint16_t getSkillPercent(uint8_t skill) const {
+		#else
 		uint8_t getSkillPercent(uint8_t skill) const {
+		#endif
 			return skills[skill].percent;
 		}
 
@@ -1667,7 +1679,11 @@ class Player final : public Creature, public Cylinder
 		uint8_t soul = 0;
 		uint8_t blessings = 0;
 		uint8_t levelPercent = 0;
+		#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+		uint16_t magLevelPercent = 0;
+		#else
 		uint8_t magLevelPercent = 0;
+		#endif
 
 		PlayerSex_t sex = PLAYERSEX_FEMALE;
 		OperatingSystem_t operatingSystem = CLIENTOS_NONE;
@@ -1716,6 +1732,11 @@ class Player final : public Creature, public Cylinder
 			return vocation->getAttackSpeed();
 		}
 
+		#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+		static uint16_t getPercentSkillLevel(uint64_t count, uint64_t nextLevelCount);
+		#else
+		static uint8_t getPercentSkillLevel(uint64_t count, uint64_t nextLevelCount);
+		#endif
 		static uint8_t getPercentLevel(uint64_t count, uint64_t nextLevelCount);
 		double getLostPercent() const;
 		uint64_t getLostExperience() const override {
