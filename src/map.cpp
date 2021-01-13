@@ -589,7 +589,7 @@ bool Map::canThrowObjectTo(const Position& fromPos, const Position& toPos, bool 
 
 bool Map::checkSightLine(Position start, Position destination) const
 {
-	if (start == destination) {
+	if (start.x == destination.x && start.y == destination.y) {
 		return true;
 	}
 
@@ -599,7 +599,7 @@ bool Map::checkSightLine(Position start, Position destination) const
 	if (start.y == destination.y) {
 		// Horizontal line
 		const uint16_t delta = (start.x < destination.x ? 0x0001 : 0xFFFF);
-		while (--distanceX) {
+		while ((--distanceX) > 0) {
 			start.x += delta;
 
 			const Tile* tile = getTile(start.x, start.y, start.z);
@@ -610,7 +610,7 @@ bool Map::checkSightLine(Position start, Position destination) const
 	} else if (start.x == destination.x) {
 		// Vertical line
 		const uint16_t delta = (start.y < destination.y ? 0x0001 : 0xFFFF);
-		while (--distanceY){
+		while ((--distanceY) > 0){
 			start.y += delta;
 
 			const Tile* tile = getTile(start.x, start.y, start.z);
@@ -637,7 +637,7 @@ bool Map::checkSightLine(Position start, Position destination) const
 				start.x += deltaX;
 			}
 
-			while (--distanceY) {
+			while ((--distanceY) > 0) {
 				uint16_t xIncrease = 0, eAccTemp = eAcc;
 				eAcc += eAdj;
 				if (eAcc <= eAccTemp) {
@@ -647,7 +647,7 @@ bool Map::checkSightLine(Position start, Position destination) const
 				const Tile* tile = getTile(start.x + xIncrease, start.y + deltaY, start.z);
 				if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
 					if (Position::areInRange<1, 1>(start, destination)) {
-						break;
+						return true;
 					} else {
 						return false;
 					}
@@ -668,7 +668,7 @@ bool Map::checkSightLine(Position start, Position destination) const
 				start.y += deltaY;
 			}
 
-			while (--distanceX) {
+			while ((--distanceX) > 0) {
 				uint16_t yIncrease = 0, eAccTemp = eAcc;
 				eAcc += eAdj;
 				if (eAcc <= eAccTemp) {
@@ -678,7 +678,7 @@ bool Map::checkSightLine(Position start, Position destination) const
 				const Tile* tile = getTile(start.x + deltaX, start.y + yIncrease, start.z);
 				if (tile && tile->hasFlag(TILESTATE_BLOCKPROJECTILE)) {
 					if (Position::areInRange<1, 1>(start, destination)) {
-						break;
+						return true;
 					} else {
 						return false;
 					}
@@ -700,7 +700,7 @@ bool Map::isSightClear(const Position& fromPos, const Position& toPos, bool floo
 	}
 
 	// Check if we even need to perform line checking
-	if (fromPos.z == toPos.z && (Position::areInRange<1, 1>(fromPos, toPos)) || (!floorCheck && fromPos.z == 0)) {
+	if (fromPos.z == toPos.z && (Position::areInRange<1, 1>(fromPos, toPos) || (!floorCheck && fromPos.z == 0))) {
 		return true;
 	}
 
