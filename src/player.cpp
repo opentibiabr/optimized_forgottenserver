@@ -498,8 +498,12 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count)
 	}
 
 	skills[skill].tries += count;
-
-	uint32_t newPercent;
+	
+	#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+	uint16_t newPercent;
+	#else
+	uint8_t newPercent;
+	#endif
 	if (nextReqTries > currReqTries) {
 		newPercent = Player::getPercentSkillLevel(skills[skill].tries, nextReqTries);
 	} else {
@@ -1725,7 +1729,11 @@ void Player::addManaSpent(uint64_t amount)
 
 	manaSpent += amount;
 
+	#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+	uint16_t oldPercent = magLevelPercent;
+	#else
 	uint8_t oldPercent = magLevelPercent;
+	#endif
 	if (nextReqMana > currReqMana) {
 		magLevelPercent = Player::getPercentSkillLevel(manaSpent, nextReqMana);
 	} else {
@@ -4621,7 +4629,11 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 			sendTextMessage(MESSAGE_EVENT_ADVANCE, ss);
 		}
 
+		#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+		uint16_t newPercent;
+		#else
 		uint8_t newPercent;
+		#endif
 		if (nextReqMana > currReqMana) {
 			newPercent = Player::getPercentSkillLevel(manaSpent, nextReqMana);
 			newPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
@@ -4675,8 +4687,12 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 			ss << "You advanced to " << getSkillName(skill) << " level " << skills[skill].level << '.';
 			sendTextMessage(MESSAGE_EVENT_ADVANCE, ss);
 		}
-
+		
+		#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+		uint16_t newPercent;
+		#else
 		uint8_t newPercent;
+		#endif
 		if (nextReqTries > currReqTries) {
 			newPercent = Player::getPercentSkillLevel(skills[skill].tries, nextReqTries);
 			newPercentToNextLevel = static_cast<long double>(skills[skill].tries * 100) / nextReqTries;
