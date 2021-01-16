@@ -566,6 +566,13 @@ enum ReloadTypes_t : uint8_t  {
 	RELOAD_TYPE_WEAPONS,
 };
 
+enum SightLines_t : uint8_t {
+	SightLine_NoCheck = 0,
+	SightLine_CheckSightLine = 1 << 0,
+	SightLine_FloorCheck = 1 << 1,
+	SightLine_CheckSightLineAndFloor = SightLine_CheckSightLine | SightLine_FloorCheck,
+};
+
 static constexpr int32_t CHANNEL_GUILD = 0x00;
 static constexpr int32_t CHANNEL_PARTY = 0x01;
 static constexpr int32_t CHANNEL_PRIVATE = 0xFFFF;
