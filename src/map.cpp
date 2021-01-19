@@ -618,8 +618,7 @@ bool Map::checkSightLine(Position start, Position destination) const
 		// Xiaolin Wu's line algorithm - https://en.wikipedia.org/wiki/Xiaolin_Wu%27s_line_algorithm
 		// based on Michael Abrash's implementation - https://www.amazon.com/gp/product/1576101746/102-5103244-8168911
 		uint16_t eAdj, eAcc = 0;
-		uint16_t deltaX = 0x0001;
-		uint16_t deltaY = 0x0001;
+		uint16_t deltaX = 0x0001, deltaY = 0x0001;
 
 		if (distanceY > distanceX) {
 			eAdj = (static_cast<uint32_t>(distanceX) << 16) / static_cast<uint32_t>(distanceY);
@@ -630,7 +629,7 @@ bool Map::checkSightLine(Position start, Position destination) const
 			}
 			if (start.x > destination.x) {
 				deltaX = 0xFFFF;
-				start.x += deltaX;
+				eAcc -= eAdj;
 			}
 
 			while ((--distanceY) > 0) {
@@ -661,7 +660,7 @@ bool Map::checkSightLine(Position start, Position destination) const
 			}
 			if (start.y > destination.y) {
 				deltaY = 0xFFFF;
-				start.y += deltaY;
+				eAcc -= eAdj;
 			}
 
 			while ((--distanceX) > 0) {
