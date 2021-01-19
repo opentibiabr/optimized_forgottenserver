@@ -78,6 +78,7 @@ struct CombatParams {
 	bool targetCasterOrTopMost = false;
 	bool aggressive = true;
 	bool useCharges = false;
+	bool directionalArea = false;
 };
 
 #if CLIENT_VERSION >= 1203
@@ -186,7 +187,7 @@ class AreaCombat
 		// non-assignable
 		AreaCombat& operator=(const AreaCombat&) = delete;
 
-		void getList(const Position& centerPos, const Position& targetPos, std::vector<Tile*>& list) const;
+		void getList(const Position& centerPos, const Position& targetPos, const Position& sightLinePos, std::vector<Tile*>& list) const;
 
 		void setupArea(const std::list<uint32_t>& list, uint32_t rows);
 		void setupArea(int32_t length, int32_t spread);
@@ -266,7 +267,7 @@ class Combat
 		static void doCombatDispel(Creature* caster, Creature* target, const CombatParams& params);
 		static void doCombatDispel(Creature* caster, const Position& position, const AreaCombat* area, const CombatParams& params);
 
-		static void getCombatArea(const Position& centerPos, const Position& targetPos, const AreaCombat* area, std::vector<Tile*>& list);
+		static void getCombatArea(const Position& centerPos, const Position& targetPos, const AreaCombat* area, std::vector<Tile*>& list, bool directionalArea);
 
 		static bool isInPvpZone(const Creature* attacker, const Creature* target);
 		static bool isProtected(const Player* attacker, const Player* target);
@@ -304,6 +305,9 @@ class Combat
 
 		void setOrigin(CombatOrigin origin) {
 			params.origin = origin;
+		}
+		void setDirectionArea(bool directionalArea) {
+			params.directionalArea = directionalArea;
 		}
 
 		void incrementReferenceCounter() {

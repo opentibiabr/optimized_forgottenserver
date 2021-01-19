@@ -573,7 +573,7 @@ void LuaScriptInterface::callVoidFunction(int params)
 
 void LuaScriptInterface::pushVariant(lua_State* L, const LuaVariant& var)
 {
-	lua_createtable(L, 0, 2);
+	lua_createtable(L, 0, 3);
 	setField(L, "type", var.type);
 	switch (var.type) {
 		case VARIANT_NUMBER:
@@ -584,6 +584,7 @@ void LuaScriptInterface::pushVariant(lua_State* L, const LuaVariant& var)
 			break;
 		case VARIANT_TARGETPOSITION:
 		case VARIANT_POSITION: {
+			setField(L, "directionalArea", var.directionalArea ? 1 : 0);
 			pushPosition(L, var.pos);
 			lua_setfield(L, -2, "pos");
 			break;
@@ -820,9 +821,10 @@ LuaVariant LuaScriptInterface::getVariant(lua_State* L, int32_t arg)
 
 		case VARIANT_POSITION:
 		case VARIANT_TARGETPOSITION: {
+			var.directionalArea = (getField<uint32_t>(L, arg, "directionalArea") != 0);
 			lua_getfield(L, arg, "pos");
 			var.pos = getPosition(L, lua_gettop(L));
-			lua_pop(L, 2);
+			lua_pop(L, 3);
 			break;
 		}
 
@@ -12897,7 +12899,13 @@ int LuaScriptInterface::luaCombatExecute(lua_State* L)
 		}
 
 		case VARIANT_POSITION: {
-			combat->doCombat(creature, variant.pos);
+			if (variant.directionalArea) {
+				combat->setDirectionArea(true);
+				combat->doCombat(creature, variant.pos);
+				combat->setDirectionArea(false);
+			} else {
+				combat->doCombat(creature, variant.pos);
+			}
 			break;
 		}
 
