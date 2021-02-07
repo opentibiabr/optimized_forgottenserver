@@ -2857,6 +2857,13 @@ void Game::playerMoveUpContainer(Player* player, uint8_t cid)
 		#endif
 	}
 
+	int8_t test_cid = player->getContainerID(parentContainer);
+	if (test_cid != -1) {
+		player->closeContainer(test_cid);
+		player->sendCloseContainer(test_cid);
+		return;
+	}
+
 	player->addContainer(cid, parentContainer);
 	#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 	player->sendContainer(cid, parentContainer, parentContainer->hasParent(), player->getContainerIndex(cid));
