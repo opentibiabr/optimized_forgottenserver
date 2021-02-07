@@ -5154,8 +5154,14 @@ void ProtocolGame::sendModalWindow(const ModalWindow& modalWindow)
 	}
 	#endif
 
-	playermsg.addByte(modalWindow.defaultEscapeButton);
-	playermsg.addByte(modalWindow.defaultEnterButton);
+	OperatingSystem_t regularOS = player->getOperatingSystem();
+	if (regularOS >= CLIENTOS_NEW_LINUX && regularOS < CLIENTOS_OTCLIENT_LINUX) {
+		playermsg.addByte(modalWindow.defaultEnterButton);
+		playermsg.addByte(modalWindow.defaultEscapeButton);
+	} else {
+		playermsg.addByte(modalWindow.defaultEscapeButton);
+		playermsg.addByte(modalWindow.defaultEnterButton);
+	}
 	#if CLIENT_VERSION >= 970
 	playermsg.addByte(modalWindow.priority ? 0x01 : 0x00);
 	#endif
