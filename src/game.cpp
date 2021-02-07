@@ -62,17 +62,17 @@ extern Scripts* g_scripts;
 
 Game::Game()
 {
+	offlineTrainingWindow.defaultEnterButton = 1;
+	offlineTrainingWindow.defaultEscapeButton = 0;
 	offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
 	offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
 	offlineTrainingWindow.choices.emplace_back("Club Fighting and Shielding", SKILL_CLUB);
 	offlineTrainingWindow.choices.emplace_back("Distance Fighting and Shielding", SKILL_DISTANCE);
 	offlineTrainingWindow.choices.emplace_back("Magic Level and Shielding", SKILL_MAGLEVEL);
 	offlineTrainingWindow.choices.shrink_to_fit();
-	offlineTrainingWindow.buttons.emplace_back("Okay", 1);
-	offlineTrainingWindow.buttons.emplace_back("Cancel", 0);
+	offlineTrainingWindow.buttons.emplace_back("Okay", offlineTrainingWindow.defaultEnterButton);
+	offlineTrainingWindow.buttons.emplace_back("Cancel", offlineTrainingWindow.defaultEscapeButton);
 	offlineTrainingWindow.buttons.shrink_to_fit();
-	offlineTrainingWindow.defaultEnterButton = 1;
-	offlineTrainingWindow.defaultEscapeButton = 0;
 	offlineTrainingWindow.priority = true;
 }
 
@@ -6372,7 +6372,7 @@ void Game::playerAnswerModalWindow(Player* player, uint32_t modalWindowId, uint8
 
 	// offline training, hardcoded
 	if (modalWindowId == std::numeric_limits<uint32_t>::max()) {
-		if (button == 1) {
+		if (button == offlineTrainingWindow.defaultEnterButton) {
 			if (choice == SKILL_SWORD || choice == SKILL_AXE || choice == SKILL_CLUB || choice == SKILL_DISTANCE || choice == SKILL_MAGLEVEL) {
 				BedItem* bedItem = player->getBedItem();
 				if (bedItem && bedItem->sleep(player)) {
