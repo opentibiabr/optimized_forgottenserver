@@ -443,14 +443,19 @@ Creature* Game::getCreatureByName(const std::string& s)
 		return m_it->second;
 	}
 
+	const size_t lowerCaseName_len = lowerCaseName.length();
+	const char* lowerCaseName_cstr = lowerCaseName.c_str();
+
 	for (const auto& it : npcs) {
-		if (lowerCaseName == asLowerCaseString(it.second->getName())) {
+		const std::string& npcName = it.second->getName();
+		if (lowerCaseName_len == npcName.length() && !tfs_strncmp(lowerCaseName_cstr, asLowerCaseString(npcName).c_str(), lowerCaseName_len)) {
 			return it.second;
 		}
 	}
 
 	for (const auto& it : monsters) {
-		if (lowerCaseName == asLowerCaseString(it.second->getName())) {
+		const std::string& monsterName = it.second->getName();
+		if (lowerCaseName_len == monsterName.length() && !tfs_strncmp(lowerCaseName_cstr, asLowerCaseString(monsterName).c_str(), lowerCaseName_len)) {
 			return it.second;
 		}
 	}
@@ -463,9 +468,13 @@ Npc* Game::getNpcByName(const std::string& s)
 		return nullptr;
 	}
 
-	const char* npcName = s.c_str();
+	const std::string& lowerCaseName = asLowerCaseString(s);
+	const size_t lowerCaseName_len = lowerCaseName.length();
+	const char* lowerCaseName_cstr = lowerCaseName.c_str();
+
 	for (const auto& it : npcs) {
-		if (strcasecmp(npcName, it.second->getName().c_str()) == 0) {
+		const std::string& npcName = it.second->getName();
+		if (lowerCaseName_len == npcName.length() && !tfs_strncmp(lowerCaseName_cstr, asLowerCaseString(npcName).c_str(), lowerCaseName_len)) {
 			return it.second;
 		}
 	}
