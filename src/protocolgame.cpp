@@ -2718,8 +2718,8 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter>& charact
 	playermsg.addString(g_config.getString(ConfigManager::SERVER_NAME)); // Selected World
 
 	#if CLIENT_VERSION >= 1260
-	playermsg.addByte(0xFF);//Game World Category: 0xFF(-1) - Selected World
-	playermsg.addByte(0xFF);//BattlEye World Type
+	playermsg.addByte(0x00);//Game World Category - Our Server
+	playermsg.addByte(0x00);//BattlEye World Type - Not Protected
 	#endif
 
 	auto vocationPosition = playermsg.getBufferPosition();
