@@ -59,10 +59,6 @@ class NetworkMessage
 			return buffer[info.position++];
 		}
 
-		uint8_t getPreviousByte() {
-			return buffer[--info.position];
-		}
-
 		template<typename T>
 		T get() {
 			if (!canRead(sizeof(T))) {
