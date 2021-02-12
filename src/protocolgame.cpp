@@ -995,24 +995,24 @@ void ProtocolGame::parseTrackedQuestFlags(NetworkMessage& msg)
 
 void ProtocolGame::parseAutoWalk(NetworkMessage& msg)
 {
-	uint8_t numdirs = msg.getByte();
+	size_t numdirs = static_cast<size_t>(msg.getByte());
 	if (numdirs == 0) {
 		return;
 	}
 
 	std::vector<Direction> path;
 	path.resize(numdirs, DIRECTION_NORTH);
-	for (uint8_t i = 0; i < numdirs; ++i) {
+	for (size_t i = numdirs; --i < numdirs;) {
 		uint8_t rawdir = msg.getByte();
 		switch (rawdir) {
-			case 1: path[numdirs - i - 1] = DIRECTION_EAST; break;
-			case 2: path[numdirs - i - 1] = DIRECTION_NORTHEAST; break;
-			case 3: path[numdirs - i - 1] = DIRECTION_NORTH; break;
-			case 4: path[numdirs - i - 1] = DIRECTION_NORTHWEST; break;
-			case 5: path[numdirs - i - 1] = DIRECTION_WEST; break;
-			case 6: path[numdirs - i - 1] = DIRECTION_SOUTHWEST; break;
-			case 7: path[numdirs - i - 1] = DIRECTION_SOUTH; break;
-			case 8: path[numdirs - i - 1] = DIRECTION_SOUTHEAST; break;
+			case 1: path[i] = DIRECTION_EAST; break;
+			case 2: path[i] = DIRECTION_NORTHEAST; break;
+			case 3: path[i] = DIRECTION_NORTH; break;
+			case 4: path[i] = DIRECTION_NORTHWEST; break;
+			case 5: path[i] = DIRECTION_WEST; break;
+			case 6: path[i] = DIRECTION_SOUTHWEST; break;
+			case 7: path[i] = DIRECTION_SOUTH; break;
+			case 8: path[i] = DIRECTION_SOUTHEAST; break;
 			default: break;
 		}
 	}

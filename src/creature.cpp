@@ -249,15 +249,22 @@ bool Creature::getNextStep(Direction& dir, uint32_t&)
 	return true;
 }
 
-void Creature::startAutoWalk(const std::vector<Direction>& listDir)
+void Creature::startAutoWalk()
 {
-	listWalkDir = listDir;
+	addEventWalk(listWalkDir.size() == 1);
+}
 
-	size_t size = 0;
-	for (auto it = listDir.begin(); it != listDir.end() && size <= 1; ++it) {
-		size++;
-	}
-	addEventWalk(size == 1);
+void Creature::startAutoWalk(Direction direction)
+{
+	listWalkDir.clear();
+	listWalkDir.emplace_back(direction);
+	startAutoWalk();
+}
+
+void Creature::startAutoWalk(std::vector<Direction> listDir)
+{
+	listWalkDir = std::move(listDir);
+	startAutoWalk();
 }
 
 void Creature::addEventWalk(bool firstStep)
@@ -884,7 +891,7 @@ void Creature::goToFollowCreature()
 					listWalkDir.clear();
 					if (getPathTo(followCreature->getPosition(), listWalkDir, fpp)) {
 						hasFollowPath = true;
-						startAutoWalk(listWalkDir);
+						startAutoWalk();
 					} else {
 						hasFollowPath = false;
 					}
@@ -897,13 +904,13 @@ void Creature::goToFollowCreature()
 				listWalkDir.emplace_back(dir);
 
 				hasFollowPath = true;
-				startAutoWalk(listWalkDir);
+				startAutoWalk();
 			}
 		} else {
 			listWalkDir.clear();
 			if (getPathTo(followCreature->getPosition(), listWalkDir, fpp)) {
 				hasFollowPath = true;
-				startAutoWalk(listWalkDir);
+				startAutoWalk();
 			} else {
 				hasFollowPath = false;
 			}

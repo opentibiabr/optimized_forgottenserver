@@ -725,7 +725,7 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 		//need to walk to the creature first before moving it
 		std::vector<Direction> listDir;
 		if (player->getPathTo(movingCreatureOrigPos, listDir, 0, 1, true, false)) {
-			g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+			g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), std::move(listDir)));
 			player->setNextWalkActionTask(1500, std::bind(&Game::playerMoveCreatureByID, this, player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition()));
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -978,7 +978,7 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 		//need to walk to the item first before using it
 		std::vector<Direction> listDir;
 		if (player->getPathTo(item->getPosition(), listDir, 0, 1, true, false)) {
-			g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+			g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), std::move(listDir)));
 			player->setNextWalkActionTask(400, std::bind(&Game::playerMoveItemByPlayerID, this, player->getID(), fromPos, spriteId, fromStackPos, toPos, count));
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -1033,7 +1033,7 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 
 			std::vector<Direction> listDir;
 			if (player->getPathTo(walkPos, listDir, 0, 0, true, false)) {
-				g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+				g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), std::move(listDir)));
 				player->setNextWalkActionTask(400, std::bind(&Game::playerMoveItemByPlayerID, this, player->getID(), itemPos, spriteId, itemStackPos, toPos, count));
 			} else {
 				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -1891,7 +1891,7 @@ void Game::playerMove(Player* player, Direction direction)
 	player->resetIdleTime();
 	player->stopNextWalkActionTask();
 
-	player->startAutoWalk(std::vector<Direction>{ direction });
+	player->startAutoWalk(direction);
 }
 
 bool Game::playerBroadcastMessage(Player* player, const std::string& text) const
@@ -2592,7 +2592,7 @@ void Game::playerReceivePingBack(Player* player)
 	player->sendPingBack();
 }
 
-void Game::playerAutoWalk(uint32_t playerId, const std::vector<Direction>& listDir)
+void Game::playerAutoWalk(uint32_t playerId, std::vector<Direction>& listDir)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
@@ -2601,7 +2601,7 @@ void Game::playerAutoWalk(uint32_t playerId, const std::vector<Direction>& listD
 
 	player->resetIdleTime();
 	player->stopNextWalkTask();
-	player->startAutoWalk(listDir);
+	player->startAutoWalk(std::move(listDir));
 }
 
 void Game::playerStopAutoWalk(Player* player)
@@ -2664,7 +2664,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t f
 
 			std::vector<Direction> listDir;
 			if (player->getPathTo(walkToPos, listDir, 0, 1, true, false)) {
-				g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+				g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), std::move(listDir)));
 				player->setNextWalkActionTask(400, std::bind(&Game::playerUseItemEx, this, playerId, itemPos, itemStackPos, fromSpriteId, toPos, toStackPos, toSpriteId));
 			} else {
 				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -2718,7 +2718,7 @@ void Game::playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPo
 		if (ret == RETURNVALUE_TOOFARAWAY) {
 			std::vector<Direction> listDir;
 			if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
-				g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+				g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), std::move(listDir)));
 				player->setNextWalkActionTask(400, std::bind(&Game::playerUseItem, this, playerId, pos, stackPos, index, spriteId));
 				return;
 			}
@@ -2807,7 +2807,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position& fromPos, uin
 
 			std::vector<Direction> listDir;
 			if (player->getPathTo(walkToPos, listDir, 0, 1, true, false)) {
-				g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+				g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), std::move(listDir)));
 				player->setNextWalkActionTask(400, std::bind(&Game::playerUseWithCreature, this, playerId, itemPos, itemStackPos, creatureId, spriteId));
 			} else {
 				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -2916,7 +2916,7 @@ void Game::playerRotateItem(uint32_t playerId, const Position& pos, uint8_t stac
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		std::vector<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
-			g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+			g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), std::move(listDir)));
 			player->setNextWalkActionTask(400, std::bind(&Game::playerRotateItem, this, playerId, pos, stackPos, spriteId));
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -2964,7 +2964,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 		std::vector<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
-			g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+			g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), std::move(listDir)));
 			player->setNextWalkActionTask(400, std::bind(&Game::playerWrapableItem, this, playerId, pos, stackPos, spriteId));
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -3086,7 +3086,7 @@ void Game::playerBrowseField(uint32_t playerId, const Position& pos)
 	if (!Position::areInRange<1, 1>(playerPos, pos)) {
 		std::vector<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
-			g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+			g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), std::move(listDir)));
 			player->setNextWalkActionTask(400, std::bind(&Game::playerBrowseField, this, playerId, pos));
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -3229,7 +3229,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 	if (!Position::areInRange<1, 1>(tradeItemPosition, playerPosition)) {
 		std::vector<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
-			g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir));
+			g_dispatcher.addTask(std::bind(&Game::playerAutoWalk, this, player->getID(), std::move(listDir)));
 			player->setNextWalkActionTask(400, std::bind(&Game::playerRequestTrade, this, playerId, pos, stackPos, tradePlayerId, spriteId));
 		} else {
 			player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);

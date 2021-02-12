@@ -406,7 +406,7 @@ class Game
 		void playerCloseNpcChannel(Player* player);
 		void playerReceivePing(Player* player);
 		void playerReceivePingBack(Player* player);
-		void playerAutoWalk(uint32_t playerId, const std::vector<Direction>& listDir);
+		void playerAutoWalk(uint32_t playerId, std::vector<Direction>& listDir);
 		void playerStopAutoWalk(Player* player);
 		void playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos,
 		                     uint16_t fromSpriteId, const Position& toPos, uint8_t toStackPos, uint16_t toSpriteId);
