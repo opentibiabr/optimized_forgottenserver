@@ -79,7 +79,9 @@ enum ZoneType_t {
 class SpectatorVector
 {
 	public:
-		SpectatorVector() = default;
+		SpectatorVector() {
+			specs.reserve(32);
+		}
 
 		inline CreatureVector::iterator begin() noexcept { return specs.begin(); }
 		inline CreatureVector::iterator end() noexcept { return specs.end(); }
