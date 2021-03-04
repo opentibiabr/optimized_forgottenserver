@@ -876,17 +876,12 @@ enum CombatOrigin
 struct CombatDamage
 {
 	struct {
-		CombatType_t type;
-		int32_t value;
+		CombatType_t type = COMBAT_NONE;
+		int32_t value = 0;
 	} primary, secondary;
 
-	CombatOrigin origin;
-	CombatDamage()
-	{
-		origin = ORIGIN_NONE;
-		primary.type = secondary.type = COMBAT_NONE;
-		primary.value = secondary.value = 0;
-	}
+	CombatOrigin origin = ORIGIN_NONE;
+	BlockType_t blockType = BLOCK_NONE;
 };
 
 using MarketOfferList = std::vector<MarketOffer>;
