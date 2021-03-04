@@ -6944,7 +6944,7 @@ int LuaScriptInterface::luaItemSetCustomAttribute(lua_State* L) {
 
 	std::string key;
 	if (isNumber(L, 2)) {
-		key = std::move(boost::lexical_cast<std::string>(getNumber<int64_t>(L, 2)));
+		key = std::move(std::to_string(getNumber<int64_t>(L, 2)));
 	} else if (isString(L, 2)) {
 		key = std::move(getString(L, 2));
 	} else {
