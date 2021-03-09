@@ -314,6 +314,10 @@
 #define GAME_FEATURE_QUIVER 1
 #endif
 
+#if CLIENT_VERSION >= 1262
+#define GAME_FEATURE_SESSIONEND 1
+#endif
+
 #if CLIENT_VERSION >= 1263
 #define GAME_FEATURE_PODIUM 1
 #endif

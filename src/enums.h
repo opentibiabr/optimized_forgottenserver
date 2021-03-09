@@ -64,6 +64,17 @@ enum ThreadState {
 	THREAD_STATE_TERMINATED,
 };
 
+#if GAME_FEATURE_SESSIONEND > 0
+enum SessionEndInformations : uint8_t {
+	// I'm guessing unknown types are ban/protocol error or something
+	// but since there aren't any difference from logout should we care?
+	SESSION_END_LOGOUT,
+	SESSION_END_UNK2,
+	SESSION_END_FORCECLOSE,
+	SESSION_END_UNK3,
+};
+#endif
+
 enum itemAttrTypes : uint32_t {
 	ITEM_ATTRIBUTE_NONE,
 

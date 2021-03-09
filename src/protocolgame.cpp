@@ -280,7 +280,11 @@ void ProtocolGame::logout(bool displayEffect, bool forced)
 		}
 	}
 
+	#if GAME_FEATURE_SESSIONEND > 0
+	sendSessionEndInformation(forced ? SESSION_END_FORCECLOSE : SESSION_END_LOGOUT);
+	#else
 	disconnect();
+	#endif
 
 	g_game.removeCreature(player);
 }
@@ -1709,6 +1713,17 @@ void ProtocolGame::parseInspectionObject(NetworkMessage& msg)
 #endif
 
 // Send methods
+#if GAME_FEATURE_SESSIONEND > 0
+void ProtocolGame::sendSessionEndInformation(SessionEndInformations information)
+{
+	auto output = OutputMessagePool::getOutputMessage();
+	output->addByte(0x18);
+	output->addByte(information);
+	send(output);
+	disconnect();
+}
+#endif
+
 #if GAME_FEATURE_INSPECTION > 0
 void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const Item* item, bool cyclopedia)
 {

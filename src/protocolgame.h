@@ -231,6 +231,9 @@ class ProtocolGame final : public Protocol
 		#endif
 
 		//Send functions
+		#if GAME_FEATURE_SESSIONEND > 0
+		void sendSessionEndInformation(SessionEndInformations information);
+		#endif
 		#if GAME_FEATURE_INSPECTION > 0
 		void sendItemInspection(uint16_t itemId, uint8_t itemCount, const Item* item, bool cyclopedia);
 		#endif
