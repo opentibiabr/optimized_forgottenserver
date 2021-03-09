@@ -414,6 +414,11 @@ bool Items::loadFromOtb(const std::string& file)
 		iType.lightColor = lightColor;
 		iType.wareId = wareId;
 		iType.alwaysOnTopOrder = alwaysOnTopOrder;
+
+		// TODO: make this as actual .otb flag
+		if (clientId == 35973 || clientId == 35974) {
+			iType.isPodium = true;
+		}
 	}
 
 	items.shrink_to_fit();

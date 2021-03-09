@@ -1263,6 +1263,13 @@ class Player final : public Creature, public Cylinder
 				client->sendOutfitWindow();
 			}
 		}
+		#if GAME_FEATURE_PODIUM > 0
+		void sendPodiumWindow(const Item* podium, const Position& position, uint16_t spriteId, uint8_t stackpos) {
+			if (client) {
+				client->sendPodiumWindow(podium, position, spriteId, stackpos);
+			}
+		}
+		#endif
 		void sendCloseContainer(uint8_t cid) {
 			if (client) {
 				client->sendCloseContainer(cid);

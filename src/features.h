@@ -310,6 +310,14 @@
 #define GAME_FEATURE_ANALYTICS_IMPACT_TRACKING_EXTENDED 1
 #endif
 
+#if CLIENT_VERSION >= 1261
+#define GAME_FEATURE_QUIVER 1
+#endif
+
+#if CLIENT_VERSION >= 1263
+#define GAME_FEATURE_PODIUM 1
+#endif
+
 //robinhood hash map is faster variant of hash map than std::unordered_map but it depends on std::unordered_map implementation
 //compared with visual studio stl library it is at least 2x faster
 #define GAME_FEATURE_ROBINHOOD_HASH_MAP 0

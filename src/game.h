@@ -416,6 +416,10 @@ class Game
 		void playerMoveUpContainer(Player* player, uint8_t cid);
 		void playerUpdateContainer(Player* player, uint8_t cid);
 		void playerRotateItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId);
+		#if GAME_FEATURE_PODIUM > 0
+		void playerConfigureShowOffSocket(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId);
+		void playerSetShowOffSocket(uint32_t playerId, Outfit_t& outfit, const Position& pos, uint8_t stackPos, const uint16_t spriteId, uint8_t podiumVisible, uint8_t direction);
+		#endif
 		#if CLIENT_VERSION >= 1092
 		void playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId);
 		#endif

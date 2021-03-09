@@ -210,6 +210,9 @@ class ProtocolGame final : public Protocol
 		void parseEditVip(NetworkMessage& msg);
 
 		void parseRotateItem(NetworkMessage& msg);
+		#if GAME_FEATURE_PODIUM > 0
+		void parseConfigureShowOffSocket(NetworkMessage& msg);
+		#endif
 
 		//Channel tabs
 		void parseChannelInvite(NetworkMessage& msg);
@@ -365,6 +368,9 @@ class ProtocolGame final : public Protocol
 		void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string& text);
 		void sendHouseWindow(uint32_t windowTextId, const std::string& text);
 		void sendOutfitWindow();
+		#if GAME_FEATURE_PODIUM > 0
+		void sendPodiumWindow(const Item* podium, const Position& position, uint16_t spriteId, uint8_t stackpos);
+		#endif
 
 		void sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus);
 		#if GAME_FEATURE_ADDITIONAL_VIPINFO > 0

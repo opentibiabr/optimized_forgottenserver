@@ -563,6 +563,9 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		case 0x83: parseUseItemEx(msg); break;
 		case 0x84: parseUseWithCreature(msg); break;
 		case 0x85: parseRotateItem(msg); break;
+		#if GAME_FEATURE_PODIUM > 0
+		case 0x86: parseConfigureShowOffSocket(msg); break;
+		#endif
 		case 0x87: parseCloseContainer(msg); break;
 		case 0x88: parseUpArrowContainer(msg); break;
 		case 0x89: parseTextWindow(msg); break;
@@ -1036,7 +1039,9 @@ void ProtocolGame::parseSetOutfit(NetworkMessage& msg)
 	newOutfit.lookBody = std::min<uint8_t>(132, msg.getByte());
 	newOutfit.lookLegs = std::min<uint8_t>(132, msg.getByte());
 	newOutfit.lookFeet = std::min<uint8_t>(132, msg.getByte());
+	#if GAME_FEATURE_ADDONS > 0
 	newOutfit.lookAddons = msg.getByte();
+	#endif
 	if (outfitType == 0) {
 		#if GAME_FEATURE_MOUNTS > 0
 		newOutfit.lookMount = msg.get<uint16_t>();
@@ -1050,12 +1055,31 @@ void ProtocolGame::parseSetOutfit(NetworkMessage& msg)
 		#if GAME_FEATURE_FAMILIARS > 0
 		msg.get<uint16_t>();//Familiar looktype
 		#endif
+		g_game.playerChangeOutfit(player, newOutfit);
 	} else if (outfitType == 1) {
 		//This value probably has something to do with try outfit variable inside outfit window dialog
 		//if try outfit is set to 2 it expects uint32_t value after mounted and disable mounts from outfit window dialog
 		msg.get<uint32_t>();
 	}
-	g_game.playerChangeOutfit(player, newOutfit);
+	#if GAME_FEATURE_PODIUM > 0
+	else if (outfitType == 2) {
+		Position pos = msg.getPosition();
+		uint16_t spriteId = msg.get<uint16_t>();
+		uint8_t stackpos = msg.getByte();
+		#if GAME_FEATURE_MOUNTS > 0
+		newOutfit.lookMount = msg.get<uint16_t>();
+		#endif
+		#if GAME_FEATURE_MOUNT_COLORS > 0
+		newOutfit.lookMountHead = std::min<uint8_t>(132, msg.getByte());
+		newOutfit.lookMountBody = std::min<uint8_t>(132, msg.getByte());
+		newOutfit.lookMountLegs = std::min<uint8_t>(132, msg.getByte());
+		newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
+		#endif
+		uint8_t direction = std::max<uint8_t>(DIRECTION_NORTH, std::min<uint8_t>(DIRECTION_WEST, msg.getByte()));
+		uint8_t podiumVisible = msg.getByte();
+		g_game.playerSetShowOffSocket(player->getID(), newOutfit, pos, stackpos, spriteId, podiumVisible, direction);
+	}
+	#endif
 }
 
 #if GAME_FEATURE_MOUNTS > 0
@@ -1326,6 +1350,16 @@ void ProtocolGame::parseRotateItem(NetworkMessage& msg)
 	uint8_t stackpos = msg.getByte();
 	g_game.playerRotateItem(player->getID(), pos, stackpos, spriteId);
 }
+
+#if GAME_FEATURE_PODIUM > 0
+void ProtocolGame::parseConfigureShowOffSocket(NetworkMessage& msg)
+{
+	Position pos = msg.getPosition();
+	uint16_t spriteId = msg.get<uint16_t>();
+	uint8_t stackpos = msg.getByte();
+	g_game.playerConfigureShowOffSocket(player->getID(), pos, stackpos, spriteId);
+}
+#endif
 
 void ProtocolGame::parseRuleViolationReport(NetworkMessage& msg)
 {
@@ -5033,6 +5067,187 @@ void ProtocolGame::sendOutfitWindow()
 	writeToOutputBuffer(playermsg);
 }
 
+#if GAME_FEATURE_PODIUM > 0
+void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position, uint16_t spriteId, uint8_t stackpos)
+{
+	playermsg.reset();
+	playermsg.addByte(0xC8);
+
+	const ItemAttributes::CustomAttribute* podiumVisible = podium->getCustomAttribute("PodiumVisible");
+	const ItemAttributes::CustomAttribute* lookType = podium->getCustomAttribute("LookType");
+	const ItemAttributes::CustomAttribute* lookMount = podium->getCustomAttribute("LookMount");
+	const ItemAttributes::CustomAttribute* lookDirection = podium->getCustomAttribute("LookDirection");
+
+	bool outfited = false;
+	bool mounted = false;
+
+	if (lookType) {
+		uint16_t look = static_cast<uint16_t>(lookType->getInt());
+		outfited = (look != 0);
+		playermsg.add<uint16_t>(look);
+
+		if (outfited) {
+			const ItemAttributes::CustomAttribute* lookHead = podium->getCustomAttribute("LookHead");
+			const ItemAttributes::CustomAttribute* lookBody = podium->getCustomAttribute("LookBody");
+			const ItemAttributes::CustomAttribute* lookLegs = podium->getCustomAttribute("LookLegs");
+			const ItemAttributes::CustomAttribute* lookFeet = podium->getCustomAttribute("LookFeet");
+
+			playermsg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt()) : 0);
+			playermsg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt()) : 0);
+			playermsg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInt()) : 0);
+			playermsg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt()) : 0);
+
+			#if GAME_FEATURE_ADDONS > 0
+			const ItemAttributes::CustomAttribute* lookAddons = podium->getCustomAttribute("LookAddons");
+			playermsg.addByte(lookAddons ? static_cast<uint8_t>(lookAddons->getInt()) : 0);
+			#endif
+		}
+	} else {
+		playermsg.add<uint16_t>(0);
+	}
+
+	#if GAME_FEATURE_MOUNTS > 0
+	if (lookMount) {
+		uint16_t look = static_cast<uint16_t>(lookMount->getInt());
+		mounted = (look != 0);
+		playermsg.add<uint16_t>(look);
+
+		#if GAME_FEATURE_MOUNT_COLORS > 0
+		if (mounted) {
+			const ItemAttributes::CustomAttribute* lookHead = podium->getCustomAttribute("LookMountHead");
+			const ItemAttributes::CustomAttribute* lookBody = podium->getCustomAttribute("LookMountBody");
+			const ItemAttributes::CustomAttribute* lookLegs = podium->getCustomAttribute("LookMountLegs");
+			const ItemAttributes::CustomAttribute* lookFeet = podium->getCustomAttribute("LookMountFeet");
+
+			playermsg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt()) : 0);
+			playermsg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt()) : 0);
+			playermsg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInt()) : 0);
+			playermsg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt()) : 0);
+		}
+		#endif
+	} else {
+		playermsg.add<uint16_t>(0);
+		#if GAME_FEATURE_MOUNT_COLORS > 0
+		playermsg.addByte(0);
+		playermsg.addByte(0);
+		playermsg.addByte(0);
+		playermsg.addByte(0);
+		#endif
+	}
+	#endif
+
+	#if GAME_FEATURE_FAMILIARS > 0
+	playermsg.add<uint16_t>(0);
+	#endif
+
+	auto startOutfits = playermsg.getBufferPosition();
+	#if GAME_FEATURE_OUTFITS_U16 > 0
+	uint16_t limitOutfits = std::numeric_limits<uint16_t>::max();
+	uint16_t outfitSize = 0;
+	playermsg.skipBytes(2);
+	#else
+	#if CLIENT_VERSION < 800
+	uint8_t limitOutfits = 15;
+	#elif CLIENT_VERSION < 870
+	uint8_t limitOutfits = 25;
+	#elif CLIENT_VERSION < 1062
+	uint8_t limitOutfits = 50;
+	#else
+	uint8_t limitOutfits = std::numeric_limits<uint8_t>::max();
+	#endif
+	uint8_t outfitSize = 0;
+	playermsg.skipBytes(1);
+	#endif
+
+	const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
+	for (const Outfit& outfit : outfits) {
+		uint8_t addons;
+		if (!player->getOutfitAddons(outfit, addons)) {
+			continue;
+		}
+
+		playermsg.add<uint16_t>(outfit.lookType);
+		playermsg.addString(outfit.name);
+		playermsg.addByte(addons);
+		#if GAME_FEATURE_OUTFITS_TYPE > 0
+		playermsg.addByte(0x00);
+		#endif
+		if (++outfitSize == limitOutfits) {
+			break;
+		}
+	}
+	
+	auto endOutfits = playermsg.getBufferPosition();
+	playermsg.setBufferPosition(startOutfits);
+	#if GAME_FEATURE_MOUNTS_U16 > 0
+	playermsg.add<uint16_t>(outfitSize);
+	#else
+	playermsg.addByte(outfitSize);
+	#endif
+	playermsg.setBufferPosition(endOutfits);
+
+	#if GAME_FEATURE_MOUNTS > 0
+	auto startMounts = playermsg.getBufferPosition();
+	#if GAME_FEATURE_MOUNTS_U16 > 0
+	uint16_t limitMounts = std::numeric_limits<uint16_t>::max();
+	uint16_t mountSize = 0;
+	playermsg.skipBytes(2);
+	#else
+	#if CLIENT_VERSION < 1062
+	uint8_t limitMounts = 50;
+	#else
+	uint8_t limitMounts = std::numeric_limits<uint8_t>::max();
+	#endif
+	uint8_t mountSize = 0;
+	playermsg.skipBytes(1);
+	#endif
+
+	const auto& mounts = g_game.mounts.getMounts();
+	for (const Mount& mount : mounts) {
+		if (player->hasMount(&mount)) {
+			playermsg.add<uint16_t>(mount.clientId);
+			playermsg.addString(mount.name);
+			#if GAME_FEATURE_OUTFITS_TYPE > 0
+			playermsg.addByte(0x00);
+			#endif
+			if (++mountSize == limitMounts) {
+				break;
+			}
+		}
+	}
+
+	auto endMounts = playermsg.getBufferPosition();
+	playermsg.setBufferPosition(startMounts);
+	#if GAME_FEATURE_MOUNTS_U16 > 0
+	playermsg.add<uint16_t>(mountSize);
+	#else
+	playermsg.addByte(mountSize);
+	#endif
+	playermsg.setBufferPosition(endMounts);
+	#endif
+
+	#if GAME_FEATURE_FAMILIARS > 0
+	playermsg.add<uint16_t>(0);
+	#endif
+	
+	#if GAME_FEATURE_OUTFITS_TYPE > 0
+	playermsg.addByte(0x05);
+	playermsg.addByte(mounted ? 0x01 : 0x00);
+
+	playermsg.add<uint16_t>(0);
+
+	playermsg.addPosition(position);
+	playermsg.add<uint16_t>(spriteId);
+	playermsg.addByte(stackpos);
+
+	playermsg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInt()) : 0x01);
+	playermsg.addByte(outfited ? 0x01 : 0x00);
+	playermsg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInt()) : 2);
+	#endif
+	writeToOutputBuffer(playermsg);
+}
+#endif
+
 void ProtocolGame::sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus)
 {
 	playermsg.reset();
@@ -5628,15 +5843,32 @@ void ProtocolGame::AddItem(uint16_t id, uint8_t count)
 		playermsg.addByte(serverFluidToClient(count));
 	}
 
-	#if GAME_FEATURE_QUICK_LOOT > 0
+	#if GAME_FEATURE_QUICK_LOOT > 0 || GAME_FEATURE_QUIVER > 0
 	if (it.isContainer()) {
+		#if GAME_FEATURE_QUICK_LOOT > 0
 		playermsg.addByte(0);
+		#endif
+		#if GAME_FEATURE_QUIVER > 0
+		playermsg.addByte(0);
+		#endif
 	}
 	#endif
 
 	#if GAME_FEATURE_ITEM_ANIMATION_PHASES > 0
 	if (it.isAnimation) {
 		playermsg.addByte(0xFE); // random phase (0xFF for async)
+	}
+	#endif
+
+	#if GAME_FEATURE_PODIUM > 0
+	if (it.isPodium) {
+		playermsg.add<uint16_t>(0);
+		#if GAME_FEATURE_MOUNTS > 0
+		playermsg.add<uint16_t>(0);
+		#endif
+
+		playermsg.addByte(2);
+		playermsg.addByte(0x01);
 	}
 	#endif
 }
@@ -5656,15 +5888,79 @@ void ProtocolGame::AddItem(const Item* item)
 		playermsg.addByte(serverFluidToClient(item->getFluidType()));
 	}
 
-	#if GAME_FEATURE_QUICK_LOOT > 0
+	#if GAME_FEATURE_QUICK_LOOT > 0 || GAME_FEATURE_QUIVER > 0
 	if (it.isContainer()) {
+		#if GAME_FEATURE_QUICK_LOOT > 0
 		playermsg.addByte(0);
+		#endif
+		#if GAME_FEATURE_QUIVER > 0
+		playermsg.addByte(0);
+		#endif
 	}
 	#endif
 
 	#if GAME_FEATURE_ITEM_ANIMATION_PHASES > 0
 	if (it.isAnimation) {
 		playermsg.addByte(0xFE); // random phase (0xFF for async)
+	}
+	#endif
+
+	#if GAME_FEATURE_PODIUM > 0
+	if (it.isPodium) {
+		const ItemAttributes::CustomAttribute* podiumVisible = item->getCustomAttribute("PodiumVisible");
+		const ItemAttributes::CustomAttribute* lookType = item->getCustomAttribute("LookType");
+		const ItemAttributes::CustomAttribute* lookMount = item->getCustomAttribute("LookMount");
+		const ItemAttributes::CustomAttribute* lookDirection = item->getCustomAttribute("LookDirection");
+
+		if (lookType) {
+			uint16_t look = static_cast<uint16_t>(lookType->getInt());
+			playermsg.add<uint16_t>(look);
+
+			if(look != 0) {
+				const ItemAttributes::CustomAttribute* lookHead = item->getCustomAttribute("LookHead");
+				const ItemAttributes::CustomAttribute* lookBody = item->getCustomAttribute("LookBody");
+				const ItemAttributes::CustomAttribute* lookLegs = item->getCustomAttribute("LookLegs");
+				const ItemAttributes::CustomAttribute* lookFeet = item->getCustomAttribute("LookFeet");
+
+				playermsg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt()) : 0);
+				playermsg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt()) : 0);
+				playermsg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInt()) : 0);
+				playermsg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt()) : 0);
+
+				#if GAME_FEATURE_ADDONS > 0
+				const ItemAttributes::CustomAttribute* lookAddons = item->getCustomAttribute("LookAddons");
+				playermsg.addByte(lookAddons ? static_cast<uint8_t>(lookAddons->getInt()) : 0);
+				#endif
+			}
+		} else {
+			playermsg.add<uint16_t>(0);
+		}
+
+		#if GAME_FEATURE_MOUNTS > 0
+		if (lookMount) {
+			uint16_t look = static_cast<uint16_t>(lookMount->getInt());
+			playermsg.add<uint16_t>(look);
+
+			#if GAME_FEATURE_MOUNT_COLORS > 0
+			if (look != 0) {
+				const ItemAttributes::CustomAttribute* lookHead = item->getCustomAttribute("LookMountHead");
+				const ItemAttributes::CustomAttribute* lookBody = item->getCustomAttribute("LookMountBody");
+				const ItemAttributes::CustomAttribute* lookLegs = item->getCustomAttribute("LookMountLegs");
+				const ItemAttributes::CustomAttribute* lookFeet = item->getCustomAttribute("LookMountFeet");
+
+				playermsg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt()) : 0);
+				playermsg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt()) : 0);
+				playermsg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInt()) : 0);
+				playermsg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt()) : 0);
+			}
+			#endif
+		} else {
+			playermsg.add<uint16_t>(0);
+		}
+		#endif
+
+		playermsg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInt()) : 2);
+		playermsg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInt()) : 0x01);
 	}
 	#endif
 }

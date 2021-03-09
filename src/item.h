@@ -966,6 +966,9 @@ class Item : virtual public Thing
 			const ItemType& it = items[id];
 			return it.rotatable && it.rotateTo;
 		}
+		bool isPodium() const {
+			return items[id].isPodium;
+		}
 		bool isWrapable() const {
 			return (items[id].wrapableTo != 0);
 		}

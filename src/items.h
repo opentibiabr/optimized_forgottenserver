@@ -303,6 +303,7 @@ class ItemType
 		uint16_t clientId = 0;
 		bool stackable = false;
 		bool isAnimation = false;
+		bool isPodium = false;
 
 		std::string name;
 		std::string article;
