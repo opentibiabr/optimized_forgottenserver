@@ -19,6 +19,8 @@ x64/
 build/
 [Bb]in/
 [Oo]bj/
+*.db-shm
+*.db-wal
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -175,7 +177,7 @@ pip-log.txt
 #############
 ## TFS / OT
 #############
+*.dll
+*.exe
+*.ini
 config.lua
-libmysql.dll
-lua51.dll
-theforgottenserver-AVX2.exe
