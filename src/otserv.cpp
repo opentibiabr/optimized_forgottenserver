@@ -129,42 +129,6 @@ void mainLoader(int, char*[], ServiceManager* services)
 	std::cout << "A server developed by " << STATUS_SERVER_DEVELOPERS << std::endl;
 	std::cout << "Server protocol: " << CLIENT_VERSION_UPPER << "." << CLIENT_VERSION_LOWER << std::endl;
 
-	std::cout << std::endl;
-	std::cout << "                    .*#%%/                            (&&#*.                    " << std::endl;
-	std::cout << "               *(%%&%/.                                  ,(&&&%(*               " << std::endl;
-	std::cout << "           .%%&&&&%,                                        *&&&&&&%.           " << std::endl;
-	std::cout << "          ,&&&&&&#                                            %&&&&&&.          " << std::endl;
-	std::cout << "     ,&/  (&&&&&&                                             .&&&&&&/  (&.     " << std::endl;
-	std::cout << "   .%&&#  %&&&%%/                                              %%%&&&(  %&&%    " << std::endl;
-	std::cout << "  /&&&&&/ (%%%%%(                                              %%%&%%* #&&&&&*  " << std::endl;
-	std::cout << " .&&&&&&&( %%%%%%.                                            ,%%%%%% #&&&&&&&  " << std::endl;
-	std::cout << " *&&&&&&%%%*%%%%%#                                            %%%%%#(%%%&&&&&&. " << std::endl;
-	std::cout << "  ,&&&%%%%%%%%####,                                          *##%#%%%%%%%%%&&.  " << std::endl;
-	std::cout << "%,  (&%%%%%#%%###.                                            .#####%%%%%%%/  *(" << std::endl;
-	std::cout << "(&&(. *%%%%%####* /.                                        ., /####%%%%#* .(%&/" << std::endl;
-	std::cout << ".&&%&%#. /###%##, *#,                                      *#, *#####%* ,#%%%%%." << std::endl;
-	std::cout << " #%%%%%%%%#/####(  (((,           .,*,*//**,..           *((/ .#####/#%#%%%%%%/ " << std::endl;
-	std::cout << "  /%%%%%%%######((. *(((/.         .*/*/*/****        ,((((, *((######%#%%%%%,  " << std::endl;
-	std::cout << "    *#%%%#######(#((* ,((///*,       */*****..    ,/(((((, *((#(#######%#%#,    " << std::endl;
-	std::cout << "          ./((##(((((((/ ,//////.    *******,   //(((/. /((((((##((/*.          " << std::endl;
-	std::cout << "      ,####((////*/(((((///*/////*/*,*********///////((((((((/////(((####.      " << std::endl;
-	std::cout << "        .#######((((((((//////////***/*****//////(/((/((((((((((#(#####         " << std::endl;
-	std::cout << "           *(###(((((, .,*//////////*****//////////(//,,. ,((((((##(,           " << std::endl;
-	std::cout << "               *((((((((.     *///*/***///////(//*     *((((((((*               " << std::endl;
-	std::cout << "                    .,,**//*.    .,////.*////,     ,*/**,,,.                    " << std::endl;
-	std::cout << "                                  *(/,    //(/                                  " << std::endl;
-	std::cout << "                                ./((((((((((((/.                                " << std::endl;
-	std::cout << "                               ((((* ,(.*(. /((((.                              " << std::endl;
-	std::cout << "                            *(((((./*,(.*( (*.(((((/.                           " << std::endl;
-	std::cout << "                         ,##((#(./((*,(.*(.(((*.(((((#*                         " << std::endl;
-	std::cout << "                       *#####(,*####*,(./(.(####*,(####(                        " << std::endl;
-	std::cout << "                          (# (###### (#./#,*######( (/                          " << std::endl;
-	std::cout << "                            ,(#####,(##./##**#####*.                            " << std::endl;
-	std::cout << "                                #(.####./#### #/                                " << std::endl;
-	std::cout << "                                  ./%%%./%%#*                                   " << std::endl;
-	std::cout << std::endl;
-	std::this_thread::sleep_for(std::chrono::seconds(5));
-
 	// check if config.lua or config.lua.dist exist
 	std::ifstream c_test("./config.lua");
 	if (!c_test.is_open()) {

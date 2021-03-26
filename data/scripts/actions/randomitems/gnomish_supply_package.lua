@@ -11,7 +11,7 @@ local config = {
 	{itemId = 268, count = 4, chanceFrom = 6569, chanceTo = 7069}, -- mana potion
 	{itemId = 3035, count = 5, chanceFrom = 8901, chanceTo = 9204}, -- platinum coin
 	{itemId = 3037, chanceFrom = 9924, chanceTo = 9956}, -- yellow gem
-	{itemId = 3038, chanceFrom = 9994, chanceTo = 10000} -- green gem
+	{itemId = 3038, chanceFrom = 9994, chanceTo = 10000}, -- green gem
 	{itemId = 3039, chanceFrom = 9891, chanceTo = 9923}, -- red gem
 	{itemId = 3041, chanceFrom = 9987, chanceTo = 9993}, -- blue gem
 	{itemId = 3043, chanceFrom = 9838, chanceTo = 9890}, -- crystal coin
@@ -27,7 +27,7 @@ local config = {
 	{itemId = 16167, chanceFrom = 4058, chanceTo = 4836}, -- teleport crystal
 	{itemId = 16242, chanceFrom = 9957, chanceTo = 9986}, -- red teleport crystal
 	{itemId = 16254, chanceFrom = 9742, chanceTo = 9837}, -- gnomish voucher type MA2
-	{itemId = 16257, chanceFrom = 9630, chanceTo = 9741}, -- gnomish voucher type CA2
+	{itemId = 16257, chanceFrom = 9630, chanceTo = 9741} -- gnomish voucher type CA2
 }
 
 local surprise = Action()

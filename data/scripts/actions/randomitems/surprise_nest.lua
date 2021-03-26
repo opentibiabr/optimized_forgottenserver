@@ -3,7 +3,7 @@ if(CLIENT_VERSION < 950) then
 end
 
 local config = {
-	{itemId = 3215, chanceFrom = 9991, chanceTo = 10000} -- phoenix egg
+	{itemId = 3215, chanceFrom = 9991, chanceTo = 10000}, -- phoenix egg
 	{itemId = 4839, chanceFrom = 9551, chanceTo = 9850}, -- hydra egg
 	{itemId = 6541, count = 10, chanceFrom = 0, chanceTo = 1500}, -- coloured egg
 	{itemId = 6542, count = 10, chanceFrom = 1501, chanceTo = 3000}, -- coloured egg
@@ -13,7 +13,7 @@ local config = {
 	{itemId = 6569, count = 10, chanceFrom = 7501, chanceTo = 8550}, -- candy
 	{itemId = 6570, chanceFrom = 9851, chanceTo = 9950}, -- blue surprise bag
 	{itemId = 6571, chanceFrom = 9951, chanceTo = 9990}, -- red surprise bag
-	{itemId = 6574, chanceFrom = 8551, chanceTo = 9550}, -- bar of chocolate
+	{itemId = 6574, chanceFrom = 8551, chanceTo = 9550} -- bar of chocolate
 }
 local surprise = Action()
 

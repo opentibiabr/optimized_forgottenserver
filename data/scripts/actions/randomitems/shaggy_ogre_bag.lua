@@ -10,7 +10,7 @@ local config = {
 	{itemId = 3406, chanceFrom = 8340, chanceTo = 8595}, -- feather headdress
 	{itemId = 3443, chanceFrom = 9076, chanceTo = 9394}, -- tusk shield
 	{itemId = 3560, chanceFrom = 9395, chanceTo = 9703}, -- bast skirt
-	{itemId = 5668, chanceFrom = 9970, chanceTo = 10000} -- mysterious voodoo skull
+	{itemId = 5668, chanceFrom = 9970, chanceTo = 10000}, -- mysterious voodoo skull
 	{itemId = 22171, chanceFrom = 9012, chanceTo = 9075}, -- ogre klubba
 	{itemId = 22172, chanceFrom = 8884, chanceTo = 9011}, -- ogre choppa
 	{itemId = 22187, count = 5, chanceFrom = 0, chanceTo = 2865}, -- roasted meat
@@ -21,7 +21,7 @@ local config = {
 	{itemId = 22191, chanceFrom = 2866, chanceTo = 3408}, -- skull fetish
 	{itemId = 22192, chanceFrom = 9704, chanceTo = 9841}, -- shamanic mask
 	{itemId = 22193, count = 3, chanceFrom = 7328, chanceTo = 7764}, -- onyx chip
-	{itemId = 22194, count = 2, chanceFrom = 5667, chanceTo = 6305}, -- opal
+	{itemId = 22194, count = 2, chanceFrom = 5667, chanceTo = 6305} -- opal
 }
 local surprise = Action()
 

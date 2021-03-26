@@ -2641,7 +2641,7 @@
 	<item id="2239" article="a" name="burnt scroll">
 		<attribute key="weight" value="40" />
 	</item>
-	<item id="2240" name="fish remains">
+	<item id="2240" name="remains of a fish">
 		<attribute key="weight" value="110" />
 	</item>
 	<item id="2241" name="rubbish">

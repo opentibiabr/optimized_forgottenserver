@@ -6,8 +6,8 @@ local config = {
 	{itemId = 3036, chanceFrom = 6830, chanceTo = 8195}, -- violet gem
 	{itemId = 3041, chanceFrom = 0, chanceTo = 4269}, -- blue gem
 	{itemId = 22516, chanceFrom = 4270, chanceTo = 6829}, -- silver token
-	{itemId = 22721, chanceFrom = 9075, chanceTo = 10000} -- gold token
-	{itemId = 27653, chanceFrom = 6196, chanceTo = 9074}, -- suspicious device
+	{itemId = 22721, chanceFrom = 9075, chanceTo = 10000}, -- gold token
+	{itemId = 27653, chanceFrom = 6196, chanceTo = 9074} -- suspicious device
 }
 local surprise = Action()
 

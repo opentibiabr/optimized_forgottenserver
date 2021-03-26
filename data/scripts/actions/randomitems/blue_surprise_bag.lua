@@ -9,11 +9,11 @@ local config = {
 	{itemId = 6393, chanceFrom = 6726, chanceTo = 7649}, -- cream cake
 	{itemId = 6569, chanceFrom = 0, chanceTo = 1046, count = 3}, -- candy
 	{itemId = 6572, chanceFrom = 3873, chanceTo = 4782}, -- party trumpet
-	{itemId = 6574, chanceFrom = 9213, chanceTo = 10000} -- bar of chocolate
+	{itemId = 6574, chanceFrom = 9213, chanceTo = 10000}, -- bar of chocolate
 	{itemId = 6575, chanceFrom = 4783, chanceTo = 5842}, -- red balloons
 	{itemId = 6576, chanceFrom = 1998, chanceTo = 2962}, -- fireworks rocket
 	{itemId = 6577, chanceFrom = 7650, chanceTo = 8478}, -- green balloons
-	{itemId = 6578, chanceFrom = 5843, chanceTo = 6725}, -- party hat
+	{itemId = 6578, chanceFrom = 5843, chanceTo = 6725} -- party hat
 }
 local surprise = Action()
 

@@ -1179,7 +1179,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 		Account account = IOLoginData::loadAccount(accountNumber);
 		Game::updatePremium(account);
 
-		std::cout << name << " has logged in." << std::endl;
+		std::cout << name << " has logged in" << " | Client: " << getProtocolVersion()/100. << std::endl;
 
 		if (guild) {
 			guild->addMember(this);
@@ -1314,7 +1314,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 		g_game.playerCheckRuleViolation(this);
 		#endif
 
-		std::cout << getName() << " has logged out." << std::endl;
+		std::cout << name << " has logged out" << " | Client: " << getProtocolVersion()/100. << std::endl;
 
 		if (guild) {
 			guild->removeMember(this);

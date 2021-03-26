@@ -1493,7 +1493,7 @@
 		<attribute key="writeOnceItemId" value="1960" />
 		<attribute key="weight" value="1300" />
 	</item>
-	<item id="1976" article="a" name="gemmed book">
+	<item id="1976" article="a" name="book">
 		<attribute key="writeable" value="1" />
 		<attribute key="maxTextLen" value="1100" />
 		<attribute key="weight" value="1300" />
@@ -2611,7 +2611,7 @@
 	<item id="2239" article="a" name="burnt scroll">
 		<attribute key="weight" value="40" />
 	</item>
-	<item id="2240" name="fish remains">
+	<item id="2240" name="remains of a fish">
 		<attribute key="weight" value="110" />
 	</item>
 	<item id="2241" name="rubbish">
@@ -3081,7 +3081,7 @@
 		<attribute key="slotType" value="ammo" />
 		<attribute key="weight" value="20" />
 	</item>
-	<item id="2362" name="the carrot of doom" plural="carrots of doom">
+	<item id="2362" article="the" name="carrot of doom" plural="carrots of doom">
 		<attribute key="description" value="You can sense the evil power of the carrot." />
 		<attribute key="weight" value="160" />
 	</item>

@@ -1496,7 +1496,7 @@
 		<attribute key="writeOnceItemId" value="1960" />
 		<attribute key="weight" value="1300" />
 	</item>
-	<item id="1976" article="a" name="gemmed book">
+	<item id="1976" article="a" name="book">
 		<attribute key="writeable" value="1" />
 		<attribute key="maxTextLen" value="1100" />
 		<attribute key="weight" value="1300" />
@@ -2615,7 +2615,7 @@
 	<item id="2239" article="a" name="burnt scroll">
 		<attribute key="weight" value="40" />
 	</item>
-	<item id="2240" name="fish remains">
+	<item id="2240" name="remains of a fish">
 		<attribute key="weight" value="110" />
 	</item>
 	<item id="2241" name="rubbish">
@@ -3085,7 +3085,7 @@
 		<attribute key="slotType" value="ammo" />
 		<attribute key="weight" value="20" />
 	</item>
-	<item id="2362" name="the carrot of doom" plural="carrots of doom">
+	<item id="2362" article="the" name="carrot of doom" plural="carrots of doom">
 		<attribute key="description" value="You can sense the evil power of the carrot." />
 		<attribute key="weight" value="160" />
 	</item>
@@ -11429,10 +11429,10 @@
 	<item id="6533" article="a" name="book">
 		<attribute key="weight" value="750" />
 	</item>
-	<item id="6534" name="the Imperor's trident">
+	<item id="6534" article="the" name="Imperor's trident">
 		<attribute key="weight" value="8000" />
 	</item>
-	<item id="6535" name="the Plasmother's remains">
+	<item id="6535" article="the" name="the Plasmother's remains">
 		<attribute key="weight" value="3000" />
 	</item>
 	<item id="6536" name="Countess Sorrow's frozen tear">
@@ -11446,7 +11446,7 @@
 		<attribute key="writeable" value="1" />
 		<attribute key="maxTextLen" value="1023" />
 	</item>
-	<item id="6539" name="the Handmaiden's protector">
+	<item id="6539" article="the" name="Handmaiden's protector">
 		<attribute key="weight" value="3500" />
 	</item>
 	<item id="6540" article="a" name="piece of Massacre's shell">
@@ -15571,7 +15571,7 @@
 	<item fromid="8740" toid="8743" name="stones" />
 	<item fromid="8744" toid="8747" name="wood" />
 	<item fromid="8748" toid="8751" name="coal" />
-	<item id="8752" name="the ring of the count">
+	<item id="8752" article="the" name="ring of the count">
 		<attribute key="weight" value="75" />
 		<attribute key="slotType" value="ring" />
 	</item>
@@ -15722,7 +15722,7 @@
 		<attribute key="hitChance" value="3" />
 		<attribute key="attack" value="5" />
 	</item>
-	<item id="8852" name="the devileye">
+	<item id="8852" article="the" name="devileye">
 		<attribute key="weight" value="5500" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="weaponType" value="distance" />
@@ -15731,7 +15731,7 @@
 		<attribute key="hitChance" value="-20" />
 		<attribute key="attack" value="20" />
 	</item>
-	<item id="8853" name="the ironworker">
+	<item id="8853" article="the" name="ironworker">
 		<attribute key="weight" value="5500" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="weaponType" value="distance" />

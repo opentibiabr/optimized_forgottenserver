@@ -11,8 +11,8 @@ local config = {
 	{itemId = 21179, chanceFrom = 6398, chanceTo = 7829}, -- glooth blade
 	{itemId = 21180, chanceFrom = 4934, chanceTo = 6397}, -- glooth axe
 	{itemId = 21183, chanceFrom = 1876, chanceTo = 3418}, -- glooth amulet
-	{itemId = 21186, chanceFrom = 9923, chanceTo = 10000} -- control unit
-	{itemId = 21295, chanceFrom = 7830, chanceTo = 8462}, -- glooth backpack
+	{itemId = 21186, chanceFrom = 9923, chanceTo = 10000}, -- control unit
+	{itemId = 21295, chanceFrom = 7830, chanceTo = 8462} -- glooth backpack
 }
 local surprise = Action()
 

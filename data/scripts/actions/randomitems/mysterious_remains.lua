@@ -21,11 +21,11 @@ local config = {
 	{itemId = 9058, chanceFrom = 6820, chanceTo = 6985}, -- gold ingot
 	{itemId = 12548, chanceFrom = 1414, chanceTo = 1988}, -- bag of apple slices
 	{itemId = 15698, chanceFrom = 7945, chanceTo = 8624}, -- gnomish supply package
-	{itemId = 22194, count = 2, chanceFrom = 9880, chanceTo = 10000} -- opal
+	{itemId = 22194, count = 2, chanceFrom = 9880, chanceTo = 10000}, -- opal
 	{itemId = 22731, chanceFrom = 7527, chanceTo = 7944}, -- rift tapestry
 	{itemId = 22737, chanceFrom = 4709, chanceTo = 4874}, -- folded rift carpet
 	{itemId = 22763, chanceFrom = 6986, chanceTo = 7151}, -- shaggy ogre bag
-	{itemId = 23536, chanceFrom = 4875, chanceTo = 5040}, -- folded void carpet
+	{itemId = 23536, chanceFrom = 4875, chanceTo = 5040} -- folded void carpet
 }
 local surprise = Action()
 
