@@ -60,5 +60,4 @@ if(CLIENT_VERSION >= 980) then
 end
 
 modificationKit:id(831, 832, 833, 834)
-
 modificationKit:register()
