@@ -56,11 +56,9 @@ function modificationKit.onUse(player, item, fromPosition, target, toPosition, i
 end
 
 if(CLIENT_VERSION >= 980) then
-	modificationKit:id(20252)
+	modificationKit:id(17972)
 end
 
-for bedId, _ in pairs(beds) do
-	modificationKit:id(bedId)
-end
+modificationKit:id(831, 832, 833, 834)
 
 modificationKit:register()
