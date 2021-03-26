@@ -1,4 +1,5 @@
 dofile('data/lib/lib.lua')
+dofile('data/log.lua')
 
 ropeSpots = {384, 418, 8278, 8592, 13189, 14435, 14436, 15635, 19518}
 
