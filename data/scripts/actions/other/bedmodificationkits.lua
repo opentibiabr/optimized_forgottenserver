@@ -60,7 +60,7 @@ if(CLIENT_VERSION >= 980) then
 end
 
 for bedId, _ in pairs(beds) do
-	bedModificationKits:id(bedId)
+	modificationKit:id(bedId)
 end
 
-bedModificationKits:register()
+modificationKit:register()
