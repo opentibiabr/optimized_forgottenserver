@@ -180,4 +180,5 @@ pip-log.txt
 *.dll
 *.exe
 *.ini
+items-sid.otb
 config.lua
