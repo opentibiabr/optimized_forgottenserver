@@ -11,17 +11,18 @@ local messages = {
 	"You look fabulous.",
 	"Surprise, surprise, you don't see yourself."
 }
+
 local wallmirror = Action()
 
 function wallmirror.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if player:getStorageValue(PlayerStorageKeys.delayWallMirror) <= os.time() then
+	if player:getStorageValue(PlayerStorage.delayWallMirror) <= os.time() then
 		player:say(messages[math.random(1, #messages)], TALKTYPE_MONSTER_SAY)
-		player:setStorageValue(PlayerStorageKeys.delayWallMirror, os.time() + 72000)
+		player:setStorageValue(PlayerStorage.delayWallMirror, os.time() + 20 * 60 * 60)
 	else
 		player:say("Don't be so vain about your appearance.", TALKTYPE_MONSTER_SAY)
 	end
 	return true
 end
 
-wallmirror:id(1816, 1817, 1843, 1844, 1846, 1847, 1849, 1850)
+wallmirror:id(2603, 2604, 2630, 2631, 2633, 2634, 2636, 2637)
 wallmirror:register()

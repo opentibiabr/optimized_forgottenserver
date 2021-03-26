@@ -7,5 +7,5 @@ end
 if(CLIENT_VERSION >= 780) then
 	shovel:id(5710)
 end
-shovel:id(2554)
+shovel:id(3457)
 shovel:register()

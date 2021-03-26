@@ -3,16 +3,16 @@ if(CLIENT_VERSION < 1050) then
 end
 
 local config = {
-	{chanceFrom = 0, chanceTo = 1875, itemId = 23529, count = 2}, -- glooth spear
-	{chanceFrom = 1876, chanceTo = 3418, itemId = 23554}, -- glooth amulet
-	{chanceFrom = 3419, chanceTo = 4933, itemId = 23549}, -- glooth club
-	{chanceFrom = 4934, chanceTo = 6397, itemId = 23551}, -- glooth axe
-	{chanceFrom = 6398, chanceTo = 7829, itemId = 23550}, -- glooth blade
-	{chanceFrom = 7830, chanceTo = 8462, itemId = 23666}, -- glooth backpack
-	{chanceFrom = 8463, chanceTo = 8975, itemId = 23514, count = 10}, -- glooth sandwich
-	{chanceFrom = 8976, chanceTo = 9469, itemId = 23515, count = 10}, -- bowl of glooth soup
-	{chanceFrom = 9470, chanceTo = 9922, itemId = 23517, count = 10}, -- glooth steak
-	{chanceFrom = 9923, chanceTo = 10000, itemId = 23557} -- control unit
+	{itemId = 21143, count = 10, chanceFrom = 8463, chanceTo = 8975}, -- glooth sandwich
+	{itemId = 21144, count = 10, chanceFrom = 8976, chanceTo = 9469}, -- bowl of glooth soup
+	{itemId = 21146, count = 10, chanceFrom = 9470, chanceTo = 9922}, -- glooth steak
+	{itemId = 21158, count = 2, chanceFrom = 0, chanceTo = 1875}, -- glooth spear
+	{itemId = 21178, chanceFrom = 3419, chanceTo = 4933}, -- glooth club
+	{itemId = 21179, chanceFrom = 6398, chanceTo = 7829}, -- glooth blade
+	{itemId = 21180, chanceFrom = 4934, chanceTo = 6397}, -- glooth axe
+	{itemId = 21183, chanceFrom = 1876, chanceTo = 3418}, -- glooth amulet
+	{itemId = 21186, chanceFrom = 9923, chanceTo = 10000} -- control unit
+	{itemId = 21295, chanceFrom = 7830, chanceTo = 8462}, -- glooth backpack
 }
 local surprise = Action()
 
@@ -38,5 +38,5 @@ function surprise.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	return false
 end
 
-surprise:id(23574)
+surprise:id(21203)
 surprise:register()

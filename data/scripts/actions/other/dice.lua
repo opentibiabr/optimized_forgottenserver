@@ -20,5 +20,8 @@ function dice.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	return true
 end
 
-dice:id(5792, 5793, 5794, 5795, 5796, 5797)
+for items = 5792, 5797 do
+	dice:id(items)
+end
+
 dice:register()

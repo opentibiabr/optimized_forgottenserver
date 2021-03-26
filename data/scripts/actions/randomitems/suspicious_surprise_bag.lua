@@ -4,14 +4,14 @@ end
 
 local config = {
 	{chanceFrom = 0, chanceTo = 3394}, -- nothing
-	{chanceFrom = 3395, chanceTo = 5159, itemId = 1689}, -- yellow pillow
-	{chanceFrom = 5160, chanceTo = 6954, itemId = 7735}, -- spellwand
-	{chanceFrom = 6955, chanceTo = 8327, itemId = 2114}, -- piggy bank
-	{chanceFrom = 8328, chanceTo = 9141, itemId = 6574}, -- bar of chocolate
-	{chanceFrom = 9142, chanceTo = 9654, itemId = 6394}, -- cream cake
-	{chanceFrom = 9655, chanceTo = 9850, itemId = 7377}, -- ice cream cone
-	{chanceFrom = 9851, chanceTo = 9986, itemId = 8110}, -- present
-	{chanceFrom = 9987, chanceTo = 10000, itemId = 7487} -- toy mouse
+	{itemId = 123, chanceFrom = 9987, chanceTo = 10000} -- toy mouse
+	{itemId = 651, chanceFrom = 5160, chanceTo = 6954}, -- spellwand
+	{itemId = 900, chanceFrom = 3395, chanceTo = 5159}, -- yellow pillow
+	{itemId = 2995, chanceFrom = 6955, chanceTo = 8327}, -- piggy bank
+	{itemId = 3218, chanceFrom = 9851, chanceTo = 9986}, -- present
+	{itemId = 6574, chanceFrom = 8328, chanceTo = 9141}, -- bar of chocolate
+	{itemId = 6393, chanceFrom = 9142, chanceTo = 9654}, -- cream cake
+	{itemId = 7377, chanceFrom = 9655, chanceTo = 9850}, -- ice cream cone
 }
 local surprise = Action()
 
@@ -39,5 +39,5 @@ function surprise.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	return false
 end
 
-surprise:id(9108)
+surprise:id(8853)
 surprise:register()

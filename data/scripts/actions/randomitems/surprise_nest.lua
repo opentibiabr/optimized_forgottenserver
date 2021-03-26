@@ -3,17 +3,17 @@ if(CLIENT_VERSION < 950) then
 end
 
 local config = {
-	{chanceFrom = 0, chanceTo = 1500, itemId = 6541, count = 10}, -- coloured egg
-	{chanceFrom = 1501, chanceTo = 3000, itemId = 6542, count = 10}, -- coloured egg
-	{chanceFrom = 3001, chanceTo = 4500, itemId = 6543, count = 10}, -- coloured egg
-	{chanceFrom = 4501, chanceTo = 6000, itemId = 6544, count = 10}, -- coloured egg
-	{chanceFrom = 6001, chanceTo = 7500, itemId = 6545, count = 10}, -- coloured egg
-	{chanceFrom = 7501, chanceTo = 8550, itemId = 6569, count = 10}, -- candy
-	{chanceFrom = 8551, chanceTo = 9550, itemId = 6574}, -- bar of chocolate
-	{chanceFrom = 9551, chanceTo = 9850, itemId = 4850}, -- hydra egg
-	{chanceFrom = 9851, chanceTo = 9950, itemId = 6570}, -- blue surprise bag
-	{chanceFrom = 9951, chanceTo = 9990, itemId = 6571}, -- red surprise bag
-	{chanceFrom = 9991, chanceTo = 10000, itemId = 11400} -- phoenix egg
+	{itemId = 3215, chanceFrom = 9991, chanceTo = 10000} -- phoenix egg
+	{itemId = 4839, chanceFrom = 9551, chanceTo = 9850}, -- hydra egg
+	{itemId = 6541, count = 10, chanceFrom = 0, chanceTo = 1500}, -- coloured egg
+	{itemId = 6542, count = 10, chanceFrom = 1501, chanceTo = 3000}, -- coloured egg
+	{itemId = 6543, count = 10, chanceFrom = 3001, chanceTo = 4500}, -- coloured egg
+	{itemId = 6544, count = 10, chanceFrom = 4501, chanceTo = 6000}, -- coloured egg
+	{itemId = 6545, count = 10, chanceFrom = 6001, chanceTo = 7500}, -- coloured egg
+	{itemId = 6569, count = 10, chanceFrom = 7501, chanceTo = 8550}, -- candy
+	{itemId = 6570, chanceFrom = 9851, chanceTo = 9950}, -- blue surprise bag
+	{itemId = 6571, chanceFrom = 9951, chanceTo = 9990}, -- red surprise bag
+	{itemId = 6574, chanceFrom = 8551, chanceTo = 9550}, -- bar of chocolate
 }
 local surprise = Action()
 
@@ -39,5 +39,5 @@ function surprise.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	return false
 end
 
-surprise:id(16102)
+surprise:id(14759)
 surprise:register()

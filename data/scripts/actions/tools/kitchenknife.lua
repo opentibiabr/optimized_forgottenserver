@@ -4,5 +4,5 @@ function kitchenknife.onUse(player, item, fromPosition, target, toPosition, isHo
 	return ActionsLib.useKitchenKnife(player, item, fromPosition, target, toPosition, isHotkey)
 end
 
-kitchenknife:id(2566)
+kitchenknife:id(3469)
 kitchenknife:register()

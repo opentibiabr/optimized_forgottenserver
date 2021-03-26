@@ -3,11 +3,11 @@ if(CLIENT_VERSION < 1150) then
 end
 
 local config = {
-	{chanceFrom = 0, chanceTo = 4269, itemId = 2158}, -- blue gem
-	{chanceFrom = 4270, chanceTo = 6829, itemId = 25172}, -- silver token
-	{chanceFrom = 6830, chanceTo = 8195, itemId = 2153}, -- violet gem
-	{chanceFrom = 6196, chanceTo = 9074, itemId = 30888}, -- suspicious device
-	{chanceFrom = 9075, chanceTo = 10000, itemId = 25377} -- gold token
+	{itemId = 3036, chanceFrom = 6830, chanceTo = 8195}, -- violet gem
+	{itemId = 3041, chanceFrom = 0, chanceTo = 4269}, -- blue gem
+	{itemId = 22516, chanceFrom = 4270, chanceTo = 6829}, -- silver token
+	{itemId = 22721, chanceFrom = 9075, chanceTo = 10000} -- gold token
+	{itemId = 27653, chanceFrom = 6196, chanceTo = 9074}, -- suspicious device
 }
 local surprise = Action()
 
@@ -33,5 +33,5 @@ function surprise.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	return false
 end
 
-surprise:id(32014)
+surprise:id(27654)
 surprise:register()

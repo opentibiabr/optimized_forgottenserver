@@ -1,9 +1,9 @@
-local snowheap = Action()
+local snowHeap = Action()
 
-function snowheap.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	Game.createItem(2111, 1, item:getPosition())
+function snowHeap.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	Game.createItem(2992, 1, item:getPosition())
 	return true
 end
 
-snowheap:id(486)
-snowheap:register()
+snowHeap:id(611)
+snowHeap:register()

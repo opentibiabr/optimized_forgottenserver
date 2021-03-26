@@ -3,25 +3,25 @@ if(CLIENT_VERSION < 1090) then
 end
 
 local config = {
-	{chanceFrom = 0, chanceTo = 2865, itemId = 24843, count = 5}, -- roasted meat
-	{chanceFrom = 2866, chanceTo = 3408, itemId = 24847}, -- skull fetish
-	{chanceFrom = 3409, chanceTo = 4356, itemId = 24840}, -- shamanic talisman
-	{chanceFrom = 4357, chanceTo = 5666, itemId = 24845}, -- ogre nose ring
-	{chanceFrom = 5667, chanceTo = 6305, itemId = 24850, count = 2}, -- opal
-	{chanceFrom = 6306, chanceTo = 7327, itemId = 24844}, -- ogre ear stud
-	{chanceFrom = 7328, chanceTo = 7764, itemId = 24849, count = 3}, -- onyx chip
-	{chanceFrom = 7764, chanceTo = 8339, itemId = 3967}, -- tribal mask
-	{chanceFrom = 8340, chanceTo = 8595, itemId = 3970}, -- feather headdress
-	{chanceFrom = 8596, chanceTo = 8872, itemId = 7432}, -- furry club
-	{chanceFrom = 8873, chanceTo = 8883, itemId = 24839}, -- ogre scepta
-	{chanceFrom = 8884, chanceTo = 9011, itemId = 24828}, -- ogre choppa
-	{chanceFrom = 9012, chanceTo = 9075, itemId = 24827}, -- ogre klubba
-	{chanceFrom = 9076, chanceTo = 9394, itemId = 3973}, -- tusk shield
-	{chanceFrom = 9395, chanceTo = 9703, itemId = 3983}, -- bast skirt
-	{chanceFrom = 9704, chanceTo = 9841, itemId = 24848}, -- shamanic mask
-	{chanceFrom = 9842, chanceTo = 9926, itemId = 7413}, -- titan axe
-	{chanceFrom = 9927, chanceTo = 9969, itemId = 7452}, -- spiked squelcher
-	{chanceFrom = 9970, chanceTo = 10000, itemId = 5669} -- mysterious voodoo skull
+	{itemId = 7413, chanceFrom = 9842, chanceTo = 9926}, -- titan axe
+	{itemId = 7432, chanceFrom = 8596, chanceTo = 8872}, -- furry club
+	{itemId = 7452, chanceFrom = 9927, chanceTo = 9969}, -- spiked squelcher
+	{itemId = 3403, chanceFrom = 7764, chanceTo = 8339}, -- tribal mask
+	{itemId = 3406, chanceFrom = 8340, chanceTo = 8595}, -- feather headdress
+	{itemId = 3443, chanceFrom = 9076, chanceTo = 9394}, -- tusk shield
+	{itemId = 3560, chanceFrom = 9395, chanceTo = 9703}, -- bast skirt
+	{itemId = 5668, chanceFrom = 9970, chanceTo = 10000} -- mysterious voodoo skull
+	{itemId = 22171, chanceFrom = 9012, chanceTo = 9075}, -- ogre klubba
+	{itemId = 22172, chanceFrom = 8884, chanceTo = 9011}, -- ogre choppa
+	{itemId = 22187, count = 5, chanceFrom = 0, chanceTo = 2865}, -- roasted meat
+	{itemId = 22183, chanceFrom = 8873, chanceTo = 8883}, -- ogre scepta
+	{itemId = 22184, chanceFrom = 3409, chanceTo = 4356}, -- shamanic talisman
+	{itemId = 22188, chanceFrom = 6306, chanceTo = 7327}, -- ogre ear stud
+	{itemId = 22189, chanceFrom = 4357, chanceTo = 5666}, -- ogre nose ring
+	{itemId = 22191, chanceFrom = 2866, chanceTo = 3408}, -- skull fetish
+	{itemId = 22192, chanceFrom = 9704, chanceTo = 9841}, -- shamanic mask
+	{itemId = 22193, count = 3, chanceFrom = 7328, chanceTo = 7764}, -- onyx chip
+	{itemId = 22194, count = 2, chanceFrom = 5667, chanceTo = 6305}, -- opal
 }
 local surprise = Action()
 
@@ -46,5 +46,5 @@ function surprise.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	return false
 end
 
-surprise:id(25419)
+surprise:id(22763)
 surprise:register()

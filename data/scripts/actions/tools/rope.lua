@@ -5,7 +5,7 @@ function rope.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 end
 
 if(CLIENT_VERSION >= 810) then
-	rope:id(7731)
+	rope:id(646)
 end
-rope:id(2120)
+rope:id(3003)
 rope:register()

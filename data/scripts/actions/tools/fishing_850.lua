@@ -2,11 +2,11 @@ if(CLIENT_VERSION < 850 or CLIENT_VERSION >= 940) then
 	return
 end
 
-local waterIds = {493, 4608, 4609, 4610, 4611, 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624, 4625, 7236, 10499}
-local lootTrash = {2234, 2238, 2376, 2509, 2667}
-local lootCommon = {2152, 2167, 2168, 2669, 7588, 7589}
-local lootRare = {2143, 2146, 2149, 7158, 7159}
-local lootVeryRare = {7632, 7633, 10220}
+local waterIds = {629, 630, 631, 632, 633, 634, 4597, 4598, 4599, 4600, 4601, 4602, 4609, 4610, 4611, 4612, 4613, 4614, 7236, 9582}
+local lootTrash = {3119, 3123, 3264, 3409, 3578}
+local lootCommon = {3035, 3051, 3052, 3580, 236, 237}
+local lootRare = {3026, 3029, 3032, 7158, 7159}
+local lootVeryRare = {281, 282, 9303, 12557}
 local useWorms = true
 
 local fishing = Action()
@@ -17,7 +17,7 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		return false
 	end
 
-	if targetId == 10499 then
+	if targetId == 9582 then
 		local owner = target:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER)
 		if owner ~= 0 and owner ~= player:getId() then
 			player:sendTextMessage(MESSAGE_STATUS_SMALL, "You are not the owner.")
@@ -50,7 +50,7 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
 	player:addSkillTries(SKILL_FISHING, 1)
 	if math.random(1, 100) <= math.min(math.max(10 + (player:getEffectiveSkillLevel(SKILL_FISHING) - 10) * 0.597, 10), 50) then
-		if useWorms and not player:removeItem(3976, 1) then
+		if useWorms and not player:removeItem(3492, 1) then
 			return true
 		end
 
@@ -60,21 +60,24 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
 			local rareChance = math.random(1, 100)
 			if rareChance == 1 then
+				-- rainbow trout
 				player:addItem(7158, 1)
 				return true
 			elseif rareChance <= 4 then
-				player:addItem(2669, 1)
+				-- northern pike
+				player:addItem(3580, 1)
 				return true
 			elseif rareChance <= 10 then
+				-- green perch
 				player:addItem(7159, 1)
 				return true
 			end
 		end
-		player:addItem(2267, 1)
+		player:addItem(3578, 1)
 	end
 	return true
 end
 
-fishing:id(2580)
+fishing:id(3483)
 fishing:allowFarUse(true)
 fishing:register()

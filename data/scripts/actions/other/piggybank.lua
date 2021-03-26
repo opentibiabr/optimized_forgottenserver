@@ -8,7 +8,7 @@ function piggybank.onUse(player, item, fromPosition, target, toPosition, isHotke
 	if math.random(6) == 1 then
 		item:getPosition():sendMagicEffect(CONST_ME_POFF)
 		player:addItem(ITEM_GOLD_COIN, 1)
-		item:transform(2115)
+		item:transform(2996)
 	else
 		item:getPosition():sendMagicEffect(CONST_ME_SOUND_YELLOW)
 		player:addItem(ITEM_PLATINUM_COIN, 1)
@@ -16,5 +16,5 @@ function piggybank.onUse(player, item, fromPosition, target, toPosition, isHotke
 	return true
 end
 
-piggybank:id(2114)
+piggybank:id(2995)
 piggybank:register()

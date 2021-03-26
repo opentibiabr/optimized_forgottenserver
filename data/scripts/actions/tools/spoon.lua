@@ -5,7 +5,7 @@ function spoon.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 end
 
 if(CLIENT_VERSION >= 1030) then
-	spoon:id(22523)
+	spoon:id(20189)
 end
-spoon:id(2565)
+spoon:id(3468)
 spoon:register()

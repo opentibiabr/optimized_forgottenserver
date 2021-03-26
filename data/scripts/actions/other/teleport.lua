@@ -1,18 +1,17 @@
 local teleports = {
 	--[itemid] = {upFloor, client_version}
-	[430] = {false, 0}, -- sewer grate
-	[1369] = {false, 0}, -- draw well
-	[1386] = {true, 0}, -- ladder
-	[3678] = {true, 750}, -- ladder
-	[5543] = {true, 780}, -- rope-ladder
-	[8580] = {false, 820}, -- sewer grate
-	[8599] = {true, 820}, -- ladder
-	[10035] = {true, 850}, -- ladder
-	[22845] = {true, 1030}, -- ladder rung
-	[22846] = {true, 1030}, -- ladder rung
-	[33397] = {true, 1180}, -- ladder
-	[35005] = {true, 1200}, -- ladder
-	[36097] = {true, 1220}, -- ladder
+	[435] = {false, 0}, -- sewer grate
+	[1931] = {false, 0}, -- draw well
+	[1948] = {true, 0}, -- ladder
+	[1968] = {true, 750}, -- ladder
+	[5542] = {true, 780}, -- rope-ladder
+	[7750] = {false, 820}, -- sewer grate
+	[7771] = {true, 820}, -- ladder
+	[9116] = {true, 850}, -- ladder
+	[20474] = {true, 1030}, -- ladder rung
+	[20475] = {true, 1030}, -- ladder rung
+	[28656] = {true, 1200}, -- ladder
+	[31262] = {true, 1220}, -- ladder
 }
 local teleport = Action()
 
@@ -33,9 +32,10 @@ function teleport.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	return true
 end
 
-for i, t in pairs(teleports) do
-	if(CLIENT_VERSION >= t[2]) then
-		teleport:id(i)
+-- teleportsValues[2] = second value of the table (client version)
+for teleportsIds, teleportsValues in pairs(teleports) do
+	if(CLIENT_VERSION >= teleportsValues[2]) then
+		teleport:id(teleportsIds)
 	end
 end
 teleport:register()

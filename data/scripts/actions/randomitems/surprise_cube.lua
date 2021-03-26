@@ -3,27 +3,27 @@ if(CLIENT_VERSION < 1094) then
 end
 
 local config = {
-	{chanceFrom = 0, chanceTo = 1450, itemId = 2152, count = 5}, -- platinum coin
-	{chanceFrom = 1451, chanceTo = 2850, itemId = 18421}, -- green crystal fragment
-	{chanceFrom = 2851, chanceTo = 3950, itemId = 18419}, -- cyan crystal fragment
-	{chanceFrom = 3951, chanceTo = 5050, itemId = 18420}, -- red crystal fragment
-	{chanceFrom = 5051, chanceTo = 6050, itemId = 2675, count = 20}, -- orange
-	{chanceFrom = 6051, chanceTo = 6850, itemId = 18413}, -- blue crystal shard
-	{chanceFrom = 6851, chanceTo = 7450, itemId = 18415}, -- green crystal shard
-	{chanceFrom = 7451, chanceTo = 8050, itemId = 2169}, -- time ring
-	{chanceFrom = 8051, chanceTo = 8450, itemId = 2213}, -- dwarven ring
-	{chanceFrom = 8451, chanceTo = 8750, itemId = 2167}, -- energy ring
-	{chanceFrom = 8751, chanceTo = 9050, itemId = 2165}, -- stealth ring
-	{chanceFrom = 9051, chanceTo = 9350, itemId = 7440}, -- mastermind potion
-	{chanceFrom = 9351, chanceTo = 9550, itemId = 2214}, -- ring of healing
-	{chanceFrom = 9551, chanceTo = 9750, itemId = 7439}, -- berserk potion
-	{chanceFrom = 9751, chanceTo = 9850, itemId = 18414}, -- violet crystal shard
-	{chanceFrom = 9851, chanceTo = 9950, itemId = 7443}, -- bullseye potion
-	{chanceFrom = 9951, chanceTo = 9960, itemId = 26145}, -- brown pit demon
-	{chanceFrom = 9961, chanceTo = 9970, itemId = 26146}, -- green pit demon
-	{chanceFrom = 9971, chanceTo = 9980, itemId = 26147}, -- blue pit demon
-	{chanceFrom = 9981, chanceTo = 9990, itemId = 26148}, -- black pit demon
-	{chanceFrom = 9991, chanceTo = 10000, itemId = 26149} -- red pit demon
+	{itemId = 3035, count = 5, chanceFrom = 0, chanceTo = 1450}, -- platinum coin
+	{itemId = 3049, chanceFrom = 8751, chanceTo = 9050}, -- stealth ring
+	{itemId = 3051, chanceFrom = 8451, chanceTo = 8750}, -- energy ring
+	{itemId = 3053, chanceFrom = 7451, chanceTo = 8050}, -- time ring
+	{itemId = 3097, chanceFrom = 8051, chanceTo = 8450}, -- dwarven ring
+	{itemId = 3098, chanceFrom = 9351, chanceTo = 9550}, -- ring of healing
+	{itemId = 3586, count = 20, chanceFrom = 5051, chanceTo = 6050}, -- orange
+	{itemId = 7439, chanceFrom = 9551, chanceTo = 9750}, -- berserk potion
+	{itemId = 7440, chanceFrom = 9051, chanceTo = 9350}, -- mastermind potion
+	{itemId = 7443, chanceFrom = 9851, chanceTo = 9950}, -- bullseye potion
+	{itemId = 16119, chanceFrom = 6051, chanceTo = 6850}, -- blue crystal shard
+	{itemId = 16120, chanceFrom = 9751, chanceTo = 9850}, -- violet crystal shard
+	{itemId = 16121, chanceFrom = 6851, chanceTo = 7450}, -- green crystal shard
+	{itemId = 16127, chanceFrom = 1451, chanceTo = 2850}, -- green crystal fragment
+	{itemId = 16125, chanceFrom = 2851, chanceTo = 3950}, -- cyan crystal fragment
+	{itemId = 16126, chanceFrom = 3951, chanceTo = 5050}, -- red crystal fragment
+	{itemId = 23489, chanceFrom = 9951, chanceTo = 9960}, -- brown pit demon
+	{itemId = 23490, chanceFrom = 9961, chanceTo = 9970}, -- green pit demon
+	{itemId = 23491, chanceFrom = 9971, chanceTo = 9980}, -- blue pit demon
+	{itemId = 23492, chanceFrom = 9981, chanceTo = 9990}, -- black pit demon
+	{itemId = 23493, chanceFrom = 9991, chanceTo = 10000} -- red pit demon
 }
 local surprise = Action()
 
@@ -48,5 +48,5 @@ function surprise.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	return false
 end
 
-surprise:id(26144)
+surprise:id(23488)
 surprise:register()

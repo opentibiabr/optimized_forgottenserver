@@ -2,7 +2,7 @@ if(CLIENT_VERSION >= 800) then
 	return
 end
 
-local waterIds = {493, 4608, 4609, 4610, 4611, 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624, 4625}
+local waterIds = {629, 630, 631, 632, 633, 634, 4597, 4598, 4599, 4600, 4601, 4602, 4609, 4610, 4611, 4612, 4613, 4614, 7236, 9582, 12560, 12562, 12561, 12563, 13988, 13989}
 local useWorms = true
 
 local fishing = Action()
@@ -20,15 +20,15 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
 	player:addSkillTries(SKILL_FISHING, 1)
 	if math.random(1, 100) <= math.min(math.max(10 + (player:getEffectiveSkillLevel(SKILL_FISHING) - 10) * 0.597, 10), 50) then
-		if useWorms and not player:removeItem(3976, 1) then
+		if useWorms and not player:removeItem(3492, 1) then
 			return true
 		end
 
-		player:addItem(2267, 1)
+		player:addItem(3578, 1)
 	end
 	return true
 end
 
-fishing:id(2580)
+fishing:id(3483)
 fishing:allowFarUse(true)
 fishing:register()

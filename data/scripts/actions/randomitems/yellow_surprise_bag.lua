@@ -3,8 +3,8 @@ if(CLIENT_VERSION < 1202) then
 end
 
 local config = {
-	{chanceFrom = 0, chanceTo = 5000, itemId = 6570}, -- blue surprise bag
-	{chanceFrom = 5001, chanceTo = 10000, itemId = 6571} -- red surprise bag
+	{itemId = 6570, chanceFrom = 0, chanceTo = 5000}, -- blue surprise bag
+	{itemId = 6571, chanceFrom = 5001, chanceTo = 10000} -- red surprise bag
 }
 local surprise = Action()
 
@@ -30,5 +30,5 @@ function surprise.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	return false
 end
 
-surprise:id(35143)
+surprise:id(30316)
 surprise:register()
