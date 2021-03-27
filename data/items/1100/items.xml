@@ -1574,9 +1574,10 @@
 	<item id="856" name="stone stairs">
 		<attribute key="floorchange" value="eastalt"/>
 	</item>
-	<item id="857" name="DEPRECATED"/>
-	<item id="858" name="DEPRECATED"/>
-	<item id="859" name="DEPRECATED"/>
+	<item fromid="857" toid="858" name="empty sprite"/>
+	<item id="859" name="stairs">
+		<attribute key="floorchange" value="down"/>
+	</item>
 	<item id="860" article="a" name="crimson sword">
 		<attribute key="description" value="Its blade is very notchy."/>
 		<attribute key="weight" value="3600"/>
