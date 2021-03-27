@@ -21,9 +21,9 @@ function drowning.onStepIn(creature, item, position, fromPosition)
 end
 
 if(CLIENT_VERSION >= 840) then
-	drowning:id(9671, 9672, 9673, 10019)
+	drowning:id(8755, 8756, 8757, 5404)
 end
-drowning:id(5405, 5406, 5407, 5408, 5409, 5410, 5743, 5744, 5764)
+drowning:id(5405, 5406, 5407, 5408, 5409, 5743, 5744, 5764, 9291)
 drowning:register()
 
 drowning = MoveEvent()
@@ -37,7 +37,8 @@ function drowning.onStepOut(creature, item, position, fromPosition)
 end
 
 if(CLIENT_VERSION >= 840) then
-	drowning:id(9671, 9672, 9673, 10019)
+	drowning:id(8755, 8756, 8757, 5404)
 end
-drowning:id(5405, 5406, 5407, 5408, 5409, 5410, 5743, 5744, 5764)
+
+drowning:id(5405, 5406, 5407, 5408, 5409, 5743, 5744, 5764, 9291)
 drowning:register()

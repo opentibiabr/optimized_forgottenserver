@@ -1,2474 +1,18911 @@
 local items = {
-	{itemid = 37471, type = "equip", slot = "ring", level = 200, client_version = 1230}, -- ring of souls
-	{itemid = 37471, type = "deequip", slot = "ring", level = 200, client_version = 1230}, -- ring of souls
-	{itemid = 37470, type = "equip", slot = "ring", level = 200, client_version = 1230}, -- ring of souls
-	{itemid = 37470, type = "deequip", slot = "ring", level = 200, client_version = 1230}, -- ring of souls
-	{itemid = 37465, type = "equip", slot = "head", client_version = 1230}, -- spooky hood
-	{itemid = 37465, type = "deequip", slot = "head", client_version = 1230}, -- spooky hood
-	{itemid = 37463, type = "equip", slot = "armor", level = 230, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1230}, -- ghost chestplate
-	{itemid = 37463, type = "deequip", slot = "armor", level = 230, client_version = 1230}, -- ghost chestplate
-	{itemid = 37456, type = "equip", slot = "ring", level = 200, client_version = 1230}, -- ring of souls
-	{itemid = 37456, type = "deequip", slot = "ring", level = 200, client_version = 1230}, -- ring of souls
-	{itemid = 37455, type = "equip", slot = "backpack", client_version = 1230}, -- ghost backpack
-	{itemid = 37455, type = "deequip", slot = "backpack", client_version = 1230}, -- ghost backpack
-	{itemid = 37454, type = "equip", slot = "feet", level = 140, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1230}, -- pair of nightmare boots
-	{itemid = 37454, type = "deequip", slot = "feet", level = 140, client_version = 1230}, -- pair of nightmare boots
-	{itemid = 37453, type = "equip", slot = "legs", level = 180, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1230}, -- soulful legs
-	{itemid = 37453, type = "deequip", slot = "legs", level = 180, client_version = 1230}, -- soulful legs
-	{itemid = 37452, type = "equip", slot = "legs", level = 225, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 1230}, -- fabulous legs
-	{itemid = 37452, type = "deequip", slot = "legs", level = 225, client_version = 1230}, -- fabulous legs
-	{itemid = 37451, type = "equip", slot = "hand", client_version = 1230}, -- phantasmal axe
-	{itemid = 37451, type = "deequip", slot = "hand", client_version = 1230}, -- phantasmal axe
-	{itemid = 37420, type = "equip", slot = "armor", client_version = 1230}, -- burial shroud
-	{itemid = 37420, type = "deequip", slot = "armor", client_version = 1230}, -- burial shroud
-	{itemid = 36928, type = "equip", slot = "hand", client_version = 1220}, -- meat hammer
-	{itemid = 36928, type = "deequip", slot = "hand", client_version = 1220}, -- meat hammer
-	{itemid = 36511, type = "equip", slot = "necklace", client_version = 1220}, -- note about two souls
-	{itemid = 36511, type = "deequip", slot = "necklace", client_version = 1220}, -- note about two souls
-	{itemid = 36466, type = "equip", slot = "necklace", level = 250, client_version = 1220}, -- the cobra amulet
-	{itemid = 36466, type = "deequip", slot = "necklace", level = 250, client_version = 1220}, -- the cobra amulet
-	{itemid = 36460, type = "equip", slot = "backpack", client_version = 1220}, -- winged backpack
-	{itemid = 36460, type = "deequip", slot = "backpack", client_version = 1220}, -- winged backpack
-	{itemid = 36456, type = "equip", slot = "ring", level = 220, client_version = 1220}, -- blister ring
-	{itemid = 36456, type = "deequip", slot = "ring", level = 220, client_version = 1220}, -- blister ring
-	{itemid = 36452, type = "equip", slot = "feet", level = 220, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1220}, -- winged boots
-	{itemid = 36452, type = "deequip", slot = "feet", level = 220, client_version = 1220}, -- winged boots
-	{itemid = 36451, type = "equip", slot = "ring", level = 220, client_version = 1220}, -- blister ring
-	{itemid = 36451, type = "deequip", slot = "ring", level = 220, client_version = 1220}, -- blister ring
-	{itemid = 36449, type = "equip", slot = "hand", client_version = 1220}, -- tagralt blade
-	{itemid = 36449, type = "deequip", slot = "hand", client_version = 1220}, -- tagralt blade
-	{itemid = 36418, type = "equip", slot = "armor", level = 220, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1220}, -- toga mortis
-	{itemid = 36418, type = "deequip", slot = "armor", level = 220, client_version = 1220}, -- toga mortis
-	{itemid = 36417, type = "equip", slot = "head", level = 220, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1220}, -- galea mortis
-	{itemid = 36417, type = "deequip", slot = "head", level = 220, client_version = 1220}, -- galea mortis
-	{itemid = 36416, type = "equip", slot = "hand", client_version = 1220}, -- bow of cataclysm
-	{itemid = 36416, type = "deequip", slot = "hand", client_version = 1220}, -- bow of cataclysm
-	{itemid = 36415, type = "equip", slot = "hand", client_version = 1220}, -- mortal mace
-	{itemid = 36415, type = "deequip", slot = "hand", client_version = 1220}, -- mortal mace
-	{itemid = 36414, type = "equip", slot = "armor", level = 220, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1220}, -- embrace of nature
-	{itemid = 36414, type = "deequip", slot = "armor", level = 220, client_version = 1220}, -- embrace of nature
-	{itemid = 36413, type = "equip", slot = "armor", level = 230, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 1220}, -- bear skin
-	{itemid = 36413, type = "deequip", slot = "armor", level = 230, client_version = 1220}, -- bear skin
-	{itemid = 36412, type = "equip", slot = "head", level = 230, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1220}, -- terra helmet
-	{itemid = 36412, type = "deequip", slot = "head", level = 230, client_version = 1220}, -- terra helmet
-	{itemid = 36392, type = "equip", slot = "ring", level = 220, client_version = 1220}, -- blister ring
-	{itemid = 36392, type = "deequip", slot = "ring", level = 220, client_version = 1220}, -- blister ring
-	{itemid = 36391, type = "equip", slot = "necklace", level = 220, client_version = 1220}, -- rainbow amulet
-	{itemid = 36391, type = "deequip", slot = "necklace", level = 220, client_version = 1220}, -- rainbow amulet
-	{itemid = 36273, type = "equip", slot = "head", client_version = 1220}, -- sphinx tiara
-	{itemid = 36273, type = "deequip", slot = "head", client_version = 1220}, -- sphinx tiara
-	{itemid = 36268, type = "equip", slot = "head", client_version = 1220}, -- gryphon mask
-	{itemid = 36268, type = "deequip", slot = "head", client_version = 1220}, -- gryphon mask
-	{itemid = 36266, type = "equip", slot = "ring", client_version = 1220}, -- symbol of sun and sea
-	{itemid = 36266, type = "deequip", slot = "ring", client_version = 1220}, -- symbol of sun and sea
-	{itemid = 36205, type = "equip", slot = "head", client_version = 1220}, -- silver mask
-	{itemid = 36205, type = "deequip", slot = "head", client_version = 1220}, -- silver mask
-	{itemid = 36141, type = "equip", slot = "ring", client_version = 1220}, -- ring of secret thoughts
-	{itemid = 36141, type = "deequip", slot = "ring", client_version = 1220}, -- ring of secret thoughts
-	{itemid = 36103, type = "equip", slot = "necklace", client_version = 1220}, -- jade amulet
-	{itemid = 36103, type = "deequip", slot = "necklace", client_version = 1220}, -- jade amulet
-	{itemid = 36098, type = "equip", slot = "ring", client_version = 1220}, -- ring of secret thoughts
-	{itemid = 36098, type = "deequip", slot = "ring", client_version = 1220}, -- ring of secret thoughts
-	{itemid = 35238, type = "equip", slot = "necklace", level = 220, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1220}, -- amulet of theurgy
-	{itemid = 35238, type = "deequip", slot = "necklace", level = 220, client_version = 1220}, -- amulet of theurgy
-	{itemid = 35237, type = "equip", slot = "necklace", level = 220, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1220}, -- enchanted theurgic amulet
-	{itemid = 35237, type = "deequip", slot = "necklace", level = 220, client_version = 1220}, -- enchanted theurgic amulet
-	{itemid = 35236, type = "equip", slot = "necklace", level = 220, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1220}, -- amulet of theurgy
-	{itemid = 35236, type = "deequip", slot = "necklace", level = 220, client_version = 1220}, -- amulet of theurgy
-	{itemid = 35235, type = "equip", slot = "hand", level = 220, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 1220}, -- cobra rod
-	{itemid = 35235, type = "deequip", slot = "hand", level = 220, client_version = 1220}, -- cobra rod
-	{itemid = 35234, type = "equip", slot = "hand", level = 270, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1220}, -- cobra wand
-	{itemid = 35234, type = "deequip", slot = "hand", level = 270, client_version = 1220}, -- cobra wand
-	{itemid = 35233, type = "equip", slot = "hand", client_version = 1220}, -- cobra sword
-	{itemid = 35233, type = "deequip", slot = "hand", client_version = 1220}, -- cobra sword
-	{itemid = 35232, type = "equip", slot = "head", level = 270, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1220}, -- cobra hood
-	{itemid = 35232, type = "deequip", slot = "head", level = 270, client_version = 1220}, -- cobra hood
-	{itemid = 35231, type = "equip", slot = "hand", client_version = 1220}, -- cobra axe
-	{itemid = 35231, type = "deequip", slot = "hand", client_version = 1220}, -- cobra axe
-	{itemid = 35230, type = "equip", slot = "hand", client_version = 1220}, -- cobra club
-	{itemid = 35230, type = "deequip", slot = "hand", client_version = 1220}, -- cobra club
-	{itemid = 35229, type = "equip", slot = "feet", level = 220, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1220}, -- cobra boots
-	{itemid = 35229, type = "deequip", slot = "feet", level = 220, client_version = 1220}, -- cobra boots
-	{itemid = 35228, type = "equip", slot = "hand", client_version = 1220}, -- cobra crossbow
-	{itemid = 35228, type = "deequip", slot = "hand", client_version = 1220}, -- cobra crossbow
-	{itemid = 35150, type = "equip", slot = "necklace", level = 220, client_version = 1202}, -- rainbow necklace
-	{itemid = 35150, type = "deequip", slot = "necklace", level = 220, client_version = 1202}, -- rainbow necklace
-	{itemid = 35112, type = "equip", slot = "hand", client_version = 1202}, -- ice hatchet
-	{itemid = 35112, type = "deequip", slot = "hand", client_version = 1202}, -- ice hatchet
-	{itemid = 35108, type = "equip", slot = "ring", client_version = 1202}, -- frozen claw
-	{itemid = 35108, type = "deequip", slot = "ring", client_version = 1202}, -- frozen claw
-	{itemid = 35105, type = "equip", slot = "head", client_version = 1202}, -- the crown of the percht queen
-	{itemid = 35105, type = "deequip", slot = "head", client_version = 1202}, -- the crown of the percht queen
-	{itemid = 35104, type = "equip", slot = "head", client_version = 1202}, -- the crown of the percht queen
-	{itemid = 35104, type = "deequip", slot = "head", client_version = 1202}, -- the crown of the percht queen
-	{itemid = 35056, type = "equip", slot = "backpack", client_version = 1202}, -- festive backpack
-	{itemid = 35056, type = "deequip", slot = "backpack", client_version = 1202}, -- festive backpack
-	{itemid = 35055, type = "equip", slot = "feet", client_version = 1202}, -- yetislippers
-	{itemid = 35055, type = "deequip", slot = "feet", client_version = 1202}, -- yetislippers
-	{itemid = 34983, type = "equip", slot = "necklace", level = 180, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1200}, -- pendulet
-	{itemid = 34983, type = "deequip", slot = "necklace", level = 180, client_version = 1200}, -- pendulet
-	{itemid = 34982, type = "equip", slot = "necklace", level = 180, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1200}, -- enchanted pendulet
-	{itemid = 34982, type = "deequip", slot = "necklace", level = 180, client_version = 1200}, -- enchanted pendulet
-	{itemid = 34981, type = "equip", slot = "necklace", level = 180, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1200}, -- sleep shawl
-	{itemid = 34981, type = "deequip", slot = "necklace", level = 180, client_version = 1200}, -- sleep shawl
-	{itemid = 34980, type = "equip", slot = "necklace", level = 180, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1200}, -- enchanted sleep shawl
-	{itemid = 34980, type = "deequip", slot = "necklace", level = 180, client_version = 1200}, -- enchanted sleep shawl
-	{itemid = 34819, type = "equip", slot = "shield", client_version = 1200}, -- shield of endless search
-	{itemid = 34819, type = "deequip", slot = "shield", client_version = 1200}, -- shield of endless search
-	{itemid = 34069, type = "equip", slot = "shield", level = 180, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1200}, -- spirit guide
-	{itemid = 34069, type = "deequip", slot = "shield", level = 180, client_version = 1200}, -- spirit guide
-	{itemid = 34068, type = "equip", slot = "shield", level = 180, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1200}, -- ectoplasmic shield
-	{itemid = 34068, type = "deequip", slot = "shield", level = 180, client_version = 1200}, -- ectoplasmic shield
-	{itemid = 34067, type = "equip", slot = "necklace", level = 180, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1200}, -- pendulet
-	{itemid = 34067, type = "deequip", slot = "necklace", level = 180, client_version = 1200}, -- pendulet
-	{itemid = 34066, type = "equip", slot = "necklace", level = 180, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1200}, -- sleep shawl
-	{itemid = 34066, type = "deequip", slot = "necklace", level = 180, client_version = 1200}, -- sleep shawl
-	{itemid = 34065, type = "equip", slot = "head", level = 180, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1200}, -- dark whispers
-	{itemid = 34065, type = "deequip", slot = "head", level = 180, client_version = 1200}, -- dark whispers
-	{itemid = 34064, type = "equip", slot = "shield", level = 180, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1200}, -- brain in a jar
-	{itemid = 34064, type = "deequip", slot = "shield", level = 180, client_version = 1200}, -- brain in a jar
-	{itemid = 34063, type = "equip", slot = "hand", level = 180, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1200}, -- energized limb
-	{itemid = 34063, type = "deequip", slot = "hand", level = 180, client_version = 1200}, -- energized limb
-	{itemid = 34062, type = "equip", slot = "feet", level = 180, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1200}, -- pair of dreamwalkers
-	{itemid = 34062, type = "deequip", slot = "feet", level = 180, client_version = 1200}, -- pair of dreamwalkers
-	{itemid = 34061, type = "equip", slot = "armor", level = 180, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1200}, -- dream shroud
-	{itemid = 34061, type = "deequip", slot = "armor", level = 180, client_version = 1200}, -- dream shroud
-	{itemid = 34060, type = "equip", slot = "hand", client_version = 1200}, -- winterblade
-	{itemid = 34060, type = "deequip", slot = "hand", client_version = 1200}, -- winterblade
-	{itemid = 34059, type = "equip", slot = "hand", client_version = 1200}, -- summerblade
-	{itemid = 34059, type = "deequip", slot = "hand", client_version = 1200}, -- summerblade
-	{itemid = 34058, type = "equip", slot = "shield", level = 180, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1200}, -- shoulder plate
-	{itemid = 34058, type = "deequip", slot = "shield", level = 180, client_version = 1200}, -- shoulder plate
-	{itemid = 34057, type = "equip", slot = "hand", client_version = 1200}, -- resizer
-	{itemid = 34057, type = "deequip", slot = "hand", client_version = 1200}, -- resizer
-	{itemid = 34056, type = "equip", slot = "armor", level = 180, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1200}, -- living armor
-	{itemid = 34056, type = "deequip", slot = "armor", level = 180, client_version = 1200}, -- living armor
-	{itemid = 34055, type = "equip", slot = "hand", client_version = 1200}, -- living vine bow
-	{itemid = 34055, type = "deequip", slot = "hand", client_version = 1200}, -- living vine bow
-	{itemid = 33925, type = "equip", slot = "hand", client_version = 1200}, -- golden axe
-	{itemid = 33925, type = "deequip", slot = "hand", client_version = 1200}, -- golden axe
-	{itemid = 33552, type = "equip", slot = "shield", client_version = 1180}, -- mathmaster shield (souvenir)
-	{itemid = 33552, type = "deequip", slot = "shield", client_version = 1180}, -- mathmaster shield (souvenir)
-	{itemid = 33318, type = "equip", slot = "backpack", client_version = 1180}, -- book backpack
-	{itemid = 33318, type = "deequip", slot = "backpack", client_version = 1180}, -- book backpack
-	{itemid = 33267, type = "equip", slot = "hand", client_version = 1180}, -- wand of destruction test
-	{itemid = 33267, type = "deequip", slot = "hand", client_version = 1180}, -- wand of destruction test
-	{itemid = 33266, type = "equip", slot = "hand", client_version = 1180}, -- umbral master bow test
-	{itemid = 33266, type = "deequip", slot = "hand", client_version = 1180}, -- umbral master bow test
-	{itemid = 33263, type = "equip", slot = "armor", client_version = 1180}, -- ornate testtplate
-	{itemid = 33263, type = "deequip", slot = "armor", client_version = 1180}, -- ornate testtplate
-	{itemid = 33254, type = "equip", slot = "hand", client_version = 1180}, -- sorcerer test weapon
-	{itemid = 33254, type = "deequip", slot = "hand", client_version = 1180}, -- sorcerer test weapon
-	{itemid = 33253, type = "equip", slot = "hand", client_version = 1180}, -- bow of destruction test
-	{itemid = 33253, type = "deequip", slot = "hand", client_version = 1180}, -- bow of destruction test
-	{itemid = 33252, type = "equip", slot = "hand", client_version = 1180}, -- test weapon for knights
-	{itemid = 33252, type = "deequip", slot = "hand", client_version = 1180}, -- test weapon for knights
-	{itemid = 32529, type = "equip", slot = "hand", client_version = 1180}, -- sulphurous demonbone
-	{itemid = 32529, type = "deequip", slot = "hand", client_version = 1180}, -- sulphurous demonbone
-	{itemid = 32528, type = "equip", slot = "hand", client_version = 1180}, -- unliving demonbone
-	{itemid = 32528, type = "deequip", slot = "hand", client_version = 1180}, -- unliving demonbone
-	{itemid = 32527, type = "equip", slot = "hand", client_version = 1180}, -- energized demonbone
-	{itemid = 32527, type = "deequip", slot = "hand", client_version = 1180}, -- energized demonbone
-	{itemid = 32526, type = "equip", slot = "hand", client_version = 1180}, -- rotten demonbone
-	{itemid = 32526, type = "deequip", slot = "hand", client_version = 1180}, -- rotten demonbone
-	{itemid = 32523, type = "equip", slot = "hand", level = 230, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1180}, -- deepling fork
-	{itemid = 32523, type = "deequip", slot = "hand", level = 230, client_version = 1180}, -- deepling fork
-	{itemid = 32522, type = "equip", slot = "hand", level = 180, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1180}, -- deepling ceremonial dagger
-	{itemid = 32522, type = "deequip", slot = "hand", level = 180, client_version = 1180}, -- deepling ceremonial dagger
-	{itemid = 32425, type = "equip", slot = "hand", client_version = 1180}, -- falcon mace
-	{itemid = 32425, type = "deequip", slot = "hand", client_version = 1180}, -- falcon mace
-	{itemid = 32424, type = "equip", slot = "hand", client_version = 1180}, -- falcon battleaxe
-	{itemid = 32424, type = "deequip", slot = "hand", client_version = 1180}, -- falcon battleaxe
-	{itemid = 32423, type = "equip", slot = "hand", client_version = 1180}, -- falcon longsword
-	{itemid = 32423, type = "deequip", slot = "hand", client_version = 1180}, -- falcon longsword
-	{itemid = 32422, type = "equip", slot = "shield", level = 300, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 1180}, -- falcon escutcheon
-	{itemid = 32422, type = "deequip", slot = "shield", level = 300, client_version = 1180}, -- falcon escutcheon
-	{itemid = 32421, type = "equip", slot = "shield", level = 300, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 1180}, -- falcon shield
-	{itemid = 32421, type = "deequip", slot = "shield", level = 300, client_version = 1180}, -- falcon shield
-	{itemid = 32420, type = "equip", slot = "legs", level = 300, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 1180}, -- falcon greaves
-	{itemid = 32420, type = "deequip", slot = "legs", level = 300, client_version = 1180}, -- falcon greaves
-	{itemid = 32419, type = "equip", slot = "armor", level = 300, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1180}, -- falcon plate
-	{itemid = 32419, type = "deequip", slot = "armor", level = 300, client_version = 1180}, -- falcon plate
-	{itemid = 32418, type = "equip", slot = "hand", client_version = 1180}, -- falcon bow
-	{itemid = 32418, type = "deequip", slot = "hand", client_version = 1180}, -- falcon bow
-	{itemid = 32417, type = "equip", slot = "hand", level = 300, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1180}, -- falcon wand
-	{itemid = 32417, type = "deequip", slot = "hand", level = 300, client_version = 1180}, -- falcon wand
-	{itemid = 32416, type = "equip", slot = "hand", level = 300, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 1180}, -- falcon rod
-	{itemid = 32416, type = "deequip", slot = "hand", level = 300, client_version = 1180}, -- falcon rod
-	{itemid = 32415, type = "equip", slot = "head", level = 300, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 1180}, -- falcon coif
-	{itemid = 32415, type = "deequip", slot = "head", level = 300, client_version = 1180}, -- falcon coif
-	{itemid = 32414, type = "equip", slot = "head", level = 300, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1180}, -- falcon circlet
-	{itemid = 32414, type = "deequip", slot = "head", level = 300, client_version = 1180}, -- falcon circlet
-	{itemid = 32078, type = "equip", slot = "shield", client_version = 1180}, -- silver chimes
-	{itemid = 32078, type = "deequip", slot = "shield", client_version = 1180}, -- silver chimes
-	{itemid = 30888, type = "equip", slot = "necklace", client_version = 1150}, -- suspicious device
-	{itemid = 30888, type = "deequip", slot = "necklace", client_version = 1150}, -- suspicious device
-	{itemid = 30886, type = "equip", slot = "hand", client_version = 1150}, -- gnome sword
-	{itemid = 30886, type = "deequip", slot = "hand", client_version = 1150}, -- gnome sword
-	{itemid = 30885, type = "equip", slot = "shield", level = 200, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Royal Paladin"}, {"Elite Knight"}}, client_version = 1150}, -- gnome shield
-	{itemid = 30885, type = "deequip", slot = "shield", level = 200, client_version = 1150}, -- gnome shield
-	{itemid = 30884, type = "equip", slot = "legs", level = 200, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1150}, -- gnome legs
-	{itemid = 30884, type = "deequip", slot = "legs", level = 200, client_version = 1150}, -- gnome legs
-	{itemid = 30883, type = "equip", slot = "armor", level = 200, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1150}, -- gnome armor
-	{itemid = 30883, type = "deequip", slot = "armor", level = 200, client_version = 1150}, -- gnome armor
-	{itemid = 30882, type = "equip", slot = "head", level = 200, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1150}, -- gnome helmet
-	{itemid = 30882, type = "deequip", slot = "head", level = 200, client_version = 1150}, -- gnome helmet
-	{itemid = 30800, type = "equip", slot = "necklace", level = 100, client_version = 1150}, -- foxtail amulet
-	{itemid = 30800, type = "deequip", slot = "necklace", level = 100, client_version = 1150}, -- foxtail amulet
-	{itemid = 30760, type = "equip", slot = "hand", client_version = 1150}, -- mallet handle
-	{itemid = 30760, type = "deequip", slot = "hand", client_version = 1150}, -- mallet handle
-	{itemid = 30758, type = "equip", slot = "hand", client_version = 1150}, -- strange mallet
-	{itemid = 30758, type = "deequip", slot = "hand", client_version = 1150}, -- strange mallet
-	{itemid = 30757, type = "equip", slot = "head", client_version = 1150}, -- blue spectacles
-	{itemid = 30757, type = "deequip", slot = "head", client_version = 1150}, -- blue spectacles
-	{itemid = 30693, type = "equip", slot = "hand", level = 200, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 1150}, -- rod of destruction
-	{itemid = 30693, type = "deequip", slot = "hand", level = 200, client_version = 1150}, -- rod of destruction
-	{itemid = 30692, type = "equip", slot = "hand", level = 200, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1150}, -- wand of destruction
-	{itemid = 30692, type = "deequip", slot = "hand", level = 200, client_version = 1150}, -- wand of destruction
-	{itemid = 30691, type = "equip", slot = "hand", client_version = 1150}, -- crossbow of destruction
-	{itemid = 30691, type = "deequip", slot = "hand", client_version = 1150}, -- crossbow of destruction
-	{itemid = 30690, type = "equip", slot = "hand", client_version = 1150}, -- bow of destruction
-	{itemid = 30690, type = "deequip", slot = "hand", client_version = 1150}, -- bow of destruction
-	{itemid = 30689, type = "equip", slot = "hand", client_version = 1150}, -- hammer of destruction
-	{itemid = 30689, type = "deequip", slot = "hand", client_version = 1150}, -- hammer of destruction
-	{itemid = 30688, type = "equip", slot = "hand", client_version = 1150}, -- mace of destruction
-	{itemid = 30688, type = "deequip", slot = "hand", client_version = 1150}, -- mace of destruction
-	{itemid = 30687, type = "equip", slot = "hand", client_version = 1150}, -- chopper of destruction
-	{itemid = 30687, type = "deequip", slot = "hand", client_version = 1150}, -- chopper of destruction
-	{itemid = 30686, type = "equip", slot = "hand", client_version = 1150}, -- axe of destruction
-	{itemid = 30686, type = "deequip", slot = "hand", client_version = 1150}, -- axe of destruction
-	{itemid = 30685, type = "equip", slot = "hand", client_version = 1150}, -- slayer of destruction
-	{itemid = 30685, type = "deequip", slot = "hand", client_version = 1150}, -- slayer of destruction
-	{itemid = 30684, type = "equip", slot = "hand", client_version = 1150}, -- blade of destruction
-	{itemid = 30684, type = "deequip", slot = "hand", client_version = 1150}, -- blade of destruction
-	{itemid = 30183, type = "equip", slot = "shield", client_version = 1148}, -- Journal Shield
-	{itemid = 30183, type = "deequip", slot = "shield", client_version = 1148}, -- Journal Shield
-	{itemid = 29426, type = "equip", slot = "head", client_version = 1140}, -- reflecting crown
-	{itemid = 29426, type = "deequip", slot = "head", client_version = 1140}, -- reflecting crown
-	{itemid = 29425, type = "equip", slot = "head", client_version = 1140}, -- incandescent crown
-	{itemid = 29425, type = "deequip", slot = "head", client_version = 1140}, -- incandescent crown
-	{itemid = 29424, type = "equip", slot = "head", client_version = 1140}, -- iron crown
-	{itemid = 29424, type = "deequip", slot = "head", client_version = 1140}, -- iron crown
-	{itemid = 29423, type = "equip", slot = "head", client_version = 1140}, -- leaf crown
-	{itemid = 29423, type = "deequip", slot = "head", client_version = 1140}, -- leaf crown
-	{itemid = 29297, type = "equip", slot = "hand", client_version = 1140}, -- ornate carving hammer
-	{itemid = 29297, type = "deequip", slot = "hand", client_version = 1140}, -- ornate carving hammer
-	{itemid = 29296, type = "equip", slot = "hand", client_version = 1140}, -- valuable carving hammer
-	{itemid = 29296, type = "deequip", slot = "hand", client_version = 1140}, -- valuable carving hammer
-	{itemid = 29295, type = "equip", slot = "hand", client_version = 1140}, -- plain carving hammer
-	{itemid = 29295, type = "deequip", slot = "hand", client_version = 1140}, -- plain carving hammer
-	{itemid = 29294, type = "equip", slot = "hand", client_version = 1140}, -- ornate carving mace
-	{itemid = 29294, type = "deequip", slot = "hand", client_version = 1140}, -- ornate carving mace
-	{itemid = 29293, type = "equip", slot = "hand", client_version = 1140}, -- valuable carving mace
-	{itemid = 29293, type = "deequip", slot = "hand", client_version = 1140}, -- valuable carving mace
-	{itemid = 29292, type = "equip", slot = "hand", client_version = 1140}, -- plain carving mace
-	{itemid = 29292, type = "deequip", slot = "hand", client_version = 1140}, -- plain carving mace
-	{itemid = 29291, type = "equip", slot = "hand", client_version = 1140}, -- ornate carving chopper
-	{itemid = 29291, type = "deequip", slot = "hand", client_version = 1140}, -- ornate carving chopper
-	{itemid = 29290, type = "equip", slot = "hand", client_version = 1140}, -- valuable carving chopper
-	{itemid = 29290, type = "deequip", slot = "hand", client_version = 1140}, -- valuable carving chopper
-	{itemid = 29289, type = "equip", slot = "hand", client_version = 1140}, -- plain carving chopper
-	{itemid = 29289, type = "deequip", slot = "hand", client_version = 1140}, -- plain carving chopper
-	{itemid = 29288, type = "equip", slot = "hand", client_version = 1140}, -- ornate carving axe
-	{itemid = 29288, type = "deequip", slot = "hand", client_version = 1140}, -- ornate carving axe
-	{itemid = 29287, type = "equip", slot = "hand", client_version = 1140}, -- valuable carving axe
-	{itemid = 29287, type = "deequip", slot = "hand", client_version = 1140}, -- valuable carving axe
-	{itemid = 29286, type = "equip", slot = "hand", client_version = 1140}, -- plain carving axe
-	{itemid = 29286, type = "deequip", slot = "hand", client_version = 1140}, -- plain carving axe
-	{itemid = 29285, type = "equip", slot = "hand", client_version = 1140}, -- ornate carving slayer
-	{itemid = 29285, type = "deequip", slot = "hand", client_version = 1140}, -- ornate carving slayer
-	{itemid = 29284, type = "equip", slot = "hand", client_version = 1140}, -- valuable carving slayer
-	{itemid = 29284, type = "deequip", slot = "hand", client_version = 1140}, -- valuable carving slayer
-	{itemid = 29283, type = "equip", slot = "hand", client_version = 1140}, -- plain carving slayer
-	{itemid = 29283, type = "deequip", slot = "hand", client_version = 1140}, -- plain carving slayer
-	{itemid = 29282, type = "equip", slot = "hand", client_version = 1140}, -- ornate carving blade
-	{itemid = 29282, type = "deequip", slot = "hand", client_version = 1140}, -- ornate carving blade
-	{itemid = 29281, type = "equip", slot = "hand", client_version = 1140}, -- valuable carving blade
-	{itemid = 29281, type = "deequip", slot = "hand", client_version = 1140}, -- valuable carving blade
-	{itemid = 29280, type = "equip", slot = "hand", client_version = 1140}, -- plain carving blade
-	{itemid = 29280, type = "deequip", slot = "hand", client_version = 1140}, -- plain carving blade
-	{itemid = 29267, type = "equip", slot = "hand", client_version = 1140}, -- ornate remedy hammer
-	{itemid = 29267, type = "deequip", slot = "hand", client_version = 1140}, -- ornate remedy hammer
-	{itemid = 29266, type = "equip", slot = "hand", client_version = 1140}, -- valuable remedy hammer
-	{itemid = 29266, type = "deequip", slot = "hand", client_version = 1140}, -- valuable remedy hammer
-	{itemid = 29265, type = "equip", slot = "hand", client_version = 1140}, -- plain remedy hammer
-	{itemid = 29265, type = "deequip", slot = "hand", client_version = 1140}, -- plain remedy hammer
-	{itemid = 29264, type = "equip", slot = "hand", client_version = 1140}, -- ornate remedy mace
-	{itemid = 29264, type = "deequip", slot = "hand", client_version = 1140}, -- ornate remedy mace
-	{itemid = 29263, type = "equip", slot = "hand", client_version = 1140}, -- valuable remedy mace
-	{itemid = 29263, type = "deequip", slot = "hand", client_version = 1140}, -- valuable remedy mace
-	{itemid = 29262, type = "equip", slot = "hand", client_version = 1140}, -- plain remedy mace
-	{itemid = 29262, type = "deequip", slot = "hand", client_version = 1140}, -- plain remedy mace
-	{itemid = 29261, type = "equip", slot = "hand", client_version = 1140}, -- ornate remedy chopper
-	{itemid = 29261, type = "deequip", slot = "hand", client_version = 1140}, -- ornate remedy chopper
-	{itemid = 29260, type = "equip", slot = "hand", client_version = 1140}, -- valuable remedy chopper
-	{itemid = 29260, type = "deequip", slot = "hand", client_version = 1140}, -- valuable remedy chopper
-	{itemid = 29259, type = "equip", slot = "hand", client_version = 1140}, -- plain remedy chopper
-	{itemid = 29259, type = "deequip", slot = "hand", client_version = 1140}, -- plain remedy chopper
-	{itemid = 29258, type = "equip", slot = "hand", client_version = 1140}, -- ornate remedy axe
-	{itemid = 29258, type = "deequip", slot = "hand", client_version = 1140}, -- ornate remedy axe
-	{itemid = 29257, type = "equip", slot = "hand", client_version = 1140}, -- valuable remedy axe
-	{itemid = 29257, type = "deequip", slot = "hand", client_version = 1140}, -- valuable remedy axe
-	{itemid = 29256, type = "equip", slot = "hand", client_version = 1140}, -- plain remedy axe
-	{itemid = 29256, type = "deequip", slot = "hand", client_version = 1140}, -- plain remedy axe
-	{itemid = 29255, type = "equip", slot = "hand", client_version = 1140}, -- ornate remedy slayer
-	{itemid = 29255, type = "deequip", slot = "hand", client_version = 1140}, -- ornate remedy slayer
-	{itemid = 29254, type = "equip", slot = "hand", client_version = 1140}, -- valuable remedy slayer
-	{itemid = 29254, type = "deequip", slot = "hand", client_version = 1140}, -- valuable remedy slayer
-	{itemid = 29253, type = "equip", slot = "hand", client_version = 1140}, -- plain remedy slayer
-	{itemid = 29253, type = "deequip", slot = "hand", client_version = 1140}, -- plain remedy slayer
-	{itemid = 29252, type = "equip", slot = "hand", client_version = 1140}, -- ornate remedy blade
-	{itemid = 29252, type = "deequip", slot = "hand", client_version = 1140}, -- ornate remedy blade
-	{itemid = 29251, type = "equip", slot = "hand", client_version = 1140}, -- valuable remedy blade
-	{itemid = 29251, type = "deequip", slot = "hand", client_version = 1140}, -- valuable remedy blade
-	{itemid = 29250, type = "equip", slot = "hand", client_version = 1140}, -- plain remedy blade
-	{itemid = 29250, type = "deequip", slot = "hand", client_version = 1140}, -- plain remedy blade
-	{itemid = 29236, type = "equip", slot = "hand", client_version = 1140}, -- ornate mayhem hammer
-	{itemid = 29236, type = "deequip", slot = "hand", client_version = 1140}, -- ornate mayhem hammer
-	{itemid = 29235, type = "equip", slot = "hand", client_version = 1140}, -- valuable mayhem hammer
-	{itemid = 29235, type = "deequip", slot = "hand", client_version = 1140}, -- valuable mayhem hammer
-	{itemid = 29234, type = "equip", slot = "hand", client_version = 1140}, -- plain mayhem hammer
-	{itemid = 29234, type = "deequip", slot = "hand", client_version = 1140}, -- plain mayhem hammer
-	{itemid = 29233, type = "equip", slot = "hand", client_version = 1140}, -- ornate mayhem mace
-	{itemid = 29233, type = "deequip", slot = "hand", client_version = 1140}, -- ornate mayhem mace
-	{itemid = 29232, type = "equip", slot = "hand", client_version = 1140}, -- valuable mayhem mace
-	{itemid = 29232, type = "deequip", slot = "hand", client_version = 1140}, -- valuable mayhem mace
-	{itemid = 29231, type = "equip", slot = "hand", client_version = 1140}, -- plain mayhem mace
-	{itemid = 29231, type = "deequip", slot = "hand", client_version = 1140}, -- plain mayhem mace
-	{itemid = 29230, type = "equip", slot = "hand", client_version = 1140}, -- ornate mayhem chopper
-	{itemid = 29230, type = "deequip", slot = "hand", client_version = 1140}, -- ornate mayhem chopper
-	{itemid = 29229, type = "equip", slot = "hand", client_version = 1140}, -- valuable mayhem chopper
-	{itemid = 29229, type = "deequip", slot = "hand", client_version = 1140}, -- valuable mayhem chopper
-	{itemid = 29228, type = "equip", slot = "hand", client_version = 1140}, -- plain mayhem chopper
-	{itemid = 29228, type = "deequip", slot = "hand", client_version = 1140}, -- plain mayhem chopper
-	{itemid = 29227, type = "equip", slot = "hand", client_version = 1140}, -- ornate mayhem axe
-	{itemid = 29227, type = "deequip", slot = "hand", client_version = 1140}, -- ornate mayhem axe
-	{itemid = 29226, type = "equip", slot = "hand", client_version = 1140}, -- valuable mayhem axe
-	{itemid = 29226, type = "deequip", slot = "hand", client_version = 1140}, -- valuable mayhem axe
-	{itemid = 29225, type = "equip", slot = "hand", client_version = 1140}, -- plain mayhem axe
-	{itemid = 29225, type = "deequip", slot = "hand", client_version = 1140}, -- plain mayhem axe
-	{itemid = 29224, type = "equip", slot = "hand", client_version = 1140}, -- ornate mayhem slayer
-	{itemid = 29224, type = "deequip", slot = "hand", client_version = 1140}, -- ornate mayhem slayer
-	{itemid = 29223, type = "equip", slot = "hand", client_version = 1140}, -- valuable mayhem slayer
-	{itemid = 29223, type = "deequip", slot = "hand", client_version = 1140}, -- valuable mayhem slayer
-	{itemid = 29222, type = "equip", slot = "hand", client_version = 1140}, -- plain mayhem slayer
-	{itemid = 29222, type = "deequip", slot = "hand", client_version = 1140}, -- plain mayhem slayer
-	{itemid = 29221, type = "equip", slot = "hand", client_version = 1140}, -- ornate mayhem blade
-	{itemid = 29221, type = "deequip", slot = "hand", client_version = 1140}, -- ornate mayhem blade
-	{itemid = 29220, type = "equip", slot = "hand", client_version = 1140}, -- valuable mayhem blade
-	{itemid = 29220, type = "deequip", slot = "hand", client_version = 1140}, -- valuable mayhem blade
-	{itemid = 29219, type = "equip", slot = "hand", client_version = 1140}, -- plain mayhem blade
-	{itemid = 29219, type = "deequip", slot = "hand", client_version = 1140}, -- plain mayhem blade
-	{itemid = 29218, type = "equip", slot = "shield", client_version = 1140}, -- mathmaster shield (souvenir)
-	{itemid = 29218, type = "deequip", slot = "shield", client_version = 1140}, -- mathmaster shield (souvenir)
-	{itemid = 29210, type = "equip", slot = "hand", client_version = 1140}, -- energy war hammer replica
-	{itemid = 29210, type = "deequip", slot = "hand", client_version = 1140}, -- energy war hammer replica
-	{itemid = 29209, type = "equip", slot = "hand", client_version = 1140}, -- energy orcish maul replica
-	{itemid = 29209, type = "deequip", slot = "hand", client_version = 1140}, -- energy orcish maul replica
-	{itemid = 29208, type = "equip", slot = "hand", client_version = 1140}, -- energy basher replica
-	{itemid = 29208, type = "deequip", slot = "hand", client_version = 1140}, -- energy basher replica
-	{itemid = 29207, type = "equip", slot = "hand", client_version = 1140}, -- energy crystal mace replica
-	{itemid = 29207, type = "deequip", slot = "hand", client_version = 1140}, -- energy crystal mace replica
-	{itemid = 29206, type = "equip", slot = "hand", client_version = 1140}, -- energy clerical mace replica
-	{itemid = 29206, type = "deequip", slot = "hand", client_version = 1140}, -- energy clerical mace replica
-	{itemid = 29205, type = "equip", slot = "hand", client_version = 1140}, -- energy war axe replica
-	{itemid = 29205, type = "deequip", slot = "hand", client_version = 1140}, -- energy war axe replica
-	{itemid = 29204, type = "equip", slot = "hand", client_version = 1140}, -- energy headchopper replica
-	{itemid = 29204, type = "deequip", slot = "hand", client_version = 1140}, -- energy headchopper replica
-	{itemid = 29203, type = "equip", slot = "hand", client_version = 1140}, -- energy heroic axe replica
-	{itemid = 29203, type = "deequip", slot = "hand", client_version = 1140}, -- energy heroic axe replica
-	{itemid = 29202, type = "equip", slot = "hand", client_version = 1140}, -- energy knight axe replica
-	{itemid = 29202, type = "deequip", slot = "hand", client_version = 1140}, -- energy knight axe replica
-	{itemid = 29201, type = "equip", slot = "hand", client_version = 1140}, -- energy barbarian axe replica
-	{itemid = 29201, type = "deequip", slot = "hand", client_version = 1140}, -- energy barbarian axe replica
-	{itemid = 29200, type = "equip", slot = "hand", client_version = 1140}, -- energy dragon slayer replica
-	{itemid = 29200, type = "deequip", slot = "hand", client_version = 1140}, -- energy dragon slayer replica
-	{itemid = 29199, type = "equip", slot = "hand", client_version = 1140}, -- energy blacksteel replica
-	{itemid = 29199, type = "deequip", slot = "hand", client_version = 1140}, -- energy blacksteel replica
-	{itemid = 29198, type = "equip", slot = "hand", client_version = 1140}, -- energy mystic blade replica
-	{itemid = 29198, type = "deequip", slot = "hand", client_version = 1140}, -- energy mystic blade replica
-	{itemid = 29197, type = "equip", slot = "hand", client_version = 1140}, -- energy relic sword replica
-	{itemid = 29197, type = "deequip", slot = "hand", client_version = 1140}, -- energy relic sword replica
-	{itemid = 29196, type = "equip", slot = "hand", client_version = 1140}, -- energy spike sword replica
-	{itemid = 29196, type = "deequip", slot = "hand", client_version = 1140}, -- energy spike sword replica
-	{itemid = 29195, type = "equip", slot = "hand", client_version = 1140}, -- earth war hammer replica
-	{itemid = 29195, type = "deequip", slot = "hand", client_version = 1140}, -- earth war hammer replica
-	{itemid = 29194, type = "equip", slot = "hand", client_version = 1140}, -- earth orcish maul replica
-	{itemid = 29194, type = "deequip", slot = "hand", client_version = 1140}, -- earth orcish maul replica
-	{itemid = 29193, type = "equip", slot = "hand", client_version = 1140}, -- earth basher replica
-	{itemid = 29193, type = "deequip", slot = "hand", client_version = 1140}, -- earth basher replica
-	{itemid = 29192, type = "equip", slot = "hand", client_version = 1140}, -- earth crystal mace replica
-	{itemid = 29192, type = "deequip", slot = "hand", client_version = 1140}, -- earth crystal mace replica
-	{itemid = 29191, type = "equip", slot = "hand", client_version = 1140}, -- earth clerical mace replica
-	{itemid = 29191, type = "deequip", slot = "hand", client_version = 1140}, -- earth clerical mace replica
-	{itemid = 29190, type = "equip", slot = "hand", client_version = 1140}, -- earth war axe replica
-	{itemid = 29190, type = "deequip", slot = "hand", client_version = 1140}, -- earth war axe replica
-	{itemid = 29189, type = "equip", slot = "hand", client_version = 1140}, -- earth headchopper replica
-	{itemid = 29189, type = "deequip", slot = "hand", client_version = 1140}, -- earth headchopper replica
-	{itemid = 29188, type = "equip", slot = "hand", client_version = 1140}, -- earth heroic axe replica
-	{itemid = 29188, type = "deequip", slot = "hand", client_version = 1140}, -- earth heroic axe replica
-	{itemid = 29187, type = "equip", slot = "hand", client_version = 1140}, -- earth knight axe replica
-	{itemid = 29187, type = "deequip", slot = "hand", client_version = 1140}, -- earth knight axe replica
-	{itemid = 29186, type = "equip", slot = "hand", client_version = 1140}, -- earth barbarian axe replica
-	{itemid = 29186, type = "deequip", slot = "hand", client_version = 1140}, -- earth barbarian axe replica
-	{itemid = 29185, type = "equip", slot = "hand", client_version = 1140}, -- earth dragon slayer replica
-	{itemid = 29185, type = "deequip", slot = "hand", client_version = 1140}, -- earth dragon slayer replica
-	{itemid = 29184, type = "equip", slot = "hand", client_version = 1140}, -- earth blacksteel replica
-	{itemid = 29184, type = "deequip", slot = "hand", client_version = 1140}, -- earth blacksteel replica
-	{itemid = 29183, type = "equip", slot = "hand", client_version = 1140}, -- earth mystic blade replica
-	{itemid = 29183, type = "deequip", slot = "hand", client_version = 1140}, -- earth mystic blade replica
-	{itemid = 29182, type = "equip", slot = "hand", client_version = 1140}, -- earth relic sword replica
-	{itemid = 29182, type = "deequip", slot = "hand", client_version = 1140}, -- earth relic sword replica
-	{itemid = 29181, type = "equip", slot = "hand", client_version = 1140}, -- earth spike sword replica
-	{itemid = 29181, type = "deequip", slot = "hand", client_version = 1140}, -- earth spike sword replica
-	{itemid = 29180, type = "equip", slot = "hand", client_version = 1140}, -- icy war hammer replica
-	{itemid = 29180, type = "deequip", slot = "hand", client_version = 1140}, -- icy war hammer replica
-	{itemid = 29179, type = "equip", slot = "hand", client_version = 1140}, -- icy orcish maul replica
-	{itemid = 29179, type = "deequip", slot = "hand", client_version = 1140}, -- icy orcish maul replica
-	{itemid = 29178, type = "equip", slot = "hand", client_version = 1140}, -- icy basher replica
-	{itemid = 29178, type = "deequip", slot = "hand", client_version = 1140}, -- icy basher replica
-	{itemid = 29177, type = "equip", slot = "hand", client_version = 1140}, -- icy crystal mace replica
-	{itemid = 29177, type = "deequip", slot = "hand", client_version = 1140}, -- icy crystal mace replica
-	{itemid = 29176, type = "equip", slot = "hand", client_version = 1140}, -- icy clerical mace replica
-	{itemid = 29176, type = "deequip", slot = "hand", client_version = 1140}, -- icy clerical mace replica
-	{itemid = 29175, type = "equip", slot = "hand", client_version = 1140}, -- icy war axe replica
-	{itemid = 29175, type = "deequip", slot = "hand", client_version = 1140}, -- icy war axe replica
-	{itemid = 29174, type = "equip", slot = "hand", client_version = 1140}, -- icy headchopper replica
-	{itemid = 29174, type = "deequip", slot = "hand", client_version = 1140}, -- icy headchopper replica
-	{itemid = 29173, type = "equip", slot = "hand", client_version = 1140}, -- icy heroic axe replica
-	{itemid = 29173, type = "deequip", slot = "hand", client_version = 1140}, -- icy heroic axe replica
-	{itemid = 29172, type = "equip", slot = "hand", client_version = 1140}, -- icy knight axe replica
-	{itemid = 29172, type = "deequip", slot = "hand", client_version = 1140}, -- icy knight axe replica
-	{itemid = 29171, type = "equip", slot = "hand", client_version = 1140}, -- icy barbarian axe replica
-	{itemid = 29171, type = "deequip", slot = "hand", client_version = 1140}, -- icy barbarian axe replica
-	{itemid = 29170, type = "equip", slot = "hand", client_version = 1140}, -- icy dragon slayer replica
-	{itemid = 29170, type = "deequip", slot = "hand", client_version = 1140}, -- icy dragon slayer replica
-	{itemid = 29169, type = "equip", slot = "hand", client_version = 1140}, -- icy blacksteel replica
-	{itemid = 29169, type = "deequip", slot = "hand", client_version = 1140}, -- icy blacksteel replica
-	{itemid = 29168, type = "equip", slot = "hand", client_version = 1140}, -- icy mystic blade replica
-	{itemid = 29168, type = "deequip", slot = "hand", client_version = 1140}, -- icy mystic blade replica
-	{itemid = 29167, type = "equip", slot = "hand", client_version = 1140}, -- icy relic sword replica
-	{itemid = 29167, type = "deequip", slot = "hand", client_version = 1140}, -- icy relic sword replica
-	{itemid = 29166, type = "equip", slot = "hand", client_version = 1140}, -- icy spike sword replica
-	{itemid = 29166, type = "deequip", slot = "hand", client_version = 1140}, -- icy spike sword replica
-	{itemid = 29165, type = "equip", slot = "hand", client_version = 1140}, -- fiery war hammer replica
-	{itemid = 29165, type = "deequip", slot = "hand", client_version = 1140}, -- fiery war hammer replica
-	{itemid = 29164, type = "equip", slot = "hand", client_version = 1140}, -- fiery orcish maul replica
-	{itemid = 29164, type = "deequip", slot = "hand", client_version = 1140}, -- fiery orcish maul replica
-	{itemid = 29163, type = "equip", slot = "hand", client_version = 1140}, -- fiery basher replica
-	{itemid = 29163, type = "deequip", slot = "hand", client_version = 1140}, -- fiery basher replica
-	{itemid = 29162, type = "equip", slot = "hand", client_version = 1140}, -- fiery crystal mace replica
-	{itemid = 29162, type = "deequip", slot = "hand", client_version = 1140}, -- fiery crystal mace replica
-	{itemid = 29161, type = "equip", slot = "hand", client_version = 1140}, -- fiery clerical mace replica
-	{itemid = 29161, type = "deequip", slot = "hand", client_version = 1140}, -- fiery clerical mace replica
-	{itemid = 29160, type = "equip", slot = "hand", client_version = 1140}, -- fiery war axe replica
-	{itemid = 29160, type = "deequip", slot = "hand", client_version = 1140}, -- fiery war axe replica
-	{itemid = 29159, type = "equip", slot = "hand", client_version = 1140}, -- fiery headchopper replica
-	{itemid = 29159, type = "deequip", slot = "hand", client_version = 1140}, -- fiery headchopper replica
-	{itemid = 29158, type = "equip", slot = "hand", client_version = 1140}, -- fiery heroic axe replica
-	{itemid = 29158, type = "deequip", slot = "hand", client_version = 1140}, -- fiery heroic axe replica
-	{itemid = 29157, type = "equip", slot = "hand", client_version = 1140}, -- fiery knight axe replica
-	{itemid = 29157, type = "deequip", slot = "hand", client_version = 1140}, -- fiery knight axe replica
-	{itemid = 29156, type = "equip", slot = "hand", client_version = 1140}, -- fiery barbarian axe replica
-	{itemid = 29156, type = "deequip", slot = "hand", client_version = 1140}, -- fiery barbarian axe replica
-	{itemid = 29155, type = "equip", slot = "hand", client_version = 1140}, -- fiery dragon slayer replica
-	{itemid = 29155, type = "deequip", slot = "hand", client_version = 1140}, -- fiery dragon slayer replica
-	{itemid = 29154, type = "equip", slot = "hand", client_version = 1140}, -- fiery blacksteel replica
-	{itemid = 29154, type = "deequip", slot = "hand", client_version = 1140}, -- fiery blacksteel replica
-	{itemid = 29153, type = "equip", slot = "hand", client_version = 1140}, -- fiery mystic blade replica
-	{itemid = 29153, type = "deequip", slot = "hand", client_version = 1140}, -- fiery mystic blade replica
-	{itemid = 29152, type = "equip", slot = "hand", client_version = 1140}, -- fiery relic sword replica
-	{itemid = 29152, type = "deequip", slot = "hand", client_version = 1140}, -- fiery relic sword replica
-	{itemid = 29151, type = "equip", slot = "hand", client_version = 1140}, -- fiery spike sword replica
-	{itemid = 29151, type = "deequip", slot = "hand", client_version = 1140}, -- fiery spike sword replica
-	{itemid = 29080, type = "equip", slot = "backpack", client_version = 1140}, -- blossom bag
-	{itemid = 29080, type = "deequip", slot = "backpack", client_version = 1140}, -- blossom bag
-	{itemid = 29079, type = "equip", slot = "armor", level = 60, client_version = 1140}, -- swan feather cloak
-	{itemid = 29079, type = "deequip", slot = "armor", level = 60, client_version = 1140}, -- swan feather cloak
-	{itemid = 29060, type = "equip", slot = "hand", level = 41, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1140}, -- wand of darkness
-	{itemid = 29060, type = "deequip", slot = "hand", level = 41, client_version = 1140}, -- wand of darkness
-	{itemid = 29059, type = "equip", slot = "hand", client_version = 1140}, -- royal star
-	{itemid = 29059, type = "deequip", slot = "hand", client_version = 1140}, -- royal star
-	{itemid = 29058, type = "equip", slot = "ammo", client_version = 1140}, -- spectral bolt
-	{itemid = 29058, type = "deequip", slot = "ammo", client_version = 1140}, -- spectral bolt
-	{itemid = 29036, type = "equip", slot = "hand", client_version = 1140}, -- leaf star
-	{itemid = 29036, type = "deequip", slot = "hand", client_version = 1140}, -- leaf star
-	{itemid = 29005, type = "equip", slot = "hand", level = 80, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1140}, -- dream blossom staff
-	{itemid = 29005, type = "deequip", slot = "hand", level = 80, client_version = 1140}, -- dream blossom staff
-	{itemid = 29004, type = "equip", slot = "shield", level = 80, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1140}, -- wooden spellbook
-	{itemid = 29004, type = "deequip", slot = "shield", level = 80, client_version = 1140}, -- wooden spellbook
-	{itemid = 29003, type = "equip", slot = "ring", level = 50, client_version = 1140}, -- butterfly ring
-	{itemid = 29003, type = "deequip", slot = "ring", level = 50, client_version = 1140}, -- butterfly ring
-	{itemid = 28658, type = "equip", slot = "necklace", client_version = 1140}, -- glowing rubbish amulet
-	{itemid = 28658, type = "deequip", slot = "necklace", client_version = 1140}, -- glowing rubbish amulet
-	{itemid = 28657, type = "equip", slot = "necklace", client_version = 1140}, -- rubbish amulet
-	{itemid = 28657, type = "deequip", slot = "necklace", client_version = 1140}, -- rubbish amulet
-	{itemid = 27756, type = "equip", slot = "head", client_version = 1102}, -- porcelain mask
-	{itemid = 27756, type = "deequip", slot = "head", client_version = 1102}, -- porcelain mask
-	{itemid = 27077, type = "equip", slot = "feet", client_version = 1102}, -- filthy bunnyslippers
-	{itemid = 27077, type = "deequip", slot = "feet", client_version = 1102}, -- filthy bunnyslippers
-	{itemid = 27073, type = "equip", slot = "head", client_version = 1102}, -- rusty winged helmet
-	{itemid = 27073, type = "deequip", slot = "head", client_version = 1102}, -- rusty winged helmet
-	{itemid = 27072, type = "equip", slot = "legs", client_version = 1102}, -- tatty Dragon scale legs
-	{itemid = 27072, type = "deequip", slot = "legs", client_version = 1102}, -- tatty Dragon scale legs
-	{itemid = 27070, type = "equip", slot = "legs", client_version = 1102}, -- chocolatey dragon scale legs
-	{itemid = 27070, type = "deequip", slot = "legs", client_version = 1102}, -- chocolatey dragon scale legs
-	{itemid = 27065, type = "equip", slot = "head", client_version = 1102}, -- Ferumbras' Candy Hat
-	{itemid = 27065, type = "deequip", slot = "head", client_version = 1102}, -- Ferumbras' Candy Hat
-	{itemid = 27063, type = "equip", slot = "backpack", client_version = 1102}, -- birthday backpack
-	{itemid = 27063, type = "deequip", slot = "backpack", client_version = 1102}, -- birthday backpack
-	{itemid = 27061, type = "equip", slot = "backpack", client_version = 1102}, -- pillow backpack
-	{itemid = 27061, type = "deequip", slot = "backpack", client_version = 1102}, -- pillow backpack
-	{itemid = 26200, type = "equip", slot = "necklace", level = 150, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1094}, -- collar of red plasma
-	{itemid = 26200, type = "deequip", slot = "necklace", level = 150, client_version = 1094}, -- collar of red plasma
-	{itemid = 26199, type = "equip", slot = "necklace", level = 150, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1094}, -- collar of green plasma
-	{itemid = 26199, type = "deequip", slot = "necklace", level = 150, client_version = 1094}, -- collar of green plasma
-	{itemid = 26198, type = "equip", slot = "necklace", level = 150, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1094}, -- collar of blue plasma
-	{itemid = 26198, type = "deequip", slot = "necklace", level = 150, client_version = 1094}, -- collar of blue plasma
-	{itemid = 26190, type = "equip", slot = "ring", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1094}, -- ring of red plasma
-	{itemid = 26190, type = "deequip", slot = "ring", level = 100, client_version = 1094}, -- ring of red plasma
-	{itemid = 26189, type = "equip", slot = "ring", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1094}, -- ring of red plasma
-	{itemid = 26189, type = "deequip", slot = "ring", level = 100, client_version = 1094}, -- ring of red plasma
-	{itemid = 26188, type = "equip", slot = "ring", level = 100, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1094}, -- ring of green plasma
-	{itemid = 26188, type = "deequip", slot = "ring", level = 100, client_version = 1094}, -- ring of green plasma
-	{itemid = 26187, type = "equip", slot = "ring", level = 100, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1094}, -- ring of green plasma
-	{itemid = 26187, type = "deequip", slot = "ring", level = 100, client_version = 1094}, -- ring of green plasma
-	{itemid = 26186, type = "equip", slot = "ring", level = 100, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1094}, -- ring of blue plasma
-	{itemid = 26186, type = "deequip", slot = "ring", level = 100, client_version = 1094}, -- ring of blue plasma
-	{itemid = 26185, type = "equip", slot = "ring", level = 100, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1094}, -- ring of blue plasma
-	{itemid = 26185, type = "deequip", slot = "ring", level = 100, client_version = 1094}, -- ring of blue plasma
-	{itemid = 26184, type = "equip", slot = "necklace", level = 150, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1094}, -- collar of red plasma
-	{itemid = 26184, type = "deequip", slot = "necklace", level = 150, client_version = 1094}, -- collar of red plasma
-	{itemid = 26183, type = "equip", slot = "necklace", level = 150, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1094}, -- collar of green plasma
-	{itemid = 26183, type = "deequip", slot = "necklace", level = 150, client_version = 1094}, -- collar of green plasma
-	{itemid = 26182, type = "equip", slot = "necklace", level = 150, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1094}, -- collar of blue plasma
-	{itemid = 26182, type = "deequip", slot = "necklace", level = 150, client_version = 1094}, -- collar of blue plasma
-	{itemid = 26181, type = "equip", slot = "backpack", client_version = 1094}, -- energetic backpack
-	{itemid = 26181, type = "deequip", slot = "backpack", client_version = 1094}, -- energetic backpack
-	{itemid = 26133, type = "equip", slot = "feet", level = 150, client_version = 1094}, -- void boots
-	{itemid = 26133, type = "deequip", slot = "feet", level = 150, client_version = 1094}, -- void boots
-	{itemid = 26132, type = "equip", slot = "feet", level = 150, client_version = 1094}, -- void boots
-	{itemid = 26132, type = "deequip", slot = "feet", level = 150, client_version = 1094}, -- void boots
-	{itemid = 26131, type = "equip", slot = "head", level = 100, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1094}, -- tiara of power
-	{itemid = 26131, type = "deequip", slot = "head", level = 100, client_version = 1094}, -- tiara of power
-	{itemid = 26130, type = "equip", slot = "head", level = 100, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1094}, -- tiara of power
-	{itemid = 26130, type = "deequip", slot = "head", level = 100, client_version = 1094}, -- tiara of power
-	{itemid = 25995, type = "equip", slot = "hand", level = 100, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 1094}, -- rod of carving
-	{itemid = 25995, type = "deequip", slot = "hand", level = 100, client_version = 1094}, -- rod of carving
-	{itemid = 25991, type = "equip", slot = "hand", level = 100, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1094}, -- wand of carving
-	{itemid = 25991, type = "deequip", slot = "hand", level = 100, client_version = 1094}, -- wand of carving
-	{itemid = 25987, type = "equip", slot = "hand", client_version = 1094}, -- crossbow of carving
-	{itemid = 25987, type = "deequip", slot = "hand", client_version = 1094}, -- crossbow of carving
-	{itemid = 25983, type = "equip", slot = "hand", client_version = 1094}, -- bow of carving
-	{itemid = 25983, type = "deequip", slot = "hand", client_version = 1094}, -- bow of carving
-	{itemid = 25979, type = "equip", slot = "hand", client_version = 1094}, -- hammer of carving
-	{itemid = 25979, type = "deequip", slot = "hand", client_version = 1094}, -- hammer of carving
-	{itemid = 25975, type = "equip", slot = "hand", client_version = 1094}, -- mace of carving
-	{itemid = 25975, type = "deequip", slot = "hand", client_version = 1094}, -- mace of carving
-	{itemid = 25971, type = "equip", slot = "hand", client_version = 1094}, -- chopper of carving
-	{itemid = 25971, type = "deequip", slot = "hand", client_version = 1094}, -- chopper of carving
-	{itemid = 25967, type = "equip", slot = "hand", client_version = 1094}, -- axe of carving
-	{itemid = 25967, type = "deequip", slot = "hand", client_version = 1094}, -- axe of carving
-	{itemid = 25963, type = "equip", slot = "hand", client_version = 1094}, -- slayer of carving
-	{itemid = 25963, type = "deequip", slot = "hand", client_version = 1094}, -- slayer of carving
-	{itemid = 25959, type = "equip", slot = "hand", client_version = 1094}, -- blade of carving
-	{itemid = 25959, type = "deequip", slot = "hand", client_version = 1094}, -- blade of carving
-	{itemid = 25955, type = "equip", slot = "hand", level = 100, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 1094}, -- rod of remedy
-	{itemid = 25955, type = "deequip", slot = "hand", level = 100, client_version = 1094}, -- rod of remedy
-	{itemid = 25951, type = "equip", slot = "hand", level = 100, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1094}, -- wand of remedy
-	{itemid = 25951, type = "deequip", slot = "hand", level = 100, client_version = 1094}, -- wand of remedy
-	{itemid = 25947, type = "equip", slot = "hand", client_version = 1094}, -- crossbow of remedy
-	{itemid = 25947, type = "deequip", slot = "hand", client_version = 1094}, -- crossbow of remedy
-	{itemid = 25943, type = "equip", slot = "hand", client_version = 1094}, -- bow of remedy
-	{itemid = 25943, type = "deequip", slot = "hand", client_version = 1094}, -- bow of remedy
-	{itemid = 25935, type = "equip", slot = "hand", client_version = 1094}, -- mace of remedy
-	{itemid = 25935, type = "deequip", slot = "hand", client_version = 1094}, -- mace of remedy
-	{itemid = 25931, type = "equip", slot = "hand", client_version = 1094}, -- chopper of remedy
-	{itemid = 25931, type = "deequip", slot = "hand", client_version = 1094}, -- chopper of remedy
-	{itemid = 25927, type = "equip", slot = "hand", client_version = 1094}, -- axe of remedy
-	{itemid = 25927, type = "deequip", slot = "hand", client_version = 1094}, -- axe of remedy
-	{itemid = 25923, type = "equip", slot = "hand", client_version = 1094}, -- slayer of remedy
-	{itemid = 25923, type = "deequip", slot = "hand", client_version = 1094}, -- slayer of remedy
-	{itemid = 25919, type = "equip", slot = "hand", client_version = 1094}, -- blade of remedy
-	{itemid = 25919, type = "deequip", slot = "hand", client_version = 1094}, -- blade of remedy
-	{itemid = 25888, type = "equip", slot = "hand", level = 100, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 1094}, -- rod of mayhem
-	{itemid = 25888, type = "deequip", slot = "hand", level = 100, client_version = 1094}, -- rod of mayhem
-	{itemid = 25887, type = "equip", slot = "hand", level = 100, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1094}, -- wand of mayhem
-	{itemid = 25887, type = "deequip", slot = "hand", level = 100, client_version = 1094}, -- wand of mayhem
-	{itemid = 25886, type = "equip", slot = "hand", client_version = 1094}, -- crossbow of mayhem
-	{itemid = 25886, type = "deequip", slot = "hand", client_version = 1094}, -- crossbow of mayhem
-	{itemid = 25885, type = "equip", slot = "hand", client_version = 1094}, -- bow of mayhem
-	{itemid = 25885, type = "deequip", slot = "hand", client_version = 1094}, -- bow of mayhem
-	{itemid = 25884, type = "equip", slot = "hand", client_version = 1094}, -- hammer of mayhem
-	{itemid = 25884, type = "deequip", slot = "hand", client_version = 1094}, -- hammer of mayhem
-	{itemid = 25883, type = "equip", slot = "hand", client_version = 1094}, -- mace of mayhem
-	{itemid = 25883, type = "deequip", slot = "hand", client_version = 1094}, -- mace of mayhem
-	{itemid = 25882, type = "equip", slot = "hand", client_version = 1094}, -- chopper of mayhem
-	{itemid = 25882, type = "deequip", slot = "hand", client_version = 1094}, -- chopper of mayhem
-	{itemid = 25881, type = "equip", slot = "hand", client_version = 1094}, -- axe of mayhem
-	{itemid = 25881, type = "deequip", slot = "hand", client_version = 1094}, -- axe of mayhem
-	{itemid = 25880, type = "equip", slot = "hand", client_version = 1094}, -- slayer of mayhem
-	{itemid = 25880, type = "deequip", slot = "hand", client_version = 1094}, -- slayer of mayhem
-	{itemid = 25879, type = "equip", slot = "hand", client_version = 1094}, -- blade of mayhem
-	{itemid = 25879, type = "deequip", slot = "hand", client_version = 1094}, -- blade of mayhem
-	{itemid = 25546, type = "equip", slot = "shield", client_version = 1090}, -- shield of destiny
-	{itemid = 25546, type = "deequip", slot = "shield", client_version = 1090}, -- shield of destiny
-	{itemid = 25545, type = "equip", slot = "shield", client_version = 1090}, -- shield of destiny
-	{itemid = 25545, type = "deequip", slot = "shield", client_version = 1090}, -- shield of destiny
-	{itemid = 25523, type = "equip", slot = "hand", client_version = 1090}, -- rift crossbow
-	{itemid = 25523, type = "deequip", slot = "hand", client_version = 1090}, -- rift crossbow
-	{itemid = 25522, type = "equip", slot = "hand", client_version = 1090}, -- rift bow
-	{itemid = 25522, type = "deequip", slot = "hand", client_version = 1090}, -- rift bow
-	{itemid = 25430, type = "equip", slot = "feet", level = 100, client_version = 1090}, -- boots of homecoming
-	{itemid = 25430, type = "deequip", slot = "feet", level = 100, client_version = 1090}, -- boots of homecoming
-	{itemid = 25429, type = "equip", slot = "feet", level = 100, client_version = 1090}, -- boots of homecoming
-	{itemid = 25429, type = "deequip", slot = "feet", level = 100, client_version = 1090}, -- boots of homecoming
-	{itemid = 25424, type = "equip", slot = "necklace", level = 100, client_version = 1090}, -- ferumbras' amulet
-	{itemid = 25424, type = "deequip", slot = "necklace", level = 100, client_version = 1090}, -- ferumbras' amulet
-	{itemid = 25423, type = "equip", slot = "necklace", level = 100, client_version = 1090}, -- ferumbras' amulet
-	{itemid = 25423, type = "deequip", slot = "necklace", level = 100, client_version = 1090}, -- ferumbras' amulet
-	{itemid = 25422, type = "equip", slot = "hand", level = 100, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1090}, -- ferumbras' staff (enchanted)
-	{itemid = 25422, type = "deequip", slot = "hand", level = 100, client_version = 1090}, -- ferumbras' staff (enchanted)
-	{itemid = 25421, type = "equip", slot = "hand", level = 65, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1090}, -- ferumbras' staff (failed)
-	{itemid = 25421, type = "deequip", slot = "hand", level = 65, client_version = 1090}, -- ferumbras' staff (failed)
-	{itemid = 25420, type = "equip", slot = "hand", client_version = 1090}, -- Ferumbras' staff
-	{itemid = 25420, type = "deequip", slot = "hand", client_version = 1090}, -- Ferumbras' staff
-	{itemid = 25418, type = "equip", slot = "hand", client_version = 1090}, -- maimer
-	{itemid = 25418, type = "deequip", slot = "hand", client_version = 1090}, -- maimer
-	{itemid = 25416, type = "equip", slot = "hand", client_version = 1090}, -- Impaler of the igniter
-	{itemid = 25416, type = "deequip", slot = "hand", client_version = 1090}, -- Impaler of the igniter
-	{itemid = 25415, type = "equip", slot = "hand", client_version = 1090}, -- plague bite
-	{itemid = 25415, type = "deequip", slot = "hand", client_version = 1090}, -- plague bite
-	{itemid = 25414, type = "equip", slot = "shield", level = 200, client_version = 1090}, -- death gaze
-	{itemid = 25414, type = "deequip", slot = "shield", level = 200, client_version = 1090}, -- death gaze
-	{itemid = 25413, type = "equip", slot = "head", level = 150, client_version = 1090}, -- shroud of despair
-	{itemid = 25413, type = "deequip", slot = "head", level = 150, client_version = 1090}, -- shroud of despair
-	{itemid = 25412, type = "equip", slot = "feet", client_version = 1090}, -- treader of torment
-	{itemid = 25412, type = "deequip", slot = "feet", client_version = 1090}, -- treader of torment
-	{itemid = 25411, type = "equip", slot = "shield", level = 150, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1090}, -- book of lies
-	{itemid = 25411, type = "deequip", slot = "shield", level = 150, client_version = 1090}, -- book of lies
-	{itemid = 25410, type = "equip", slot = "head", client_version = 1090}, -- visage of the end days
-	{itemid = 25410, type = "deequip", slot = "head", client_version = 1090}, -- visage of the end days
-	{itemid = 25402, type = "equip", slot = "necklace", client_version = 1090}, -- ancient amulet
-	{itemid = 25402, type = "deequip", slot = "necklace", client_version = 1090}, -- ancient amulet
-	{itemid = 25383, type = "equip", slot = "hand", client_version = 1090}, -- rift lance
-	{itemid = 25383, type = "deequip", slot = "hand", client_version = 1090}, -- rift lance
-	{itemid = 25382, type = "equip", slot = "shield", client_version = 1090}, -- rift shield
-	{itemid = 25382, type = "deequip", slot = "shield", client_version = 1090}, -- rift shield
-	{itemid = 25307, type = "equip", slot = "shield", client_version = 1090}, -- rattling gourd
-	{itemid = 25307, type = "deequip", slot = "shield", client_version = 1090}, -- rattling gourd
-	{itemid = 25306, type = "equip", slot = "shield", client_version = 1090}, -- gourd
-	{itemid = 25306, type = "deequip", slot = "shield", client_version = 1090}, -- gourd
-	{itemid = 25193, type = "equip", slot = "armor", level = 200, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1090}, -- frostmind raiment
-	{itemid = 25193, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- frostmind raiment
-	{itemid = 25192, type = "equip", slot = "armor", level = 200, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1090}, -- thundermind raiment
-	{itemid = 25192, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- thundermind raiment
-	{itemid = 25191, type = "equip", slot = "armor", level = 200, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1090}, -- earthmind raiment
-	{itemid = 25191, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- earthmind raiment
-	{itemid = 25190, type = "equip", slot = "armor", level = 200, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1090}, -- firemind raiment
-	{itemid = 25190, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- firemind raiment
-	{itemid = 25189, type = "equip", slot = "armor", level = 200, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1090}, -- frostsoul tabard
-	{itemid = 25189, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- frostsoul tabard
-	{itemid = 25188, type = "equip", slot = "armor", level = 200, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1090}, -- thundersoul tabard
-	{itemid = 25188, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- thundersoul tabard
-	{itemid = 25187, type = "equip", slot = "armor", level = 200, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1090}, -- earthsoul tabard
-	{itemid = 25187, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- earthsoul tabard
-	{itemid = 25186, type = "equip", slot = "armor", level = 200, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1090}, -- firesoul tabard
-	{itemid = 25186, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- firesoul tabard
-	{itemid = 25185, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1090}, -- frostheart platemail
-	{itemid = 25185, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- frostheart platemail
-	{itemid = 25184, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1090}, -- frostheart hauberk
-	{itemid = 25184, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- frostheart hauberk
-	{itemid = 25183, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1090}, -- frostheart cuirass
-	{itemid = 25183, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- frostheart cuirass
-	{itemid = 25182, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1090}, -- thunderheart platemail
-	{itemid = 25182, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- thunderheart platemail
-	{itemid = 25181, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1090}, -- thunderheart hauberk
-	{itemid = 25181, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- thunderheart hauberk
-	{itemid = 25180, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1090}, -- thunderheart cuirass
-	{itemid = 25180, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- thunderheart cuirass
-	{itemid = 25179, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1090}, -- earthheart platemail
-	{itemid = 25179, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- earthheart platemail
-	{itemid = 25178, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1090}, -- earthheart hauberk
-	{itemid = 25178, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- earthheart hauberk
-	{itemid = 25177, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1090}, -- earthheart cuirass
-	{itemid = 25177, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- earthheart cuirass
-	{itemid = 25176, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1090}, -- fireheart platemail
-	{itemid = 25176, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- fireheart platemail
-	{itemid = 25175, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1090}, -- fireheart hauberk
-	{itemid = 25175, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- fireheart hauberk
-	{itemid = 25174, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1090}, -- fireheart cuirass
-	{itemid = 25174, type = "deequip", slot = "armor", level = 200, client_version = 1090}, -- fireheart cuirass
-	{itemid = 24851, type = "equip", slot = "necklace", level = 60, client_version = 1090}, -- onyx pendant
-	{itemid = 24851, type = "deequip", slot = "necklace", level = 60, client_version = 1090}, -- onyx pendant
-	{itemid = 24848, type = "equip", slot = "head", client_version = 1090}, -- shamanic mask
-	{itemid = 24848, type = "deequip", slot = "head", client_version = 1090}, -- shamanic mask
-	{itemid = 24846, type = "equip", slot = "shield", client_version = 1090}, -- painted gourd rattle
-	{itemid = 24846, type = "deequip", slot = "shield", client_version = 1090}, -- painted gourd rattle
-	{itemid = 24839, type = "equip", slot = "hand", level = 37, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 1090}, -- ogre sceptra
-	{itemid = 24839, type = "deequip", slot = "hand", level = 37, client_version = 1090}, -- ogre sceptra
-	{itemid = 24828, type = "equip", slot = "hand", client_version = 1090}, -- ogre choppa
-	{itemid = 24828, type = "deequip", slot = "hand", client_version = 1090}, -- ogre choppa
-	{itemid = 24827, type = "equip", slot = "hand", client_version = 1090}, -- ogre klubba
-	{itemid = 24827, type = "deequip", slot = "hand", client_version = 1090}, -- ogre klubba
-	{itemid = 24826, type = "equip", slot = "ring", client_version = 1090}, -- house silversun's signet ring
-	{itemid = 24826, type = "deequip", slot = "ring", client_version = 1090}, -- house silversun's signet ring
-	{itemid = 24810, type = "equip", slot = "head", client_version = 1082}, -- dark wizard's crown
-	{itemid = 24810, type = "deequip", slot = "head", client_version = 1082}, -- dark wizard's crown
-	{itemid = 24809, type = "equip", slot = "head", client_version = 1082}, -- dark wizard's crown
-	{itemid = 24809, type = "deequip", slot = "head", client_version = 1082}, -- dark wizard's crown
-	{itemid = 24790, type = "equip", slot = "necklace", client_version = 1080}, -- enchanted werewolf amulet
-	{itemid = 24790, type = "deequip", slot = "necklace", client_version = 1080}, -- enchanted werewolf amulet
-	{itemid = 24786, type = "equip", slot = "head", level = 100, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 1080}, -- enchanted werewolf helmet
-	{itemid = 24786, type = "deequip", slot = "head", level = 100, client_version = 1080}, -- enchanted werewolf helmet
-	{itemid = 24785, type = "equip", slot = "head", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 1080}, -- enchanted werewolf helmet
-	{itemid = 24785, type = "deequip", slot = "head", level = 100, client_version = 1080}, -- enchanted werewolf helmet
-	{itemid = 24784, type = "equip", slot = "head", level = 100, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 1080}, -- enchanted werewolf helmet
-	{itemid = 24784, type = "deequip", slot = "head", level = 100, client_version = 1080}, -- enchanted werewolf helmet
-	{itemid = 24783, type = "equip", slot = "head", level = 100, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1080}, -- enchanted werewolf helmet
-	{itemid = 24783, type = "deequip", slot = "head", level = 100, client_version = 1080}, -- enchanted werewolf helmet
-	{itemid = 24743, type = "equip", slot = "legs", client_version = 1080}, -- wereboar loincloth
-	{itemid = 24743, type = "deequip", slot = "legs", client_version = 1080}, -- wereboar loincloth
-	{itemid = 24742, type = "equip", slot = "feet", level = 60, client_version = 1080}, -- badger boots
-	{itemid = 24742, type = "deequip", slot = "feet", level = 60, client_version = 1080}, -- badger boots
-	{itemid = 24741, type = "equip", slot = "armor", level = 50, client_version = 1080}, -- fur armor
-	{itemid = 24741, type = "deequip", slot = "armor", level = 50, client_version = 1080}, -- fur armor
-	{itemid = 24740, type = "equip", slot = "backpack", client_version = 1080}, -- wolf backpack
-	{itemid = 24740, type = "deequip", slot = "backpack", client_version = 1080}, -- wolf backpack
-	{itemid = 24718, type = "equip", slot = "head", level = 100, client_version = 1080}, -- werewolf helmet
-	{itemid = 24718, type = "deequip", slot = "head", level = 100, client_version = 1080}, -- werewolf helmet
-	{itemid = 24716, type = "equip", slot = "necklace", client_version = 1080}, -- werewolf amulet
-	{itemid = 24716, type = "deequip", slot = "necklace", client_version = 1080}, -- werewolf amulet
-	{itemid = 24637, type = "equip", slot = "feet", level = 80, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1080}, -- oriental shoes
-	{itemid = 24637, type = "deequip", slot = "feet", level = 80, client_version = 1080}, -- oriental shoes
-	{itemid = 24324, type = "equip", slot = "ring", client_version = 1073}, -- sweetheart ring
-	{itemid = 24324, type = "deequip", slot = "ring", client_version = 1073}, -- sweetheart ring
-	{itemid = 24261, type = "equip", slot = "head", level = 80, client_version = 1070}, -- crest of the deep seas
-	{itemid = 24261, type = "deequip", slot = "head", level = 80, client_version = 1070}, -- crest of the deep seas
-	{itemid = 24114, type = "equip", slot = "ring", client_version = 1070}, -- brandon's wedding ring
-	{itemid = 24114, type = "deequip", slot = "ring", client_version = 1070}, -- brandon's wedding ring
-	{itemid = 23839, type = "equip", slot = "ammo", client_version = 1055}, -- simple arrow
-	{itemid = 23839, type = "deequip", slot = "ammo", client_version = 1055}, -- simple arrow
-	{itemid = 23816, type = "equip", slot = "backpack", client_version = 1050}, -- war backpack
-	{itemid = 23816, type = "deequip", slot = "backpack", client_version = 1050}, -- war backpack
-	{itemid = 23810, type = "equip", slot = "necklace", client_version = 1070}, -- the Lion's Heart
-	{itemid = 23810, type = "deequip", slot = "necklace", client_version = 1070}, -- the Lion's Heart
-	{itemid = 23782, type = "equip", slot = "backpack", client_version = 1055}, -- shopping bag
-	{itemid = 23782, type = "deequip", slot = "backpack", client_version = 1055}, -- shopping bag
-	{itemid = 23772, type = "equip", slot = "shield", client_version = 1055}, -- broken wooden shield
-	{itemid = 23772, type = "deequip", slot = "shield", client_version = 1055}, -- broken wooden shield
-	{itemid = 23771, type = "equip", slot = "shield", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1055}, -- spellbook of the novice
-	{itemid = 23771, type = "deequip", slot = "shield", client_version = 1055}, -- spellbook of the novice
-	{itemid = 23721, type = "equip", slot = "hand", level = 1, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 1055}, -- the chiller
-	{itemid = 23721, type = "deequip", slot = "hand", level = 1, client_version = 1055}, -- the chiller
-	{itemid = 23719, type = "equip", slot = "hand", level = 1, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 1055}, -- the scorcher
-	{itemid = 23719, type = "deequip", slot = "hand", level = 1, client_version = 1055}, -- the scorcher
-	{itemid = 23666, type = "equip", slot = "backpack", client_version = 1050}, -- glooth backpack
-	{itemid = 23666, type = "deequip", slot = "backpack", client_version = 1050}, -- glooth backpack
-	{itemid = 23663, type = "equip", slot = "backpack", client_version = 1050}, -- feedbag
-	{itemid = 23663, type = "deequip", slot = "backpack", client_version = 1050}, -- feedbag
-	{itemid = 23590, type = "equip", slot = "hand", client_version = 1050}, -- one hit wonder
-	{itemid = 23590, type = "deequip", slot = "hand", client_version = 1050}, -- one hit wonder
-	{itemid = 23554, type = "equip", slot = "necklace", level = 75, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1050}, -- glooth amulet
-	{itemid = 23554, type = "deequip", slot = "necklace", level = 75, client_version = 1050}, -- glooth amulet
-	{itemid = 23551, type = "equip", slot = "hand", client_version = 1050}, -- glooth axe
-	{itemid = 23551, type = "deequip", slot = "hand", client_version = 1050}, -- glooth axe
-	{itemid = 23550, type = "equip", slot = "hand", client_version = 1050}, -- glooth blade
-	{itemid = 23550, type = "deequip", slot = "hand", client_version = 1050}, -- glooth blade
-	{itemid = 23549, type = "equip", slot = "hand", client_version = 1050}, -- glooth club
-	{itemid = 23549, type = "deequip", slot = "hand", client_version = 1050}, -- glooth club
-	{itemid = 23548, type = "equip", slot = "hand", client_version = 1050}, -- cowtana
-	{itemid = 23548, type = "deequip", slot = "hand", client_version = 1050}, -- cowtana
-	{itemid = 23547, type = "equip", slot = "hand", client_version = 1050}, -- execowtioner axe
-	{itemid = 23547, type = "deequip", slot = "hand", client_version = 1050}, -- execowtioner axe
-	{itemid = 23546, type = "equip", slot = "shield", client_version = 1050}, -- mino shield
-	{itemid = 23546, type = "deequip", slot = "shield", client_version = 1050}, -- mino shield
-	{itemid = 23545, type = "equip", slot = "hand", client_version = 1050}, -- mino lance
-	{itemid = 23545, type = "deequip", slot = "hand", client_version = 1050}, -- mino lance
-	{itemid = 23544, type = "equip", slot = "hand", client_version = 1050}, -- moohtant cudgel
-	{itemid = 23544, type = "deequip", slot = "hand", client_version = 1050}, -- moohtant cudgel
-	{itemid = 23543, type = "equip", slot = "hand", client_version = 1050}, -- glooth whip
-	{itemid = 23543, type = "deequip", slot = "hand", client_version = 1050}, -- glooth whip
-	{itemid = 23542, type = "equip", slot = "hand", client_version = 1050}, -- metal bat
-	{itemid = 23542, type = "deequip", slot = "hand", client_version = 1050}, -- metal bat
-	{itemid = 23541, type = "equip", slot = "necklace", level = 75, client_version = 1050}, -- gearwheel chain
-	{itemid = 23541, type = "deequip", slot = "necklace", level = 75, client_version = 1050}, -- gearwheel chain
-	{itemid = 23540, type = "equip", slot = "feet", level = 50, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 1050}, -- metal spats
-	{itemid = 23540, type = "deequip", slot = "feet", level = 50, client_version = 1050}, -- metal spats
-	{itemid = 23539, type = "equip", slot = "legs", level = 60, client_version = 1050}, -- alloy legs
-	{itemid = 23539, type = "deequip", slot = "legs", level = 60, client_version = 1050}, -- alloy legs
-	{itemid = 23538, type = "equip", slot = "armor", client_version = 1050}, -- heat core
-	{itemid = 23538, type = "deequip", slot = "armor", client_version = 1050}, -- heat core
-	{itemid = 23537, type = "equip", slot = "armor", vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 1050}, -- mooh'tah plate
-	{itemid = 23537, type = "deequip", slot = "armor", client_version = 1050}, -- mooh'tah plate
-	{itemid = 23536, type = "equip", slot = "head", level = 70, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1050}, -- rubber cap
-	{itemid = 23536, type = "deequip", slot = "head", level = 70, client_version = 1050}, -- rubber cap
-	{itemid = 23535, type = "equip", slot = "armor", level = 40, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1050}, -- glooth cape
-	{itemid = 23535, type = "deequip", slot = "armor", level = 40, client_version = 1050}, -- glooth cape
-	{itemid = 23529, type = "equip", slot = "hand", client_version = 1050}, -- glooth spear
-	{itemid = 23529, type = "deequip", slot = "hand", client_version = 1050}, -- glooth spear
-	{itemid = 22696, type = "equip", slot = "backpack", client_version = 1035}, -- cake backpack
-	{itemid = 22696, type = "deequip", slot = "backpack", client_version = 1035}, -- cake backpack
-	{itemid = 22543, type = "equip", slot = "ring", client_version = 1030}, -- unstable ring of ending
-	{itemid = 22543, type = "deequip", slot = "ring", client_version = 1030}, -- unstable ring of ending
-	{itemid = 22518, type = "equip", slot = "head", client_version = 1030}, -- broken visor
-	{itemid = 22518, type = "deequip", slot = "head", client_version = 1030}, -- broken visor
-	{itemid = 22516, type = "equip", slot = "ring", level = 200, client_version = 1030}, -- ring of ending
-	{itemid = 22516, type = "deequip", slot = "ring", level = 200, client_version = 1030}, -- ring of ending
-	{itemid = 22474, type = "equip", slot = "shield", client_version = 1030}, -- eerie song book
-	{itemid = 22474, type = "deequip", slot = "shield", client_version = 1030}, -- eerie song book
-	{itemid = 22424, type = "equip", slot = "shield", level = 250, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1030}, -- umbral master spellbook
-	{itemid = 22424, type = "deequip", slot = "shield", level = 250, client_version = 1030}, -- umbral master spellbook
-	{itemid = 22423, type = "equip", slot = "shield", level = 150, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1030}, -- umbral spellbook
-	{itemid = 22423, type = "deequip", slot = "shield", level = 150, client_version = 1030}, -- umbral spellbook
-	{itemid = 22422, type = "equip", slot = "shield", level = 75, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1030}, -- crude umbral spellbook
-	{itemid = 22422, type = "deequip", slot = "shield", level = 75, client_version = 1030}, -- crude umbral spellbook
-	{itemid = 22421, type = "equip", slot = "hand", client_version = 1030}, -- umbral master crossbow
-	{itemid = 22421, type = "deequip", slot = "hand", client_version = 1030}, -- umbral master crossbow
-	{itemid = 22420, type = "equip", slot = "hand", client_version = 1030}, -- umbral crossbow
-	{itemid = 22420, type = "deequip", slot = "hand", client_version = 1030}, -- umbral crossbow
-	{itemid = 22419, type = "equip", slot = "hand", client_version = 1030}, -- crude umbral crossbow
-	{itemid = 22419, type = "deequip", slot = "hand", client_version = 1030}, -- crude umbral crossbow
-	{itemid = 22418, type = "equip", slot = "hand", client_version = 1030}, -- umbral master bow
-	{itemid = 22418, type = "deequip", slot = "hand", client_version = 1030}, -- umbral master bow
-	{itemid = 22417, type = "equip", slot = "hand", client_version = 1030}, -- umbral bow
-	{itemid = 22417, type = "deequip", slot = "hand", client_version = 1030}, -- umbral bow
-	{itemid = 22416, type = "equip", slot = "hand", client_version = 1030}, -- crude umbral bow
-	{itemid = 22416, type = "deequip", slot = "hand", client_version = 1030}, -- crude umbral bow
-	{itemid = 22415, type = "equip", slot = "hand", client_version = 1030}, -- umbral master hammer
-	{itemid = 22415, type = "deequip", slot = "hand", client_version = 1030}, -- umbral master hammer
-	{itemid = 22414, type = "equip", slot = "hand", client_version = 1030}, -- umbral hammer
-	{itemid = 22414, type = "deequip", slot = "hand", client_version = 1030}, -- umbral hammer
-	{itemid = 22413, type = "equip", slot = "hand", client_version = 1030}, -- crude umbral hammer
-	{itemid = 22413, type = "deequip", slot = "hand", client_version = 1030}, -- crude umbral hammer
-	{itemid = 22412, type = "equip", slot = "hand", client_version = 1030}, -- umbral master mace
-	{itemid = 22412, type = "deequip", slot = "hand", client_version = 1030}, -- umbral master mace
-	{itemid = 22411, type = "equip", slot = "hand", client_version = 1030}, -- umbral mace
-	{itemid = 22411, type = "deequip", slot = "hand", client_version = 1030}, -- umbral mace
-	{itemid = 22410, type = "equip", slot = "hand", client_version = 1030}, -- crude umbral mace
-	{itemid = 22410, type = "deequip", slot = "hand", client_version = 1030}, -- crude umbral mace
-	{itemid = 22409, type = "equip", slot = "hand", client_version = 1030}, -- umbral master chopper
-	{itemid = 22409, type = "deequip", slot = "hand", client_version = 1030}, -- umbral master chopper
-	{itemid = 22408, type = "equip", slot = "hand", client_version = 1030}, -- umbral chopper
-	{itemid = 22408, type = "deequip", slot = "hand", client_version = 1030}, -- umbral chopper
-	{itemid = 22407, type = "equip", slot = "hand", client_version = 1030}, -- guardian halberd
-	{itemid = 22407, type = "deequip", slot = "hand", client_version = 1030}, -- guardian halberd
-	{itemid = 22406, type = "equip", slot = "hand", client_version = 1030}, -- umbral master axe
-	{itemid = 22406, type = "deequip", slot = "hand", client_version = 1030}, -- umbral master axe
-	{itemid = 22405, type = "equip", slot = "hand", client_version = 1030}, -- umbral axe
-	{itemid = 22405, type = "deequip", slot = "hand", client_version = 1030}, -- umbral axe
-	{itemid = 22404, type = "equip", slot = "hand", client_version = 1030}, -- crude umbral axe
-	{itemid = 22404, type = "deequip", slot = "hand", client_version = 1030}, -- crude umbral axe
-	{itemid = 22403, type = "equip", slot = "hand", client_version = 1030}, -- umbral master slayer
-	{itemid = 22403, type = "deequip", slot = "hand", client_version = 1030}, -- umbral master slayer
-	{itemid = 22402, type = "equip", slot = "hand", client_version = 1030}, -- umbral slayer
-	{itemid = 22402, type = "deequip", slot = "hand", client_version = 1030}, -- umbral slayer
-	{itemid = 22401, type = "equip", slot = "hand", client_version = 1030}, -- crude umbral slayer
-	{itemid = 22401, type = "deequip", slot = "hand", client_version = 1030}, -- crude umbral slayer
-	{itemid = 22400, type = "equip", slot = "hand", client_version = 1030}, -- umbral masterblade
-	{itemid = 22400, type = "deequip", slot = "hand", client_version = 1030}, -- umbral masterblade
-	{itemid = 22399, type = "equip", slot = "hand", client_version = 1030}, -- umbral blade
-	{itemid = 22399, type = "deequip", slot = "hand", client_version = 1030}, -- umbral blade
-	{itemid = 22398, type = "equip", slot = "hand", client_version = 1030}, -- crude umbral blade
-	{itemid = 22398, type = "deequip", slot = "hand", client_version = 1030}, -- crude umbral blade
-	{itemid = 22384, type = "equip", slot = "shield", client_version = 1030}, -- strange good night songs
-	{itemid = 22384, type = "deequip", slot = "shield", client_version = 1030}, -- strange good night songs
-	{itemid = 21725, type = "equip", slot = "armor", level = 130, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1020}, -- furious frock
-	{itemid = 21725, type = "deequip", slot = "armor", level = 130, client_version = 1020}, -- furious frock
-	{itemid = 21708, type = "equip", slot = "feet", client_version = 1020}, -- vampire silk slippers
-	{itemid = 21708, type = "deequip", slot = "feet", client_version = 1020}, -- vampire silk slippers
-	{itemid = 21707, type = "equip", slot = "shield", client_version = 1020}, -- haunted mirror piece
-	{itemid = 21707, type = "deequip", slot = "shield", client_version = 1020}, -- haunted mirror piece
-	{itemid = 21706, type = "equip", slot = "armor", client_version = 1020}, -- goo shell
-	{itemid = 21706, type = "deequip", slot = "armor", client_version = 1020}, -- goo shell
-	{itemid = 21700, type = "equip", slot = "legs", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 1020}, -- icy culottes
-	{itemid = 21700, type = "deequip", slot = "legs", client_version = 1020}, -- icy culottes
-	{itemid = 21697, type = "equip", slot = "shield", client_version = 1020}, -- runic ice shield
-	{itemid = 21697, type = "deequip", slot = "shield", client_version = 1020}, -- runic ice shield
-	{itemid = 21696, type = "equip", slot = "hand", client_version = 1020}, -- icicle bow
-	{itemid = 21696, type = "deequip", slot = "hand", client_version = 1020}, -- icicle bow
-	{itemid = 21693, type = "equip", slot = "ring", client_version = 1020}, -- horn
-	{itemid = 21693, type = "deequip", slot = "ring", client_version = 1020}, -- horn
-	{itemid = 21692, type = "equip", slot = "armor", client_version = 1020}, -- albino plate
-	{itemid = 21692, type = "deequip", slot = "armor", client_version = 1020}, -- albino plate
-	{itemid = 21691, type = "equip", slot = "necklace", level = 150, client_version = 1020}, -- shrunken head necklace
-	{itemid = 21691, type = "deequip", slot = "necklace", level = 150, client_version = 1020}, -- shrunken head necklace
-	{itemid = 21690, type = "equip", slot = "hand", client_version = 1020}, -- triple bolt crossbow
-	{itemid = 21690, type = "deequip", slot = "hand", client_version = 1020}, -- triple bolt crossbow
-	{itemid = 21475, type = "equip", slot = "backpack", client_version = 1010}, -- pannier backpack
-	{itemid = 21475, type = "deequip", slot = "backpack", client_version = 1010}, -- pannier backpack
-	{itemid = 21469, type = "equip", slot = "necklace", client_version = 853}, -- friendship amulet
-	{itemid = 21469, type = "deequip", slot = "necklace", client_version = 853}, -- friendship amulet
-	{itemid = 21252, type = "equip", slot = "ring", client_version = 1010}, -- vampire's signet ring
-	{itemid = 21252, type = "deequip", slot = "ring", client_version = 1010}, -- vampire's signet ring
-	{itemid = 20139, type = "equip", slot = "hand", client_version = 980}, -- spiky club
-	{itemid = 20139, type = "deequip", slot = "hand", client_version = 980}, -- spiky club
-	{itemid = 20132, type = "equip", slot = "head", client_version = 980}, -- helmet of the lost
-	{itemid = 20132, type = "deequip", slot = "head", client_version = 980}, -- helmet of the lost
-	{itemid = 20126, type = "equip", slot = "armor", client_version = 980}, -- leather harness
-	{itemid = 20126, type = "deequip", slot = "armor", client_version = 980}, -- leather harness
-	{itemid = 20109, type = "equip", slot = "armor", client_version = 980}, -- buckle
-	{itemid = 20109, type = "deequip", slot = "armor", client_version = 980}, -- buckle
-	{itemid = 20108, type = "equip", slot = "hand", client_version = 980}, -- pair of iron fists
-	{itemid = 20108, type = "deequip", slot = "hand", client_version = 980}, -- pair of iron fists
-	{itemid = 20104, type = "equip", slot = "hand", client_version = 980}, -- swampling club
-	{itemid = 20104, type = "deequip", slot = "hand", client_version = 980}, -- swampling club
-	{itemid = 20093, type = "equip", slot = "hand", client_version = 980}, -- life preserver
-	{itemid = 20093, type = "deequip", slot = "hand", client_version = 980}, -- life preserver
-	{itemid = 20092, type = "equip", slot = "hand", client_version = 980}, -- ratana
-	{itemid = 20092, type = "deequip", slot = "hand", client_version = 980}, -- ratana
-	{itemid = 20090, type = "equip", slot = "shield", client_version = 980}, -- spike shield
-	{itemid = 20090, type = "deequip", slot = "shield", client_version = 980}, -- spike shield
-	{itemid = 19391, type = "equip", slot = "hand", level = 1, vocation = {{"None", true}}, client_version = 980}, -- sorc and druid staff
-	{itemid = 19391, type = "deequip", slot = "hand", level = 1, client_version = 980}, -- sorc and druid staff
-	{itemid = 19390, type = "equip", slot = "hand", client_version = 980}, -- mean paladin spear
-	{itemid = 19390, type = "deequip", slot = "hand", client_version = 980}, -- mean paladin spear
-	{itemid = 19389, type = "equip", slot = "hand", client_version = 980}, -- mean knight sword
-	{itemid = 19389, type = "deequip", slot = "hand", client_version = 980}, -- mean knight sword
-	{itemid = 18528, type = "equip", slot = "ring", level = 120, client_version = 960}, -- prismatic ring
-	{itemid = 18528, type = "deequip", slot = "ring", level = 120, client_version = 960}, -- prismatic ring
-	{itemid = 18465, type = "equip", slot = "hand", client_version = 960}, -- shiny blade
-	{itemid = 18465, type = "deequip", slot = "hand", client_version = 960}, -- shiny blade
-	{itemid = 18454, type = "equip", slot = "hand", client_version = 960}, -- mycological bow
-	{itemid = 18454, type = "deequip", slot = "hand", client_version = 960}, -- mycological bow
-	{itemid = 18453, type = "equip", slot = "hand", client_version = 960}, -- crystal crossbow
-	{itemid = 18453, type = "deequip", slot = "hand", client_version = 960}, -- crystal crossbow
-	{itemid = 18452, type = "equip", slot = "hand", client_version = 960}, -- mycological mace
-	{itemid = 18452, type = "deequip", slot = "hand", client_version = 960}, -- mycological mace
-	{itemid = 18451, type = "equip", slot = "hand", client_version = 960}, -- crystalline axe
-	{itemid = 18451, type = "deequip", slot = "hand", client_version = 960}, -- crystalline axe
-	{itemid = 18450, type = "equip", slot = "hand", client_version = 960}, -- crystalline sword
-	{itemid = 18450, type = "deequip", slot = "hand", client_version = 960}, -- crystalline sword
-	{itemid = 18437, type = "equip", slot = "ammo", client_version = 960}, -- envenomed arrow
-	{itemid = 18437, type = "deequip", slot = "ammo", client_version = 960}, -- envenomed arrow
-	{itemid = 18436, type = "equip", slot = "ammo", client_version = 960}, -- drill bolt
-	{itemid = 18436, type = "deequip", slot = "ammo", client_version = 960}, -- drill bolt
-	{itemid = 18435, type = "equip", slot = "ammo", client_version = 960}, -- prismatic bolt
-	{itemid = 18435, type = "deequip", slot = "ammo", client_version = 960}, -- prismatic bolt
-	{itemid = 18412, type = "equip", slot = "hand", level = 65, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 960}, -- glacial rod
-	{itemid = 18412, type = "deequip", slot = "hand", level = 65, client_version = 960}, -- glacial rod
-	{itemid = 18411, type = "equip", slot = "hand", level = 65, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 960}, -- muck rod
-	{itemid = 18411, type = "deequip", slot = "hand", level = 65, client_version = 960}, -- muck rod
-	{itemid = 18410, type = "equip", slot = "shield", level = 150, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 960}, -- prismatic shield
-	{itemid = 18410, type = "deequip", slot = "shield", level = 150, client_version = 960}, -- prismatic shield
-	{itemid = 18409, type = "equip", slot = "hand", level = 65, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 960}, -- wand of everblazing
-	{itemid = 18409, type = "deequip", slot = "hand", level = 65, client_version = 960}, -- wand of everblazing
-	{itemid = 18408, type = "equip", slot = "ring", level = 120, client_version = 960}, -- prismatic ring
-	{itemid = 18408, type = "deequip", slot = "ring", level = 120, client_version = 960}, -- prismatic ring
-	{itemid = 18407, type = "equip", slot = "necklace", level = 150, client_version = 960}, -- prismatic necklace
-	{itemid = 18407, type = "deequip", slot = "necklace", level = 150, client_version = 960}, -- prismatic necklace
-	{itemid = 18406, type = "equip", slot = "feet", level = 150, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 960}, -- prismatic boots
-	{itemid = 18406, type = "deequip", slot = "feet", level = 150, client_version = 960}, -- prismatic boots
-	{itemid = 18405, type = "equip", slot = "legs", level = 150, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 960}, -- prismatic legs
-	{itemid = 18405, type = "deequip", slot = "legs", level = 150, client_version = 960}, -- prismatic legs
-	{itemid = 18404, type = "equip", slot = "armor", level = 120, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 960}, -- prismatic armor
-	{itemid = 18404, type = "deequip", slot = "armor", level = 120, client_version = 960}, -- prismatic armor
-	{itemid = 18403, type = "equip", slot = "head", level = 150, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 960}, -- prismatic helmet
-	{itemid = 18403, type = "deequip", slot = "head", level = 150, client_version = 960}, -- prismatic helmet
-	{itemid = 18402, type = "equip", slot = "necklace", level = 150, client_version = 960}, -- gill necklace
-	{itemid = 18402, type = "deequip", slot = "necklace", level = 150, client_version = 960}, -- gill necklace
-	{itemid = 18401, type = "equip", slot = "shield", level = 130, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 960}, -- spellbook of vigilance
-	{itemid = 18401, type = "deequip", slot = "shield", level = 130, client_version = 960}, -- spellbook of vigilance
-	{itemid = 18400, type = "equip", slot = "legs", level = 150, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 960}, -- gill legs
-	{itemid = 18400, type = "deequip", slot = "legs", level = 150, client_version = 960}, -- gill legs
-	{itemid = 18399, type = "equip", slot = "armor", level = 150, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 960}, -- gill coat
-	{itemid = 18399, type = "deequip", slot = "armor", level = 150, client_version = 960}, -- gill coat
-	{itemid = 18398, type = "equip", slot = "head", level = 150, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 960}, -- gill gugel
-	{itemid = 18398, type = "deequip", slot = "head", level = 150, client_version = 960}, -- gill gugel
-	{itemid = 18394, type = "equip", slot = "backpack", client_version = 960}, -- crystal backpack
-	{itemid = 18394, type = "deequip", slot = "backpack", client_version = 960}, -- crystal backpack
-	{itemid = 18393, type = "equip", slot = "backpack", client_version = 960}, -- mushroom backpack
-	{itemid = 18393, type = "deequip", slot = "backpack", client_version = 960}, -- mushroom backpack
-	{itemid = 18390, type = "equip", slot = "hand", level = 65, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 960}, -- wand of defiance
-	{itemid = 18390, type = "deequip", slot = "hand", level = 65, client_version = 960}, -- wand of defiance
-	{itemid = 18304, type = "equip", slot = "ammo", client_version = 960}, -- crystalline arrow
-	{itemid = 18304, type = "deequip", slot = "ammo", client_version = 960}, -- crystalline arrow
-	{itemid = 18303, type = "equip", slot = "ammo", client_version = 960}, -- crystal bolt
-	{itemid = 18303, type = "deequip", slot = "ammo", client_version = 960}, -- crystal bolt
-	{itemid = 16112, type = "equip", slot = "shield", level = 150, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 960}, -- spellbook of ancient arcana
-	{itemid = 16112, type = "deequip", slot = "shield", level = 150, client_version = 960}, -- spellbook of ancient arcana
-	{itemid = 16111, type = "equip", slot = "hand", client_version = 950}, -- thorn spitter
-	{itemid = 16111, type = "deequip", slot = "hand", client_version = 950}, -- thorn spitter
-	{itemid = 16104, type = "equip", slot = "shield", client_version = 950}, -- mathmaster shield
-	{itemid = 16104, type = "deequip", slot = "shield", client_version = 950}, -- mathmaster shield
-	{itemid = 16103, type = "equip", slot = "shield", client_version = 950}, -- mathmaster shield
-	{itemid = 16103, type = "deequip", slot = "shield", client_version = 950}, -- mathmaster shield
-	{itemid = 16007, type = "equip", slot = "backpack", client_version = 944}, -- anniversary backpack
-	{itemid = 16007, type = "deequip", slot = "backpack", client_version = 944}, -- anniversary backpack
-	{itemid = 15649, type = "equip", slot = "ammo", client_version = 940}, -- vortex bolt
-	{itemid = 15649, type = "deequip", slot = "ammo", client_version = 940}, -- vortex bolt
-	{itemid = 15648, type = "equip", slot = "ammo", client_version = 940}, -- tarsal arrow
-	{itemid = 15648, type = "deequip", slot = "ammo", client_version = 940}, -- tarsal arrow
-	{itemid = 15647, type = "equip", slot = "hand", client_version = 940}, -- deepling squelcher
-	{itemid = 15647, type = "deequip", slot = "hand", client_version = 940}, -- deepling squelcher
-	{itemid = 15646, type = "equip", slot = "backpack", client_version = 940}, -- buggy backpack
-	{itemid = 15646, type = "deequip", slot = "backpack", client_version = 940}, -- buggy backpack
-	{itemid = 15645, type = "equip", slot = "backpack", client_version = 940}, -- deepling backpack
-	{itemid = 15645, type = "deequip", slot = "backpack", client_version = 940}, -- deepling backpack
-	{itemid = 15644, type = "equip", slot = "hand", client_version = 940}, -- ornate crossbow
-	{itemid = 15644, type = "deequip", slot = "hand", client_version = 940}, -- ornate crossbow
-	{itemid = 15643, type = "equip", slot = "hand", client_version = 940}, -- hive bow
-	{itemid = 15643, type = "deequip", slot = "hand", client_version = 940}, -- hive bow
-	{itemid = 15492, type = "equip", slot = "hand", client_version = 940}, -- hive scythe
-	{itemid = 15492, type = "deequip", slot = "hand", client_version = 940}, -- hive scythe
-	{itemid = 15491, type = "equip", slot = "shield", client_version = 940}, -- carapace shield
-	{itemid = 15491, type = "deequip", slot = "shield", client_version = 940}, -- carapace shield
-	{itemid = 15490, type = "equip", slot = "legs", level = 75, client_version = 940}, -- grasshopper legs
-	{itemid = 15490, type = "deequip", slot = "legs", level = 75, client_version = 940}, -- grasshopper legs
-	{itemid = 15489, type = "equip", slot = "armor", level = 80, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 940}, -- calopteryx cape
-	{itemid = 15489, type = "deequip", slot = "armor", level = 80, client_version = 940}, -- calopteryx cape
-	{itemid = 15454, type = "equip", slot = "hand", client_version = 940}, -- guardian axe
-	{itemid = 15454, type = "deequip", slot = "hand", client_version = 940}, -- guardian axe
-	{itemid = 15453, type = "equip", slot = "shield", client_version = 940}, -- warrior's shield
-	{itemid = 15453, type = "deequip", slot = "shield", client_version = 940}, -- warrior's shield
-	{itemid = 15451, type = "equip", slot = "hand", client_version = 940}, -- warrior's axe
-	{itemid = 15451, type = "deequip", slot = "hand", client_version = 940}, -- warrior's axe
-	{itemid = 15414, type = "equip", slot = "hand", client_version = 940}, -- ornate mace
-	{itemid = 15414, type = "deequip", slot = "hand", client_version = 940}, -- ornate mace
-	{itemid = 15413, type = "equip", slot = "shield", level = 130, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 940}, -- ornate shield
-	{itemid = 15413, type = "deequip", slot = "shield", level = 130, client_version = 940}, -- ornate shield
-	{itemid = 15412, type = "equip", slot = "legs", level = 185, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 940}, -- ornate legs
-	{itemid = 15412, type = "deequip", slot = "legs", level = 185, client_version = 940}, -- ornate legs
-	{itemid = 15411, type = "equip", slot = "shield", level = 120, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 940}, -- depth scutum
-	{itemid = 15411, type = "deequip", slot = "shield", level = 120, client_version = 940}, -- depth scutum
-	{itemid = 15410, type = "equip", slot = "feet", level = 150, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 940}, -- depth calcei
-	{itemid = 15410, type = "deequip", slot = "feet", level = 150, client_version = 940}, -- depth calcei
-	{itemid = 15409, type = "equip", slot = "legs", level = 130, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 940}, -- depth ocrea
-	{itemid = 15409, type = "deequip", slot = "legs", level = 130, client_version = 940}, -- depth ocrea
-	{itemid = 15408, type = "equip", slot = "head", level = 150, client_version = 940}, -- depth galea
-	{itemid = 15408, type = "deequip", slot = "head", level = 150, client_version = 940}, -- depth galea
-	{itemid = 15407, type = "equip", slot = "armor", level = 150, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 940}, -- depth lorica
-	{itemid = 15407, type = "deequip", slot = "armor", level = 150, client_version = 940}, -- depth lorica
-	{itemid = 15406, type = "equip", slot = "armor", level = 200, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 940}, -- ornate chestplate
-	{itemid = 15406, type = "deequip", slot = "armor", level = 200, client_version = 940}, -- ornate chestplate
-	{itemid = 15404, type = "equip", slot = "hand", client_version = 940}, -- deepling axe
-	{itemid = 15404, type = "deequip", slot = "hand", client_version = 940}, -- deepling axe
-	{itemid = 15403, type = "equip", slot = "necklace", level = 120, client_version = 940}, -- necklace of the deep
-	{itemid = 15403, type = "deequip", slot = "necklace", level = 120, client_version = 940}, -- necklace of the deep
-	{itemid = 15400, type = "equip", slot = "hand", client_version = 940}, -- deepling staff
-	{itemid = 15400, type = "deequip", slot = "hand", client_version = 940}, -- deepling staff
-	{itemid = 13947, type = "equip", slot = "head", client_version = 910}, -- the Epic Wisdom
-	{itemid = 13947, type = "deequip", slot = "head", client_version = 910}, -- the Epic Wisdom
-	{itemid = 13946, type = "equip", slot = "head", client_version = 910}, -- the Epic Wisdom
-	{itemid = 13946, type = "deequip", slot = "head", client_version = 910}, -- the Epic Wisdom
-	{itemid = 13880, type = "equip", slot = "hand", level = 40, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 910}, -- shimmer wand
-	{itemid = 13880, type = "deequip", slot = "hand", level = 40, client_version = 910}, -- shimmer wand
-	{itemid = 13877, type = "equip", slot = "ring", client_version = 910}, -- broken ring of ending
-	{itemid = 13877, type = "deequip", slot = "ring", client_version = 910}, -- broken ring of ending
-	{itemid = 13873, type = "equip", slot = "hand", client_version = 910}, -- shimmer bow
-	{itemid = 13873, type = "deequip", slot = "hand", client_version = 910}, -- shimmer bow
-	{itemid = 13872, type = "equip", slot = "hand", level = 40, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 910}, -- shimmer rod
-	{itemid = 13872, type = "deequip", slot = "hand", level = 40, client_version = 910}, -- shimmer rod
-	{itemid = 13871, type = "equip", slot = "hand", client_version = 910}, -- shimmer sword
-	{itemid = 13871, type = "deequip", slot = "hand", client_version = 910}, -- shimmer sword
-	{itemid = 13838, type = "equip", slot = "hand", client_version = 910}, -- heavy trident
-	{itemid = 13838, type = "deequip", slot = "hand", client_version = 910}, -- heavy trident
-	{itemid = 13829, type = "equip", slot = "hand", client_version = 910}, -- wooden sword
-	{itemid = 13829, type = "deequip", slot = "hand", client_version = 910}, -- wooden sword
-	{itemid = 13826, type = "equip", slot = "ring", vocation = {{"None", true}}, client_version = 910}, -- star ring
-	{itemid = 13826, type = "deequip", slot = "ring", vocation = {{"None", true}}, client_version = 910}, -- star ring
-	{itemid = 13825, type = "equip", slot = "ring", vocation = {{"None", true}}, client_version = 910}, -- star ring
-	{itemid = 13825, type = "deequip", slot = "ring", vocation = {{"None", true}}, client_version = 910}, -- star ring
-	{itemid = 13760, type = "equip", slot = "hand", level = 37, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 910}, -- wand of dimensions
-	{itemid = 13760, type = "deequip", slot = "hand", level = 37, client_version = 910}, -- wand of dimensions
-	{itemid = 13756, type = "equip", slot = "head", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 910}, -- mage's cap
-	{itemid = 13756, type = "deequip", slot = "head", client_version = 910}, -- mage's cap
-	{itemid = 13580, type = "equip", slot = "feet", client_version = 860}, -- fish tail (equipped)
-	{itemid = 13580, type = "deequip", slot = "feet", client_version = 860}, -- fish tail (equipped)
-	{itemid = 13532, type = "equip", slot = "necklace", client_version = 910}, -- golden hyena pendant
-	{itemid = 13532, type = "deequip", slot = "necklace", client_version = 910}, -- golden hyena pendant
-	{itemid = 13531, type = "equip", slot = "necklace", client_version = 910}, -- golden scorpion pendant
-	{itemid = 13531, type = "deequip", slot = "necklace", client_version = 910}, -- golden scorpion pendant
-	{itemid = 12657, type = "equip", slot = "armor", client_version = 860}, -- old cape
-	{itemid = 12657, type = "deequip", slot = "armor", client_version = 860}, -- old cape
-	{itemid = 12656, type = "equip", slot = "head", client_version = 860}, -- sedge hat
-	{itemid = 12656, type = "deequip", slot = "head", client_version = 860}, -- sedge hat
-	{itemid = 12654, type = "equip", slot = "backpack", client_version = 860}, -- loot bag
-	{itemid = 12654, type = "deequip", slot = "backpack", client_version = 860}, -- loot bag
-	{itemid = 12649, type = "equip", slot = "hand", client_version = 860}, -- blade of corruption
-	{itemid = 12649, type = "deequip", slot = "hand", client_version = 860}, -- blade of corruption
-	{itemid = 12648, type = "equip", slot = "hand", client_version = 860}, -- snake god's sceptre
-	{itemid = 12648, type = "deequip", slot = "hand", client_version = 860}, -- snake god's sceptre
-	{itemid = 12647, type = "equip", slot = "shield", level = 100, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 860}, -- snake god's wristguard
-	{itemid = 12647, type = "deequip", slot = "shield", level = 100, client_version = 860}, -- snake god's wristguard
-	{itemid = 12646, type = "equip", slot = "feet", level = 80, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 860}, -- draken boots
-	{itemid = 12646, type = "deequip", slot = "feet", level = 80, client_version = 860}, -- draken boots
-	{itemid = 12645, type = "equip", slot = "head", level = 100, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 860}, -- elite draken helmet
-	{itemid = 12645, type = "deequip", slot = "head", level = 100, client_version = 860}, -- elite draken helmet
-	{itemid = 12644, type = "equip", slot = "shield", level = 80, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 860}, -- shield of corruption
-	{itemid = 12644, type = "deequip", slot = "shield", level = 80, client_version = 860}, -- shield of corruption
-	{itemid = 12643, type = "equip", slot = "armor", level = 100, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 860}, -- royal scale robe
-	{itemid = 12643, type = "deequip", slot = "armor", level = 100, client_version = 860}, -- royal scale robe
-	{itemid = 12642, type = "equip", slot = "armor", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 860}, -- royal draken mail
-	{itemid = 12642, type = "deequip", slot = "armor", level = 100, client_version = 860}, -- royal draken mail
-	{itemid = 12630, type = "equip", slot = "head", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 860}, -- cobra crown
-	{itemid = 12630, type = "deequip", slot = "head", client_version = 860}, -- cobra crown
-	{itemid = 12613, type = "equip", slot = "hand", client_version = 860}, -- twiceslicer
-	{itemid = 12613, type = "deequip", slot = "hand", client_version = 860}, -- twiceslicer
-	{itemid = 12607, type = "equip", slot = "armor", level = 100, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 860}, -- elite draken mail
-	{itemid = 12607, type = "deequip", slot = "armor", level = 100, client_version = 860}, -- elite draken mail
-	{itemid = 12498, type = "equip", slot = "feet", client_version = 860}, -- fish tail (unequipped)
-	{itemid = 12498, type = "deequip", slot = "feet", client_version = 860}, -- fish tail (unequipped)
-	{itemid = 12424, type = "equip", slot = "necklace", client_version = 920}, -- ornamented brooch
-	{itemid = 12424, type = "deequip", slot = "necklace", client_version = 920}, -- ornamented brooch
-	{itemid = 11393, type = "equip", slot = "necklace", client_version = 854}, -- lucky clover amulet
-	{itemid = 11393, type = "deequip", slot = "necklace", client_version = 854}, -- lucky clover amulet
-	{itemid = 11374, type = "equip", slot = "necklace", client_version = 854}, -- beetle necklace
-	{itemid = 11374, type = "deequip", slot = "necklace", client_version = 854}, -- beetle necklace
-	{itemid = 11368, type = "equip", slot = "head", level = 60, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 854}, -- jade hat
-	{itemid = 11368, type = "deequip", slot = "head", level = 60, client_version = 854}, -- jade hat
-	{itemid = 11356, type = "equip", slot = "armor", level = 60, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 854}, -- Zaoan robe
-	{itemid = 11356, type = "deequip", slot = "armor", level = 60, client_version = 854}, -- Zaoan robe
-	{itemid = 11355, type = "equip", slot = "armor", level = 60, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 854}, -- spellweaver's robe
-	{itemid = 11355, type = "deequip", slot = "armor", level = 60, client_version = 854}, -- spellweaver's robe
-	{itemid = 11329, type = "equip", slot = "necklace", client_version = 854}, -- wailing widow's necklace
-	{itemid = 11329, type = "deequip", slot = "necklace", client_version = 854}, -- wailing widow's necklace
-	{itemid = 11323, type = "equip", slot = "hand", client_version = 854}, -- Zaoan halberd
-	{itemid = 11323, type = "deequip", slot = "hand", client_version = 854}, -- Zaoan halberd
-	{itemid = 11309, type = "equip", slot = "hand", client_version = 854}, -- twin hooks
-	{itemid = 11309, type = "deequip", slot = "hand", client_version = 854}, -- twin hooks
-	{itemid = 11308, type = "equip", slot = "hand", client_version = 854}, -- drachaku
-	{itemid = 11308, type = "deequip", slot = "hand", client_version = 854}, -- drachaku
-	{itemid = 11307, type = "equip", slot = "hand", client_version = 854}, -- Zaoan sword
-	{itemid = 11307, type = "deequip", slot = "hand", client_version = 854}, -- Zaoan sword
-	{itemid = 11306, type = "equip", slot = "hand", client_version = 854}, -- sai
-	{itemid = 11306, type = "deequip", slot = "hand", client_version = 854}, -- sai
-	{itemid = 11305, type = "equip", slot = "hand", client_version = 854}, -- drakinata
-	{itemid = 11305, type = "deequip", slot = "hand", client_version = 854}, -- drakinata
-	{itemid = 11304, type = "equip", slot = "legs", client_version = 854}, -- Zaoan legs
-	{itemid = 11304, type = "deequip", slot = "legs", client_version = 854}, -- Zaoan legs
-	{itemid = 11303, type = "equip", slot = "feet", client_version = 854}, -- zaoan shoes
-	{itemid = 11303, type = "deequip", slot = "feet", client_version = 854}, -- zaoan shoes
-	{itemid = 11302, type = "equip", slot = "head", vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 854}, -- Zaoan helmet
-	{itemid = 11302, type = "deequip", slot = "head", client_version = 854}, -- Zaoan helmet
-	{itemid = 11301, type = "equip", slot = "armor", level = 50, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 854}, -- Zaoan armor
-	{itemid = 11301, type = "deequip", slot = "armor", level = 50, client_version = 854}, -- Zaoan armor
-	{itemid = 11263, type = "equip", slot = "backpack", client_version = 854}, -- santa backpack
-	{itemid = 11263, type = "deequip", slot = "backpack", client_version = 854}, -- santa backpack
-	{itemid = 11244, type = "equip", slot = "backpack", client_version = 854}, -- minotaur backpack
-	{itemid = 11244, type = "deequip", slot = "backpack", client_version = 854}, -- minotaur backpack
-	{itemid = 11243, type = "equip", slot = "backpack", client_version = 854}, -- dragon backpack
-	{itemid = 11243, type = "deequip", slot = "backpack", client_version = 854}, -- dragon backpack
-	{itemid = 11242, type = "equip", slot = "backpack", client_version = 854}, -- expedition bag
-	{itemid = 11242, type = "deequip", slot = "backpack", client_version = 854}, -- expedition bag
-	{itemid = 11241, type = "equip", slot = "backpack", client_version = 854}, -- expedition backpack
-	{itemid = 11241, type = "deequip", slot = "backpack", client_version = 854}, -- expedition backpack
-	{itemid = 11240, type = "equip", slot = "feet", level = 70, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 854}, -- guardian boots
-	{itemid = 11240, type = "deequip", slot = "feet", level = 70, client_version = 854}, -- guardian boots
-	{itemid = 11119, type = "equip", slot = "backpack", client_version = 854}, -- heart backpack
-	{itemid = 11119, type = "deequip", slot = "backpack", client_version = 854}, -- heart backpack
-	{itemid = 11118, type = "equip", slot = "feet", level = 70, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 854}, -- dragon scale boots
-	{itemid = 11118, type = "deequip", slot = "feet", level = 70, client_version = 854}, -- dragon scale boots
-	{itemid = 11117, type = "equip", slot = "feet", level = 70, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 854}, -- crystal boots
-	{itemid = 11117, type = "deequip", slot = "feet", level = 70, client_version = 854}, -- crystal boots
-	{itemid = 10570, type = "equip", slot = "head", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 854}, -- witch hat
-	{itemid = 10570, type = "deequip", slot = "head", client_version = 854}, -- witch hat
-	{itemid = 10522, type = "equip", slot = "backpack", client_version = 850}, -- crown backpack
-	{itemid = 10522, type = "deequip", slot = "backpack", client_version = 850}, -- crown backpack
-	{itemid = 10521, type = "equip", slot = "backpack", client_version = 850}, -- moon backpack
-	{itemid = 10521, type = "deequip", slot = "backpack", client_version = 850}, -- moon backpack
-	{itemid = 10520, type = "equip", slot = "backpack", client_version = 850}, -- orange bag
-	{itemid = 10520, type = "deequip", slot = "backpack", client_version = 850}, -- orange bag
-	{itemid = 10519, type = "equip", slot = "backpack", client_version = 850}, -- orange backpack
-	{itemid = 10519, type = "deequip", slot = "backpack", client_version = 850}, -- orange backpack
-	{itemid = 10518, type = "equip", slot = "backpack", client_version = 850}, -- demon backpack
-	{itemid = 10518, type = "deequip", slot = "backpack", client_version = 850}, -- demon backpack
-	{itemid = 10510, type = "equip", slot = "ring", client_version = 850}, -- broken wedding ring
-	{itemid = 10510, type = "deequip", slot = "ring", client_version = 850}, -- broken wedding ring
-	{itemid = 10502, type = "equip", slot = "ring", client_version = 850}, -- engraved wedding ring
-	{itemid = 10502, type = "deequip", slot = "ring", client_version = 850}, -- engraved wedding ring
-	{itemid = 10364, type = "equip", slot = "shield", client_version = 850}, -- the shield Nevermourn
-	{itemid = 10364, type = "deequip", slot = "shield", client_version = 850}, -- the shield Nevermourn
-	{itemid = 10363, type = "equip", slot = "armor", client_version = 850}, -- the rain coat
-	{itemid = 10363, type = "deequip", slot = "armor", client_version = 850}, -- the rain coat
-	{itemid = 10318, type = "equip", slot = "shield", client_version = 850}, -- the shield Nevermourn
-	{itemid = 10318, type = "deequip", slot = "shield", client_version = 850}, -- the shield Nevermourn
-	{itemid = 10317, type = "equip", slot = "armor", client_version = 850}, -- the rain coat
-	{itemid = 10317, type = "deequip", slot = "armor", client_version = 850}, -- the rain coat
-	{itemid = 10316, type = "equip", slot = "head", client_version = 850}, -- mighty helm of green sparks
-	{itemid = 10316, type = "deequip", slot = "head", client_version = 850}, -- mighty helm of green sparks
-	{itemid = 10313, type = "equip", slot = "hand", client_version = 850}, -- incredible mumpiz slayer
-	{itemid = 10313, type = "deequip", slot = "hand", client_version = 850}, -- incredible mumpiz slayer
-	{itemid = 10311, type = "equip", slot = "ring", level = 100, client_version = 850}, -- claw of 'The Noxious Spawn'
-	{itemid = 10311, type = "deequip", slot = "ring", level = 100, client_version = 850}, -- claw of 'The Noxious Spawn'
-	{itemid = 10309, type = "equip", slot = "ring", level = 100, client_version = 850}, -- claw of 'The Noxious Spawn'
-	{itemid = 10309, type = "deequip", slot = "ring", level = 100, client_version = 850}, -- claw of 'The Noxious Spawn'
-	{itemid = 10304, type = "equip", slot = "hand", client_version = 850}, -- poet's fencing quill
-	{itemid = 10304, type = "deequip", slot = "hand", client_version = 850}, -- poet's fencing quill
-	{itemid = 10303, type = "equip", slot = "hand", client_version = 850}, -- farmer's avenger
-	{itemid = 10303, type = "deequip", slot = "hand", client_version = 850}, -- farmer's avenger
-	{itemid = 10302, type = "equip", slot = "hand", client_version = 850}, -- club of the fury
-	{itemid = 10302, type = "deequip", slot = "hand", client_version = 850}, -- club of the fury
-	{itemid = 10301, type = "equip", slot = "hand", client_version = 850}, -- scythe of the reaper
-	{itemid = 10301, type = "deequip", slot = "hand", client_version = 850}, -- scythe of the reaper
-	{itemid = 10300, type = "equip", slot = "legs", client_version = 850}, -- trousers of the ancients
-	{itemid = 10300, type = "deequip", slot = "legs", client_version = 850}, -- trousers of the ancients
-	{itemid = 10299, type = "equip", slot = "head", client_version = 850}, -- helmet of nature
-	{itemid = 10299, type = "deequip", slot = "head", client_version = 850}, -- helmet of nature
-	{itemid = 10298, type = "equip", slot = "head", client_version = 850}, -- helmet of ultimate terror
-	{itemid = 10298, type = "deequip", slot = "head", client_version = 850}, -- helmet of ultimate terror
-	{itemid = 10297, type = "equip", slot = "shield", client_version = 850}, -- shield of care
-	{itemid = 10297, type = "deequip", slot = "shield", client_version = 850}, -- shield of care
-	{itemid = 10296, type = "equip", slot = "armor", client_version = 850}, -- heavy metal t-shirt
-	{itemid = 10296, type = "deequip", slot = "armor", client_version = 850}, -- heavy metal t-shirt
-	{itemid = 10295, type = "equip", slot = "hand", client_version = 850}, -- musician's bow
-	{itemid = 10295, type = "deequip", slot = "hand", client_version = 850}, -- musician's bow
-	{itemid = 10294, type = "equip", slot = "shield", client_version = 850}, -- shield of the white knight
-	{itemid = 10294, type = "deequip", slot = "shield", client_version = 850}, -- shield of the white knight
-	{itemid = 10293, type = "equip", slot = "hand", client_version = 850}, -- stale bread of ancientness
-	{itemid = 10293, type = "deequip", slot = "hand", client_version = 850}, -- stale bread of ancientness
-	{itemid = 10292, type = "equip", slot = "hand", client_version = 850}, -- pointed rabbitslayer
-	{itemid = 10292, type = "deequip", slot = "hand", client_version = 850}, -- pointed rabbitslayer
-	{itemid = 10291, type = "equip", slot = "head", client_version = 850}, -- odd hat
-	{itemid = 10291, type = "deequip", slot = "head", client_version = 850}, -- odd hat
-	{itemid = 10290, type = "equip", slot = "hand", client_version = 850}, -- glutton's mace
-	{itemid = 10290, type = "deequip", slot = "hand", client_version = 850}, -- glutton's mace
-	{itemid = 10289, type = "equip", slot = "shield", client_version = 850}, -- meat shield
-	{itemid = 10289, type = "deequip", slot = "shield", client_version = 850}, -- meat shield
-	{itemid = 10221, type = "equip", slot = "necklace", level = 80, client_version = 850}, -- shockwave amulet
-	{itemid = 10221, type = "deequip", slot = "necklace", level = 80, client_version = 850}, -- shockwave amulet
-	{itemid = 10220, type = "equip", slot = "necklace", level = 80, client_version = 850}, -- leviathan's amulet
-	{itemid = 10220, type = "deequip", slot = "necklace", level = 80, client_version = 850}, -- leviathan's amulet
-	{itemid = 10219, type = "equip", slot = "necklace", level = 80, client_version = 850}, -- sacred tree amulet
-	{itemid = 10219, type = "deequip", slot = "necklace", level = 80, client_version = 850}, -- sacred tree amulet
-	{itemid = 10218, type = "equip", slot = "necklace", level = 80, client_version = 850}, -- bonfire amulet
-	{itemid = 10218, type = "deequip", slot = "necklace", level = 80, client_version = 850}, -- bonfire amulet
-	{itemid = 10139, type = "equip", slot = "head", client_version = 840}, -- laurel wreath
-	{itemid = 10139, type = "deequip", slot = "head", client_version = 840}, -- laurel wreath
-	{itemid = 10135, type = "equip", slot = "necklace", client_version = 840}, -- bronze medal
-	{itemid = 10135, type = "deequip", slot = "necklace", client_version = 840}, -- bronze medal
-	{itemid = 10134, type = "equip", slot = "necklace", client_version = 840}, -- silver medal
-	{itemid = 10134, type = "deequip", slot = "necklace", client_version = 840}, -- silver medal
-	{itemid = 10133, type = "equip", slot = "necklace", client_version = 840}, -- gold medal
-	{itemid = 10133, type = "deequip", slot = "necklace", client_version = 840}, -- gold medal
-	{itemid = 10070, type = "equip", slot = "backpack", client_version = 840}, -- grey bag
-	{itemid = 10070, type = "deequip", slot = "backpack", client_version = 840}, -- grey bag
-	{itemid = 10016, type = "equip", slot = "head", level = 50, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 840}, -- batwing hat
-	{itemid = 10016, type = "deequip", slot = "head", level = 50, client_version = 840}, -- batwing hat
-	{itemid = 9933, type = "equip", slot = "feet", level = 130, client_version = 840}, -- pair firewalker boots
-	{itemid = 9933, type = "deequip", slot = "feet", level = 130, client_version = 840}, -- pair firewalker boots
-	{itemid = 9932, type = "equip", slot = "feet", level = 130, client_version = 840}, -- firewalker boots
-	{itemid = 9932, type = "deequip", slot = "feet", level = 130, client_version = 840}, -- firewalker boots
-	{itemid = 9931, type = "equip", slot = "feet", client_version = 840}, -- coconut shoes
-	{itemid = 9931, type = "deequip", slot = "feet", client_version = 840}, -- coconut shoes
-	{itemid = 9929, type = "equip", slot = "armor", client_version = 840}, -- flower dress
-	{itemid = 9929, type = "deequip", slot = "armor", client_version = 840}, -- flower dress
-	{itemid = 9928, type = "equip", slot = "legs", client_version = 840}, -- leaf legs
-	{itemid = 9928, type = "deequip", slot = "legs", client_version = 840}, -- leaf legs
-	{itemid = 9927, type = "equip", slot = "head", client_version = 840}, -- flower wreath
-	{itemid = 9927, type = "deequip", slot = "head", client_version = 840}, -- flower wreath
-	{itemid = 9778, type = "equip", slot = "head", level = 80, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 840}, -- yalahari mask
-	{itemid = 9778, type = "deequip", slot = "head", level = 80, client_version = 840}, -- yalahari mask
-	{itemid = 9777, type = "equip", slot = "legs", level = 80, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 840}, -- yalahari leg piece
-	{itemid = 9777, type = "deequip", slot = "legs", level = 80, client_version = 840}, -- yalahari leg piece
-	{itemid = 9776, type = "equip", slot = "armor", level = 80, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 840}, -- yalahari armor
-	{itemid = 9776, type = "deequip", slot = "armor", level = 80, client_version = 840}, -- yalahari armor
-	{itemid = 9775, type = "equip", slot = "backpack", client_version = 840}, -- brocade bag
-	{itemid = 9775, type = "deequip", slot = "backpack", client_version = 840}, -- brocade bag
-	{itemid = 9774, type = "equip", slot = "backpack", client_version = 840}, -- brocade backpack
-	{itemid = 9774, type = "deequip", slot = "backpack", client_version = 840}, -- brocade backpack
-	{itemid = 9077, type = "equip", slot = "backpack", client_version = 820}, -- golden bag
-	{itemid = 9077, type = "deequip", slot = "backpack", client_version = 820}, -- golden bag
-	{itemid = 9075, type = "equip", slot = "backpack", client_version = 820}, -- purple bag
-	{itemid = 9075, type = "deequip", slot = "backpack", client_version = 820}, -- purple bag
-	{itemid = 8932, type = "equip", slot = "hand", client_version = 820}, -- the calamity
-	{itemid = 8932, type = "deequip", slot = "hand", client_version = 820}, -- the calamity
-	{itemid = 8931, type = "equip", slot = "hand", client_version = 820}, -- the epiphany
-	{itemid = 8931, type = "deequip", slot = "hand", client_version = 820}, -- the epiphany
-	{itemid = 8930, type = "equip", slot = "hand", client_version = 820}, -- emerald sword
-	{itemid = 8930, type = "deequip", slot = "hand", client_version = 820}, -- emerald sword
-	{itemid = 8929, type = "equip", slot = "hand", client_version = 820}, -- the stomper
-	{itemid = 8929, type = "deequip", slot = "hand", client_version = 820}, -- the stomper
-	{itemid = 8928, type = "equip", slot = "hand", client_version = 820}, -- obsidian truncheon
-	{itemid = 8928, type = "deequip", slot = "hand", client_version = 820}, -- obsidian truncheon
-	{itemid = 8927, type = "equip", slot = "hand", client_version = 820}, -- dark trinity mace
-	{itemid = 8927, type = "deequip", slot = "hand", client_version = 820}, -- dark trinity mace
-	{itemid = 8926, type = "equip", slot = "hand", client_version = 820}, -- demonwing axe
-	{itemid = 8926, type = "deequip", slot = "hand", client_version = 820}, -- demonwing axe
-	{itemid = 8925, type = "equip", slot = "hand", client_version = 820}, -- solar axe
-	{itemid = 8925, type = "deequip", slot = "hand", client_version = 820}, -- solar axe
-	{itemid = 8924, type = "equip", slot = "hand", client_version = 820}, -- hellforged axe
-	{itemid = 8924, type = "deequip", slot = "hand", client_version = 820}, -- hellforged axe
-	{itemid = 8923, type = "equip", slot = "legs", vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 820}, -- ranger legs
-	{itemid = 8923, type = "deequip", slot = "legs", client_version = 820}, -- ranger legs
-	{itemid = 8922, type = "equip", slot = "hand", level = 42, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 820}, -- wand of voodoo
-	{itemid = 8922, type = "deequip", slot = "hand", level = 42, client_version = 820}, -- wand of voodoo
-	{itemid = 8921, type = "equip", slot = "hand", level = 22, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 810}, -- wand of draconia
-	{itemid = 8921, type = "deequip", slot = "hand", level = 22, client_version = 810}, -- wand of draconia
-	{itemid = 8920, type = "equip", slot = "hand", level = 37, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 820}, -- wand of starmstorm
-	{itemid = 8920, type = "deequip", slot = "hand", level = 37, client_version = 820}, -- wand of starmstorm
-	{itemid = 8918, type = "equip", slot = "shield", level = 80, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 820}, -- spellbook of dark mysteries
-	{itemid = 8918, type = "deequip", slot = "shield", level = 80, client_version = 820}, -- spellbook of dark mysteries
-	{itemid = 8912, type = "equip", slot = "hand", level = 37, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 820}, -- springsprout rod
-	{itemid = 8912, type = "deequip", slot = "hand", level = 37, client_version = 820}, -- springsprout rod
-	{itemid = 8911, type = "equip", slot = "hand", level = 22, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 820}, -- northwind rod
-	{itemid = 8911, type = "deequip", slot = "hand", level = 22, client_version = 820}, -- northwind rod
-	{itemid = 8910, type = "equip", slot = "hand", level = 42, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 820}, -- underworld rod
-	{itemid = 8910, type = "deequip", slot = "hand", level = 42, client_version = 820}, -- underworld rod
-	{itemid = 8909, type = "equip", slot = "shield", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 820}, -- terran rainbow shield
-	{itemid = 8909, type = "deequip", slot = "shield", level = 100, client_version = 820}, -- terran rainbow shield
-	{itemid = 8908, type = "equip", slot = "shield", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 0}, -- sparking rainbow shield
-	{itemid = 8908, type = "deequip", slot = "shield", level = 100, client_version = 0}, -- sparking rainbow shield
-	{itemid = 8907, type = "equip", slot = "shield", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 820}, -- icy rainbow shield
-	{itemid = 8907, type = "deequip", slot = "shield", level = 100, client_version = 820}, -- icy rainbow shield
-	{itemid = 8906, type = "equip", slot = "shield", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 820}, -- fiery rainbow shield
-	{itemid = 8906, type = "deequip", slot = "shield", level = 100, client_version = 820}, -- fiery rainbow shield
-	{itemid = 8905, type = "equip", slot = "shield", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 820}, -- rainbow shield
-	{itemid = 8905, type = "deequip", slot = "shield", level = 100, client_version = 820}, -- rainbow shield
-	{itemid = 8904, type = "equip", slot = "shield", level = 70, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 820}, -- spellscroll of prophecies
-	{itemid = 8904, type = "deequip", slot = "shield", level = 70, client_version = 820}, -- spellscroll of prophecies
-	{itemid = 8903, type = "equip", slot = "shield", level = 60, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 820}, -- spellbook of lost souls
-	{itemid = 8903, type = "deequip", slot = "shield", level = 60, client_version = 820}, -- spellbook of lost souls
-	{itemid = 8902, type = "equip", slot = "shield", level = 50, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 820}, -- spellbook of mind control
-	{itemid = 8902, type = "deequip", slot = "shield", level = 50, client_version = 820}, -- spellbook of mind control
-	{itemid = 8901, type = "equip", slot = "shield", level = 40, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 820}, -- spellbook of warding
-	{itemid = 8901, type = "deequip", slot = "shield", level = 40, client_version = 820}, -- spellbook of warding
-	{itemid = 8900, type = "equip", slot = "shield", level = 30, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 820}, -- spellbook of enlightenment
-	{itemid = 8900, type = "deequip", slot = "shield", level = 30, client_version = 820}, -- spellbook of enlightenment
-	{itemid = 8892, type = "equip", slot = "armor", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 820}, -- ethno coat
-	{itemid = 8892, type = "deequip", slot = "armor", client_version = 820}, -- ethno coat
-	{itemid = 8891, type = "equip", slot = "armor", vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 820}, -- paladin armor
-	{itemid = 8891, type = "deequip", slot = "armor", client_version = 820}, -- paladin armor
-	{itemid = 8890, type = "equip", slot = "armor", level = 100, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 820}, -- robe of the underworld
-	{itemid = 8890, type = "deequip", slot = "armor", level = 100, client_version = 820}, -- robe of the underworld
-	{itemid = 8889, type = "equip", slot = "armor", level = 85, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 820}, -- skullcracker armor
-	{itemid = 8889, type = "deequip", slot = "armor", level = 85, client_version = 820}, -- skullcracker armor
-	{itemid = 8888, type = "equip", slot = "armor", level = 100, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 820}, -- master archer's armor
-	{itemid = 8888, type = "deequip", slot = "armor", level = 100, client_version = 820}, -- master archer's armor
-	{itemid = 8887, type = "equip", slot = "armor", level = 75, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 820}, -- frozen plate
-	{itemid = 8887, type = "deequip", slot = "armor", level = 75, client_version = 820}, -- frozen plate
-	{itemid = 8886, type = "equip", slot = "armor", level = 75, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 820}, -- molten plate
-	{itemid = 8886, type = "deequip", slot = "armor", level = 75, client_version = 820}, -- molten plate
-	{itemid = 8885, type = "equip", slot = "armor", level = 75, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 820}, -- divine plate
-	{itemid = 8885, type = "deequip", slot = "armor", level = 75, client_version = 820}, -- divine plate
-	{itemid = 8884, type = "equip", slot = "armor", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 820}, -- oceanborn leviathan armor
-	{itemid = 8884, type = "deequip", slot = "armor", level = 100, client_version = 820}, -- oceanborn leviathan armor
-	{itemid = 8883, type = "equip", slot = "armor", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 820}, -- windborn colossus armor
-	{itemid = 8883, type = "deequip", slot = "armor", level = 100, client_version = 820}, -- windborn colossus armor
-	{itemid = 8882, type = "equip", slot = "armor", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 820}, -- earthborn titan armor
-	{itemid = 8882, type = "deequip", slot = "armor", level = 100, client_version = 820}, -- earthborn titan armor
-	{itemid = 8881, type = "equip", slot = "armor", level = 100, vocation = {{"Knight", true}, {"Elite Knight"}}, client_version = 820}, -- fireborn giant armor
-	{itemid = 8881, type = "deequip", slot = "armor", level = 100, client_version = 820}, -- fireborn giant armor
-	{itemid = 8880, type = "equip", slot = "armor", level = 60, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 820}, -- swamplair armor
-	{itemid = 8880, type = "deequip", slot = "armor", level = 60, client_version = 820}, -- swamplair armor
-	{itemid = 8879, type = "equip", slot = "armor", level = 60, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 820}, -- voltage armor
-	{itemid = 8879, type = "deequip", slot = "armor", level = 60, client_version = 820}, -- voltage armor
-	{itemid = 8878, type = "equip", slot = "armor", level = 60, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 820}, -- crystalline armor
-	{itemid = 8878, type = "deequip", slot = "armor", level = 60, client_version = 820}, -- crystalline armor
-	{itemid = 8877, type = "equip", slot = "armor", level = 60, vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 820}, -- lavos armor
-	{itemid = 8877, type = "deequip", slot = "armor", level = 60, client_version = 820}, -- lavos armor
-	{itemid = 8876, type = "equip", slot = "armor", client_version = 820}, -- girl's dress
-	{itemid = 8876, type = "deequip", slot = "armor", client_version = 820}, -- girl's dress
-	{itemid = 8875, type = "equip", slot = "armor", client_version = 820}, -- tunic
-	{itemid = 8875, type = "deequip", slot = "armor", client_version = 820}, -- tunic
-	{itemid = 8874, type = "equip", slot = "armor", client_version = 820}, -- summer dress
-	{itemid = 8874, type = "deequip", slot = "armor", client_version = 820}, -- summer dress
-	{itemid = 8873, type = "equip", slot = "armor", client_version = 820}, -- hibiscus dress
-	{itemid = 8873, type = "deequip", slot = "armor", client_version = 820}, -- hibiscus dress
-	{itemid = 8872, type = "equip", slot = "armor", vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 820}, -- belted cape
-	{itemid = 8872, type = "deequip", slot = "armor", client_version = 820}, -- belted cape
-	{itemid = 8871, type = "equip", slot = "armor", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 820}, -- focus cape
-	{itemid = 8871, type = "deequip", slot = "armor", client_version = 820}, -- focus cape
-	{itemid = 8870, type = "equip", slot = "armor", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 820}, -- spirit cloak
-	{itemid = 8870, type = "deequip", slot = "armor", client_version = 820}, -- spirit cloak
-	{itemid = 8869, type = "equip", slot = "armor", level = 75, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 820}, -- greenwood coat
-	{itemid = 8869, type = "deequip", slot = "armor", level = 75, client_version = 820}, -- greenwood coat
-	{itemid = 8868, type = "equip", slot = "armor", level = 75, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 820}, -- velvet mantle
-	{itemid = 8868, type = "deequip", slot = "armor", level = 75, client_version = 820}, -- velvet mantle
-	{itemid = 8867, type = "equip", slot = "armor", level = 75, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 820}, -- dragon robe
-	{itemid = 8867, type = "deequip", slot = "armor", level = 75, client_version = 820}, -- dragon robe
-	{itemid = 8866, type = "equip", slot = "armor", level = 75, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 820}, -- robe of the ice queen
-	{itemid = 8866, type = "deequip", slot = "armor", level = 75, client_version = 820}, -- robe of the ice queen
-	{itemid = 8865, type = "equip", slot = "armor", level = 65, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 820}, -- dark lord's cape
-	{itemid = 8865, type = "deequip", slot = "armor", level = 65, client_version = 820}, -- dark lord's cape
-	{itemid = 8858, type = "equip", slot = "hand", client_version = 820}, -- elethriel's elemental bow
-	{itemid = 8858, type = "deequip", slot = "hand", client_version = 820}, -- elethriel's elemental bow
-	{itemid = 8857, type = "equip", slot = "hand", client_version = 820}, -- silkweaver bow
-	{itemid = 8857, type = "deequip", slot = "hand", client_version = 820}, -- silkweaver bow
-	{itemid = 8856, type = "equip", slot = "hand", client_version = 820}, -- yol's bow
-	{itemid = 8856, type = "deequip", slot = "hand", client_version = 820}, -- yol's bow
-	{itemid = 8855, type = "equip", slot = "hand", client_version = 820}, -- composite hornbow
-	{itemid = 8855, type = "deequip", slot = "hand", client_version = 820}, -- composite hornbow
-	{itemid = 8854, type = "equip", slot = "hand", client_version = 820}, -- warsinger bow
-	{itemid = 8854, type = "deequip", slot = "hand", client_version = 820}, -- warsinger bow
-	{itemid = 8853, type = "equip", slot = "hand", client_version = 820}, -- ironworker
-	{itemid = 8853, type = "deequip", slot = "hand", client_version = 820}, -- ironworker
-	{itemid = 8852, type = "equip", slot = "hand", client_version = 820}, -- devileye
-	{itemid = 8852, type = "deequip", slot = "hand", client_version = 820}, -- devileye
-	{itemid = 8851, type = "equip", slot = "hand", client_version = 820}, -- royal crossbow
-	{itemid = 8851, type = "deequip", slot = "hand", client_version = 820}, -- royal crossbow
-	{itemid = 8850, type = "equip", slot = "hand", client_version = 820}, -- chain bolter
-	{itemid = 8850, type = "deequip", slot = "hand", client_version = 820}, -- chain bolter
-	{itemid = 8849, type = "equip", slot = "hand", client_version = 820}, -- modified crossbow
-	{itemid = 8849, type = "deequip", slot = "hand", client_version = 820}, -- modified crossbow
-	{itemid = 8821, type = "equip", slot = "armor", level = 50, client_version = 820}, -- witchhunter's coat
-	{itemid = 8821, type = "deequip", slot = "armor", level = 50, client_version = 820}, -- witchhunter's coat
-	{itemid = 8820, type = "equip", slot = "head", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 820}, -- mage hat
-	{itemid = 8820, type = "deequip", slot = "head", client_version = 820}, -- mage hat
-	{itemid = 8819, type = "equip", slot = "armor", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 820}, -- magician's robe
-	{itemid = 8819, type = "deequip", slot = "armor", client_version = 820}, -- magician's robe
-	{itemid = 8602, type = "equip", slot = "hand", client_version = 820}, -- jagged sword
-	{itemid = 8602, type = "deequip", slot = "hand", client_version = 820}, -- jagged sword
-	{itemid = 8601, type = "equip", slot = "hand", client_version = 820}, -- steel axe
-	{itemid = 8601, type = "deequip", slot = "hand", client_version = 820}, -- steel axe
-	{itemid = 8584, type = "equip", slot = "necklace", client_version = 820}, -- Jerom's family necklace
-	{itemid = 8584, type = "deequip", slot = "necklace", client_version = 820}, -- Jerom's family necklace
-	{itemid = 8266, type = "equip", slot = "necklace", client_version = 810}, -- Koshei's ancient amulet
-	{itemid = 8266, type = "deequip", slot = "necklace", client_version = 810}, -- Koshei's ancient amulet
-	{itemid = 8209, type = "equip", slot = "hand", client_version = 810}, -- crimson sword
-	{itemid = 8209, type = "deequip", slot = "hand", client_version = 810}, -- crimson sword
-	{itemid = 7968, type = "equip", slot = "ring", client_version = 870}, -- shapeshifter ring
-	{itemid = 7968, type = "deequip", slot = "ring", client_version = 870}, -- shapeshifter ring
-	{itemid = 7967, type = "equip", slot = "ring", client_version = 870}, -- shapeshifter ring
-	{itemid = 7967, type = "deequip", slot = "ring", client_version = 870}, -- shapeshifter ring
-	{itemid = 7957, type = "equip", slot = "head", client_version = 810}, -- jester hat
-	{itemid = 7957, type = "deequip", slot = "head", client_version = 810}, -- jester hat
-	{itemid = 7903, type = "equip", slot = "head", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- terra hood
-	{itemid = 7903, type = "deequip", slot = "head", client_version = 810}, -- terra hood
-	{itemid = 7902, type = "equip", slot = "head", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- glacier mask
-	{itemid = 7902, type = "deequip", slot = "head", client_version = 810}, -- glacier mask
-	{itemid = 7901, type = "equip", slot = "head", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- lightning headband
-	{itemid = 7901, type = "deequip", slot = "head", client_version = 810}, -- lightning headband
-	{itemid = 7900, type = "equip", slot = "head", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- magma monocle
-	{itemid = 7900, type = "deequip", slot = "head", client_version = 810}, -- magma monocle
-	{itemid = 7899, type = "equip", slot = "armor", level = 50, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- magma coat
-	{itemid = 7899, type = "deequip", slot = "armor", level = 50, client_version = 810}, -- magma coat
-	{itemid = 7898, type = "equip", slot = "armor", level = 50, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- lightning robe
-	{itemid = 7898, type = "deequip", slot = "armor", level = 50, client_version = 810}, -- lightning robe
-	{itemid = 7897, type = "equip", slot = "armor", level = 50, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- glacier robe
-	{itemid = 7897, type = "deequip", slot = "armor", level = 50, client_version = 810}, -- glacier robe
-	{itemid = 7896, type = "equip", slot = "legs", level = 40, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- glacier kilt
-	{itemid = 7896, type = "deequip", slot = "legs", level = 40, client_version = 810}, -- glacier kilt
-	{itemid = 7895, type = "equip", slot = "legs", level = 40, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- lightning legs
-	{itemid = 7895, type = "deequip", slot = "legs", level = 40, client_version = 810}, -- lightning legs
-	{itemid = 7894, type = "equip", slot = "legs", level = 40, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- magma legs
-	{itemid = 7894, type = "deequip", slot = "legs", level = 40, client_version = 810}, -- magma legs
-	{itemid = 7893, type = "equip", slot = "feet", level = 35, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- lightning boots
-	{itemid = 7893, type = "deequip", slot = "feet", level = 35, client_version = 810}, -- lightning boots
-	{itemid = 7892, type = "equip", slot = "feet", level = 35, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- glacier shoes
-	{itemid = 7892, type = "deequip", slot = "feet", level = 35, client_version = 810}, -- glacier shoes
-	{itemid = 7891, type = "equip", slot = "feet", level = 35, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- magma boots
-	{itemid = 7891, type = "deequip", slot = "feet", level = 35, client_version = 810}, -- magma boots
-	{itemid = 7890, type = "equip", slot = "necklace", level = 60, client_version = 810}, -- magma amulet
-	{itemid = 7890, type = "deequip", slot = "necklace", level = 60, client_version = 810}, -- magma amulet
-	{itemid = 7889, type = "equip", slot = "necklace", level = 60, client_version = 810}, -- lightning pendant
-	{itemid = 7889, type = "deequip", slot = "necklace", level = 60, client_version = 810}, -- lightning pendant
-	{itemid = 7888, type = "equip", slot = "necklace", level = 60, client_version = 810}, -- glacier amulet
-	{itemid = 7888, type = "deequip", slot = "necklace", level = 60, client_version = 810}, -- glacier amulet
-	{itemid = 7887, type = "equip", slot = "necklace", level = 60, client_version = 810}, -- terra amulet
-	{itemid = 7887, type = "deequip", slot = "necklace", level = 60, client_version = 810}, -- terra amulet
-	{itemid = 7886, type = "equip", slot = "feet", level = 35, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- terra boots
-	{itemid = 7886, type = "deequip", slot = "feet", level = 35, client_version = 810}, -- terra boots
-	{itemid = 7885, type = "equip", slot = "legs", level = 40, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- terra legs
-	{itemid = 7885, type = "deequip", slot = "legs", level = 40, client_version = 810}, -- terra legs
-	{itemid = 7884, type = "equip", slot = "armor", level = 50, vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 810}, -- terra mantle
-	{itemid = 7884, type = "deequip", slot = "armor", level = 50, client_version = 810}, -- terra mantle
-	{itemid = 7883, type = "equip", slot = "hand", client_version = 810}, -- energy war hammer
-	{itemid = 7883, type = "deequip", slot = "hand", client_version = 810}, -- energy war hammer
-	{itemid = 7882, type = "equip", slot = "hand", client_version = 810}, -- energy orcish maul
-	{itemid = 7882, type = "deequip", slot = "hand", client_version = 810}, -- energy orcish maul
-	{itemid = 7881, type = "equip", slot = "hand", client_version = 810}, -- energy cranial basher
-	{itemid = 7881, type = "deequip", slot = "hand", client_version = 810}, -- energy cranial basher
-	{itemid = 7880, type = "equip", slot = "hand", client_version = 810}, -- energy crystal mace
-	{itemid = 7880, type = "deequip", slot = "hand", client_version = 810}, -- energy crystal mace
-	{itemid = 7879, type = "equip", slot = "hand", client_version = 810}, -- energy clerical mace
-	{itemid = 7879, type = "deequip", slot = "hand", client_version = 810}, -- energy clerical mace
-	{itemid = 7878, type = "equip", slot = "hand", client_version = 810}, -- energy war axe
-	{itemid = 7878, type = "deequip", slot = "hand", client_version = 810}, -- energy war axe
-	{itemid = 7877, type = "equip", slot = "hand", client_version = 810}, -- energy headchopper
-	{itemid = 7877, type = "deequip", slot = "hand", client_version = 810}, -- energy headchopper
-	{itemid = 7876, type = "equip", slot = "hand", client_version = 810}, -- energy heroic axe
-	{itemid = 7876, type = "deequip", slot = "hand", client_version = 810}, -- energy heroic axe
-	{itemid = 7875, type = "equip", slot = "hand", client_version = 810}, -- energy knight axe
-	{itemid = 7875, type = "deequip", slot = "hand", client_version = 810}, -- energy knight axe
-	{itemid = 7874, type = "equip", slot = "hand", client_version = 810}, -- energy barbarian axe
-	{itemid = 7874, type = "deequip", slot = "hand", client_version = 810}, -- energy barbarian axe
-	{itemid = 7873, type = "equip", slot = "hand", client_version = 810}, -- energy dragon slayer
-	{itemid = 7873, type = "deequip", slot = "hand", client_version = 810}, -- energy dragon slayer
-	{itemid = 7872, type = "equip", slot = "hand", client_version = 810}, -- energy blacksteel sword
-	{itemid = 7872, type = "deequip", slot = "hand", client_version = 810}, -- energy blacksteel sword
-	{itemid = 7871, type = "equip", slot = "hand", client_version = 810}, -- energy mystic blade
-	{itemid = 7871, type = "deequip", slot = "hand", client_version = 810}, -- energy mystic blade
-	{itemid = 7870, type = "equip", slot = "hand", client_version = 810}, -- energy relic sword
-	{itemid = 7870, type = "deequip", slot = "hand", client_version = 810}, -- energy relic sword
-	{itemid = 7869, type = "equip", slot = "hand", client_version = 810}, -- energy spike sword
-	{itemid = 7869, type = "deequip", slot = "hand", client_version = 810}, -- energy spike sword
-	{itemid = 7868, type = "equip", slot = "hand", client_version = 810}, -- earth war hammer
-	{itemid = 7868, type = "deequip", slot = "hand", client_version = 810}, -- earth war hammer
-	{itemid = 7867, type = "equip", slot = "hand", client_version = 810}, -- earth orcish maul
-	{itemid = 7867, type = "deequip", slot = "hand", client_version = 810}, -- earth orcish maul
-	{itemid = 7866, type = "equip", slot = "hand", client_version = 810}, -- earth cranial basher
-	{itemid = 7866, type = "deequip", slot = "hand", client_version = 810}, -- earth cranial basher
-	{itemid = 7865, type = "equip", slot = "hand", client_version = 810}, -- earth crystal mace
-	{itemid = 7865, type = "deequip", slot = "hand", client_version = 810}, -- earth crystal mace
-	{itemid = 7864, type = "equip", slot = "hand", client_version = 810}, -- earth clerical mace
-	{itemid = 7864, type = "deequip", slot = "hand", client_version = 810}, -- earth clerical mace
-	{itemid = 7863, type = "equip", slot = "hand", client_version = 810}, -- earth war axe
-	{itemid = 7863, type = "deequip", slot = "hand", client_version = 810}, -- earth war axe
-	{itemid = 7862, type = "equip", slot = "hand", client_version = 810}, -- earth headchopper
-	{itemid = 7862, type = "deequip", slot = "hand", client_version = 810}, -- earth headchopper
-	{itemid = 7861, type = "equip", slot = "hand", client_version = 810}, -- earth heroic axe
-	{itemid = 7861, type = "deequip", slot = "hand", client_version = 810}, -- earth heroic axe
-	{itemid = 7860, type = "equip", slot = "hand", client_version = 810}, -- earth knight axe
-	{itemid = 7860, type = "deequip", slot = "hand", client_version = 810}, -- earth knight axe
-	{itemid = 7859, type = "equip", slot = "hand", client_version = 810}, -- earth barbarian axe
-	{itemid = 7859, type = "deequip", slot = "hand", client_version = 810}, -- earth barbarian axe
-	{itemid = 7858, type = "equip", slot = "hand", client_version = 810}, -- earth dragon slayer
-	{itemid = 7858, type = "deequip", slot = "hand", client_version = 810}, -- earth dragon slayer
-	{itemid = 7857, type = "equip", slot = "hand", client_version = 810}, -- earth blacksteel sword
-	{itemid = 7857, type = "deequip", slot = "hand", client_version = 810}, -- earth blacksteel sword
-	{itemid = 7856, type = "equip", slot = "hand", client_version = 810}, -- earth mystic blade
-	{itemid = 7856, type = "deequip", slot = "hand", client_version = 810}, -- earth mystic blade
-	{itemid = 7855, type = "equip", slot = "hand", client_version = 810}, -- earth relic sword
-	{itemid = 7855, type = "deequip", slot = "hand", client_version = 810}, -- earth relic sword
-	{itemid = 7854, type = "equip", slot = "hand", client_version = 810}, -- earth spike sword
-	{itemid = 7854, type = "deequip", slot = "hand", client_version = 810}, -- earth spike sword
-	{itemid = 7850, type = "equip", slot = "ammo", client_version = 810}, -- earth arrow
-	{itemid = 7850, type = "deequip", slot = "ammo", client_version = 810}, -- earth arrow
-	{itemid = 7840, type = "equip", slot = "ammo", client_version = 810}, -- flaming arrow
-	{itemid = 7840, type = "deequip", slot = "ammo", client_version = 810}, -- flaming arrow
-	{itemid = 7839, type = "equip", slot = "ammo", client_version = 810}, -- shiver arrow
-	{itemid = 7839, type = "deequip", slot = "ammo", client_version = 810}, -- shiver arrow
-	{itemid = 7838, type = "equip", slot = "ammo", client_version = 810}, -- flash arrow
-	{itemid = 7838, type = "deequip", slot = "ammo", client_version = 810}, -- flash arrow
-	{itemid = 7777, type = "equip", slot = "hand", client_version = 810}, -- icy war hammer
-	{itemid = 7777, type = "deequip", slot = "hand", client_version = 810}, -- icy war hammer
-	{itemid = 7776, type = "equip", slot = "hand", client_version = 810}, -- icy orcish maul
-	{itemid = 7776, type = "deequip", slot = "hand", client_version = 810}, -- icy orcish maul
-	{itemid = 7775, type = "equip", slot = "hand", client_version = 810}, -- icy cranial basher
-	{itemid = 7775, type = "deequip", slot = "hand", client_version = 810}, -- icy cranial basher
-	{itemid = 7774, type = "equip", slot = "hand", client_version = 810}, -- icy crystal mace
-	{itemid = 7774, type = "deequip", slot = "hand", client_version = 810}, -- icy crystal mace
-	{itemid = 7773, type = "equip", slot = "hand", client_version = 810}, -- icy clerical mace
-	{itemid = 7773, type = "deequip", slot = "hand", client_version = 810}, -- icy clerical mace
-	{itemid = 7772, type = "equip", slot = "hand", client_version = 810}, -- icy war axe
-	{itemid = 7772, type = "deequip", slot = "hand", client_version = 810}, -- icy war axe
-	{itemid = 7771, type = "equip", slot = "hand", client_version = 810}, -- icy headchopper
-	{itemid = 7771, type = "deequip", slot = "hand", client_version = 810}, -- icy headchopper
-	{itemid = 7770, type = "equip", slot = "hand", client_version = 810}, -- icy heroic axe
-	{itemid = 7770, type = "deequip", slot = "hand", client_version = 810}, -- icy heroic axe
-	{itemid = 7769, type = "equip", slot = "hand", client_version = 810}, -- icy knight axe
-	{itemid = 7769, type = "deequip", slot = "hand", client_version = 810}, -- icy knight axe
-	{itemid = 7768, type = "equip", slot = "hand", client_version = 810}, -- icy barbarian axe
-	{itemid = 7768, type = "deequip", slot = "hand", client_version = 810}, -- icy barbarian axe
-	{itemid = 7767, type = "equip", slot = "hand", client_version = 810}, -- icy dragon slayer
-	{itemid = 7767, type = "deequip", slot = "hand", client_version = 810}, -- icy dragon slayer
-	{itemid = 7766, type = "equip", slot = "hand", client_version = 810}, -- icy blacksteel sword
-	{itemid = 7766, type = "deequip", slot = "hand", client_version = 810}, -- icy blacksteel sword
-	{itemid = 7765, type = "equip", slot = "hand", client_version = 810}, -- icy mystic blade
-	{itemid = 7765, type = "deequip", slot = "hand", client_version = 810}, -- icy mystic blade
-	{itemid = 7764, type = "equip", slot = "hand", client_version = 810}, -- icy relic sword
-	{itemid = 7764, type = "deequip", slot = "hand", client_version = 810}, -- icy relic sword
-	{itemid = 7763, type = "equip", slot = "hand", client_version = 810}, -- icy spike sword
-	{itemid = 7763, type = "deequip", slot = "hand", client_version = 810}, -- icy spike sword
-	{itemid = 7758, type = "equip", slot = "hand", client_version = 810}, -- fiery war hammer
-	{itemid = 7758, type = "deequip", slot = "hand", client_version = 810}, -- fiery war hammer
-	{itemid = 7757, type = "equip", slot = "hand", client_version = 810}, -- fiery orcish maul
-	{itemid = 7757, type = "deequip", slot = "hand", client_version = 810}, -- fiery orcish maul
-	{itemid = 7756, type = "equip", slot = "hand", client_version = 810}, -- fiery cranial basher
-	{itemid = 7756, type = "deequip", slot = "hand", client_version = 810}, -- fiery cranial basher
-	{itemid = 7755, type = "equip", slot = "hand", client_version = 810}, -- fiery crystal mace
-	{itemid = 7755, type = "deequip", slot = "hand", client_version = 810}, -- fiery crystal mace
-	{itemid = 7754, type = "equip", slot = "hand", client_version = 810}, -- fiery clerical mace
-	{itemid = 7754, type = "deequip", slot = "hand", client_version = 810}, -- fiery clerical mace
-	{itemid = 7753, type = "equip", slot = "hand", client_version = 810}, -- fiery war axe
-	{itemid = 7753, type = "deequip", slot = "hand", client_version = 810}, -- fiery war axe
-	{itemid = 7752, type = "equip", slot = "hand", client_version = 810}, -- fiery headchopper
-	{itemid = 7752, type = "deequip", slot = "hand", client_version = 810}, -- fiery headchopper
-	{itemid = 7751, type = "equip", slot = "hand", client_version = 810}, -- fiery heroic axe
-	{itemid = 7751, type = "deequip", slot = "hand", client_version = 810}, -- fiery heroic axe
-	{itemid = 7750, type = "equip", slot = "hand", client_version = 810}, -- fiery knight axe
-	{itemid = 7750, type = "deequip", slot = "hand", client_version = 810}, -- fiery knight axe
-	{itemid = 7749, type = "equip", slot = "hand", client_version = 810}, -- fiery barbarian axe
-	{itemid = 7749, type = "deequip", slot = "hand", client_version = 810}, -- fiery barbarian axe
-	{itemid = 7748, type = "equip", slot = "hand", client_version = 810}, -- fiery dragon slayer
-	{itemid = 7748, type = "deequip", slot = "hand", client_version = 810}, -- fiery dragon slayer
-	{itemid = 7747, type = "equip", slot = "hand", client_version = 810}, -- fiery blacksteel sword
-	{itemid = 7747, type = "deequip", slot = "hand", client_version = 810}, -- fiery blacksteel sword
-	{itemid = 7746, type = "equip", slot = "hand", client_version = 810}, -- fiery mystic blade
-	{itemid = 7746, type = "deequip", slot = "hand", client_version = 810}, -- fiery mystic blade
-	{itemid = 7745, type = "equip", slot = "hand", client_version = 810}, -- fiery relic sword
-	{itemid = 7745, type = "deequip", slot = "hand", client_version = 810}, -- fiery relic sword
-	{itemid = 7744, type = "equip", slot = "hand", client_version = 810}, -- fiery spike sword
-	{itemid = 7744, type = "deequip", slot = "hand", client_version = 810}, -- fiery spike sword
-	{itemid = 7730, type = "equip", slot = "legs", client_version = 810}, -- blue legs
-	{itemid = 7730, type = "deequip", slot = "legs", client_version = 810}, -- blue legs
-	{itemid = 7708, type = "equip", slot = "ring", client_version = 810}, -- suspicious signet ring
-	{itemid = 7708, type = "deequip", slot = "ring", client_version = 810}, -- suspicious signet ring
-	{itemid = 7697, type = "equip", slot = "ring", client_version = 810}, -- family signet ring
-	{itemid = 7697, type = "deequip", slot = "ring", client_version = 810}, -- family signet ring
-	{itemid = 7497, type = "equip", slot = "head", client_version = 810}, -- mining helmet
-	{itemid = 7497, type = "deequip", slot = "head", client_version = 810}, -- mining helmet
-	{itemid = 7464, type = "equip", slot = "legs", client_version = 800}, -- mammoth fur shorts
-	{itemid = 7464, type = "deequip", slot = "legs", client_version = 800}, -- mammoth fur shorts
-	{itemid = 7463, type = "equip", slot = "armor", client_version = 800}, -- mammoth fur cape
-	{itemid = 7463, type = "deequip", slot = "armor", client_version = 800}, -- mammoth fur cape
-	{itemid = 7462, type = "equip", slot = "head", client_version = 800}, -- ragnir helmet
-	{itemid = 7462, type = "deequip", slot = "head", client_version = 800}, -- ragnir helmet
-	{itemid = 7461, type = "equip", slot = "head", client_version = 800}, -- krimhorn helmet
-	{itemid = 7461, type = "deequip", slot = "head", client_version = 800}, -- krimhorn helmet
-	{itemid = 7460, type = "equip", slot = "shield", client_version = 800}, -- norse shield
-	{itemid = 7460, type = "deequip", slot = "shield", client_version = 800}, -- norse shield
-	{itemid = 7459, type = "equip", slot = "head", client_version = 800}, -- pair of earmuffs
-	{itemid = 7459, type = "deequip", slot = "head", client_version = 800}, -- pair of earmuffs
-	{itemid = 7458, type = "equip", slot = "head", client_version = 800}, -- fur cap
-	{itemid = 7458, type = "deequip", slot = "head", client_version = 800}, -- fur cap
-	{itemid = 7457, type = "equip", slot = "feet", client_version = 800}, -- fur boots
-	{itemid = 7457, type = "deequip", slot = "feet", client_version = 800}, -- fur boots
-	{itemid = 7456, type = "equip", slot = "hand", client_version = 800}, -- noble axe
-	{itemid = 7456, type = "deequip", slot = "hand", client_version = 800}, -- noble axe
-	{itemid = 7455, type = "equip", slot = "hand", client_version = 800}, -- mythril axe
-	{itemid = 7455, type = "deequip", slot = "hand", client_version = 800}, -- mythril axe
-	{itemid = 7454, type = "equip", slot = "hand", client_version = 800}, -- glorious axe
-	{itemid = 7454, type = "deequip", slot = "hand", client_version = 800}, -- glorious axe
-	{itemid = 7453, type = "equip", slot = "hand", client_version = 800}, -- executioner
-	{itemid = 7453, type = "deequip", slot = "hand", client_version = 800}, -- executioner
-	{itemid = 7452, type = "equip", slot = "hand", client_version = 800}, -- spiked squelcher
-	{itemid = 7452, type = "deequip", slot = "hand", client_version = 800}, -- spiked squelcher
-	{itemid = 7451, type = "equip", slot = "hand", client_version = 800}, -- shadow sceptre
-	{itemid = 7451, type = "deequip", slot = "hand", client_version = 800}, -- shadow sceptre
-	{itemid = 7450, type = "equip", slot = "hand", client_version = 800}, -- hammer of prophecy
-	{itemid = 7450, type = "deequip", slot = "hand", client_version = 800}, -- hammer of prophecy
-	{itemid = 7449, type = "equip", slot = "hand", client_version = 800}, -- crystal sword
-	{itemid = 7449, type = "deequip", slot = "hand", client_version = 800}, -- crystal sword
-	{itemid = 7438, type = "equip", slot = "hand", client_version = 800}, -- elvish bow
-	{itemid = 7438, type = "deequip", slot = "hand", client_version = 800}, -- elvish bow
-	{itemid = 7437, type = "equip", slot = "hand", client_version = 800}, -- sapphire hammer
-	{itemid = 7437, type = "deequip", slot = "hand", client_version = 800}, -- sapphire hammer
-	{itemid = 7436, type = "equip", slot = "hand", client_version = 800}, -- angelic axe
-	{itemid = 7436, type = "deequip", slot = "hand", client_version = 800}, -- angelic axe
-	{itemid = 7435, type = "equip", slot = "hand", client_version = 800}, -- impaler
-	{itemid = 7435, type = "deequip", slot = "hand", client_version = 800}, -- impaler
-	{itemid = 7434, type = "equip", slot = "hand", client_version = 800}, -- royal axe
-	{itemid = 7434, type = "deequip", slot = "hand", client_version = 800}, -- royal axe
-	{itemid = 7433, type = "equip", slot = "hand", client_version = 800}, -- ravenwing
-	{itemid = 7433, type = "deequip", slot = "hand", client_version = 800}, -- ravenwing
-	{itemid = 7432, type = "equip", slot = "hand", client_version = 800}, -- furry club
-	{itemid = 7432, type = "deequip", slot = "hand", client_version = 800}, -- furry club
-	{itemid = 7431, type = "equip", slot = "hand", client_version = 800}, -- demonbone
-	{itemid = 7431, type = "deequip", slot = "hand", client_version = 800}, -- demonbone
-	{itemid = 7430, type = "equip", slot = "hand", client_version = 800}, -- dragonbone staff
-	{itemid = 7430, type = "deequip", slot = "hand", client_version = 800}, -- dragonbone staff
-	{itemid = 7429, type = "equip", slot = "hand", client_version = 800}, -- blessed sceptre
-	{itemid = 7429, type = "deequip", slot = "hand", client_version = 800}, -- blessed sceptre
-	{itemid = 7428, type = "equip", slot = "hand", client_version = 800}, -- bonebreaker
-	{itemid = 7428, type = "deequip", slot = "hand", client_version = 800}, -- bonebreaker
-	{itemid = 7427, type = "equip", slot = "hand", client_version = 800}, -- chaos mace
-	{itemid = 7427, type = "deequip", slot = "hand", client_version = 800}, -- chaos mace
-	{itemid = 7426, type = "equip", slot = "hand", client_version = 800}, -- amber staff
-	{itemid = 7426, type = "deequip", slot = "hand", client_version = 800}, -- amber staff
-	{itemid = 7425, type = "equip", slot = "hand", client_version = 800}, -- taurus mace
-	{itemid = 7425, type = "deequip", slot = "hand", client_version = 800}, -- taurus mace
-	{itemid = 7424, type = "equip", slot = "hand", client_version = 800}, -- lunar staff
-	{itemid = 7424, type = "deequip", slot = "hand", client_version = 800}, -- lunar staff
-	{itemid = 7423, type = "equip", slot = "hand", client_version = 800}, -- skullcrusher
-	{itemid = 7423, type = "deequip", slot = "hand", client_version = 800}, -- skullcrusher
-	{itemid = 7422, type = "equip", slot = "hand", client_version = 800}, -- jade hammer
-	{itemid = 7422, type = "deequip", slot = "hand", client_version = 800}, -- jade hammer
-	{itemid = 7421, type = "equip", slot = "hand", client_version = 800}, -- onyx flail
-	{itemid = 7421, type = "deequip", slot = "hand", client_version = 800}, -- onyx flail
-	{itemid = 7420, type = "equip", slot = "hand", client_version = 800}, -- reaper's axe
-	{itemid = 7420, type = "deequip", slot = "hand", client_version = 800}, -- reaper's axe
-	{itemid = 7419, type = "equip", slot = "hand", client_version = 800}, -- dreaded cleaver
-	{itemid = 7419, type = "deequip", slot = "hand", client_version = 800}, -- dreaded cleaver
-	{itemid = 7418, type = "equip", slot = "hand", client_version = 800}, -- nightmare blade
-	{itemid = 7418, type = "deequip", slot = "hand", client_version = 800}, -- nightmare blade
-	{itemid = 7417, type = "equip", slot = "hand", client_version = 800}, -- runed sword
-	{itemid = 7417, type = "deequip", slot = "hand", client_version = 800}, -- runed sword
-	{itemid = 7416, type = "equip", slot = "hand", client_version = 800}, -- bloody edge
-	{itemid = 7416, type = "deequip", slot = "hand", client_version = 800}, -- bloody edge
-	{itemid = 7415, type = "equip", slot = "hand", client_version = 800}, -- cranial basher
-	{itemid = 7415, type = "deequip", slot = "hand", client_version = 800}, -- cranial basher
-	{itemid = 7414, type = "equip", slot = "hand", client_version = 800}, -- abyss hammer
-	{itemid = 7414, type = "deequip", slot = "hand", client_version = 800}, -- abyss hammer
-	{itemid = 7413, type = "equip", slot = "hand", client_version = 800}, -- titan axe
-	{itemid = 7413, type = "deequip", slot = "hand", client_version = 800}, -- titan axe
-	{itemid = 7412, type = "equip", slot = "hand", client_version = 800}, -- butcher's axe
-	{itemid = 7412, type = "deequip", slot = "hand", client_version = 800}, -- butcher's axe
-	{itemid = 7411, type = "equip", slot = "hand", client_version = 800}, -- ornamented axe
-	{itemid = 7411, type = "deequip", slot = "hand", client_version = 800}, -- ornamented axe
-	{itemid = 7410, type = "equip", slot = "hand", client_version = 800}, -- queen's sceptre
-	{itemid = 7410, type = "deequip", slot = "hand", client_version = 800}, -- queen's sceptre
-	{itemid = 7409, type = "equip", slot = "hand", client_version = 800}, -- northern star
-	{itemid = 7409, type = "deequip", slot = "hand", client_version = 800}, -- northern star
-	{itemid = 7408, type = "equip", slot = "hand", client_version = 800}, -- wyvern fang
-	{itemid = 7408, type = "deequip", slot = "hand", client_version = 800}, -- wyvern fang
-	{itemid = 7407, type = "equip", slot = "hand", client_version = 800}, -- haunted blade
-	{itemid = 7407, type = "deequip", slot = "hand", client_version = 800}, -- haunted blade
-	{itemid = 7406, type = "equip", slot = "hand", client_version = 800}, -- blacksteel sword
-	{itemid = 7406, type = "deequip", slot = "hand", client_version = 800}, -- blacksteel sword
-	{itemid = 7405, type = "equip", slot = "hand", client_version = 800}, -- havoc blade
-	{itemid = 7405, type = "deequip", slot = "hand", client_version = 800}, -- havoc blade
-	{itemid = 7404, type = "equip", slot = "hand", client_version = 800}, -- assassin dagger
-	{itemid = 7404, type = "deequip", slot = "hand", client_version = 800}, -- assassin dagger
-	{itemid = 7403, type = "equip", slot = "hand", client_version = 800}, -- berserker
-	{itemid = 7403, type = "deequip", slot = "hand", client_version = 800}, -- berserker
-	{itemid = 7402, type = "equip", slot = "hand", client_version = 800}, -- dragon slayer
-	{itemid = 7402, type = "deequip", slot = "hand", client_version = 800}, -- dragon slayer
-	{itemid = 7392, type = "equip", slot = "hand", client_version = 800}, -- orcish maul
-	{itemid = 7392, type = "deequip", slot = "hand", client_version = 800}, -- orcish maul
-	{itemid = 7391, type = "equip", slot = "hand", client_version = 800}, -- thaian sword
-	{itemid = 7391, type = "deequip", slot = "hand", client_version = 800}, -- thaian sword
-	{itemid = 7390, type = "equip", slot = "hand", client_version = 800}, -- the justice seeker
-	{itemid = 7390, type = "deequip", slot = "hand", client_version = 800}, -- the justice seeker
-	{itemid = 7389, type = "equip", slot = "hand", client_version = 800}, -- heroic axe
-	{itemid = 7389, type = "deequip", slot = "hand", client_version = 800}, -- heroic axe
-	{itemid = 7388, type = "equip", slot = "hand", client_version = 800}, -- vile axe
-	{itemid = 7388, type = "deequip", slot = "hand", client_version = 800}, -- vile axe
-	{itemid = 7387, type = "equip", slot = "hand", client_version = 800}, -- diamond sceptre
-	{itemid = 7387, type = "deequip", slot = "hand", client_version = 800}, -- diamond sceptre
-	{itemid = 7386, type = "equip", slot = "hand", client_version = 800}, -- mercenary sword
-	{itemid = 7386, type = "deequip", slot = "hand", client_version = 800}, -- mercenary sword
-	{itemid = 7385, type = "equip", slot = "hand", client_version = 800}, -- crimson sword
-	{itemid = 7385, type = "deequip", slot = "hand", client_version = 800}, -- crimson sword
-	{itemid = 7384, type = "equip", slot = "hand", client_version = 800}, -- mystic blade
-	{itemid = 7384, type = "deequip", slot = "hand", client_version = 800}, -- mystic blade
-	{itemid = 7383, type = "equip", slot = "hand", client_version = 800}, -- relic sword
-	{itemid = 7383, type = "deequip", slot = "hand", client_version = 800}, -- relic sword
-	{itemid = 7382, type = "equip", slot = "hand", client_version = 800}, -- demonrage sword
-	{itemid = 7382, type = "deequip", slot = "hand", client_version = 800}, -- demonrage sword
-	{itemid = 7381, type = "equip", slot = "hand", client_version = 800}, -- mammoth whopper
-	{itemid = 7381, type = "deequip", slot = "hand", client_version = 800}, -- mammoth whopper
-	{itemid = 7380, type = "equip", slot = "hand", client_version = 800}, -- headchopper
-	{itemid = 7380, type = "deequip", slot = "hand", client_version = 800}, -- headchopper
-	{itemid = 7379, type = "equip", slot = "hand", client_version = 800}, -- brutetamer's staff
-	{itemid = 7379, type = "deequip", slot = "hand", client_version = 800}, -- brutetamer's staff
-	{itemid = 7378, type = "equip", slot = "hand", client_version = 800}, -- royal spear
-	{itemid = 7378, type = "deequip", slot = "hand", client_version = 800}, -- royal spear
-	{itemid = 7368, type = "equip", slot = "hand", client_version = 800}, -- assassin star
-	{itemid = 7368, type = "deequip", slot = "hand", client_version = 800}, -- assassin star
-	{itemid = 7367, type = "equip", slot = "hand", client_version = 800}, -- enchanted spear
-	{itemid = 7367, type = "deequip", slot = "hand", client_version = 800}, -- enchanted spear
-	{itemid = 7365, type = "equip", slot = "ammo", client_version = 800}, -- onyx arrow
-	{itemid = 7365, type = "deequip", slot = "ammo", client_version = 800}, -- onyx arrow
-	{itemid = 7364, type = "equip", slot = "ammo", client_version = 800}, -- sniper arrow
-	{itemid = 7364, type = "deequip", slot = "ammo", client_version = 800}, -- sniper arrow
-	{itemid = 7363, type = "equip", slot = "ammo", client_version = 800}, -- piercing bolt
-	{itemid = 7363, type = "deequip", slot = "ammo", client_version = 800}, -- piercing bolt
-	{itemid = 7360, type = "additem", client_version = 0}, -- flame of life
-	{itemid = 7359, type = "stepin", client_version = 0}, -- flame of life
-	{itemid = 7343, type = "equip", slot = "backpack", client_version = 800}, -- fur bag
-	{itemid = 7343, type = "deequip", slot = "backpack", client_version = 800}, -- fur bag
-	{itemid = 7342, type = "equip", slot = "backpack", client_version = 800}, -- fur backpack
-	{itemid = 7342, type = "deequip", slot = "backpack", client_version = 800}, -- fur backpack
-	{itemid = 6578, type = "equip", slot = "head", client_version = 792}, -- party hat
-	{itemid = 6578, type = "deequip", slot = "head", client_version = 792}, -- party hat
-	{itemid = 6553, type = "equip", slot = "hand", client_version = 790}, -- ruthless axe
-	{itemid = 6553, type = "deequip", slot = "hand", client_version = 790}, -- ruthless axe
-	{itemid = 6531, type = "equip", slot = "head", client_version = 790}, -- santa hat
-	{itemid = 6531, type = "deequip", slot = "head", client_version = 790}, -- santa hat
-	{itemid = 6529, type = "equip", slot = "ammo", client_version = 790}, -- infernal bolt
-	{itemid = 6529, type = "deequip", slot = "ammo", client_version = 790}, -- infernal bolt
-	{itemid = 6528, type = "equip", slot = "hand", client_version = 790}, -- the avenger
-	{itemid = 6528, type = "deequip", slot = "hand", client_version = 790}, -- the avenger
-	{itemid = 6433, type = "equip", slot = "shield", client_version = 790}, -- necromancer shield
-	{itemid = 6433, type = "deequip", slot = "shield", client_version = 790}, -- necromancer shield
-	{itemid = 6391, type = "equip", slot = "shield", client_version = 790}, -- nightmare shield
-	{itemid = 6391, type = "deequip", slot = "shield", client_version = 790}, -- nightmare shield
-	{itemid = 6301, type = "equip", slot = "ring", client_version = 790}, -- death ring
-	{itemid = 6301, type = "deequip", slot = "ring", client_version = 790}, -- death ring
-	{itemid = 6300, type = "equip", slot = "ring", client_version = 790}, -- death ring
-	{itemid = 6300, type = "deequip", slot = "ring", client_version = 790}, -- death ring
-	{itemid = 6132, type = "equip", slot = "feet", level = 180, client_version = 710}, -- pair of soft boots
-	{itemid = 6132, type = "deequip", slot = "feet", level = 180, client_version = 710}, -- pair of soft boots
-	{itemid = 6131, type = "equip", slot = "shield", client_version = 780}, -- tortoise shield
-	{itemid = 6131, type = "deequip", slot = "shield", client_version = 780}, -- tortoise shield
-	{itemid = 6120, type = "equip", slot = "shield", client_version = 780}, -- Dragha's spellbook
-	{itemid = 6120, type = "deequip", slot = "shield", client_version = 780}, -- Dragha's spellbook
-	{itemid = 6101, type = "equip", slot = "hand", client_version = 780}, -- Ron the Ripper's sabre
-	{itemid = 6101, type = "deequip", slot = "hand", client_version = 780}, -- Ron the Ripper's sabre
-	{itemid = 6096, type = "equip", slot = "head", client_version = 780}, -- pirate hat
-	{itemid = 6096, type = "deequip", slot = "head", client_version = 780}, -- pirate hat
-	{itemid = 6095, type = "equip", slot = "armor", client_version = 780}, -- pirate shirt
-	{itemid = 6095, type = "deequip", slot = "armor", client_version = 780}, -- pirate shirt
-	{itemid = 5950, type = "equip", slot = "backpack", client_version = 780}, -- beach bag
-	{itemid = 5950, type = "deequip", slot = "backpack", client_version = 780}, -- beach bag
-	{itemid = 5949, type = "equip", slot = "backpack", client_version = 780}, -- beach backpack
-	{itemid = 5949, type = "deequip", slot = "backpack", client_version = 780}, -- beach backpack
-	{itemid = 5927, type = "equip", slot = "backpack", client_version = 780}, -- pirate bag
-	{itemid = 5927, type = "deequip", slot = "backpack", client_version = 780}, -- pirate bag
-	{itemid = 5926, type = "equip", slot = "backpack", client_version = 780}, -- pirate backpack
-	{itemid = 5926, type = "deequip", slot = "backpack", client_version = 780}, -- pirate backpack
-	{itemid = 5918, type = "equip", slot = "legs", client_version = 780}, -- pirate knee breeches
-	{itemid = 5918, type = "deequip", slot = "legs", client_version = 780}, -- pirate knee breeches
-	{itemid = 5917, type = "equip", slot = "head", client_version = 780}, -- bandana
-	{itemid = 5917, type = "deequip", slot = "head", client_version = 780}, -- bandana
-	{itemid = 5903, type = "equip", slot = "head", client_version = 780}, -- Ferumbras' hat
-	{itemid = 5903, type = "deequip", slot = "head", client_version = 780}, -- Ferumbras' hat
-	{itemid = 5803, type = "equip", slot = "hand", client_version = 780}, -- arbalest
-	{itemid = 5803, type = "deequip", slot = "hand", client_version = 780}, -- arbalest
-	{itemid = 5801, type = "equip", slot = "backpack", client_version = 860}, -- jewelled backpack
-	{itemid = 5801, type = "deequip", slot = "backpack", client_version = 860}, -- jewelled backpack
-	{itemid = 5741, type = "equip", slot = "head", client_version = 780}, -- skull helmet
-	{itemid = 5741, type = "deequip", slot = "head", client_version = 780}, -- skull helmet
-	{itemid = 5462, type = "equip", slot = "feet", client_version = 780}, -- pirate boots
-	{itemid = 5462, type = "deequip", slot = "feet", client_version = 780}, -- pirate boots
-	{itemid = 5461, type = "equip", slot = "head", client_version = 780}, -- helmet of the deep
-	{itemid = 5461, type = "deequip", slot = "head", client_version = 780}, -- helmet of the deep
-	{itemid = 4847, type = "equip", slot = "armor", client_version = 760}, -- spectral dress
-	{itemid = 4847, type = "deequip", slot = "armor", client_version = 760}, -- spectral dress
-	{itemid = 3983, type = "equip", slot = "legs", client_version = 750}, -- bast skirt
-	{itemid = 3983, type = "deequip", slot = "legs", client_version = 750}, -- bast skirt
-	{itemid = 3982, type = "equip", slot = "feet", client_version = 750}, -- crocodile boots
-	{itemid = 3982, type = "deequip", slot = "feet", client_version = 750}, -- crocodile boots
-	{itemid = 3975, type = "equip", slot = "shield", client_version = 750}, -- salamander shield
-	{itemid = 3975, type = "deequip", slot = "shield", client_version = 750}, -- salamander shield
-	{itemid = 3974, type = "equip", slot = "shield", client_version = 750}, -- sentinel shield
-	{itemid = 3974, type = "deequip", slot = "shield", client_version = 750}, -- sentinel shield
-	{itemid = 3973, type = "equip", slot = "shield", client_version = 750}, -- tusk shield
-	{itemid = 3973, type = "deequip", slot = "shield", client_version = 750}, -- tusk shield
-	{itemid = 3972, type = "equip", slot = "head", client_version = 750}, -- bonelord helmet
-	{itemid = 3972, type = "deequip", slot = "head", client_version = 750}, -- bonelord helmet
-	{itemid = 3971, type = "equip", slot = "head", client_version = 750}, -- charmer's tiara
-	{itemid = 3971, type = "deequip", slot = "head", client_version = 750}, -- charmer's tiara
-	{itemid = 3970, type = "equip", slot = "head", client_version = 750}, -- feather headdress
-	{itemid = 3970, type = "deequip", slot = "head", client_version = 750}, -- feather headdress
-	{itemid = 3969, type = "equip", slot = "head", client_version = 750}, -- horseman helmet
-	{itemid = 3969, type = "deequip", slot = "head", client_version = 750}, -- horseman helmet
-	{itemid = 3968, type = "equip", slot = "armor", client_version = 750}, -- leopard armor
-	{itemid = 3968, type = "deequip", slot = "armor", client_version = 750}, -- leopard armor
-	{itemid = 3967, type = "equip", slot = "head", client_version = 750}, -- tribal mask
-	{itemid = 3967, type = "deequip", slot = "head", client_version = 750}, -- tribal mask
-	{itemid = 3966, type = "equip", slot = "hand", client_version = 750}, -- banana staff
-	{itemid = 3966, type = "deequip", slot = "hand", client_version = 750}, -- banana staff
-	{itemid = 3965, type = "equip", slot = "hand", client_version = 750}, -- hunting spear
-	{itemid = 3965, type = "deequip", slot = "hand", client_version = 750}, -- hunting spear
-	{itemid = 3964, type = "equip", slot = "hand", client_version = 750}, -- ripper lance
-	{itemid = 3964, type = "deequip", slot = "hand", client_version = 750}, -- ripper lance
-	{itemid = 3963, type = "equip", slot = "hand", client_version = 750}, -- templar scytheblade
-	{itemid = 3963, type = "deequip", slot = "hand", client_version = 750}, -- templar scytheblade
-	{itemid = 3962, type = "equip", slot = "hand", client_version = 750}, -- beastslayer axe
-	{itemid = 3962, type = "deequip", slot = "hand", client_version = 750}, -- beastslayer axe
-	{itemid = 3961, type = "equip", slot = "hand", client_version = 750}, -- lich staff
-	{itemid = 3961, type = "deequip", slot = "hand", client_version = 750}, -- lich staff
-	{itemid = 3960, type = "equip", slot = "backpack", client_version = 750}, -- old and used backpack
-	{itemid = 3960, type = "deequip", slot = "backpack", client_version = 750}, -- old and used backpack
-	{itemid = 3940, type = "equip", slot = "backpack", client_version = 750}, -- camouflage backpack
-	{itemid = 3940, type = "deequip", slot = "backpack", client_version = 750}, -- camouflage backpack
-	{itemid = 3939, type = "equip", slot = "backpack", client_version = 750}, -- camouflage bag
-	{itemid = 3939, type = "deequip", slot = "backpack", client_version = 750}, -- camouflage bag
-	{itemid = 2665, type = "equip", slot = "head", client_version = 0}, -- post officer's hat
-	{itemid = 2665, type = "deequip", slot = "head", client_version = 0}, -- post officer's hat
-	{itemid = 2664, type = "equip", slot = "head", vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 0}, -- wood cape
-	{itemid = 2664, type = "deequip", slot = "head", client_version = 0}, -- wood cape
-	{itemid = 2663, type = "equip", slot = "head", client_version = 0}, -- mystic turban
-	{itemid = 2663, type = "deequip", slot = "head", client_version = 0}, -- mystic turban
-	{itemid = 2662, type = "equip", slot = "head", client_version = 0}, -- magician hat
-	{itemid = 2662, type = "deequip", slot = "head", client_version = 0}, -- magician hat
-	{itemid = 2661, type = "equip", slot = "necklace", client_version = 0}, -- scarf
-	{itemid = 2661, type = "deequip", slot = "necklace", client_version = 0}, -- scarf
-	{itemid = 2660, type = "equip", slot = "armor", vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 0}, -- ranger's cloak
-	{itemid = 2660, type = "deequip", slot = "armor", client_version = 0}, -- ranger's cloak
-	{itemid = 2659, type = "equip", slot = "armor", client_version = 0}, -- ball gown
-	{itemid = 2659, type = "deequip", slot = "armor", client_version = 0}, -- ball gown
-	{itemid = 2658, type = "equip", slot = "armor", client_version = 0}, -- white dress
-	{itemid = 2658, type = "deequip", slot = "armor", client_version = 0}, -- white dress
-	{itemid = 2657, type = "equip", slot = "armor", client_version = 0}, -- simple dress
-	{itemid = 2657, type = "deequip", slot = "armor", client_version = 0}, -- simple dress
-	{itemid = 2656, type = "equip", slot = "armor", client_version = 0}, -- blue robe
-	{itemid = 2656, type = "deequip", slot = "armor", client_version = 0}, -- blue robe
-	{itemid = 2655, type = "equip", slot = "armor", client_version = 0}, -- red robe
-	{itemid = 2655, type = "deequip", slot = "armor", client_version = 0}, -- red robe
-	{itemid = 2654, type = "equip", slot = "armor", client_version = 0}, -- cape
-	{itemid = 2654, type = "deequip", slot = "armor", client_version = 0}, -- cape
-	{itemid = 2653, type = "equip", slot = "armor", client_version = 0}, -- red tunic
-	{itemid = 2653, type = "deequip", slot = "armor", client_version = 0}, -- red tunic
-	{itemid = 2652, type = "equip", slot = "armor", client_version = 0}, -- green tunic
-	{itemid = 2652, type = "deequip", slot = "armor", client_version = 0}, -- green tunic
-	{itemid = 2651, type = "equip", slot = "armor", client_version = 0}, -- coat
-	{itemid = 2651, type = "deequip", slot = "armor", client_version = 0}, -- coat
-	{itemid = 2650, type = "equip", slot = "armor", client_version = 0}, -- jacket
-	{itemid = 2650, type = "deequip", slot = "armor", client_version = 0}, -- jacket
-	{itemid = 2649, type = "equip", slot = "legs", client_version = 0}, -- leather legs
-	{itemid = 2649, type = "deequip", slot = "legs", client_version = 0}, -- leather legs
-	{itemid = 2648, type = "equip", slot = "legs", client_version = 0}, -- chain legs
-	{itemid = 2648, type = "deequip", slot = "legs", client_version = 0}, -- chain legs
-	{itemid = 2647, type = "equip", slot = "legs", client_version = 0}, -- plate legs
-	{itemid = 2647, type = "deequip", slot = "legs", client_version = 0}, -- plate legs
-	{itemid = 2646, type = "equip", slot = "feet", client_version = 0}, -- golden boots
-	{itemid = 2646, type = "deequip", slot = "feet", client_version = 0}, -- golden boots
-	{itemid = 2645, type = "equip", slot = "feet", client_version = 0}, -- steel boots
-	{itemid = 2645, type = "deequip", slot = "feet", client_version = 0}, -- steel boots
-	{itemid = 2644, type = "equip", slot = "feet", client_version = 730}, -- bunnyslippers
-	{itemid = 2644, type = "deequip", slot = "feet", client_version = 730}, -- bunnyslippers
-	{itemid = 2643, type = "equip", slot = "feet", client_version = 854}, -- leather boots
-	{itemid = 2643, type = "deequip", slot = "feet", client_version = 854}, -- leather boots
-	{itemid = 2642, type = "equip", slot = "feet", client_version = 0}, -- sandals
-	{itemid = 2642, type = "deequip", slot = "feet", client_version = 0}, -- sandals
-	{itemid = 2641, type = "equip", slot = "feet", client_version = 0}, -- patched boots
-	{itemid = 2641, type = "deequip", slot = "feet", client_version = 0}, -- patched boots
-	{itemid = 2640, type = "equip", slot = "feet", level = 180, client_version = 0}, -- pair of soft boots
-	{itemid = 2640, type = "deequip", slot = "feet", level = 180, client_version = 0}, -- pair of soft boots
-	{itemid = 2550, type = "equip", slot = "hand", client_version = 0}, -- scythe
-	{itemid = 2550, type = "deequip", slot = "hand", client_version = 0}, -- scythe
-	{itemid = 2547, type = "equip", slot = "ammo", client_version = 0}, -- power bolt
-	{itemid = 2547, type = "deequip", slot = "ammo", client_version = 0}, -- power bolt
-	{itemid = 2544, type = "equip", slot = "ammo", client_version = 0}, -- arrow
-	{itemid = 2544, type = "deequip", slot = "ammo", client_version = 0}, -- arrow
-	{itemid = 2543, type = "equip", slot = "ammo", client_version = 0}, -- bolt
-	{itemid = 2543, type = "deequip", slot = "ammo", client_version = 0}, -- bolt
-	{itemid = 2542, type = "equip", slot = "shield", client_version = 0}, -- tempest shield
-	{itemid = 2542, type = "deequip", slot = "shield", client_version = 0}, -- tempest shield
-	{itemid = 2541, type = "equip", slot = "shield", client_version = 0}, -- bone shield
-	{itemid = 2541, type = "deequip", slot = "shield", client_version = 0}, -- bone shield
-	{itemid = 2540, type = "equip", slot = "shield", client_version = 0}, -- scarab shield
-	{itemid = 2540, type = "deequip", slot = "shield", client_version = 0}, -- scarab shield
-	{itemid = 2539, type = "equip", slot = "shield", client_version = 0}, -- phoenix shield
-	{itemid = 2539, type = "deequip", slot = "shield", client_version = 0}, -- phoenix shield
-	{itemid = 2538, type = "equip", slot = "shield", client_version = 0}, -- eagle shield
-	{itemid = 2538, type = "deequip", slot = "shield", client_version = 0}, -- eagle shield
-	{itemid = 2537, type = "equip", slot = "shield", client_version = 0}, -- amazon shield
-	{itemid = 2537, type = "deequip", slot = "shield", client_version = 0}, -- amazon shield
-	{itemid = 2536, type = "equip", slot = "shield", client_version = 0}, -- medusa shield
-	{itemid = 2536, type = "deequip", slot = "shield", client_version = 0}, -- medusa shield
-	{itemid = 2535, type = "equip", slot = "shield", client_version = 0}, -- castle shield
-	{itemid = 2535, type = "deequip", slot = "shield", client_version = 0}, -- castle shield
-	{itemid = 2534, type = "equip", slot = "shield", client_version = 0}, -- vampire shield
-	{itemid = 2534, type = "deequip", slot = "shield", client_version = 0}, -- vampire shield
-	{itemid = 2533, type = "equip", slot = "shield", client_version = 0}, -- griffin shield
-	{itemid = 2533, type = "deequip", slot = "shield", client_version = 0}, -- griffin shield
-	{itemid = 2532, type = "equip", slot = "shield", client_version = 0}, -- ancient shield
-	{itemid = 2532, type = "deequip", slot = "shield", client_version = 0}, -- ancient shield
-	{itemid = 2531, type = "equip", slot = "shield", client_version = 0}, -- viking shield
-	{itemid = 2531, type = "deequip", slot = "shield", client_version = 0}, -- viking shield
-	{itemid = 2530, type = "equip", slot = "shield", client_version = 0}, -- copper shield
-	{itemid = 2530, type = "deequip", slot = "shield", client_version = 0}, -- copper shield
-	{itemid = 2529, type = "equip", slot = "shield", client_version = 0}, -- black shield
-	{itemid = 2529, type = "deequip", slot = "shield", client_version = 0}, -- black shield
-	{itemid = 2528, type = "equip", slot = "shield", client_version = 0}, -- tower shield
-	{itemid = 2528, type = "deequip", slot = "shield", client_version = 0}, -- tower shield
-	{itemid = 2527, type = "equip", slot = "shield", client_version = 0}, -- rose shield
-	{itemid = 2527, type = "deequip", slot = "shield", client_version = 0}, -- rose shield
-	{itemid = 2526, type = "equip", slot = "shield", client_version = 0}, -- studded shield
-	{itemid = 2526, type = "deequip", slot = "shield", client_version = 0}, -- studded shield
-	{itemid = 2525, type = "equip", slot = "shield", client_version = 0}, -- dwarven shield
-	{itemid = 2525, type = "deequip", slot = "shield", client_version = 0}, -- dwarven shield
-	{itemid = 2524, type = "equip", slot = "shield", client_version = 0}, -- ornamented shield
-	{itemid = 2524, type = "deequip", slot = "shield", client_version = 0}, -- ornamented shield
-	{itemid = 2523, type = "equip", slot = "shield", client_version = 0}, -- blessed shield
-	{itemid = 2523, type = "deequip", slot = "shield", client_version = 0}, -- blessed shield
-	{itemid = 2522, type = "equip", slot = "shield", client_version = 0}, -- great shield
-	{itemid = 2522, type = "deequip", slot = "shield", client_version = 0}, -- great shield
-	{itemid = 2521, type = "equip", slot = "shield", client_version = 0}, -- dark shield
-	{itemid = 2521, type = "deequip", slot = "shield", client_version = 0}, -- dark shield
-	{itemid = 2520, type = "equip", slot = "shield", client_version = 0}, -- demon shield
-	{itemid = 2520, type = "deequip", slot = "shield", client_version = 0}, -- demon shield
-	{itemid = 2519, type = "equip", slot = "shield", client_version = 0}, -- crown shield
-	{itemid = 2519, type = "deequip", slot = "shield", client_version = 0}, -- crown shield
-	{itemid = 2518, type = "equip", slot = "shield", client_version = 0}, -- bonelord shield
-	{itemid = 2518, type = "deequip", slot = "shield", client_version = 0}, -- bonelord shield
-	{itemid = 2517, type = "equip", slot = "shield", client_version = 0}, -- shield of honour
-	{itemid = 2517, type = "deequip", slot = "shield", client_version = 0}, -- shield of honour
-	{itemid = 2516, type = "equip", slot = "shield", client_version = 0}, -- dragon shield
-	{itemid = 2516, type = "deequip", slot = "shield", client_version = 0}, -- dragon shield
-	{itemid = 2515, type = "equip", slot = "shield", client_version = 0}, -- guardian shield
-	{itemid = 2515, type = "deequip", slot = "shield", client_version = 0}, -- guardian shield
-	{itemid = 2514, type = "equip", slot = "shield", client_version = 0}, -- mastermind shield
-	{itemid = 2514, type = "deequip", slot = "shield", client_version = 0}, -- mastermind shield
-	{itemid = 2513, type = "equip", slot = "shield", client_version = 0}, -- battle shield
-	{itemid = 2513, type = "deequip", slot = "shield", client_version = 0}, -- battle shield
-	{itemid = 2512, type = "equip", slot = "shield", client_version = 0}, -- wooden shield
-	{itemid = 2512, type = "deequip", slot = "shield", client_version = 0}, -- wooden shield
-	{itemid = 2511, type = "equip", slot = "shield", client_version = 0}, -- brass shield
-	{itemid = 2511, type = "deequip", slot = "shield", client_version = 0}, -- brass shield
-	{itemid = 2510, type = "equip", slot = "shield", client_version = 0}, -- plate shield
-	{itemid = 2510, type = "deequip", slot = "shield", client_version = 0}, -- plate shield
-	{itemid = 2509, type = "equip", slot = "shield", client_version = 0}, -- steel shield
-	{itemid = 2509, type = "deequip", slot = "shield", client_version = 0}, -- steel shield
-	{itemid = 2508, type = "equip", slot = "armor", client_version = 0}, -- native armor
-	{itemid = 2508, type = "deequip", slot = "armor", client_version = 0}, -- native armor
-	{itemid = 2507, type = "equip", slot = "legs", client_version = 0}, -- elven legs
-	{itemid = 2507, type = "deequip", slot = "legs", client_version = 0}, -- elven legs
-	{itemid = 2506, type = "equip", slot = "head", client_version = 0}, -- dragon scale helmet
-	{itemid = 2506, type = "deequip", slot = "head", client_version = 0}, -- dragon scale helmet
-	{itemid = 2505, type = "equip", slot = "armor", client_version = 0}, -- elven mail
-	{itemid = 2505, type = "deequip", slot = "armor", client_version = 0}, -- elven mail
-	{itemid = 2504, type = "equip", slot = "legs", client_version = 0}, -- dwarven legs
-	{itemid = 2504, type = "deequip", slot = "legs", client_version = 0}, -- dwarven legs
-	{itemid = 2503, type = "equip", slot = "armor", client_version = 0}, -- dwarven armor
-	{itemid = 2503, type = "deequip", slot = "armor", client_version = 0}, -- dwarven armor
-	{itemid = 2502, type = "equip", slot = "head", client_version = 0}, -- dwarven helmet
-	{itemid = 2502, type = "deequip", slot = "head", client_version = 0}, -- dwarven helmet
-	{itemid = 2501, type = "equip", slot = "head", client_version = 0}, -- ceremonial mask
-	{itemid = 2501, type = "deequip", slot = "head", client_version = 0}, -- ceremonial mask
-	{itemid = 2500, type = "equip", slot = "armor", level = 60, vocation = {{"Paladin", true}, {"Royal Paladin"}}, client_version = 0}, -- amazon armor
-	{itemid = 2500, type = "deequip", slot = "armor", level = 60, client_version = 1094}, -- amazon armor
-	{itemid = 2499, type = "equip", slot = "head", client_version = 730}, -- amazon helmet
-	{itemid = 2499, type = "deequip", slot = "head", client_version = 730}, -- amazon helmet
-	{itemid = 2498, type = "equip", slot = "head", client_version = 0}, -- royal helmet
-	{itemid = 2498, type = "deequip", slot = "head", client_version = 0}, -- royal helmet
-	{itemid = 2497, type = "equip", slot = "head", client_version = 0}, -- crusader helmet
-	{itemid = 2497, type = "deequip", slot = "head", client_version = 0}, -- crusader helmet
-	{itemid = 2496, type = "equip", slot = "head", client_version = 0}, -- horned helmet
-	{itemid = 2496, type = "deequip", slot = "head", client_version = 0}, -- horned helmet
-	{itemid = 2495, type = "equip", slot = "legs", client_version = 0}, -- demon legs
-	{itemid = 2495, type = "deequip", slot = "legs", client_version = 0}, -- demon legs
-	{itemid = 2494, type = "equip", slot = "armor", client_version = 0}, -- demon armor
-	{itemid = 2494, type = "deequip", slot = "armor", client_version = 0}, -- demon armor
-	{itemid = 2493, type = "equip", slot = "head", client_version = 0}, -- demon helmet
-	{itemid = 2493, type = "deequip", slot = "head", client_version = 0}, -- demon helmet
-	{itemid = 2492, type = "equip", slot = "armor", vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 0}, -- dragon scale mail
-	{itemid = 2492, type = "deequip", slot = "armor", client_version = 0}, -- dragon scale mail
-	{itemid = 2491, type = "equip", slot = "head", client_version = 0}, -- crown helmet
-	{itemid = 2491, type = "deequip", slot = "head", client_version = 0}, -- crown helmet
-	{itemid = 2490, type = "equip", slot = "head", client_version = 0}, -- dark helmet
-	{itemid = 2490, type = "deequip", slot = "head", client_version = 0}, -- dark helmet
-	{itemid = 2489, type = "equip", slot = "armor", client_version = 0}, -- dark armor
-	{itemid = 2489, type = "deequip", slot = "armor", client_version = 0}, -- dark armor
-	{itemid = 2488, type = "equip", slot = "legs", vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 0}, -- crown legs
-	{itemid = 2488, type = "deequip", slot = "legs", client_version = 0}, -- crown legs
-	{itemid = 2487, type = "equip", slot = "armor", vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 0}, -- crown armor
-	{itemid = 2487, type = "deequip", slot = "armor", client_version = 0}, -- crown armor
-	{itemid = 2486, type = "equip", slot = "armor", client_version = 0}, -- noble armor
-	{itemid = 2486, type = "deequip", slot = "armor", client_version = 0}, -- noble armor
-	{itemid = 2485, type = "equip", slot = "armor", client_version = 0}, -- doublet
-	{itemid = 2485, type = "deequip", slot = "armor", client_version = 0}, -- doublet
-	{itemid = 2484, type = "equip", slot = "armor", client_version = 0}, -- studded armor
-	{itemid = 2484, type = "deequip", slot = "armor", client_version = 0}, -- studded armor
-	{itemid = 2483, type = "equip", slot = "armor", client_version = 0}, -- scale armor
-	{itemid = 2483, type = "deequip", slot = "armor", client_version = 0}, -- scale armor
-	{itemid = 2482, type = "equip", slot = "head", client_version = 0}, -- studded helmet
-	{itemid = 2482, type = "deequip", slot = "head", client_version = 0}, -- studded helmet
-	{itemid = 2481, type = "equip", slot = "head", client_version = 0}, -- soldier helmet
-	{itemid = 2481, type = "deequip", slot = "head", client_version = 0}, -- soldier helmet
-	{itemid = 2480, type = "equip", slot = "head", client_version = 0}, -- legion helmet
-	{itemid = 2480, type = "deequip", slot = "head", client_version = 0}, -- legion helmet
-	{itemid = 2479, type = "equip", slot = "head", client_version = 0}, -- strange helmet
-	{itemid = 2479, type = "deequip", slot = "head", client_version = 0}, -- strange helmet
-	{itemid = 2478, type = "equip", slot = "legs", client_version = 0}, -- brass legs
-	{itemid = 2478, type = "deequip", slot = "legs", client_version = 0}, -- brass legs
-	{itemid = 2477, type = "equip", slot = "legs", vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 0}, -- knight legs
-	{itemid = 2477, type = "deequip", slot = "legs", client_version = 0}, -- knight legs
-	{itemid = 2476, type = "equip", slot = "armor", vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 0}, -- knight armor
-	{itemid = 2476, type = "deequip", slot = "armor", client_version = 0}, -- knight armor
-	{itemid = 2475, type = "equip", slot = "head", client_version = 0}, -- warrior helmet
-	{itemid = 2475, type = "deequip", slot = "head", client_version = 0}, -- warrior helmet
-	{itemid = 2474, type = "equip", slot = "head", client_version = 0}, -- winged helmet
-	{itemid = 2474, type = "deequip", slot = "head", client_version = 0}, -- winged helmet
-	{itemid = 2473, type = "equip", slot = "head", client_version = 0}, -- viking helmet
-	{itemid = 2473, type = "deequip", slot = "head", client_version = 0}, -- viking helmet
-	{itemid = 2472, type = "equip", slot = "armor", vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 0}, -- magic plate armor
-	{itemid = 2472, type = "deequip", slot = "armor", client_version = 0}, -- magic plate armor
-	{itemid = 2471, type = "equip", slot = "head", client_version = 0}, -- golden helmet
-	{itemid = 2471, type = "deequip", slot = "head", client_version = 0}, -- golden helmet
-	{itemid = 2470, type = "equip", slot = "legs", vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 0}, -- golden legs
-	{itemid = 2470, type = "deequip", slot = "legs", client_version = 0}, -- golden legs
-	{itemid = 2469, type = "equip", slot = "legs", client_version = 0}, -- dragon scale legs
-	{itemid = 2469, type = "deequip", slot = "legs", client_version = 0}, -- dragon scale legs
-	{itemid = 2468, type = "equip", slot = "legs", client_version = 0}, -- studded legs
-	{itemid = 2468, type = "deequip", slot = "legs", client_version = 0}, -- studded legs
-	{itemid = 2467, type = "equip", slot = "armor", client_version = 0}, -- leather armor
-	{itemid = 2467, type = "deequip", slot = "armor", client_version = 0}, -- leather armor
-	{itemid = 2466, type = "equip", slot = "armor", vocation = {{"Knight", true}, {"Paladin", true, true}, {"Elite Knight"}, {"Royal Paladin"}}, client_version = 0}, -- golden armor
-	{itemid = 2466, type = "deequip", slot = "armor", client_version = 0}, -- golden armor
-	{itemid = 2465, type = "equip", slot = "armor", client_version = 0}, -- brass armor
-	{itemid = 2465, type = "deequip", slot = "armor", client_version = 0}, -- brass armor
-	{itemid = 2464, type = "equip", slot = "armor", client_version = 0}, -- chain armor
-	{itemid = 2464, type = "deequip", slot = "armor", client_version = 0}, -- chain armor
-	{itemid = 2463, type = "equip", slot = "armor", client_version = 0}, -- plate armor
-	{itemid = 2463, type = "deequip", slot = "armor", client_version = 0}, -- plate armor
-	{itemid = 2462, type = "equip", slot = "head", client_version = 0}, -- devil helmet
-	{itemid = 2462, type = "deequip", slot = "head", client_version = 0}, -- devil helmet
-	{itemid = 2461, type = "equip", slot = "head", client_version = 0}, -- leather helmet
-	{itemid = 2461, type = "deequip", slot = "head", client_version = 0}, -- leather helmet
-	{itemid = 2460, type = "equip", slot = "head", client_version = 0}, -- brass helmet
-	{itemid = 2460, type = "deequip", slot = "head", client_version = 0}, -- brass helmet
-	{itemid = 2459, type = "equip", slot = "head", client_version = 0}, -- iron helmet
-	{itemid = 2459, type = "deequip", slot = "head", client_version = 0}, -- iron helmet
-	{itemid = 2458, type = "equip", slot = "head", client_version = 0}, -- chain helmet
-	{itemid = 2458, type = "deequip", slot = "head", client_version = 0}, -- chain helmet
-	{itemid = 2457, type = "equip", slot = "head", client_version = 0}, -- steel helmet
-	{itemid = 2457, type = "deequip", slot = "head", client_version = 0}, -- steel helmet
-	{itemid = 2456, type = "equip", slot = "hand", client_version = 0}, -- bow
-	{itemid = 2456, type = "deequip", slot = "hand", client_version = 0}, -- bow
-	{itemid = 2455, type = "equip", slot = "hand", client_version = 0}, -- crossbow
-	{itemid = 2455, type = "deequip", slot = "hand", client_version = 0}, -- crossbow
-	{itemid = 2454, type = "equip", slot = "hand", client_version = 0}, -- war axe
-	{itemid = 2454, type = "deequip", slot = "hand", client_version = 0}, -- war axe
-	{itemid = 2453, type = "equip", slot = "hand", client_version = 0}, -- arcane staff
-	{itemid = 2453, type = "deequip", slot = "hand", client_version = 0}, -- arcane staff
-	{itemid = 2452, type = "equip", slot = "hand", client_version = 0}, -- heavy mace
-	{itemid = 2452, type = "deequip", slot = "hand", client_version = 0}, -- heavy mace
-	{itemid = 2451, type = "equip", slot = "hand", client_version = 0}, -- djinn blade
-	{itemid = 2451, type = "deequip", slot = "hand", client_version = 0}, -- djinn blade
-	{itemid = 2450, type = "equip", slot = "hand", client_version = 0}, -- bone sword
-	{itemid = 2450, type = "deequip", slot = "hand", client_version = 0}, -- bone sword
-	{itemid = 2449, type = "equip", slot = "hand", client_version = 0}, -- bone club
-	{itemid = 2449, type = "deequip", slot = "hand", client_version = 0}, -- bone club
-	{itemid = 2448, type = "equip", slot = "hand", client_version = 0}, -- studded club
-	{itemid = 2448, type = "deequip", slot = "hand", client_version = 0}, -- studded club
-	{itemid = 2447, type = "equip", slot = "hand", client_version = 0}, -- twin axe
-	{itemid = 2447, type = "deequip", slot = "hand", client_version = 0}, -- twin axe
-	{itemid = 2446, type = "equip", slot = "hand", client_version = 0}, -- pharaoh sword
-	{itemid = 2446, type = "deequip", slot = "hand", client_version = 0}, -- pharaoh sword
-	{itemid = 2445, type = "equip", slot = "hand", client_version = 0}, -- crystal mace
-	{itemid = 2445, type = "deequip", slot = "hand", client_version = 0}, -- crystal mace
-	{itemid = 2444, type = "equip", slot = "hand", client_version = 0}, -- hammer of wrath
-	{itemid = 2444, type = "deequip", slot = "hand", client_version = 0}, -- hammer of wrath
-	{itemid = 2443, type = "equip", slot = "hand", client_version = 0}, -- ravager's axe
-	{itemid = 2443, type = "deequip", slot = "hand", client_version = 0}, -- ravager's axe
-	{itemid = 2442, type = "equip", slot = "hand", client_version = 0}, -- heavy machete
-	{itemid = 2442, type = "deequip", slot = "hand", client_version = 0}, -- heavy machete
-	{itemid = 2441, type = "equip", slot = "hand", client_version = 0}, -- daramian axe
-	{itemid = 2441, type = "deequip", slot = "hand", client_version = 0}, -- daramian axe
-	{itemid = 2440, type = "equip", slot = "hand", client_version = 0}, -- daramian waraxe
-	{itemid = 2440, type = "deequip", slot = "hand", client_version = 0}, -- daramian waraxe
-	{itemid = 2439, type = "equip", slot = "hand", client_version = 0}, -- daramian mace
-	{itemid = 2439, type = "deequip", slot = "hand", client_version = 0}, -- daramian mace
-	{itemid = 2438, type = "equip", slot = "hand", client_version = 0}, -- epee
-	{itemid = 2438, type = "deequip", slot = "hand", client_version = 0}, -- epee
-	{itemid = 2437, type = "equip", slot = "hand", client_version = 0}, -- light mace
-	{itemid = 2437, type = "deequip", slot = "hand", client_version = 0}, -- light mace
-	{itemid = 2436, type = "equip", slot = "hand", client_version = 0}, -- skull staff
-	{itemid = 2436, type = "deequip", slot = "hand", client_version = 0}, -- skull staff
-	{itemid = 2435, type = "equip", slot = "hand", client_version = 0}, -- dwarven axe
-	{itemid = 2435, type = "deequip", slot = "hand", client_version = 0}, -- dwarven axe
-	{itemid = 2434, type = "equip", slot = "hand", client_version = 0}, -- dragon hammer
-	{itemid = 2434, type = "deequip", slot = "hand", client_version = 0}, -- dragon hammer
-	{itemid = 2433, type = "equip", slot = "hand", client_version = 0}, -- enchanted staff
-	{itemid = 2433, type = "deequip", slot = "hand", client_version = 0}, -- enchanted staff
-	{itemid = 2432, type = "equip", slot = "hand", client_version = 0}, -- fire axe
-	{itemid = 2432, type = "deequip", slot = "hand", client_version = 0}, -- fire axe
-	{itemid = 2431, type = "equip", slot = "hand", client_version = 0}, -- stonecutter axe
-	{itemid = 2431, type = "deequip", slot = "hand", client_version = 0}, -- stonecutter axe
-	{itemid = 2430, type = "equip", slot = "hand", client_version = 0}, -- knight axe
-	{itemid = 2430, type = "deequip", slot = "hand", client_version = 0}, -- knight axe
-	{itemid = 2429, type = "equip", slot = "hand", client_version = 0}, -- barbarian axe
-	{itemid = 2429, type = "deequip", slot = "hand", client_version = 0}, -- barbarian axe
-	{itemid = 2428, type = "equip", slot = "hand", client_version = 0}, -- orcish axe
-	{itemid = 2428, type = "deequip", slot = "hand", client_version = 0}, -- orcish axe
-	{itemid = 2427, type = "equip", slot = "hand", client_version = 0}, -- guardian halberd
-	{itemid = 2427, type = "deequip", slot = "hand", client_version = 0}, -- guardian halberd
-	{itemid = 2426, type = "equip", slot = "hand", client_version = 0}, -- naginata
-	{itemid = 2426, type = "deequip", slot = "hand", client_version = 0}, -- naginata
-	{itemid = 2425, type = "equip", slot = "hand", client_version = 0}, -- obsidian lance
-	{itemid = 2425, type = "deequip", slot = "hand", client_version = 0}, -- obsidian lance
-	{itemid = 2424, type = "equip", slot = "hand", client_version = 0}, -- silver mace
-	{itemid = 2424, type = "deequip", slot = "hand", client_version = 0}, -- silver mace
-	{itemid = 2423, type = "equip", slot = "hand", client_version = 0}, -- clerical mace
-	{itemid = 2423, type = "deequip", slot = "hand", client_version = 0}, -- clerical mace
-	{itemid = 2422, type = "equip", slot = "hand", client_version = 0}, -- iron hammer
-	{itemid = 2422, type = "deequip", slot = "hand", client_version = 0}, -- iron hammer
-	{itemid = 2421, type = "equip", slot = "hand", client_version = 0}, -- thunder hammer
-	{itemid = 2421, type = "deequip", slot = "hand", client_version = 0}, -- thunder hammer
-	{itemid = 2420, type = "equip", slot = "hand", client_version = 0}, -- machete
-	{itemid = 2420, type = "deequip", slot = "hand", client_version = 0}, -- machete
-	{itemid = 2419, type = "equip", slot = "hand", client_version = 0}, -- scimitar
-	{itemid = 2419, type = "deequip", slot = "hand", client_version = 0}, -- scimitar
-	{itemid = 2418, type = "equip", slot = "hand", client_version = 0}, -- golden sickle
-	{itemid = 2418, type = "deequip", slot = "hand", client_version = 0}, -- golden sickle
-	{itemid = 2417, type = "equip", slot = "hand", client_version = 0}, -- battle hammer
-	{itemid = 2417, type = "deequip", slot = "hand", client_version = 0}, -- battle hammer
-	{itemid = 2416, type = "equip", slot = "hand", client_version = 0}, -- crowbar
-	{itemid = 2416, type = "deequip", slot = "hand", client_version = 0}, -- crowbar
-	{itemid = 2415, type = "equip", slot = "hand", client_version = 0}, -- great axe
-	{itemid = 2415, type = "deequip", slot = "hand", client_version = 0}, -- great axe
-	{itemid = 2414, type = "equip", slot = "hand", client_version = 0}, -- dragon lance
-	{itemid = 2414, type = "deequip", slot = "hand", client_version = 0}, -- dragon lance
-	{itemid = 2413, type = "equip", slot = "hand", client_version = 0}, -- broadsword
-	{itemid = 2413, type = "deequip", slot = "hand", client_version = 0}, -- broadsword
-	{itemid = 2412, type = "equip", slot = "hand", client_version = 0}, -- katana
-	{itemid = 2412, type = "deequip", slot = "hand", client_version = 0}, -- katana
-	{itemid = 2411, type = "equip", slot = "hand", client_version = 0}, -- poison dagger
-	{itemid = 2411, type = "deequip", slot = "hand", client_version = 0}, -- poison dagger
-	{itemid = 2410, type = "equip", slot = "hand", client_version = 0}, -- throwing knife
-	{itemid = 2410, type = "deequip", slot = "hand", client_version = 0}, -- throwing knife
-	{itemid = 2409, type = "equip", slot = "hand", client_version = 0}, -- serpent sword
-	{itemid = 2409, type = "deequip", slot = "hand", client_version = 0}, -- serpent sword
-	{itemid = 2408, type = "equip", slot = "hand", client_version = 0}, -- warlord sword
-	{itemid = 2408, type = "deequip", slot = "hand", client_version = 0}, -- warlord sword
-	{itemid = 2407, type = "equip", slot = "hand", client_version = 0}, -- bright sword
-	{itemid = 2407, type = "deequip", slot = "hand", client_version = 0}, -- bright sword
-	{itemid = 2406, type = "equip", slot = "hand", client_version = 0}, -- short sword
-	{itemid = 2406, type = "deequip", slot = "hand", client_version = 0}, -- short sword
-	{itemid = 2405, type = "equip", slot = "hand", client_version = 0}, -- sickle
-	{itemid = 2405, type = "deequip", slot = "hand", client_version = 0}, -- sickle
-	{itemid = 2404, type = "equip", slot = "hand", client_version = 0}, -- combat knife
-	{itemid = 2404, type = "deequip", slot = "hand", client_version = 0}, -- combat knife
-	{itemid = 2403, type = "equip", slot = "hand", client_version = 0}, -- knife
-	{itemid = 2403, type = "deequip", slot = "hand", client_version = 0}, -- knife
-	{itemid = 2402, type = "equip", slot = "hand", client_version = 0}, -- silver dagger
-	{itemid = 2402, type = "deequip", slot = "hand", client_version = 0}, -- silver dagger
-	{itemid = 2401, type = "equip", slot = "hand", client_version = 0}, -- staff
-	{itemid = 2401, type = "deequip", slot = "hand", client_version = 0}, -- staff
-	{itemid = 2400, type = "equip", slot = "hand", client_version = 0}, -- magic sword
-	{itemid = 2400, type = "deequip", slot = "hand", client_version = 0}, -- magic sword
-	{itemid = 2399, type = "equip", slot = "hand", client_version = 0}, -- throwing star
-	{itemid = 2399, type = "deequip", slot = "hand", client_version = 0}, -- throwing star
-	{itemid = 2398, type = "equip", slot = "hand", client_version = 0}, -- mace
-	{itemid = 2398, type = "deequip", slot = "hand", client_version = 0}, -- mace
-	{itemid = 2397, type = "equip", slot = "hand", client_version = 0}, -- longsword
-	{itemid = 2397, type = "deequip", slot = "hand", client_version = 0}, -- longsword
-	{itemid = 2396, type = "equip", slot = "hand", client_version = 0}, -- ice rapier
-	{itemid = 2396, type = "deequip", slot = "hand", client_version = 0}, -- ice rapier
-	{itemid = 2395, type = "equip", slot = "hand", client_version = 0}, -- carlin sword
-	{itemid = 2395, type = "deequip", slot = "hand", client_version = 0}, -- carlin sword
-	{itemid = 2394, type = "equip", slot = "hand", client_version = 0}, -- morning star
-	{itemid = 2394, type = "deequip", slot = "hand", client_version = 0}, -- morning star
-	{itemid = 2393, type = "equip", slot = "hand", client_version = 0}, -- giant sword
-	{itemid = 2393, type = "deequip", slot = "hand", client_version = 0}, -- giant sword
-	{itemid = 2392, type = "equip", slot = "hand", client_version = 0}, -- fire sword
-	{itemid = 2392, type = "deequip", slot = "hand", client_version = 0}, -- fire sword
-	{itemid = 2391, type = "equip", slot = "hand", client_version = 0}, -- war hammer
-	{itemid = 2391, type = "deequip", slot = "hand", client_version = 0}, -- war hammer
-	{itemid = 2390, type = "equip", slot = "hand", client_version = 0}, -- magic longsword
-	{itemid = 2390, type = "deequip", slot = "hand", client_version = 0}, -- magic longsword
-	{itemid = 2389, type = "equip", slot = "hand", client_version = 0}, -- spear
-	{itemid = 2389, type = "deequip", slot = "hand", client_version = 0}, -- spear
-	{itemid = 2388, type = "equip", slot = "hand", client_version = 0}, -- hatchet
-	{itemid = 2388, type = "deequip", slot = "hand", client_version = 0}, -- hatchet
-	{itemid = 2387, type = "equip", slot = "hand", client_version = 0}, -- double axe
-	{itemid = 2387, type = "deequip", slot = "hand", client_version = 0}, -- double axe
-	{itemid = 2386, type = "equip", slot = "hand", client_version = 0}, -- axe
-	{itemid = 2386, type = "deequip", slot = "hand", client_version = 0}, -- axe
-	{itemid = 2385, type = "equip", slot = "hand", client_version = 0}, -- sabre
-	{itemid = 2385, type = "deequip", slot = "hand", client_version = 0}, -- sabre
-	{itemid = 2384, type = "equip", slot = "hand", client_version = 0}, -- rapier
-	{itemid = 2384, type = "deequip", slot = "hand", client_version = 0}, -- rapier
-	{itemid = 2383, type = "equip", slot = "hand", client_version = 0}, -- spike sword
-	{itemid = 2383, type = "deequip", slot = "hand", client_version = 0}, -- spike sword
-	{itemid = 2382, type = "equip", slot = "hand", client_version = 0}, -- club
-	{itemid = 2382, type = "deequip", slot = "hand", client_version = 0}, -- club
-	{itemid = 2381, type = "equip", slot = "hand", client_version = 0}, -- halberd
-	{itemid = 2381, type = "deequip", slot = "hand", client_version = 0}, -- halberd
-	{itemid = 2380, type = "equip", slot = "hand", client_version = 0}, -- hand axe
-	{itemid = 2380, type = "deequip", slot = "hand", client_version = 0}, -- hand axe
-	{itemid = 2379, type = "equip", slot = "hand", client_version = 0}, -- dagger
-	{itemid = 2379, type = "deequip", slot = "hand", client_version = 0}, -- dagger
-	{itemid = 2378, type = "equip", slot = "hand", client_version = 0}, -- battle axe
-	{itemid = 2378, type = "deequip", slot = "hand", client_version = 0}, -- battle axe
-	{itemid = 2377, type = "equip", slot = "hand", client_version = 0}, -- two handed sword
-	{itemid = 2377, type = "deequip", slot = "hand", client_version = 0}, -- two handed sword
-	{itemid = 2376, type = "equip", slot = "hand", client_version = 0}, -- sword
-	{itemid = 2376, type = "deequip", slot = "hand", client_version = 0}, -- sword
-	{itemid = 2365, type = "equip", slot = "backpack", client_version = 0}, -- backpack of holding
-	{itemid = 2365, type = "deequip", slot = "backpack", client_version = 0}, -- backpack of holding
-	{itemid = 2358, type = "equip", slot = "feet", client_version = 0}, -- boots of waterwalking
-	{itemid = 2358, type = "deequip", slot = "feet", client_version = 0}, -- boots of waterwalking
-	{itemid = 2357, type = "equip", slot = "ring", client_version = 0}, -- ring of wishes
-	{itemid = 2357, type = "deequip", slot = "ring", client_version = 0}, -- ring of wishes
-	{itemid = 2343, type = "equip", slot = "head", client_version = 0}, -- helmet of the ancients
-	{itemid = 2343, type = "deequip", slot = "head", client_version = 0}, -- helmet of the ancients
-	{itemid = 2342, type = "equip", slot = "head", client_version = 0}, -- helmet of the ancients
-	{itemid = 2342, type = "deequip", slot = "head", client_version = 0}, -- helmet of the ancients
-	{itemid = 2339, type = "equip", slot = "head", client_version = 0}, -- damaged helmet
-	{itemid = 2339, type = "deequip", slot = "head", client_version = 0}, -- damaged helmet
-	{itemid = 2323, type = "equip", slot = "head", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 0}, -- hat of the mad
-	{itemid = 2323, type = "deequip", slot = "head", client_version = 0}, -- hat of the mad
-	{itemid = 2321, type = "equip", slot = "hand", client_version = 0}, -- giant smithhammer
-	{itemid = 2321, type = "deequip", slot = "hand", client_version = 0}, -- giant smithhammer
-	{itemid = 2218, type = "equip", slot = "necklace", client_version = 0}, -- paw amulet
-	{itemid = 2218, type = "deequip", slot = "necklace", client_version = 0}, -- paw amulet
-	{itemid = 2216, type = "equip", slot = "ring", client_version = 0}, -- ring of healing
-	{itemid = 2216, type = "deequip", slot = "ring", client_version = 0}, -- ring of healing
-	{itemid = 2215, type = "equip", slot = "ring", client_version = 0}, -- dwarven ring
-	{itemid = 2215, type = "deequip", slot = "ring", client_version = 0}, -- dwarven ring
-	{itemid = 2214, type = "equip", slot = "ring", client_version = 0}, -- ring of healing
-	{itemid = 2214, type = "deequip", slot = "ring", client_version = 0}, -- ring of healing
-	{itemid = 2213, type = "equip", slot = "ring", client_version = 0}, -- dwarven ring
-	{itemid = 2213, type = "deequip", slot = "ring", client_version = 0}, -- dwarven ring
-	{itemid = 2212, type = "equip", slot = "ring", client_version = 0}, -- club ring
-	{itemid = 2212, type = "deequip", slot = "ring", client_version = 0}, -- club ring
-	{itemid = 2211, type = "equip", slot = "ring", client_version = 0}, -- axe ring
-	{itemid = 2211, type = "deequip", slot = "ring", client_version = 0}, -- axe ring
-	{itemid = 2210, type = "equip", slot = "ring", client_version = 0}, -- sword ring
-	{itemid = 2210, type = "deequip", slot = "ring", client_version = 0}, -- sword ring
-	{itemid = 2209, type = "equip", slot = "ring", client_version = 0}, -- club ring
-	{itemid = 2209, type = "deequip", slot = "ring", client_version = 0}, -- club ring
-	{itemid = 2208, type = "equip", slot = "ring", client_version = 0}, -- axe ring
-	{itemid = 2208, type = "deequip", slot = "ring", client_version = 0}, -- axe ring
-	{itemid = 2207, type = "equip", slot = "ring", client_version = 0}, -- sword ring
-	{itemid = 2207, type = "deequip", slot = "ring", client_version = 0}, -- sword ring
-	{itemid = 2206, type = "equip", slot = "ring", client_version = 0}, -- time ring
-	{itemid = 2206, type = "deequip", slot = "ring", client_version = 0}, -- time ring
-	{itemid = 2205, type = "equip", slot = "ring", client_version = 0}, -- life ring
-	{itemid = 2205, type = "deequip", slot = "ring", client_version = 0}, -- life ring
-	{itemid = 2204, type = "equip", slot = "ring", client_version = 0}, -- energy ring
-	{itemid = 2204, type = "deequip", slot = "ring", client_version = 0}, -- energy ring
-	{itemid = 2203, type = "equip", slot = "ring", client_version = 0}, -- power ring
-	{itemid = 2203, type = "deequip", slot = "ring", client_version = 0}, -- power ring
-	{itemid = 2202, type = "equip", slot = "ring", client_version = 0}, -- stealth ring
-	{itemid = 2202, type = "deequip", slot = "ring", client_version = 0}, -- stealth ring
-	{itemid = 2201, type = "equip", slot = "necklace", client_version = 0}, -- dragon necklace
-	{itemid = 2201, type = "deequip", slot = "necklace", client_version = 0}, -- dragon necklace
-	{itemid = 2200, type = "equip", slot = "necklace", client_version = 0}, -- protection amulet
-	{itemid = 2200, type = "deequip", slot = "necklace", client_version = 0}, -- protection amulet
-	{itemid = 2199, type = "equip", slot = "necklace", client_version = 0}, -- garlic necklace
-	{itemid = 2199, type = "deequip", slot = "necklace", client_version = 0}, -- garlic necklace
-	{itemid = 2198, type = "equip", slot = "necklace", client_version = 0}, -- elven amulet
-	{itemid = 2198, type = "deequip", slot = "necklace", client_version = 0}, -- elven amulet
-	{itemid = 2197, type = "equip", slot = "necklace", client_version = 0}, -- stone skin amulet
-	{itemid = 2197, type = "deequip", slot = "necklace", client_version = 0}, -- stone skin amulet
-	{itemid = 2196, type = "equip", slot = "necklace", client_version = 0}, -- amulet of life
-	{itemid = 2196, type = "deequip", slot = "necklace", client_version = 0}, -- amulet of life
-	{itemid = 2195, type = "equip", slot = "feet", client_version = 0}, -- boots of haste
-	{itemid = 2195, type = "deequip", slot = "feet", client_version = 0}, -- boots of haste
-	{itemid = 2191, type = "equip", slot = "hand", level = 13, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 760}, -- wand of dragonbreath
-	{itemid = 2191, type = "deequip", slot = "hand", level = 13, client_version = 760}, -- wand of dragonbreath
-	{itemid = 2190, type = "equip", slot = "hand", level = 6, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 760}, -- wand of vortex
-	{itemid = 2190, type = "deequip", slot = "hand", level = 6, client_version = 760}, -- wand of vortex
-	{itemid = 2189, type = "equip", slot = "hand", level = 26, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 760}, -- wand of cosmic energy
-	{itemid = 2189, type = "deequip", slot = "hand", level = 26, client_version = 760}, -- wand of cosmic energy
-	{itemid = 2188, type = "equip", slot = "hand", level = 19, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 760}, -- wand of decay
-	{itemid = 2188, type = "deequip", slot = "hand", level = 19, client_version = 760}, -- wand of decay
-	{itemid = 2187, type = "equip", slot = "hand", level = 33, vocation = {{"Sorcerer", true}, {"Master Sorcerer"}}, client_version = 760}, -- wand of inferno
-	{itemid = 2187, type = "deequip", slot = "hand", level = 33, client_version = 760}, -- wand of inferno
-	{itemid = 2186, type = "equip", slot = "hand", level = 13, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 760}, -- moonlight rod
-	{itemid = 2186, type = "deequip", slot = "hand", level = 13, client_version = 760}, -- moonlight rod
-	{itemid = 2185, type = "equip", slot = "hand", level = 19, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 760}, -- necrotic rod
-	{itemid = 2185, type = "deequip", slot = "hand", level = 19, client_version = 760}, -- necrotic rod
-	{itemid = 2183, type = "equip", slot = "hand", level = 33, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 760}, -- hailstorm rod
-	{itemid = 2183, type = "deequip", slot = "hand", level = 33, client_version = 760}, -- hailstorm rod
-	{itemid = 2182, type = "equip", slot = "hand", level = 6, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 760}, -- snakebit rod
-	{itemid = 2182, type = "deequip", slot = "hand", level = 6, client_version = 760}, -- snakebit rod
-	{itemid = 2181, type = "equip", slot = "hand", level = 26, vocation = {{"Druid", true}, {"Elder Druid"}}, client_version = 760}, -- terra rod
-	{itemid = 2181, type = "deequip", slot = "hand", level = 26, client_version = 760}, -- terra rod
-	{itemid = 2179, type = "equip", slot = "ring", client_version = 0}, -- gold ring
-	{itemid = 2179, type = "deequip", slot = "ring", client_version = 0}, -- gold ring
-	{itemid = 2175, type = "equip", slot = "shield", vocation = {{"Sorcerer", true}, {"Druid", true, true}, {"Master Sorcerer"}, {"Elder Druid"}}, client_version = 0}, -- spellbook
-	{itemid = 2175, type = "deequip", slot = "shield", client_version = 0}, -- spellbook
-	{itemid = 2173, type = "equip", slot = "necklace", client_version = 0}, -- amulet of loss
-	{itemid = 2173, type = "deequip", slot = "necklace", client_version = 0}, -- amulet of loss
-	{itemid = 2172, type = "equip", slot = "necklace", client_version = 0}, -- bronze amulet
-	{itemid = 2172, type = "deequip", slot = "necklace", client_version = 0}, -- bronze amulet
-	{itemid = 2171, type = "equip", slot = "necklace", client_version = 0}, -- platinum amulet
-	{itemid = 2171, type = "deequip", slot = "necklace", client_version = 0}, -- platinum amulet
-	{itemid = 2170, type = "equip", slot = "necklace", client_version = 0}, -- silver amulet
-	{itemid = 2170, type = "deequip", slot = "necklace", client_version = 0}, -- silver amulet
-	{itemid = 2169, type = "equip", slot = "ring", client_version = 0}, -- time ring
-	{itemid = 2169, type = "deequip", slot = "ring", client_version = 0}, -- time ring
-	{itemid = 2168, type = "equip", slot = "ring", client_version = 0}, -- life ring
-	{itemid = 2168, type = "deequip", slot = "ring", client_version = 0}, -- life ring
-	{itemid = 2167, type = "equip", slot = "ring", client_version = 0}, -- energy ring
-	{itemid = 2167, type = "deequip", slot = "ring", client_version = 0}, -- energy ring
-	{itemid = 2166, type = "equip", slot = "ring", client_version = 0}, -- power ring
-	{itemid = 2166, type = "deequip", slot = "ring", client_version = 0}, -- power ring
-	{itemid = 2165, type = "equip", slot = "ring", client_version = 0}, -- stealth ring
-	{itemid = 2165, type = "deequip", slot = "ring", client_version = 0}, -- stealth ring
-	{itemid = 2164, type = "equip", slot = "ring", client_version = 0}, -- might ring
-	{itemid = 2164, type = "deequip", slot = "ring", client_version = 0}, -- might ring
-	{itemid = 2161, type = "equip", slot = "necklace", client_version = 0}, -- strange talisman
-	{itemid = 2161, type = "deequip", slot = "necklace", client_version = 0}, -- strange talisman
-	{itemid = 2142, type = "equip", slot = "necklace", client_version = 0}, -- ancient amulet
-	{itemid = 2142, type = "deequip", slot = "necklace", client_version = 0}, -- ancient amulet
-	{itemid = 2139, type = "equip", slot = "head", client_version = 0}, -- ancient tiara
-	{itemid = 2139, type = "deequip", slot = "head", client_version = 0}, -- ancient tiara
-	{itemid = 2138, type = "equip", slot = "necklace", client_version = 0}, -- sapphire amulet
-	{itemid = 2138, type = "deequip", slot = "necklace", client_version = 0}, -- sapphire amulet
-	{itemid = 2136, type = "equip", slot = "necklace", client_version = 0}, -- demonbone amulet
-	{itemid = 2136, type = "deequip", slot = "necklace", client_version = 0}, -- demonbone amulet
-	{itemid = 2135, type = "equip", slot = "necklace", client_version = 0}, -- scarab amulet
-	{itemid = 2135, type = "deequip", slot = "necklace", client_version = 0}, -- scarab amulet
-	{itemid = 2133, type = "equip", slot = "necklace", client_version = 0}, -- ruby necklace
-	{itemid = 2133, type = "deequip", slot = "necklace", client_version = 0}, -- ruby necklace
-	{itemid = 2132, type = "equip", slot = "necklace", client_version = 0}, -- silver necklace
-	{itemid = 2132, type = "deequip", slot = "necklace", client_version = 0}, -- silver necklace
-	{itemid = 2131, type = "equip", slot = "necklace", client_version = 0}, -- star amulet
-	{itemid = 2131, type = "deequip", slot = "necklace", client_version = 0}, -- star amulet
-	{itemid = 2130, type = "equip", slot = "necklace", client_version = 0}, -- golden amulet
-	{itemid = 2130, type = "deequip", slot = "necklace", client_version = 0}, -- golden amulet
-	{itemid = 2129, type = "equip", slot = "necklace", client_version = 0}, -- wolf tooth chain
-	{itemid = 2129, type = "deequip", slot = "necklace", client_version = 0}, -- wolf tooth chain
-	{itemid = 2128, type = "equip", slot = "head", client_version = 0}, -- crown
-	{itemid = 2128, type = "deequip", slot = "head", client_version = 0}, -- crown
-	{itemid = 2126, type = "equip", slot = "necklace", client_version = 0}, -- bronze necklace
-	{itemid = 2126, type = "deequip", slot = "necklace", client_version = 0}, -- bronze necklace
-	{itemid = 2125, type = "equip", slot = "necklace", client_version = 0}, -- crystal necklace
-	{itemid = 2125, type = "deequip", slot = "necklace", client_version = 0}, -- crystal necklace
-	{itemid = 2124, type = "equip", slot = "ring", client_version = 0}, -- crystal ring
-	{itemid = 2124, type = "deequip", slot = "ring", client_version = 0}, -- crystal ring
-	{itemid = 2123, type = "equip", slot = "ring", client_version = 0}, -- ring of the sky
-	{itemid = 2123, type = "deequip", slot = "ring", client_version = 0}, -- ring of the sky
-	{itemid = 2121, type = "equip", slot = "ring", client_version = 0}, -- wedding ring
-	{itemid = 2121, type = "deequip", slot = "ring", client_version = 0}, -- wedding ring
-	{itemid = 2111, type = "equip", slot = "hand", client_version = 0}, -- snowball
-	{itemid = 2111, type = "deequip", slot = "hand", client_version = 0}, -- snowball
-	{itemid = 2004, type = "equip", slot = "backpack", client_version = 0}, -- golden backpack
-	{itemid = 2004, type = "deequip", slot = "backpack", client_version = 0}, -- golden backpack
-	{itemid = 2003, type = "equip", slot = "backpack", client_version = 0}, -- grey backpack
-	{itemid = 2003, type = "deequip", slot = "backpack", client_version = 0}, -- grey backpack
-	{itemid = 2002, type = "equip", slot = "backpack", client_version = 0}, -- blue backpack
-	{itemid = 2002, type = "deequip", slot = "backpack", client_version = 0}, -- blue backpack
-	{itemid = 2001, type = "equip", slot = "backpack", client_version = 0}, -- purple backpack
-	{itemid = 2001, type = "deequip", slot = "backpack", client_version = 0}, -- purple backpack
-	{itemid = 2000, type = "equip", slot = "backpack", client_version = 0}, -- red backpack
-	{itemid = 2000, type = "deequip", slot = "backpack", client_version = 0}, -- red backpack
-	{itemid = 1999, type = "equip", slot = "backpack", client_version = 0}, -- yellow backpack
-	{itemid = 1999, type = "deequip", slot = "backpack", client_version = 0}, -- yellow backpack
-	{itemid = 1998, type = "equip", slot = "backpack", client_version = 0}, -- green backpack
-	{itemid = 1998, type = "deequip", slot = "backpack", client_version = 0}, -- green backpack
-	{itemid = 1997, type = "equip", slot = "backpack", client_version = 0}, -- golden bag
-	{itemid = 1997, type = "deequip", slot = "backpack", client_version = 0}, -- golden bag
-	{itemid = 1996, type = "equip", slot = "backpack", client_version = 0}, -- grey bag
-	{itemid = 1996, type = "deequip", slot = "backpack", client_version = 0}, -- grey bag
-	{itemid = 1995, type = "equip", slot = "backpack", client_version = 0}, -- blue bag
-	{itemid = 1995, type = "deequip", slot = "backpack", client_version = 0}, -- blue bag
-	{itemid = 1994, type = "equip", slot = "backpack", client_version = 0}, -- purple bag
-	{itemid = 1994, type = "deequip", slot = "backpack", client_version = 0}, -- purple bag
-	{itemid = 1993, type = "equip", slot = "backpack", client_version = 0}, -- red bag
-	{itemid = 1993, type = "deequip", slot = "backpack", client_version = 0}, -- red bag
-	{itemid = 1992, type = "equip", slot = "backpack", client_version = 0}, -- yellow bag
-	{itemid = 1992, type = "deequip", slot = "backpack", client_version = 0}, -- yellow bag
-	{itemid = 1991, type = "equip", slot = "backpack", client_version = 0}, -- green bag
-	{itemid = 1991, type = "deequip", slot = "backpack", client_version = 0}, -- green bag
-	{itemid = 1988, type = "equip", slot = "backpack", client_version = 0}, -- backpack
-	{itemid = 1988, type = "deequip", slot = "backpack", client_version = 0}, -- backpack
-	{itemid = 1987, type = "equip", slot = "backpack", client_version = 0}, -- bag
-	{itemid = 1987, type = "deequip", slot = "backpack", client_version = 0}, -- bag
-	{itemid = 1507, type = "stepin", client_version = 0}, -- searing fire
-	{itemid = 1507, type = "additem", client_version = 0}, -- searing fire
-	{itemid = 1506, type = "stepin", client_version = 0}, -- searing fire
-	{itemid = 1506, type = "additem", client_version = 0}, -- searing fire
-	{itemid = 1505, type = "stepin", client_version = 0}, -- smoke
-	{itemid = 1505, type = "additem", client_version = 0}, -- smoke
-	{itemid = 1504, type = "stepin", client_version = 0}, -- energy field
-	{itemid = 1504, type = "additem", client_version = 0}, -- energy field
-	{itemid = 1503, type = "stepin", client_version = 0}, -- poison gas
-	{itemid = 1503, type = "additem", client_version = 0}, -- poison gas
-	{itemid = 1502, type = "stepin", client_version = 0}, -- fire field
-	{itemid = 1502, type = "additem", client_version = 0}, -- fire field
-	{itemid = 1501, type = "stepin", client_version = 0}, -- fire field
-	{itemid = 1501, type = "additem", client_version = 0}, -- fire field
-	{itemid = 1500, type = "stepin", client_version = 0}, -- fire field
-	{itemid = 1500, type = "additem", client_version = 0}, -- fire field
-	{itemid = 1499, type = "stepin", client_version = 0}, -- rush wood
-	{itemid = 1499, type = "additem", client_version = 0}, -- rush wood
-	{itemid = 1498, type = "stepin", client_version = 0}, -- magic wall
-	{itemid = 1498, type = "additem", client_version = 0}, -- magic wall
-	{itemid = 1497, type = "stepin", client_version = 0}, -- magic wall
-	{itemid = 1497, type = "additem", client_version = 0}, -- magic wall
-	{itemid = 1496, type = "stepin", client_version = 0}, -- poison field
-	{itemid = 1496, type = "additem", client_version = 0}, -- poison field
-	{itemid = 1495, type = "stepin", client_version = 0}, -- energy field
-	{itemid = 1495, type = "additem", client_version = 0}, -- energy field
-	{itemid = 1494, type = "stepin", client_version = 0}, -- fire field
-	{itemid = 1494, type = "additem", client_version = 0}, -- fire field
-	{itemid = 1493, type = "stepin", client_version = 0}, -- fire field
-	{itemid = 1493, type = "additem", client_version = 0}, -- fire field
-	{itemid = 1492, type = "stepin", client_version = 0}, -- fire field
-	{itemid = 1492, type = "additem", client_version = 0}, -- fire field
-	{itemid = 1491, type = "stepin", client_version = 0}, -- energy field
-	{itemid = 1491, type = "additem", client_version = 0}, -- energy field
-	{itemid = 1490, type = "stepin", client_version = 0}, -- poison field
-	{itemid = 1490, type = "additem", client_version = 0}, -- poison field
-	{itemid = 1489, type = "stepin", client_version = 0}, -- fire field
-	{itemid = 1489, type = "additem", client_version = 0}, -- fire field
-	{itemid = 1488, type = "stepin", client_version = 0}, -- fire field
-	{itemid = 1488, type = "additem", client_version = 0}, -- fire field
-	{itemid = 1487, type = "stepin", client_version = 0}, -- fire field
-	{itemid = 1487, type = "additem", client_version = 0}, -- fire field
-	{itemid = 1425, type = "stepin", client_version = 0}, -- campfire
-	{itemid = 1425, type = "additem", client_version = 0}, -- campfire
-	{itemid = 1424, type = "stepin", client_version = 0}, -- campfire
-	{itemid = 1424, type = "additem", client_version = 0}, -- campfire
-	{itemid = 1423, type = "stepin", client_version = 0}, -- campfire
-	{itemid = 1423, type = "additem", client_version = 0}, -- campfire
-	{itemid = 1294, type = "equip", slot = "hand", client_version = 0}, -- small stone
-	{itemid = 1294, type = "deequip", slot = "hand", client_version = 0} -- small stone
+	{
+		-- ring of souls
+		itemid = 32636,
+		type = "equip",
+		slot = "ring",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- ring of souls
+		itemid = 32636,
+		type = "deequip",
+		slot = "ring",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- ring of souls
+		itemid = 32635,
+		type = "equip",
+		slot = "ring",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- ring of souls
+		itemid = 32635,
+		type = "deequip",
+		slot = "ring",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- spooky hood
+		itemid = 32630,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- spooky hood
+		itemid = 32630,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- ghost chestplate
+		itemid = 32628,
+		type = "equip",
+		slot = "armor",
+		level = 230,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ghost chestplate
+		itemid = 32628,
+		type = "deequip",
+		slot = "armor",
+		level = 230,
+		clientVersion = 0
+	},
+	{
+		-- ring of souls
+		itemid = 32621,
+		type = "equip",
+		slot = "ring",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- ring of souls
+		itemid = 32621,
+		type = "deequip",
+		slot = "ring",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- ghost backpack
+		itemid = 32620,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- ghost backpack
+		itemid = 32620,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- pair of nightmare boots
+		itemid = 32619,
+		type = "equip",
+		slot = "feet",
+		level = 140,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- pair of nightmare boots
+		itemid = 32619,
+		type = "deequip",
+		slot = "feet",
+		level = 140,
+		clientVersion = 0
+	},
+	{
+		-- soulful legs
+		itemid = 32618,
+		type = "equip",
+		slot = "legs",
+		level = 180,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- soulful legs
+		itemid = 32618,
+		type = "deequip",
+		slot = "legs",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- fabulous legs
+		itemid = 32617,
+		type = "equip",
+		slot = "legs",
+		level = 225,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- fabulous legs
+		itemid = 32617,
+		type = "deequip",
+		slot = "legs",
+		level = 225,
+		clientVersion = 0
+	},
+	{
+		-- phantasmal axe
+		itemid = 32616,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- phantasmal axe
+		itemid = 32616,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- burial shroud
+		itemid = 32585,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- burial shroud
+		itemid = 32585,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- meat hammer
+		itemid = 32093,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- meat hammer
+		itemid = 32093,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- note about two souls
+		itemid = 31676,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- note about two souls
+		itemid = 31676,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- the cobra amulet
+		itemid = 31631,
+		type = "equip",
+		slot = "necklace",
+		level = 250,
+		clientVersion = 0
+	},
+	{
+		-- the cobra amulet
+		itemid = 31631,
+		type = "deequip",
+		slot = "necklace",
+		level = 250,
+		clientVersion = 0
+	},
+	{
+		-- winged backpack
+		itemid = 31625,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- winged backpack
+		itemid = 31625,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- blister ring
+		itemid = 31621,
+		type = "equip",
+		slot = "ring",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- blister ring
+		itemid = 31621,
+		type = "deequip",
+		slot = "ring",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- winged boots
+		itemid = 31617,
+		type = "equip",
+		slot = "feet",
+		level = 220,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- winged boots
+		itemid = 31617,
+		type = "deequip",
+		slot = "feet",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- blister ring
+		itemid = 31616,
+		type = "equip",
+		slot = "ring",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- blister ring
+		itemid = 31616,
+		type = "deequip",
+		slot = "ring",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- tagralt blade
+		itemid = 31614,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- tagralt blade
+		itemid = 31614,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- toga mortis
+		itemid = 31583,
+		type = "equip",
+		slot = "armor",
+		level = 220,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- toga mortis
+		itemid = 31583,
+		type = "deequip",
+		slot = "armor",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- galea mortis
+		itemid = 31582,
+		type = "equip",
+		slot = "head",
+		level = 220,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- galea mortis
+		itemid = 31582,
+		type = "deequip",
+		slot = "head",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- bow of cataclysm
+		itemid = 31581,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bow of cataclysm
+		itemid = 31581,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mortal mace
+		itemid = 31580,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mortal mace
+		itemid = 31580,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- embrace of nature
+		itemid = 31579,
+		type = "equip",
+		slot = "armor",
+		level = 220,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- embrace of nature
+		itemid = 31579,
+		type = "deequip",
+		slot = "armor",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- bear skin
+		itemid = 31578,
+		type = "equip",
+		slot = "armor",
+		level = 230,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- bear skin
+		itemid = 31578,
+		type = "deequip",
+		slot = "armor",
+		level = 230,
+		clientVersion = 0
+	},
+	{
+		-- terra helmet
+		itemid = 31577,
+		type = "equip",
+		slot = "head",
+		level = 230,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- terra helmet
+		itemid = 31577,
+		type = "deequip",
+		slot = "head",
+		level = 230,
+		clientVersion = 0
+	},
+	{
+		-- blister ring
+		itemid = 31557,
+		type = "equip",
+		slot = "ring",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- blister ring
+		itemid = 31557,
+		type = "deequip",
+		slot = "ring",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- rainbow amulet
+		itemid = 31556,
+		type = "equip",
+		slot = "necklace",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- rainbow amulet
+		itemid = 31556,
+		type = "deequip",
+		slot = "necklace",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- sphinx tiara
+		itemid = 31438,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- sphinx tiara
+		itemid = 31438,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- gryphon mask
+		itemid = 31433,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- gryphon mask
+		itemid = 31433,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- symbol of sun and sea
+		itemid = 31431,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- symbol of sun and sea
+		itemid = 31431,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- silver mask
+		itemid = 31370,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- silver mask
+		itemid = 31370,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- ring of secret thoughts
+		itemid = 31306,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- ring of secret thoughts
+		itemid = 31306,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- jade amulet
+		itemid = 31268,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- jade amulet
+		itemid = 31268,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- ring of secret thoughts
+		itemid = 31263,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- ring of secret thoughts
+		itemid = 31263,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- amulet of theurgy
+		itemid = 30403,
+		type = "equip",
+		slot = "necklace",
+		level = 220,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- amulet of theurgy
+		itemid = 30403,
+		type = "deequip",
+		slot = "necklace",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- enchanted theurgic amulet
+		itemid = 30402,
+		type = "equip",
+		slot = "necklace",
+		level = 220,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- enchanted theurgic amulet
+		itemid = 30402,
+		type = "deequip",
+		slot = "necklace",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- amulet of theurgy
+		itemid = 30401,
+		type = "equip",
+		slot = "necklace",
+		level = 220,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- amulet of theurgy
+		itemid = 30401,
+		type = "deequip",
+		slot = "necklace",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- cobra rod
+		itemid = 30400,
+		type = "equip",
+		slot = "hand",
+		level = 220,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- cobra rod
+		itemid = 30400,
+		type = "deequip",
+		slot = "hand",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- cobra wand
+		itemid = 30399,
+		type = "equip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- cobra wand
+		itemid = 30399,
+		type = "deequip",
+		slot = "hand",
+		level = 270,
+		clientVersion = 0
+	},
+	{
+		-- cobra sword
+		itemid = 30398,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- cobra sword
+		itemid = 30398,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- cobra hood
+		itemid = 30397,
+		type = "equip",
+		slot = "head",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- cobra hood
+		itemid = 30397,
+		type = "deequip",
+		slot = "head",
+		level = 270,
+		clientVersion = 0
+	},
+	{
+		-- cobra axe
+		itemid = 30396,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- cobra axe
+		itemid = 30396,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- cobra club
+		itemid = 30395,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- cobra club
+		itemid = 30395,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- cobra boots
+		itemid = 30394,
+		type = "equip",
+		slot = "feet",
+		level = 220,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- cobra boots
+		itemid = 30394,
+		type = "deequip",
+		slot = "feet",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- cobra crossbow
+		itemid = 30393,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- cobra crossbow
+		itemid = 30393,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- rainbow necklace
+		itemid = 30323,
+		type = "equip",
+		slot = "necklace",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- rainbow necklace
+		itemid = 30323,
+		type = "deequip",
+		slot = "necklace",
+		level = 220,
+		clientVersion = 0
+	},
+	{
+		-- ice hatchet
+		itemid = 30283,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ice hatchet
+		itemid = 30283,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- frozen claw
+		itemid = 30279,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- frozen claw
+		itemid = 30279,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- the crown of the percht queen
+		itemid = 30276,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- the crown of the percht queen
+		itemid = 30276,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- the crown of the percht queen
+		itemid = 30275,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- the crown of the percht queen
+		itemid = 30275,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- festive backpack
+		itemid = 30197,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- festive backpack
+		itemid = 30197,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- yetislippers
+		itemid = 30196,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- yetislippers
+		itemid = 30196,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- pendulet
+		itemid = 30345,
+		type = "equip",
+		slot = "necklace",
+		level = 180,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- pendulet
+		itemid = 30345,
+		type = "deequip",
+		slot = "necklace",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- enchanted pendulet
+		itemid = 30344,
+		type = "equip",
+		slot = "necklace",
+		level = 180,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- enchanted pendulet
+		itemid = 30344,
+		type = "deequip",
+		slot = "necklace",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- sleep shawl
+		itemid = 30343,
+		type = "equip",
+		slot = "necklace",
+		level = 180,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- sleep shawl
+		itemid = 30343,
+		type = "deequip",
+		slot = "necklace",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- enchanted sleep shawl
+		itemid = 30342,
+		type = "equip",
+		slot = "necklace",
+		level = 180,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- enchanted sleep shawl
+		itemid = 30342,
+		type = "deequip",
+		slot = "necklace",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- shield of endless search
+		itemid = 30181,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- shield of endless search
+		itemid = 30181,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- spirit guide
+		itemid = 29431,
+		type = "equip",
+		slot = "shield",
+		level = 180,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spirit guide
+		itemid = 29431,
+		type = "deequip",
+		slot = "shield",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- ectoplasmic shield
+		itemid = 29430,
+		type = "equip",
+		slot = "shield",
+		level = 180,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ectoplasmic shield
+		itemid = 29430,
+		type = "deequip",
+		slot = "shield",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- dark whispers
+		itemid = 29427,
+		type = "equip",
+		slot = "head",
+		level = 180,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- dark whispers
+		itemid = 29427,
+		type = "deequip",
+		slot = "head",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- brain in a jar
+		itemid = 29426,
+		type = "equip",
+		slot = "shield",
+		level = 180,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- brain in a jar
+		itemid = 29426,
+		type = "deequip",
+		slot = "shield",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- energized limb
+		itemid = 29425,
+		type = "equip",
+		slot = "hand",
+		level = 180,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- energized limb
+		itemid = 29425,
+		type = "deequip",
+		slot = "hand",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- pair of dreamwalkers
+		itemid = 29424,
+		type = "equip",
+		slot = "feet",
+		level = 180,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- pair of dreamwalkers
+		itemid = 29424,
+		type = "deequip",
+		slot = "feet",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- dream shroud
+		itemid = 29423,
+		type = "equip",
+		slot = "armor",
+		level = 180,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- dream shroud
+		itemid = 29423,
+		type = "deequip",
+		slot = "armor",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- winterblade
+		itemid = 29422,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- winterblade
+		itemid = 29422,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- summerblade
+		itemid = 29421,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- summerblade
+		itemid = 29421,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- shoulder plate
+		itemid = 29420,
+		type = "equip",
+		slot = "shield",
+		level = 180,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- shoulder plate
+		itemid = 29420,
+		type = "deequip",
+		slot = "shield",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- resizer
+		itemid = 29419,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- resizer
+		itemid = 29419,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- living armor
+		itemid = 29418,
+		type = "equip",
+		slot = "armor",
+		level = 180,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- living armor
+		itemid = 29418,
+		type = "deequip",
+		slot = "armor",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- living vine bow
+		itemid = 29417,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- living vine bow
+		itemid = 29417,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- golden axe
+		itemid = 29286,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- golden axe
+		itemid = 29286,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- book backpack
+		itemid = 28571,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- book backpack
+		itemid = 28571,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- wand of destruction test
+		itemid = 28479,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- wand of destruction test
+		itemid = 28479,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master bow test
+		itemid = 28478,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master bow test
+		itemid = 28478,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate testtplate
+		itemid = 28475,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- ornate testtplate
+		itemid = 28475,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- sorcerer test weapon
+		itemid = 28466,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sorcerer test weapon
+		itemid = 28466,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bow of destruction test
+		itemid = 28465,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bow of destruction test
+		itemid = 28465,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- test weapon for knights
+		itemid = 28464,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- test weapon for knights
+		itemid = 28464,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sulphurous demonbone
+		itemid = 28832,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sulphurous demonbone
+		itemid = 28832,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- unliving demonbone
+		itemid = 28831,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- unliving demonbone
+		itemid = 28831,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energized demonbone
+		itemid = 28830,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energized demonbone
+		itemid = 28830,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- rotten demonbone
+		itemid = 28829,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- rotten demonbone
+		itemid = 28829,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- deepling fork
+		itemid = 28826,
+		type = "equip",
+		slot = "hand",
+		level = 230,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- deepling fork
+		itemid = 28826,
+		type = "deequip",
+		slot = "hand",
+		level = 230,
+		clientVersion = 0
+	},
+	{
+		-- deepling ceremonial dagger
+		itemid = 28825,
+		type = "equip",
+		slot = "hand",
+		level = 180,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- deepling ceremonial dagger
+		itemid = 28825,
+		type = "deequip",
+		slot = "hand",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- falcon mace
+		itemid = 28725,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- falcon mace
+		itemid = 28725,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- falcon battleaxe
+		itemid = 28724,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- falcon battleaxe
+		itemid = 28724,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- falcon longsword
+		itemid = 28723,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- falcon longsword
+		itemid = 28723,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- falcon escutcheon
+		itemid = 28722,
+		type = "equip",
+		slot = "shield",
+		level = 300,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- falcon escutcheon
+		itemid = 28722,
+		type = "deequip",
+		slot = "shield",
+		level = 300,
+		clientVersion = 0
+	},
+	{
+		-- falcon shield
+		itemid = 28721,
+		type = "equip",
+		slot = "shield",
+		level = 300,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- falcon shield
+		itemid = 28721,
+		type = "deequip",
+		slot = "shield",
+		level = 300,
+		clientVersion = 0
+	},
+	{
+		-- falcon greaves
+		itemid = 28720,
+		type = "equip",
+		slot = "legs",
+		level = 300,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- falcon greaves
+		itemid = 28720,
+		type = "deequip",
+		slot = "legs",
+		level = 300,
+		clientVersion = 0
+	},
+	{
+		-- falcon plate
+		itemid = 28719,
+		type = "equip",
+		slot = "armor",
+		level = 300,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- falcon plate
+		itemid = 28719,
+		type = "deequip",
+		slot = "armor",
+		level = 300,
+		clientVersion = 0
+	},
+	{
+		-- falcon bow
+		itemid = 28718,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- falcon bow
+		itemid = 28718,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- falcon wand
+		itemid = 28717,
+		type = "equip",
+		slot = "hand",
+		level = 300,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- falcon wand
+		itemid = 28717,
+		type = "deequip",
+		slot = "hand",
+		level = 300,
+		clientVersion = 0
+	},
+	{
+		-- falcon rod
+		itemid = 28716,
+		type = "equip",
+		slot = "hand",
+		level = 300,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- falcon rod
+		itemid = 28716,
+		type = "deequip",
+		slot = "hand",
+		level = 300,
+		clientVersion = 0
+	},
+	{
+		-- falcon coif
+		itemid = 28715,
+		type = "equip",
+		slot = "head",
+		level = 300,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- falcon coif
+		itemid = 28715,
+		type = "deequip",
+		slot = "head",
+		level = 300,
+		clientVersion = 0
+	},
+	{
+		-- falcon circlet
+		itemid = 28714,
+		type = "equip",
+		slot = "head",
+		level = 300,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- falcon circlet
+		itemid = 28714,
+		type = "deequip",
+		slot = "head",
+		level = 300,
+		clientVersion = 0
+	},
+	{
+		-- silver chimes
+		itemid = 12126,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- silver chimes
+		itemid = 12126,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- suspicious device
+		itemid = 27653,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- suspicious device
+		itemid = 27653,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- gnome sword
+		itemid = 27651,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- gnome sword
+		itemid = 27651,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- gnome shield
+		itemid = 27650,
+		type = "equip",
+		slot = "shield",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Royal Paladin"},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- gnome shield
+		itemid = 27650,
+		type = "deequip",
+		slot = "shield",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- gnome legs
+		itemid = 27649,
+		type = "equip",
+		slot = "legs",
+		level = 200,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- gnome legs
+		itemid = 27649,
+		type = "deequip",
+		slot = "legs",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- gnome armor
+		itemid = 27648,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- gnome armor
+		itemid = 27648,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- gnome helmet
+		itemid = 27647,
+		type = "equip",
+		slot = "head",
+		level = 200,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- gnome helmet
+		itemid = 27647,
+		type = "deequip",
+		slot = "head",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- foxtail amulet
+		itemid = 27565,
+		type = "equip",
+		slot = "necklace",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- foxtail amulet
+		itemid = 27565,
+		type = "deequip",
+		slot = "necklace",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- mallet handle
+		itemid = 27525,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mallet handle
+		itemid = 27525,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- strange mallet
+		itemid = 27523,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- strange mallet
+		itemid = 27523,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blue spectacles
+		itemid = 27522,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- blue spectacles
+		itemid = 27522,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- rod of destruction
+		itemid = 27458,
+		type = "equip",
+		slot = "hand",
+		level = 200,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- rod of destruction
+		itemid = 27458,
+		type = "deequip",
+		slot = "hand",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- wand of destruction
+		itemid = 27457,
+		type = "equip",
+		slot = "hand",
+		level = 200,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of destruction
+		itemid = 27457,
+		type = "deequip",
+		slot = "hand",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- crossbow of destruction
+		itemid = 27456,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crossbow of destruction
+		itemid = 27456,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bow of destruction
+		itemid = 27455,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bow of destruction
+		itemid = 27455,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hammer of destruction
+		itemid = 27454,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hammer of destruction
+		itemid = 27454,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mace of destruction
+		itemid = 27453,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mace of destruction
+		itemid = 27453,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- chopper of destruction
+		itemid = 27452,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- chopper of destruction
+		itemid = 27452,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- axe of destruction
+		itemid = 27451,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- axe of destruction
+		itemid = 27451,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- slayer of destruction
+		itemid = 27450,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- slayer of destruction
+		itemid = 27450,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blade of destruction
+		itemid = 27449,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blade of destruction
+		itemid = 27449,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- Journal Shield
+		itemid = 26947,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- Journal Shield
+		itemid = 26947,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- reflecting crown
+		itemid = 26190,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- reflecting crown
+		itemid = 26190,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- incandescent crown
+		itemid = 26189,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- incandescent crown
+		itemid = 26189,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- iron crown
+		itemid = 26188,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- iron crown
+		itemid = 26188,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- leaf crown
+		itemid = 26187,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- leaf crown
+		itemid = 26187,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- ornate carving hammer
+		itemid = 26061,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate carving hammer
+		itemid = 26061,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable carving hammer
+		itemid = 26060,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable carving hammer
+		itemid = 26060,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain carving hammer
+		itemid = 26059,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain carving hammer
+		itemid = 26059,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate carving mace
+		itemid = 26058,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate carving mace
+		itemid = 26058,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable carving mace
+		itemid = 26057,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable carving mace
+		itemid = 26057,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain carving mace
+		itemid = 26056,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain carving mace
+		itemid = 26056,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate carving chopper
+		itemid = 26055,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate carving chopper
+		itemid = 26055,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable carving chopper
+		itemid = 26054,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable carving chopper
+		itemid = 26054,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain carving chopper
+		itemid = 26053,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain carving chopper
+		itemid = 26053,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate carving axe
+		itemid = 26052,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate carving axe
+		itemid = 26052,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable carving axe
+		itemid = 26051,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable carving axe
+		itemid = 26051,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain carving axe
+		itemid = 26050,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain carving axe
+		itemid = 26050,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate carving slayer
+		itemid = 26049,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate carving slayer
+		itemid = 26049,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable carving slayer
+		itemid = 26048,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable carving slayer
+		itemid = 26048,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain carving slayer
+		itemid = 26047,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain carving slayer
+		itemid = 26047,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate carving blade
+		itemid = 26046,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate carving blade
+		itemid = 26046,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable carving blade
+		itemid = 26045,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable carving blade
+		itemid = 26045,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain carving blade
+		itemid = 26044,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain carving blade
+		itemid = 26044,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate remedy hammer
+		itemid = 26031,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate remedy hammer
+		itemid = 26031,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable remedy hammer
+		itemid = 26030,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable remedy hammer
+		itemid = 26030,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain remedy hammer
+		itemid = 26029,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain remedy hammer
+		itemid = 26029,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate remedy mace
+		itemid = 26028,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate remedy mace
+		itemid = 26028,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable remedy mace
+		itemid = 26027,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable remedy mace
+		itemid = 26027,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain remedy mace
+		itemid = 26026,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain remedy mace
+		itemid = 26026,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate remedy chopper
+		itemid = 26025,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate remedy chopper
+		itemid = 26025,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable remedy chopper
+		itemid = 26024,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable remedy chopper
+		itemid = 26024,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain remedy chopper
+		itemid = 26023,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain remedy chopper
+		itemid = 26023,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate remedy axe
+		itemid = 26022,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate remedy axe
+		itemid = 26022,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable remedy axe
+		itemid = 26021,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable remedy axe
+		itemid = 26021,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain remedy axe
+		itemid = 26020,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain remedy axe
+		itemid = 26020,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate remedy slayer
+		itemid = 26019,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate remedy slayer
+		itemid = 26019,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable remedy slayer
+		itemid = 26018,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable remedy slayer
+		itemid = 26018,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain remedy slayer
+		itemid = 26017,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain remedy slayer
+		itemid = 26017,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate remedy blade
+		itemid = 26016,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate remedy blade
+		itemid = 26016,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable remedy blade
+		itemid = 26015,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable remedy blade
+		itemid = 26015,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain remedy blade
+		itemid = 26014,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain remedy blade
+		itemid = 26014,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mayhem hammer
+		itemid = 26000,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mayhem hammer
+		itemid = 26000,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable mayhem hammer
+		itemid = 25999,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable mayhem hammer
+		itemid = 25999,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain mayhem hammer
+		itemid = 25998,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain mayhem hammer
+		itemid = 25998,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mayhem mace
+		itemid = 25997,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mayhem mace
+		itemid = 25997,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable mayhem mace
+		itemid = 25996,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable mayhem mace
+		itemid = 25996,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain mayhem mace
+		itemid = 25995,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain mayhem mace
+		itemid = 25995,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mayhem chopper
+		itemid = 25994,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mayhem chopper
+		itemid = 25994,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable mayhem chopper
+		itemid = 25993,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable mayhem chopper
+		itemid = 25993,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain mayhem chopper
+		itemid = 25992,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain mayhem chopper
+		itemid = 25992,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mayhem axe
+		itemid = 25991,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mayhem axe
+		itemid = 25991,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable mayhem axe
+		itemid = 25990,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable mayhem axe
+		itemid = 25990,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain mayhem axe
+		itemid = 25989,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain mayhem axe
+		itemid = 25989,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mayhem slayer
+		itemid = 25988,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mayhem slayer
+		itemid = 25988,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable mayhem slayer
+		itemid = 25987,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable mayhem slayer
+		itemid = 25987,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain mayhem slayer
+		itemid = 25986,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain mayhem slayer
+		itemid = 25986,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mayhem blade
+		itemid = 25985,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mayhem blade
+		itemid = 25985,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable mayhem blade
+		itemid = 25984,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- valuable mayhem blade
+		itemid = 25984,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain mayhem blade
+		itemid = 25983,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plain mayhem blade
+		itemid = 25983,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mathmaster shield (souvenir)
+		itemid = 25982,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- mathmaster shield (souvenir)
+		itemid = 25982,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- energy war hammer replica
+		itemid = 25974,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy war hammer replica
+		itemid = 25974,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy orcish maul replica
+		itemid = 25973,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy orcish maul replica
+		itemid = 25973,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy basher replica
+		itemid = 25972,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy basher replica
+		itemid = 25972,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy crystal mace replica
+		itemid = 25971,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy crystal mace replica
+		itemid = 25971,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy clerical mace replica
+		itemid = 25970,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy clerical mace replica
+		itemid = 25970,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy war axe replica
+		itemid = 25969,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy war axe replica
+		itemid = 25969,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy headchopper replica
+		itemid = 25968,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy headchopper replica
+		itemid = 25968,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy heroic axe replica
+		itemid = 25967,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy heroic axe replica
+		itemid = 25967,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy knight axe replica
+		itemid = 25966,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy knight axe replica
+		itemid = 25966,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy barbarian axe replica
+		itemid = 25965,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy barbarian axe replica
+		itemid = 25965,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy dragon slayer replica
+		itemid = 25964,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy dragon slayer replica
+		itemid = 25964,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy blacksteel replica
+		itemid = 25963,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy blacksteel replica
+		itemid = 25963,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy mystic blade replica
+		itemid = 25962,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy mystic blade replica
+		itemid = 25962,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy relic sword replica
+		itemid = 25961,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy relic sword replica
+		itemid = 25961,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy spike sword replica
+		itemid = 25960,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy spike sword replica
+		itemid = 25960,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth war hammer replica
+		itemid = 25959,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth war hammer replica
+		itemid = 25959,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth orcish maul replica
+		itemid = 25958,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth orcish maul replica
+		itemid = 25958,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth basher replica
+		itemid = 25957,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth basher replica
+		itemid = 25957,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth crystal mace replica
+		itemid = 25956,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth crystal mace replica
+		itemid = 25956,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth clerical mace replica
+		itemid = 25955,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth clerical mace replica
+		itemid = 25955,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth war axe replica
+		itemid = 25954,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth war axe replica
+		itemid = 25954,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth headchopper replica
+		itemid = 25953,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth headchopper replica
+		itemid = 25953,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth heroic axe replica
+		itemid = 25952,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth heroic axe replica
+		itemid = 25952,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth knight axe replica
+		itemid = 25951,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth knight axe replica
+		itemid = 25951,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth barbarian axe replica
+		itemid = 25950,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth barbarian axe replica
+		itemid = 25950,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth dragon slayer replica
+		itemid = 25949,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth dragon slayer replica
+		itemid = 25949,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth blacksteel replica
+		itemid = 25948,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth blacksteel replica
+		itemid = 25948,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth mystic blade replica
+		itemid = 25947,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth mystic blade replica
+		itemid = 25947,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth relic sword replica
+		itemid = 25946,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth relic sword replica
+		itemid = 25946,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth spike sword replica
+		itemid = 25945,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth spike sword replica
+		itemid = 25945,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy war hammer replica
+		itemid = 25944,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy war hammer replica
+		itemid = 25944,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy orcish maul replica
+		itemid = 25943,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy orcish maul replica
+		itemid = 25943,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy basher replica
+		itemid = 25942,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy basher replica
+		itemid = 25942,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy crystal mace replica
+		itemid = 25941,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy crystal mace replica
+		itemid = 25941,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy clerical mace replica
+		itemid = 25940,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy clerical mace replica
+		itemid = 25940,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy war axe replica
+		itemid = 25939,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy war axe replica
+		itemid = 25939,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy headchopper replica
+		itemid = 25938,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy headchopper replica
+		itemid = 25938,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy heroic axe replica
+		itemid = 25937,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy heroic axe replica
+		itemid = 25937,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy knight axe replica
+		itemid = 25936,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy knight axe replica
+		itemid = 25936,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy barbarian axe replica
+		itemid = 25935,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy barbarian axe replica
+		itemid = 25935,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy dragon slayer replica
+		itemid = 25934,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy dragon slayer replica
+		itemid = 25934,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy blacksteel replica
+		itemid = 25933,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy blacksteel replica
+		itemid = 25933,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy mystic blade replica
+		itemid = 25932,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy mystic blade replica
+		itemid = 25932,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy relic sword replica
+		itemid = 25931,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy relic sword replica
+		itemid = 25931,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy spike sword replica
+		itemid = 25930,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy spike sword replica
+		itemid = 25930,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery war hammer replica
+		itemid = 25929,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery war hammer replica
+		itemid = 25929,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery orcish maul replica
+		itemid = 25928,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery orcish maul replica
+		itemid = 25928,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery basher replica
+		itemid = 25927,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery basher replica
+		itemid = 25927,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery crystal mace replica
+		itemid = 25926,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery crystal mace replica
+		itemid = 25926,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery clerical mace replica
+		itemid = 25925,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery clerical mace replica
+		itemid = 25925,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery war axe replica
+		itemid = 25924,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery war axe replica
+		itemid = 25924,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery headchopper replica
+		itemid = 25923,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery headchopper replica
+		itemid = 25923,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery heroic axe replica
+		itemid = 25922,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery heroic axe replica
+		itemid = 25922,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery knight axe replica
+		itemid = 25921,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery knight axe replica
+		itemid = 25921,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery barbarian axe replica
+		itemid = 25920,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery barbarian axe replica
+		itemid = 25920,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery dragon slayer replica
+		itemid = 25919,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery dragon slayer replica
+		itemid = 25919,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery blacksteel replica
+		itemid = 25918,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery blacksteel replica
+		itemid = 25918,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery mystic blade replica
+		itemid = 25917,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery mystic blade replica
+		itemid = 25917,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery relic sword replica
+		itemid = 25916,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery relic sword replica
+		itemid = 25916,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery spike sword replica
+		itemid = 25915,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery spike sword replica
+		itemid = 25915,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blossom bag
+		itemid = 25780,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- blossom bag
+		itemid = 25780,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- swan feather cloak
+		itemid = 25779,
+		type = "equip",
+		slot = "armor",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- swan feather cloak
+		itemid = 25779,
+		type = "deequip",
+		slot = "armor",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- wand of darkness
+		itemid = 25760,
+		type = "equip",
+		slot = "hand",
+		level = 41,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of darkness
+		itemid = 25760,
+		type = "deequip",
+		slot = "hand",
+		level = 41,
+		clientVersion = 0
+	},
+	{
+		-- royal star
+		itemid = 25759,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- royal star
+		itemid = 25759,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- spectral bolt
+		itemid = 25758,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- spectral bolt
+		itemid = 25758,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- leaf star
+		itemid = 25735,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- leaf star
+		itemid = 25735,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dream blossom staff
+		itemid = 25700,
+		type = "equip",
+		slot = "hand",
+		level = 80,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- dream blossom staff
+		itemid = 25700,
+		type = "deequip",
+		slot = "hand",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- wooden spellbook
+		itemid = 25699,
+		type = "equip",
+		slot = "shield",
+		level = 80,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wooden spellbook
+		itemid = 25699,
+		type = "deequip",
+		slot = "shield",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- butterfly ring
+		itemid = 25698,
+		type = "equip",
+		slot = "ring",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- butterfly ring
+		itemid = 25698,
+		type = "deequip",
+		slot = "ring",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- glowing rubbish amulet
+		itemid = 25297,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- glowing rubbish amulet
+		itemid = 25297,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- rubbish amulet
+		itemid = 25296,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- rubbish amulet
+		itemid = 25296,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- porcelain mask
+		itemid = 25088,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- porcelain mask
+		itemid = 25088,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- filthy bunnyslippers
+		itemid = 24409,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- filthy bunnyslippers
+		itemid = 24409,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- rusty winged helmet
+		itemid = 24405,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- rusty winged helmet
+		itemid = 24405,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- tatty Dragon scale legs
+		itemid = 24404,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- tatty Dragon scale legs
+		itemid = 24404,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- chocolatey dragon scale legs
+		itemid = 24402,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- chocolatey dragon scale legs
+		itemid = 24402,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- Ferumbras' Candy Hat
+		itemid = 24397,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- Ferumbras' Candy Hat
+		itemid = 24397,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- birthday backpack
+		itemid = 24395,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- birthday backpack
+		itemid = 24395,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- pillow backpack
+		itemid = 24393,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- pillow backpack
+		itemid = 24393,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- collar of red plasma
+		itemid = 23544,
+		type = "equip",
+		slot = "necklace",
+		level = 150,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- collar of red plasma
+		itemid = 23544,
+		type = "deequip",
+		slot = "necklace",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- collar of green plasma
+		itemid = 23543,
+		type = "equip",
+		slot = "necklace",
+		level = 150,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- collar of green plasma
+		itemid = 23543,
+		type = "deequip",
+		slot = "necklace",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- collar of blue plasma
+		itemid = 23542,
+		type = "equip",
+		slot = "necklace",
+		level = 150,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- collar of blue plasma
+		itemid = 23542,
+		type = "deequip",
+		slot = "necklace",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- ring of red plasma
+		itemid = 23534,
+		type = "equip",
+		slot = "ring",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ring of red plasma
+		itemid = 23534,
+		type = "deequip",
+		slot = "ring",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- ring of red plasma
+		itemid = 23533,
+		type = "equip",
+		slot = "ring",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ring of red plasma
+		itemid = 23533,
+		type = "deequip",
+		slot = "ring",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- ring of green plasma
+		itemid = 23532,
+		type = "equip",
+		slot = "ring",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ring of green plasma
+		itemid = 23532,
+		type = "deequip",
+		slot = "ring",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- ring of green plasma
+		itemid = 23531,
+		type = "equip",
+		slot = "ring",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ring of green plasma
+		itemid = 23531,
+		type = "deequip",
+		slot = "ring",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- ring of blue plasma
+		itemid = 23530,
+		type = "equip",
+		slot = "ring",
+		level = 100,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ring of blue plasma
+		itemid = 23530,
+		type = "deequip",
+		slot = "ring",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- ring of blue plasma
+		itemid = 23529,
+		type = "equip",
+		slot = "ring",
+		level = 100,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ring of blue plasma
+		itemid = 23529,
+		type = "deequip",
+		slot = "ring",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- collar of red plasma
+		itemid = 23528,
+		type = "equip",
+		slot = "necklace",
+		level = 150,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- collar of red plasma
+		itemid = 23528,
+		type = "deequip",
+		slot = "necklace",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- collar of green plasma
+		itemid = 23527,
+		type = "equip",
+		slot = "necklace",
+		level = 150,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- collar of green plasma
+		itemid = 23527,
+		type = "deequip",
+		slot = "necklace",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- collar of blue plasma
+		itemid = 23526,
+		type = "equip",
+		slot = "necklace",
+		level = 150,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- collar of blue plasma
+		itemid = 23526,
+		type = "deequip",
+		slot = "necklace",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- energetic backpack
+		itemid = 23525,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- energetic backpack
+		itemid = 23525,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- void boots
+		itemid = 23477,
+		type = "equip",
+		slot = "feet",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- void boots
+		itemid = 23477,
+		type = "deequip",
+		slot = "feet",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- void boots
+		itemid = 23476,
+		type = "equip",
+		slot = "feet",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- void boots
+		itemid = 23476,
+		type = "deequip",
+		slot = "feet",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- tiara of power
+		itemid = 23475,
+		type = "equip",
+		slot = "head",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- tiara of power
+		itemid = 23475,
+		type = "deequip",
+		slot = "head",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- tiara of power
+		itemid = 23474,
+		type = "equip",
+		slot = "head",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- tiara of power
+		itemid = 23474,
+		type = "deequip",
+		slot = "head",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- rod of carving
+		itemid = 23339,
+		type = "equip",
+		slot = "hand",
+		level = 100,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- rod of carving
+		itemid = 23339,
+		type = "deequip",
+		slot = "hand",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- wand of carving
+		itemid = 23335,
+		type = "equip",
+		slot = "hand",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of carving
+		itemid = 23335,
+		type = "deequip",
+		slot = "hand",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- crossbow of carving
+		itemid = 23331,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crossbow of carving
+		itemid = 23331,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bow of carving
+		itemid = 23327,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bow of carving
+		itemid = 23327,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hammer of carving
+		itemid = 23323,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hammer of carving
+		itemid = 23323,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mace of carving
+		itemid = 23319,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mace of carving
+		itemid = 23319,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- chopper of carving
+		itemid = 23315,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- chopper of carving
+		itemid = 23315,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- axe of carving
+		itemid = 23311,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- axe of carving
+		itemid = 23311,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- slayer of carving
+		itemid = 23307,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- slayer of carving
+		itemid = 23307,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blade of carving
+		itemid = 23303,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blade of carving
+		itemid = 23303,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- rod of remedy
+		itemid = 23299,
+		type = "equip",
+		slot = "hand",
+		level = 100,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- rod of remedy
+		itemid = 23299,
+		type = "deequip",
+		slot = "hand",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- wand of remedy
+		itemid = 23295,
+		type = "equip",
+		slot = "hand",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of remedy
+		itemid = 23295,
+		type = "deequip",
+		slot = "hand",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- crossbow of remedy
+		itemid = 23291,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crossbow of remedy
+		itemid = 23291,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bow of remedy
+		itemid = 23287,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bow of remedy
+		itemid = 23287,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mace of remedy
+		itemid = 23279,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mace of remedy
+		itemid = 23279,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- chopper of remedy
+		itemid = 23275,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- chopper of remedy
+		itemid = 23275,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- axe of remedy
+		itemid = 23271,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- axe of remedy
+		itemid = 23271,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- slayer of remedy
+		itemid = 23267,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- slayer of remedy
+		itemid = 23267,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blade of remedy
+		itemid = 23263,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blade of remedy
+		itemid = 23263,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- rod of mayhem
+		itemid = 23232,
+		type = "equip",
+		slot = "hand",
+		level = 100,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- rod of mayhem
+		itemid = 23232,
+		type = "deequip",
+		slot = "hand",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- wand of mayhem
+		itemid = 23231,
+		type = "equip",
+		slot = "hand",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of mayhem
+		itemid = 23231,
+		type = "deequip",
+		slot = "hand",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- crossbow of mayhem
+		itemid = 23230,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crossbow of mayhem
+		itemid = 23230,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bow of mayhem
+		itemid = 23229,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bow of mayhem
+		itemid = 23229,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hammer of mayhem
+		itemid = 23228,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hammer of mayhem
+		itemid = 23228,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mace of mayhem
+		itemid = 23227,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mace of mayhem
+		itemid = 23227,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- chopper of mayhem
+		itemid = 23226,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- chopper of mayhem
+		itemid = 23226,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- axe of mayhem
+		itemid = 23225,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- axe of mayhem
+		itemid = 23225,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- slayer of mayhem
+		itemid = 23224,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- slayer of mayhem
+		itemid = 23224,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blade of mayhem
+		itemid = 23223,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blade of mayhem
+		itemid = 23223,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- shield of destiny
+		itemid = 22890,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- shield of destiny
+		itemid = 22890,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- shield of destiny
+		itemid = 22889,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- shield of destiny
+		itemid = 22889,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- rift crossbow
+		itemid = 22867,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- rift crossbow
+		itemid = 22867,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- rift bow
+		itemid = 22866,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- rift bow
+		itemid = 22866,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- boots of homecoming
+		itemid = 22774,
+		type = "equip",
+		slot = "feet",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- boots of homecoming
+		itemid = 22774,
+		type = "deequip",
+		slot = "feet",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- boots of homecoming
+		itemid = 22773,
+		type = "equip",
+		slot = "feet",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- boots of homecoming
+		itemid = 22773,
+		type = "deequip",
+		slot = "feet",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- ferumbras' amulet
+		itemid = 22768,
+		type = "equip",
+		slot = "necklace",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- ferumbras' amulet
+		itemid = 22768,
+		type = "deequip",
+		slot = "necklace",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- ferumbras' amulet
+		itemid = 22767,
+		type = "equip",
+		slot = "necklace",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- ferumbras' amulet
+		itemid = 22767,
+		type = "deequip",
+		slot = "necklace",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- ferumbras' staff (enchanted)
+		itemid = 22766,
+		type = "equip",
+		slot = "hand",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ferumbras' staff (enchanted)
+		itemid = 22766,
+		type = "deequip",
+		slot = "hand",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- ferumbras' staff (failed)
+		itemid = 22765,
+		type = "equip",
+		slot = "hand",
+		level = 65,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ferumbras' staff (failed)
+		itemid = 22765,
+		type = "deequip",
+		slot = "hand",
+		level = 65,
+		clientVersion = 0
+	},
+	{
+		-- Ferumbras' staff
+		itemid = 22764,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- Ferumbras' staff
+		itemid = 22764,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- maimer
+		itemid = 22762,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- maimer
+		itemid = 22762,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- Impaler of the igniter
+		itemid = 22760,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- Impaler of the igniter
+		itemid = 22760,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plague bite
+		itemid = 22759,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- plague bite
+		itemid = 22759,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- death gaze
+		itemid = 22758,
+		type = "equip",
+		slot = "shield",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- death gaze
+		itemid = 22758,
+		type = "deequip",
+		slot = "shield",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- shroud of despair
+		itemid = 22757,
+		type = "equip",
+		slot = "head",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- shroud of despair
+		itemid = 22757,
+		type = "deequip",
+		slot = "head",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- treader of torment
+		itemid = 22756,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- treader of torment
+		itemid = 22756,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- book of lies
+		itemid = 22755,
+		type = "equip",
+		slot = "shield",
+		level = 150,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- book of lies
+		itemid = 22755,
+		type = "deequip",
+		slot = "shield",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- visage of the end days
+		itemid = 22754,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- visage of the end days
+		itemid = 22754,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- ancient amulet
+		itemid = 22746,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- ancient amulet
+		itemid = 22746,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- rift lance
+		itemid = 22727,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- rift lance
+		itemid = 22727,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- rift shield
+		itemid = 22726,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- rift shield
+		itemid = 22726,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- rattling gourd
+		itemid = 22651,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- rattling gourd
+		itemid = 22651,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- gourd
+		itemid = 22650,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- gourd
+		itemid = 22650,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- frostmind raiment
+		itemid = 22537,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- frostmind raiment
+		itemid = 22537,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- thundermind raiment
+		itemid = 22536,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- thundermind raiment
+		itemid = 22536,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- earthmind raiment
+		itemid = 22535,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- earthmind raiment
+		itemid = 22535,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- firemind raiment
+		itemid = 22534,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- firemind raiment
+		itemid = 22534,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- frostsoul tabard
+		itemid = 22533,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- frostsoul tabard
+		itemid = 22533,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- thundersoul tabard
+		itemid = 22532,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- thundersoul tabard
+		itemid = 22532,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- earthsoul tabard
+		itemid = 22531,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- earthsoul tabard
+		itemid = 22531,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- firesoul tabard
+		itemid = 22530,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- firesoul tabard
+		itemid = 22530,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- frostheart platemail
+		itemid = 22529,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- frostheart platemail
+		itemid = 22529,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- frostheart hauberk
+		itemid = 22528,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- frostheart hauberk
+		itemid = 22528,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- frostheart cuirass
+		itemid = 22527,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- frostheart cuirass
+		itemid = 22527,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- thunderheart platemail
+		itemid = 22526,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- thunderheart platemail
+		itemid = 22526,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- thunderheart hauberk
+		itemid = 22525,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- thunderheart hauberk
+		itemid = 22525,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- thunderheart cuirass
+		itemid = 22524,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- thunderheart cuirass
+		itemid = 22524,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- earthheart platemail
+		itemid = 22523,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- earthheart platemail
+		itemid = 22523,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- earthheart hauberk
+		itemid = 22522,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- earthheart hauberk
+		itemid = 22522,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- earthheart cuirass
+		itemid = 22521,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- earthheart cuirass
+		itemid = 22521,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- fireheart platemail
+		itemid = 22520,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- fireheart platemail
+		itemid = 22520,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- fireheart hauberk
+		itemid = 22519,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- fireheart hauberk
+		itemid = 22519,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- fireheart cuirass
+		itemid = 22518,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- fireheart cuirass
+		itemid = 22518,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- onyx pendant
+		itemid = 22195,
+		type = "equip",
+		slot = "necklace",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- onyx pendant
+		itemid = 22195,
+		type = "deequip",
+		slot = "necklace",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- shamanic mask
+		itemid = 22192,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- shamanic mask
+		itemid = 22192,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- painted gourd rattle
+		itemid = 22190,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- painted gourd rattle
+		itemid = 22190,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- ogre sceptra
+		itemid = 22183,
+		type = "equip",
+		slot = "hand",
+		level = 37,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ogre sceptra
+		itemid = 22183,
+		type = "deequip",
+		slot = "hand",
+		level = 37,
+		clientVersion = 0
+	},
+	{
+		-- ogre choppa
+		itemid = 22172,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ogre choppa
+		itemid = 22172,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ogre klubba
+		itemid = 22171,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ogre klubba
+		itemid = 22171,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- house silversun's signet ring
+		itemid = 22170,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- house silversun's signet ring
+		itemid = 22170,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- dark wizard's crown
+		itemid = 22154,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- dark wizard's crown
+		itemid = 22154,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- dark wizard's crown
+		itemid = 22153,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- dark wizard's crown
+		itemid = 22153,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- enchanted werewolf amulet
+		itemid = 22134,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- enchanted werewolf amulet
+		itemid = 22134,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- enchanted werewolf helmet
+		itemid = 22130,
+		type = "equip",
+		slot = "head",
+		level = 100,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- enchanted werewolf helmet
+		itemid = 22130,
+		type = "deequip",
+		slot = "head",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- enchanted werewolf helmet
+		itemid = 22129,
+		type = "equip",
+		slot = "head",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- enchanted werewolf helmet
+		itemid = 22129,
+		type = "deequip",
+		slot = "head",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- enchanted werewolf helmet
+		itemid = 22128,
+		type = "equip",
+		slot = "head",
+		level = 100,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- enchanted werewolf helmet
+		itemid = 22128,
+		type = "deequip",
+		slot = "head",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- enchanted werewolf helmet
+		itemid = 22127,
+		type = "equip",
+		slot = "head",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- enchanted werewolf helmet
+		itemid = 22127,
+		type = "deequip",
+		slot = "head",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- wereboar loincloth
+		itemid = 22087,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- wereboar loincloth
+		itemid = 22087,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- badger boots
+		itemid = 22086,
+		type = "equip",
+		slot = "feet",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- badger boots
+		itemid = 22086,
+		type = "deequip",
+		slot = "feet",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- fur armor
+		itemid = 22085,
+		type = "equip",
+		slot = "armor",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- fur armor
+		itemid = 22085,
+		type = "deequip",
+		slot = "armor",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- wolf backpack
+		itemid = 22084,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- wolf backpack
+		itemid = 22084,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- werewolf helmet
+		itemid = 22062,
+		type = "equip",
+		slot = "head",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- werewolf helmet
+		itemid = 22062,
+		type = "deequip",
+		slot = "head",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- werewolf amulet
+		itemid = 22060,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- werewolf amulet
+		itemid = 22060,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- oriental shoes
+		itemid = 21981,
+		type = "equip",
+		slot = "feet",
+		level = 80,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- oriental shoes
+		itemid = 21981,
+		type = "deequip",
+		slot = "feet",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- sweetheart ring
+		itemid = 21955,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- sweetheart ring
+		itemid = 21955,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- crest of the deep seas
+		itemid = 21892,
+		type = "equip",
+		slot = "head",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- crest of the deep seas
+		itemid = 21892,
+		type = "deequip",
+		slot = "head",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- brandon's wedding ring
+		itemid = 21745,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- brandon's wedding ring
+		itemid = 21745,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- simple arrow
+		itemid = 21470,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- simple arrow
+		itemid = 21470,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- war backpack
+		itemid = 21445,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- war backpack
+		itemid = 21445,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- the Lion's Heart
+		itemid = 21439,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- the Lion's Heart
+		itemid = 21439,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- shopping bag
+		itemid = 21411,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- shopping bag
+		itemid = 21411,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- broken wooden shield
+		itemid = 21401,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- broken wooden shield
+		itemid = 21401,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- spellbook of the novice
+		itemid = 21400,
+		type = "equip",
+		slot = "shield",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spellbook of the novice
+		itemid = 21400,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- the chiller
+		itemid = 21350,
+		type = "equip",
+		slot = "hand",
+		level = 1,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- the chiller
+		itemid = 21350,
+		type = "deequip",
+		slot = "hand",
+		level = 1,
+		clientVersion = 0
+	},
+	{
+		-- the scorcher
+		itemid = 21348,
+		type = "equip",
+		slot = "hand",
+		level = 1,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- the scorcher
+		itemid = 21348,
+		type = "deequip",
+		slot = "hand",
+		level = 1,
+		clientVersion = 0
+	},
+	{
+		-- glooth backpack
+		itemid = 21295,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- glooth backpack
+		itemid = 21295,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- feedbag
+		itemid = 21292,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- feedbag
+		itemid = 21292,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- one hit wonder
+		itemid = 21219,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- one hit wonder
+		itemid = 21219,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- glooth amulet
+		itemid = 21183,
+		type = "equip",
+		slot = "necklace",
+		level = 75,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- glooth amulet
+		itemid = 21183,
+		type = "deequip",
+		slot = "necklace",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- glooth axe
+		itemid = 21180,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- glooth axe
+		itemid = 21180,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- glooth blade
+		itemid = 21179,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- glooth blade
+		itemid = 21179,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- glooth club
+		itemid = 21178,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- glooth club
+		itemid = 21178,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- cowtana
+		itemid = 21177,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- cowtana
+		itemid = 21177,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- execowtioner axe
+		itemid = 21176,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- execowtioner axe
+		itemid = 21176,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mino shield
+		itemid = 21175,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- mino shield
+		itemid = 21175,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- mino lance
+		itemid = 21174,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mino lance
+		itemid = 21174,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- moohtant cudgel
+		itemid = 21173,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- moohtant cudgel
+		itemid = 21173,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- glooth whip
+		itemid = 21172,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- glooth whip
+		itemid = 21172,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- metal bat
+		itemid = 21171,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- metal bat
+		itemid = 21171,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- gearwheel chain
+		itemid = 21170,
+		type = "equip",
+		slot = "necklace",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- gearwheel chain
+		itemid = 21170,
+		type = "deequip",
+		slot = "necklace",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- metal spats
+		itemid = 21169,
+		type = "equip",
+		slot = "feet",
+		level = 50,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- metal spats
+		itemid = 21169,
+		type = "deequip",
+		slot = "feet",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- alloy legs
+		itemid = 21168,
+		type = "equip",
+		slot = "legs",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- alloy legs
+		itemid = 21168,
+		type = "deequip",
+		slot = "legs",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- heat core
+		itemid = 21167,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- heat core
+		itemid = 21167,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- mooh'tah plate
+		itemid = 21166,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- mooh'tah plate
+		itemid = 21166,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- rubber cap
+		itemid = 21165,
+		type = "equip",
+		slot = "head",
+		level = 70,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- rubber cap
+		itemid = 21165,
+		type = "deequip",
+		slot = "head",
+		level = 70,
+		clientVersion = 0
+	},
+	{
+		-- glooth cape
+		itemid = 21164,
+		type = "equip",
+		slot = "armor",
+		level = 40,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- glooth cape
+		itemid = 21164,
+		type = "deequip",
+		slot = "armor",
+		level = 40,
+		clientVersion = 0
+	},
+	{
+		-- glooth spear
+		itemid = 21158,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- glooth spear
+		itemid = 21158,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- cake backpack
+		itemid = 20347,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- cake backpack
+		itemid = 20347,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- unstable ring of ending
+		itemid = 20209,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- unstable ring of ending
+		itemid = 20209,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- broken visor
+		itemid = 20184,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- broken visor
+		itemid = 20184,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- ring of ending
+		itemid = 20182,
+		type = "equip",
+		slot = "ring",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- ring of ending
+		itemid = 20182,
+		type = "deequip",
+		slot = "ring",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- eerie song book
+		itemid = 20140,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- eerie song book
+		itemid = 20140,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- umbral master spellbook
+		itemid = 20090,
+		type = "equip",
+		slot = "shield",
+		level = 250,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- umbral master spellbook
+		itemid = 20090,
+		type = "deequip",
+		slot = "shield",
+		level = 250,
+		clientVersion = 0
+	},
+	{
+		-- umbral spellbook
+		itemid = 20089,
+		type = "equip",
+		slot = "shield",
+		level = 150,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- umbral spellbook
+		itemid = 20089,
+		type = "deequip",
+		slot = "shield",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- crude umbral spellbook
+		itemid = 20088,
+		type = "equip",
+		slot = "shield",
+		level = 75,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- crude umbral spellbook
+		itemid = 20088,
+		type = "deequip",
+		slot = "shield",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- umbral master crossbow
+		itemid = 20087,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master crossbow
+		itemid = 20087,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral crossbow
+		itemid = 20086,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral crossbow
+		itemid = 20086,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral crossbow
+		itemid = 20085,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral crossbow
+		itemid = 20085,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master bow
+		itemid = 20084,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master bow
+		itemid = 20084,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral bow
+		itemid = 20083,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral bow
+		itemid = 20083,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral bow
+		itemid = 20082,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral bow
+		itemid = 20082,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master hammer
+		itemid = 20081,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master hammer
+		itemid = 20081,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral hammer
+		itemid = 20080,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral hammer
+		itemid = 20080,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral hammer
+		itemid = 20079,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral hammer
+		itemid = 20079,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master mace
+		itemid = 20078,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master mace
+		itemid = 20078,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral mace
+		itemid = 20077,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral mace
+		itemid = 20077,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral mace
+		itemid = 20076,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral mace
+		itemid = 20076,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master chopper
+		itemid = 20075,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master chopper
+		itemid = 20075,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral chopper
+		itemid = 20074,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral chopper
+		itemid = 20074,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- guardian halberd
+		itemid = 20073,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- guardian halberd
+		itemid = 20073,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master axe
+		itemid = 20072,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master axe
+		itemid = 20072,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral axe
+		itemid = 20071,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral axe
+		itemid = 20071,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral axe
+		itemid = 20070,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral axe
+		itemid = 20070,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master slayer
+		itemid = 20069,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral master slayer
+		itemid = 20069,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral slayer
+		itemid = 20068,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral slayer
+		itemid = 20068,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral slayer
+		itemid = 20067,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral slayer
+		itemid = 20067,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral masterblade
+		itemid = 20066,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral masterblade
+		itemid = 20066,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral blade
+		itemid = 20065,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- umbral blade
+		itemid = 20065,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral blade
+		itemid = 20064,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crude umbral blade
+		itemid = 20064,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- strange good night songs
+		itemid = 20050,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- strange good night songs
+		itemid = 20050,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- furious frock
+		itemid = 19391,
+		type = "equip",
+		slot = "armor",
+		level = 130,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- furious frock
+		itemid = 19391,
+		type = "deequip",
+		slot = "armor",
+		level = 130,
+		clientVersion = 0
+	},
+	{
+		-- vampire silk slippers
+		itemid = 19374,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- vampire silk slippers
+		itemid = 19374,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- haunted mirror piece
+		itemid = 19373,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- haunted mirror piece
+		itemid = 19373,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- goo shell
+		itemid = 19372,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- goo shell
+		itemid = 19372,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- icy culottes
+		itemid = 19366,
+		type = "equip",
+		slot = "legs",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- icy culottes
+		itemid = 19366,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- runic ice shield
+		itemid = 19363,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- runic ice shield
+		itemid = 19363,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- icicle bow
+		itemid = 19362,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icicle bow
+		itemid = 19362,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- horn
+		itemid = 19359,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- horn
+		itemid = 19359,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- albino plate
+		itemid = 19358,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- albino plate
+		itemid = 19358,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- shrunken head necklace
+		itemid = 19357,
+		type = "equip",
+		slot = "necklace",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- shrunken head necklace
+		itemid = 19357,
+		type = "deequip",
+		slot = "necklace",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- triple bolt crossbow
+		itemid = 19356,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- triple bolt crossbow
+		itemid = 19356,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- pannier backpack
+		itemid = 19159,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- pannier backpack
+		itemid = 19159,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- friendship amulet
+		itemid = 19153,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- friendship amulet
+		itemid = 19153,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- vampire's signet ring
+		itemid = 18935,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- vampire's signet ring
+		itemid = 18935,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- spiky club
+		itemid = 17859,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- spiky club
+		itemid = 17859,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- helmet of the lost
+		itemid = 17852,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- helmet of the lost
+		itemid = 17852,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- leather harness
+		itemid = 17846,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- leather harness
+		itemid = 17846,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- buckle
+		itemid = 17829,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- buckle
+		itemid = 17829,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- pair of iron fists
+		itemid = 17828,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- pair of iron fists
+		itemid = 17828,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- swampling club
+		itemid = 17824,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- swampling club
+		itemid = 17824,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- life preserver
+		itemid = 17813,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- life preserver
+		itemid = 17813,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ratana
+		itemid = 17812,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ratana
+		itemid = 17812,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- spike shield
+		itemid = 17810,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- spike shield
+		itemid = 17810,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- sorc and druid staff
+		itemid = 17111,
+		type = "equip",
+		slot = "hand",
+		level = 1,
+		vocation = {
+			{"None", true}
+		},
+		clientVersion = 0
+	},
+	{
+		-- sorc and druid staff
+		itemid = 17111,
+		type = "deequip",
+		slot = "hand",
+		level = 1,
+		clientVersion = 0
+	},
+	{
+		-- mean paladin spear
+		itemid = 17110,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mean paladin spear
+		itemid = 17110,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mean knight sword
+		itemid = 17109,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mean knight sword
+		itemid = 17109,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- prismatic ring
+		itemid = 16264,
+		type = "equip",
+		slot = "ring",
+		level = 120,
+		clientVersion = 0
+	},
+	{
+		-- prismatic ring
+		itemid = 16264,
+		type = "deequip",
+		slot = "ring",
+		level = 120,
+		clientVersion = 0
+	},
+	{
+		-- shiny blade
+		itemid = 16175,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- shiny blade
+		itemid = 16175,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mycological bow
+		itemid = 16164,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mycological bow
+		itemid = 16164,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crystal crossbow
+		itemid = 16163,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crystal crossbow
+		itemid = 16163,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mycological mace
+		itemid = 16162,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mycological mace
+		itemid = 16162,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crystalline axe
+		itemid = 16161,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crystalline axe
+		itemid = 16161,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crystalline sword
+		itemid = 16160,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crystalline sword
+		itemid = 16160,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- envenomed arrow
+		itemid = 16143,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- envenomed arrow
+		itemid = 16143,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- drill bolt
+		itemid = 16142,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- drill bolt
+		itemid = 16142,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- prismatic bolt
+		itemid = 16141,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- prismatic bolt
+		itemid = 16141,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- glacial rod
+		itemid = 16118,
+		type = "equip",
+		slot = "hand",
+		level = 65,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- glacial rod
+		itemid = 16118,
+		type = "deequip",
+		slot = "hand",
+		level = 65,
+		clientVersion = 0
+	},
+	{
+		-- muck rod
+		itemid = 16117,
+		type = "equip",
+		slot = "hand",
+		level = 65,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- muck rod
+		itemid = 16117,
+		type = "deequip",
+		slot = "hand",
+		level = 65,
+		clientVersion = 0
+	},
+	{
+		-- prismatic shield
+		itemid = 16116,
+		type = "equip",
+		slot = "shield",
+		level = 150,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- prismatic shield
+		itemid = 16116,
+		type = "deequip",
+		slot = "shield",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- wand of everblazing
+		itemid = 16115,
+		type = "equip",
+		slot = "hand",
+		level = 65,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of everblazing
+		itemid = 16115,
+		type = "deequip",
+		slot = "hand",
+		level = 65,
+		clientVersion = 0
+	},
+	{
+		-- prismatic ring
+		itemid = 16114,
+		type = "equip",
+		slot = "ring",
+		level = 120,
+		clientVersion = 0
+	},
+	{
+		-- prismatic ring
+		itemid = 16114,
+		type = "deequip",
+		slot = "ring",
+		level = 120,
+		clientVersion = 0
+	},
+	{
+		-- prismatic necklace
+		itemid = 16113,
+		type = "equip",
+		slot = "necklace",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- prismatic necklace
+		itemid = 16113,
+		type = "deequip",
+		slot = "necklace",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- prismatic boots
+		itemid = 16112,
+		type = "equip",
+		slot = "feet",
+		level = 150,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- prismatic boots
+		itemid = 16112,
+		type = "deequip",
+		slot = "feet",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- prismatic legs
+		itemid = 16111,
+		type = "equip",
+		slot = "legs",
+		level = 150,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- prismatic legs
+		itemid = 16111,
+		type = "deequip",
+		slot = "legs",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- prismatic armor
+		itemid = 16110,
+		type = "equip",
+		slot = "armor",
+		level = 120,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- prismatic armor
+		itemid = 16110,
+		type = "deequip",
+		slot = "armor",
+		level = 120,
+		clientVersion = 0
+	},
+	{
+		-- prismatic helmet
+		itemid = 16109,
+		type = "equip",
+		slot = "head",
+		level = 150,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- prismatic helmet
+		itemid = 16109,
+		type = "deequip",
+		slot = "head",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- gill necklace
+		itemid = 16108,
+		type = "equip",
+		slot = "necklace",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- gill necklace
+		itemid = 16108,
+		type = "deequip",
+		slot = "necklace",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- spellbook of vigilance
+		itemid = 16107,
+		type = "equip",
+		slot = "shield",
+		level = 130,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spellbook of vigilance
+		itemid = 16107,
+		type = "deequip",
+		slot = "shield",
+		level = 130,
+		clientVersion = 0
+	},
+	{
+		-- gill legs
+		itemid = 16106,
+		type = "equip",
+		slot = "legs",
+		level = 150,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- gill legs
+		itemid = 16106,
+		type = "deequip",
+		slot = "legs",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- gill coat
+		itemid = 16105,
+		type = "equip",
+		slot = "armor",
+		level = 150,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- gill coat
+		itemid = 16105,
+		type = "deequip",
+		slot = "armor",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- gill gugel
+		itemid = 16104,
+		type = "equip",
+		slot = "head",
+		level = 150,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- gill gugel
+		itemid = 16104,
+		type = "deequip",
+		slot = "head",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- crystal backpack
+		itemid = 16100,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- crystal backpack
+		itemid = 16100,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- mushroom backpack
+		itemid = 16099,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- mushroom backpack
+		itemid = 16099,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- wand of defiance
+		itemid = 16096,
+		type = "equip",
+		slot = "hand",
+		level = 65,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of defiance
+		itemid = 16096,
+		type = "deequip",
+		slot = "hand",
+		level = 65,
+		clientVersion = 0
+	},
+	{
+		-- crystalline arrow
+		itemid = 15793,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- crystalline arrow
+		itemid = 15793,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- crystal bolt
+		itemid = 15792,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- crystal bolt
+		itemid = 15792,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- spellbook of ancient arcana
+		itemid = 14769,
+		type = "equip",
+		slot = "shield",
+		level = 150,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spellbook of ancient arcana
+		itemid = 14769,
+		type = "deequip",
+		slot = "shield",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- thorn spitter
+		itemid = 14768,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- thorn spitter
+		itemid = 14768,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mathmaster shield
+		itemid = 14761,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- mathmaster shield
+		itemid = 14761,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- mathmaster shield
+		itemid = 14760,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- mathmaster shield
+		itemid = 14760,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- anniversary backpack
+		itemid = 14674,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- anniversary backpack
+		itemid = 14674,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- vortex bolt
+		itemid = 14252,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- vortex bolt
+		itemid = 14252,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- tarsal arrow
+		itemid = 14251,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- tarsal arrow
+		itemid = 14251,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- deepling squelcher
+		itemid = 14250,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- deepling squelcher
+		itemid = 14250,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- buggy backpack
+		itemid = 14249,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- buggy backpack
+		itemid = 14249,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- deepling backpack
+		itemid = 14248,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- deepling backpack
+		itemid = 14248,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- ornate crossbow
+		itemid = 14247,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate crossbow
+		itemid = 14247,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hive bow
+		itemid = 14246,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hive bow
+		itemid = 14246,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hive scythe
+		itemid = 14089,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hive scythe
+		itemid = 14089,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- carapace shield
+		itemid = 14088,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- carapace shield
+		itemid = 14088,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- grasshopper legs
+		itemid = 14087,
+		type = "equip",
+		slot = "legs",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- grasshopper legs
+		itemid = 14087,
+		type = "deequip",
+		slot = "legs",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- calopteryx cape
+		itemid = 14086,
+		type = "equip",
+		slot = "armor",
+		level = 80,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- calopteryx cape
+		itemid = 14086,
+		type = "deequip",
+		slot = "armor",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- guardian axe
+		itemid = 14043,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- guardian axe
+		itemid = 14043,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- warrior's shield
+		itemid = 14042,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- warrior's shield
+		itemid = 14042,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- warrior's axe
+		itemid = 14040,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- warrior's axe
+		itemid = 14040,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mace
+		itemid = 14001,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate mace
+		itemid = 14001,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornate shield
+		itemid = 14000,
+		type = "equip",
+		slot = "shield",
+		level = 130,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ornate shield
+		itemid = 14000,
+		type = "deequip",
+		slot = "shield",
+		level = 130,
+		clientVersion = 0
+	},
+	{
+		-- ornate legs
+		itemid = 13999,
+		type = "equip",
+		slot = "legs",
+		level = 185,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ornate legs
+		itemid = 13999,
+		type = "deequip",
+		slot = "legs",
+		level = 185,
+		clientVersion = 0
+	},
+	{
+		-- depth scutum
+		itemid = 13998,
+		type = "equip",
+		slot = "shield",
+		level = 120,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- depth scutum
+		itemid = 13998,
+		type = "deequip",
+		slot = "shield",
+		level = 120,
+		clientVersion = 0
+	},
+	{
+		-- depth calcei
+		itemid = 13997,
+		type = "equip",
+		slot = "feet",
+		level = 150,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- depth calcei
+		itemid = 13997,
+		type = "deequip",
+		slot = "feet",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- depth ocrea
+		itemid = 13996,
+		type = "equip",
+		slot = "legs",
+		level = 130,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- depth ocrea
+		itemid = 13996,
+		type = "deequip",
+		slot = "legs",
+		level = 130,
+		clientVersion = 0
+	},
+	{
+		-- depth galea
+		itemid = 13995,
+		type = "equip",
+		slot = "head",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- depth galea
+		itemid = 13995,
+		type = "deequip",
+		slot = "head",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- depth lorica
+		itemid = 13994,
+		type = "equip",
+		slot = "armor",
+		level = 150,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- depth lorica
+		itemid = 13994,
+		type = "deequip",
+		slot = "armor",
+		level = 150,
+		clientVersion = 0
+	},
+	{
+		-- ornate chestplate
+		itemid = 13993,
+		type = "equip",
+		slot = "armor",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ornate chestplate
+		itemid = 13993,
+		type = "deequip",
+		slot = "armor",
+		level = 200,
+		clientVersion = 0
+	},
+	{
+		-- deepling axe
+		itemid = 13991,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- deepling axe
+		itemid = 13991,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- necklace of the deep
+		itemid = 13990,
+		type = "equip",
+		slot = "necklace",
+		level = 120,
+		clientVersion = 0
+	},
+	{
+		-- necklace of the deep
+		itemid = 13990,
+		type = "deequip",
+		slot = "necklace",
+		level = 120,
+		clientVersion = 0
+	},
+	{
+		-- deepling staff
+		itemid = 13987,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- deepling staff
+		itemid = 13987,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- the Epic Wisdom
+		itemid = 12810,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- the Epic Wisdom
+		itemid = 12810,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- the Epic Wisdom
+		itemid = 12809,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- the Epic Wisdom
+		itemid = 12809,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- shimmer wand
+		itemid = 12741,
+		type = "equip",
+		slot = "hand",
+		level = 40,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- shimmer wand
+		itemid = 12741,
+		type = "deequip",
+		slot = "hand",
+		level = 40,
+		clientVersion = 0
+	},
+	{
+		-- broken ring of ending
+		itemid = 12737,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- broken ring of ending
+		itemid = 12737,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- shimmer bow
+		itemid = 12733,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- shimmer bow
+		itemid = 12733,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- shimmer rod
+		itemid = 12732,
+		type = "equip",
+		slot = "hand",
+		level = 40,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- shimmer rod
+		itemid = 12732,
+		type = "deequip",
+		slot = "hand",
+		level = 40,
+		clientVersion = 0
+	},
+	{
+		-- shimmer sword
+		itemid = 12731,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- shimmer sword
+		itemid = 12731,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- heavy trident
+		itemid = 12683,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- heavy trident
+		itemid = 12683,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- wooden sword
+		itemid = 12673,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- wooden sword
+		itemid = 12673,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- star ring
+		itemid = 12670,
+		type = "equip",
+		slot = "ring",
+		vocation = {
+			{"None", true}
+		},
+		clientVersion = 0
+	},
+	{
+		-- star ring
+		itemid = 12670,
+		type = "deequip",
+		slot = "ring",
+		vocation = {
+			{"None", true}
+		},
+		clientVersion = 0
+	},
+	{
+		-- star ring
+		itemid = 12669,
+		type = "equip",
+		slot = "ring",
+		vocation = {
+			{"None", true}
+		},
+		clientVersion = 0
+	},
+	{
+		-- star ring
+		itemid = 12669,
+		type = "deequip",
+		slot = "ring",
+		vocation = {
+			{"None", true}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of dimensions
+		itemid = 12603,
+		type = "equip",
+		slot = "hand",
+		level = 37,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of dimensions
+		itemid = 12603,
+		type = "deequip",
+		slot = "hand",
+		level = 37,
+		clientVersion = 0
+	},
+	{
+		-- mage's cap
+		itemid = 12599,
+		type = "equip",
+		slot = "head",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- mage's cap
+		itemid = 12599,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- fish tail (equipped)
+		itemid = 11543,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- fish tail (equipped)
+		itemid = 11543,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- golden hyena pendant
+		itemid = 12543,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- golden hyena pendant
+		itemid = 12543,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- golden scorpion pendant
+		itemid = 12542,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- golden scorpion pendant
+		itemid = 12542,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- old cape
+		itemid = 11701,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- old cape
+		itemid = 11701,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- sedge hat
+		itemid = 11700,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- sedge hat
+		itemid = 11700,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- loot bag
+		itemid = 11698,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- loot bag
+		itemid = 11698,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- blade of corruption
+		itemid = 11693,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blade of corruption
+		itemid = 11693,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- snake god's sceptre
+		itemid = 11692,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- snake god's sceptre
+		itemid = 11692,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- snake god's wristguard
+		itemid = 11691,
+		type = "equip",
+		slot = "shield",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- snake god's wristguard
+		itemid = 11691,
+		type = "deequip",
+		slot = "shield",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- draken boots
+		itemid = 4033,
+		type = "equip",
+		slot = "feet",
+		level = 80,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- draken boots
+		itemid = 4033,
+		type = "deequip",
+		slot = "feet",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- elite draken helmet
+		itemid = 11689,
+		type = "equip",
+		slot = "head",
+		level = 100,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- elite draken helmet
+		itemid = 11689,
+		type = "deequip",
+		slot = "head",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- shield of corruption
+		itemid = 11688,
+		type = "equip",
+		slot = "shield",
+		level = 80,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- shield of corruption
+		itemid = 11688,
+		type = "deequip",
+		slot = "shield",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- royal scale robe
+		itemid = 11687,
+		type = "equip",
+		slot = "armor",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- royal scale robe
+		itemid = 11687,
+		type = "deequip",
+		slot = "armor",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- royal draken mail
+		itemid = 11686,
+		type = "equip",
+		slot = "armor",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- royal draken mail
+		itemid = 11686,
+		type = "deequip",
+		slot = "armor",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- cobra crown
+		itemid = 11674,
+		type = "equip",
+		slot = "head",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- cobra crown
+		itemid = 11674,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- twiceslicer
+		itemid = 11657,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- twiceslicer
+		itemid = 11657,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- elite draken mail
+		itemid = 11651,
+		type = "equip",
+		slot = "armor",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- elite draken mail
+		itemid = 11651,
+		type = "deequip",
+		slot = "armor",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- fish tail (unequipped)
+		itemid = 11542,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- fish tail (unequipped)
+		itemid = 11542,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- ornamented brooch
+		itemid = 11468,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- ornamented brooch
+		itemid = 11468,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- lucky clover amulet
+		itemid = 10476,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- lucky clover amulet
+		itemid = 10476,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- beetle necklace
+		itemid = 10457,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- beetle necklace
+		itemid = 10457,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- jade hat
+		itemid = 10451,
+		type = "equip",
+		slot = "head",
+		level = 60,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- jade hat
+		itemid = 10451,
+		type = "deequip",
+		slot = "head",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- Zaoan robe
+		itemid = 10439,
+		type = "equip",
+		slot = "armor",
+		level = 60,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- Zaoan robe
+		itemid = 10439,
+		type = "deequip",
+		slot = "armor",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- spellweaver's robe
+		itemid = 10438,
+		type = "equip",
+		slot = "armor",
+		level = 60,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spellweaver's robe
+		itemid = 10438,
+		type = "deequip",
+		slot = "armor",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- wailing widow's necklace
+		itemid = 10412,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- wailing widow's necklace
+		itemid = 10412,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- Zaoan halberd
+		itemid = 10406,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- Zaoan halberd
+		itemid = 10406,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- twin hooks
+		itemid = 10392,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- twin hooks
+		itemid = 10392,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- drachaku
+		itemid = 10391,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- drachaku
+		itemid = 10391,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- Zaoan sword
+		itemid = 10390,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- Zaoan sword
+		itemid = 10390,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sai
+		itemid = 10389,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sai
+		itemid = 10389,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- drakinata
+		itemid = 10388,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- drakinata
+		itemid = 10388,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- Zaoan legs
+		itemid = 10387,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- Zaoan legs
+		itemid = 10387,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- zaoan shoes
+		itemid = 10386,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- zaoan shoes
+		itemid = 10386,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- Zaoan helmet
+		itemid = 10385,
+		type = "equip",
+		slot = "head",
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- Zaoan helmet
+		itemid = 10385,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- Zaoan armor
+		itemid = 10384,
+		type = "equip",
+		slot = "armor",
+		level = 50,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- Zaoan armor
+		itemid = 10384,
+		type = "deequip",
+		slot = "armor",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- santa backpack
+		itemid = 10346,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- santa backpack
+		itemid = 10346,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- minotaur backpack
+		itemid = 10327,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- minotaur backpack
+		itemid = 10327,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- dragon backpack
+		itemid = 10326,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- dragon backpack
+		itemid = 10326,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- expedition bag
+		itemid = 10325,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- expedition bag
+		itemid = 10325,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- expedition backpack
+		itemid = 10324,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- expedition backpack
+		itemid = 10324,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- guardian boots
+		itemid = 10323,
+		type = "equip",
+		slot = "feet",
+		level = 70,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- guardian boots
+		itemid = 10323,
+		type = "deequip",
+		slot = "feet",
+		level = 70,
+		clientVersion = 0
+	},
+	{
+		-- heart backpack
+		itemid = 10202,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- heart backpack
+		itemid = 10202,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- dragon scale boots
+		itemid = 10201,
+		type = "equip",
+		slot = "feet",
+		level = 70,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- dragon scale boots
+		itemid = 10201,
+		type = "deequip",
+		slot = "feet",
+		level = 70,
+		clientVersion = 0
+	},
+	{
+		-- crystal boots
+		itemid = 10200,
+		type = "equip",
+		slot = "feet",
+		level = 70,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- crystal boots
+		itemid = 10200,
+		type = "deequip",
+		slot = "feet",
+		level = 70,
+		clientVersion = 0
+	},
+	{
+		-- witch hat
+		itemid = 9653,
+		type = "equip",
+		slot = "head",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- witch hat
+		itemid = 9653,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- crown backpack
+		itemid = 9605,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- crown backpack
+		itemid = 9605,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- moon backpack
+		itemid = 9604,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- moon backpack
+		itemid = 9604,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- orange bag
+		itemid = 9603,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- orange bag
+		itemid = 9603,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- orange backpack
+		itemid = 9602,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- orange backpack
+		itemid = 9602,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- demon backpack
+		itemid = 9601,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- demon backpack
+		itemid = 9601,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- broken wedding ring
+		itemid = 9593,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- broken wedding ring
+		itemid = 9593,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- engraved wedding ring
+		itemid = 9585,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- engraved wedding ring
+		itemid = 9585,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- the shield Nevermourn
+		itemid = 9447,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- the shield Nevermourn
+		itemid = 9447,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- the rain coat
+		itemid = 9446,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- the rain coat
+		itemid = 9446,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- the shield Nevermourn
+		itemid = 9401,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- the shield Nevermourn
+		itemid = 9401,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- the rain coat
+		itemid = 9400,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- the rain coat
+		itemid = 9400,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- mighty helm of green sparks
+		itemid = 9399,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- mighty helm of green sparks
+		itemid = 9399,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- incredible mumpiz slayer
+		itemid = 9396,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- incredible mumpiz slayer
+		itemid = 9396,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- claw of 'The Noxious Spawn'
+		itemid = 9394,
+		type = "equip",
+		slot = "ring",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- claw of 'The Noxious Spawn'
+		itemid = 9394,
+		type = "deequip",
+		slot = "ring",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- claw of 'The Noxious Spawn'
+		itemid = 9392,
+		type = "equip",
+		slot = "ring",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- claw of 'The Noxious Spawn'
+		itemid = 9392,
+		type = "deequip",
+		slot = "ring",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- poet's fencing quill
+		itemid = 9387,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- poet's fencing quill
+		itemid = 9387,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- farmer's avenger
+		itemid = 9386,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- farmer's avenger
+		itemid = 9386,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- club of the fury
+		itemid = 9385,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- club of the fury
+		itemid = 9385,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- scythe of the reaper
+		itemid = 9384,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- scythe of the reaper
+		itemid = 9384,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- trousers of the ancients
+		itemid = 9383,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- trousers of the ancients
+		itemid = 9383,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- helmet of nature
+		itemid = 9382,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- helmet of nature
+		itemid = 9382,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- helmet of ultimate terror
+		itemid = 9381,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- helmet of ultimate terror
+		itemid = 9381,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- shield of care
+		itemid = 9380,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- shield of care
+		itemid = 9380,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- heavy metal t-shirt
+		itemid = 9379,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- heavy metal t-shirt
+		itemid = 9379,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- musician's bow
+		itemid = 9378,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- musician's bow
+		itemid = 9378,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- shield of the white knight
+		itemid = 3537,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- shield of the white knight
+		itemid = 3537,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- stale bread of ancientness
+		itemid = 9376,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- stale bread of ancientness
+		itemid = 9376,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- pointed rabbitslayer
+		itemid = 9375,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- pointed rabbitslayer
+		itemid = 9375,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- odd hat
+		itemid = 9374,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- odd hat
+		itemid = 9374,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- glutton's mace
+		itemid = 9373,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- glutton's mace
+		itemid = 9373,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- meat shield
+		itemid = 9372,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- meat shield
+		itemid = 9372,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- shockwave amulet
+		itemid = 9304,
+		type = "equip",
+		slot = "necklace",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- shockwave amulet
+		itemid = 9304,
+		type = "deequip",
+		slot = "necklace",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- leviathan's amulet
+		itemid = 9303,
+		type = "equip",
+		slot = "necklace",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- leviathan's amulet
+		itemid = 9303,
+		type = "deequip",
+		slot = "necklace",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- sacred tree amulet
+		itemid = 9302,
+		type = "equip",
+		slot = "necklace",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- sacred tree amulet
+		itemid = 9302,
+		type = "deequip",
+		slot = "necklace",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- bonfire amulet
+		itemid = 9301,
+		type = "equip",
+		slot = "necklace",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- bonfire amulet
+		itemid = 9301,
+		type = "deequip",
+		slot = "necklace",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- laurel wreath
+		itemid = 9221,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- laurel wreath
+		itemid = 9221,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- bronze medal
+		itemid = 9217,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- bronze medal
+		itemid = 9217,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- silver medal
+		itemid = 9216,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- silver medal
+		itemid = 9216,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- gold medal
+		itemid = 9215,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- gold medal
+		itemid = 9215,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- grey bag
+		itemid = 9151,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- grey bag
+		itemid = 9151,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- batwing hat
+		itemid = 9103,
+		type = "equip",
+		slot = "head",
+		level = 50,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- batwing hat
+		itemid = 9103,
+		type = "deequip",
+		slot = "head",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- pair firewalker boots
+		itemid = 9019,
+		type = "equip",
+		slot = "feet",
+		level = 130,
+		clientVersion = 0
+	},
+	{
+		-- pair firewalker boots
+		itemid = 9019,
+		type = "deequip",
+		slot = "feet",
+		level = 130,
+		clientVersion = 0
+	},
+	{
+		-- firewalker boots
+		itemid = 9018,
+		type = "equip",
+		slot = "feet",
+		level = 130,
+		clientVersion = 0
+	},
+	{
+		-- firewalker boots
+		itemid = 9018,
+		type = "deequip",
+		slot = "feet",
+		level = 130,
+		clientVersion = 0
+	},
+	{
+		-- coconut shoes
+		itemid = 9017,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- coconut shoes
+		itemid = 9017,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- flower dress
+		itemid = 9015,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- flower dress
+		itemid = 9015,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- leaf legs
+		itemid = 9014,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- leaf legs
+		itemid = 9014,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- flower wreath
+		itemid = 9013,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- flower wreath
+		itemid = 9013,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- yalahari mask
+		itemid = 8864,
+		type = "equip",
+		slot = "head",
+		level = 80,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- yalahari mask
+		itemid = 8864,
+		type = "deequip",
+		slot = "head",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- yalahari leg piece
+		itemid = 8863,
+		type = "equip",
+		slot = "legs",
+		level = 80,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- yalahari leg piece
+		itemid = 8863,
+		type = "deequip",
+		slot = "legs",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- yalahari armor
+		itemid = 8862,
+		type = "equip",
+		slot = "armor",
+		level = 80,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- yalahari armor
+		itemid = 8862,
+		type = "deequip",
+		slot = "armor",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- brocade bag
+		itemid = 8861,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- brocade bag
+		itemid = 8861,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- brocade backpack
+		itemid = 8860,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- brocade backpack
+		itemid = 8860,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- golden bag
+		itemid = 655,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- golden bag
+		itemid = 655,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- purple bag
+		itemid = 653,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- purple bag
+		itemid = 653,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- the calamity
+		itemid = 8104,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- the calamity
+		itemid = 8104,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- the epiphany
+		itemid = 8103,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- the epiphany
+		itemid = 8103,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- emerald sword
+		itemid = 8102,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- emerald sword
+		itemid = 8102,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- the stomper
+		itemid = 8101,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- the stomper
+		itemid = 8101,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- obsidian truncheon
+		itemid = 8100,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- obsidian truncheon
+		itemid = 8100,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dark trinity mace
+		itemid = 8099,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dark trinity mace
+		itemid = 8099,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- demonwing axe
+		itemid = 8098,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- demonwing axe
+		itemid = 8098,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- solar axe
+		itemid = 8097,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- solar axe
+		itemid = 8097,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hellforged axe
+		itemid = 8096,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hellforged axe
+		itemid = 8096,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ranger legs
+		itemid = 8095,
+		type = "equip",
+		slot = "legs",
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ranger legs
+		itemid = 8095,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- wand of voodoo
+		itemid = 8094,
+		type = "equip",
+		slot = "hand",
+		level = 42,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of voodoo
+		itemid = 8094,
+		type = "deequip",
+		slot = "hand",
+		level = 42,
+		clientVersion = 0
+	},
+	{
+		-- wand of draconia
+		itemid = 8093,
+		type = "equip",
+		slot = "hand",
+		level = 22,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of draconia
+		itemid = 8093,
+		type = "deequip",
+		slot = "hand",
+		level = 22,
+		clientVersion = 0
+	},
+	{
+		-- wand of starmstorm
+		itemid = 8092,
+		type = "equip",
+		slot = "hand",
+		level = 37,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of starmstorm
+		itemid = 8092,
+		type = "deequip",
+		slot = "hand",
+		level = 37,
+		clientVersion = 0
+	},
+	{
+		-- spellbook of dark mysteries
+		itemid = 8090,
+		type = "equip",
+		slot = "shield",
+		level = 80,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spellbook of dark mysteries
+		itemid = 8090,
+		type = "deequip",
+		slot = "shield",
+		level = 80,
+		clientVersion = 0
+	},
+	{
+		-- springsprout rod
+		itemid = 8084,
+		type = "equip",
+		slot = "hand",
+		level = 37,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- springsprout rod
+		itemid = 8084,
+		type = "deequip",
+		slot = "hand",
+		level = 37,
+		clientVersion = 0
+	},
+	{
+		-- northwind rod
+		itemid = 8083,
+		type = "equip",
+		slot = "hand",
+		level = 22,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- northwind rod
+		itemid = 8083,
+		type = "deequip",
+		slot = "hand",
+		level = 22,
+		clientVersion = 0
+	},
+	{
+		-- underworld rod
+		itemid = 8082,
+		type = "equip",
+		slot = "hand",
+		level = 42,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- underworld rod
+		itemid = 8082,
+		type = "deequip",
+		slot = "hand",
+		level = 42,
+		clientVersion = 0
+	},
+	{
+		-- terran rainbow shield
+		itemid = 8081,
+		type = "equip",
+		slot = "shield",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- terran rainbow shield
+		itemid = 8081,
+		type = "deequip",
+		slot = "shield",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- sparking rainbow shield
+		itemid = 8080,
+		type = "equip",
+		slot = "shield",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- sparking rainbow shield
+		itemid = 8080,
+		type = "deequip",
+		slot = "shield",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- icy rainbow shield
+		itemid = 8079,
+		type = "equip",
+		slot = "shield",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- icy rainbow shield
+		itemid = 8079,
+		type = "deequip",
+		slot = "shield",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- fiery rainbow shield
+		itemid = 8078,
+		type = "equip",
+		slot = "shield",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- fiery rainbow shield
+		itemid = 8078,
+		type = "deequip",
+		slot = "shield",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- rainbow shield
+		itemid = 8077,
+		type = "equip",
+		slot = "shield",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- rainbow shield
+		itemid = 8077,
+		type = "deequip",
+		slot = "shield",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- spellscroll of prophecies
+		itemid = 8076,
+		type = "equip",
+		slot = "shield",
+		level = 70,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spellscroll of prophecies
+		itemid = 8076,
+		type = "deequip",
+		slot = "shield",
+		level = 70,
+		clientVersion = 0
+	},
+	{
+		-- spellbook of lost souls
+		itemid = 8075,
+		type = "equip",
+		slot = "shield",
+		level = 60,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spellbook of lost souls
+		itemid = 8075,
+		type = "deequip",
+		slot = "shield",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- spellbook of mind control
+		itemid = 8074,
+		type = "equip",
+		slot = "shield",
+		level = 50,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spellbook of mind control
+		itemid = 8074,
+		type = "deequip",
+		slot = "shield",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- spellbook of warding
+		itemid = 8073,
+		type = "equip",
+		slot = "shield",
+		level = 40,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spellbook of warding
+		itemid = 8073,
+		type = "deequip",
+		slot = "shield",
+		level = 40,
+		clientVersion = 0
+	},
+	{
+		-- spellbook of enlightenment
+		itemid = 8072,
+		type = "equip",
+		slot = "shield",
+		level = 30,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spellbook of enlightenment
+		itemid = 8072,
+		type = "deequip",
+		slot = "shield",
+		level = 30,
+		clientVersion = 0
+	},
+	{
+		-- ethno coat
+		itemid = 8064,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ethno coat
+		itemid = 8064,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- paladin armor
+		itemid = 8063,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- paladin armor
+		itemid = 8063,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- robe of the underworld
+		itemid = 8062,
+		type = "equip",
+		slot = "armor",
+		level = 100,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- robe of the underworld
+		itemid = 8062,
+		type = "deequip",
+		slot = "armor",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- skullcracker armor
+		itemid = 8061,
+		type = "equip",
+		slot = "armor",
+		level = 85,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- skullcracker armor
+		itemid = 8061,
+		type = "deequip",
+		slot = "armor",
+		level = 85,
+		clientVersion = 0
+	},
+	{
+		-- master archer's armor
+		itemid = 8060,
+		type = "equip",
+		slot = "armor",
+		level = 100,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- master archer's armor
+		itemid = 8060,
+		type = "deequip",
+		slot = "armor",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- frozen plate
+		itemid = 8059,
+		type = "equip",
+		slot = "armor",
+		level = 75,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- frozen plate
+		itemid = 8059,
+		type = "deequip",
+		slot = "armor",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- molten plate
+		itemid = 8058,
+		type = "equip",
+		slot = "armor",
+		level = 75,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- molten plate
+		itemid = 8058,
+		type = "deequip",
+		slot = "armor",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- divine plate
+		itemid = 8057,
+		type = "equip",
+		slot = "armor",
+		level = 75,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- divine plate
+		itemid = 8057,
+		type = "deequip",
+		slot = "armor",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- oceanborn leviathan armor
+		itemid = 8056,
+		type = "equip",
+		slot = "armor",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- oceanborn leviathan armor
+		itemid = 8056,
+		type = "deequip",
+		slot = "armor",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- windborn colossus armor
+		itemid = 8055,
+		type = "equip",
+		slot = "armor",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- windborn colossus armor
+		itemid = 8055,
+		type = "deequip",
+		slot = "armor",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- earthborn titan armor
+		itemid = 8054,
+		type = "equip",
+		slot = "armor",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- earthborn titan armor
+		itemid = 8054,
+		type = "deequip",
+		slot = "armor",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- fireborn giant armor
+		itemid = 8053,
+		type = "equip",
+		slot = "armor",
+		level = 100,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- fireborn giant armor
+		itemid = 8053,
+		type = "deequip",
+		slot = "armor",
+		level = 100,
+		clientVersion = 0
+	},
+	{
+		-- swamplair armor
+		itemid = 8052,
+		type = "equip",
+		slot = "armor",
+		level = 60,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- swamplair armor
+		itemid = 8052,
+		type = "deequip",
+		slot = "armor",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- voltage armor
+		itemid = 8051,
+		type = "equip",
+		slot = "armor",
+		level = 60,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- voltage armor
+		itemid = 8051,
+		type = "deequip",
+		slot = "armor",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- crystalline armor
+		itemid = 8050,
+		type = "equip",
+		slot = "armor",
+		level = 60,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- crystalline armor
+		itemid = 8050,
+		type = "deequip",
+		slot = "armor",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- lavos armor
+		itemid = 8049,
+		type = "equip",
+		slot = "armor",
+		level = 60,
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- lavos armor
+		itemid = 8049,
+		type = "deequip",
+		slot = "armor",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- girl's dress
+		itemid = 8048,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- girl's dress
+		itemid = 8048,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- tunic
+		itemid = 8047,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- tunic
+		itemid = 8047,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- summer dress
+		itemid = 8046,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- summer dress
+		itemid = 8046,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- hibiscus dress
+		itemid = 8045,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- hibiscus dress
+		itemid = 8045,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- belted cape
+		itemid = 8044,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- belted cape
+		itemid = 8044,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- focus cape
+		itemid = 8043,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- focus cape
+		itemid = 8043,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- spirit cloak
+		itemid = 8042,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spirit cloak
+		itemid = 8042,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- greenwood coat
+		itemid = 8041,
+		type = "equip",
+		slot = "armor",
+		level = 75,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- greenwood coat
+		itemid = 8041,
+		type = "deequip",
+		slot = "armor",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- velvet mantle
+		itemid = 8040,
+		type = "equip",
+		slot = "armor",
+		level = 75,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- velvet mantle
+		itemid = 8040,
+		type = "deequip",
+		slot = "armor",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- dragon robe
+		itemid = 8039,
+		type = "equip",
+		slot = "armor",
+		level = 75,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- dragon robe
+		itemid = 8039,
+		type = "deequip",
+		slot = "armor",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- robe of the ice queen
+		itemid = 8038,
+		type = "equip",
+		slot = "armor",
+		level = 75,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- robe of the ice queen
+		itemid = 8038,
+		type = "deequip",
+		slot = "armor",
+		level = 75,
+		clientVersion = 0
+	},
+	{
+		-- dark lord's cape
+		itemid = 8037,
+		type = "equip",
+		slot = "armor",
+		level = 65,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- dark lord's cape
+		itemid = 8037,
+		type = "deequip",
+		slot = "armor",
+		level = 65,
+		clientVersion = 0
+	},
+	{
+		-- elethriel's elemental bow
+		itemid = 8030,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- elethriel's elemental bow
+		itemid = 8030,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- silkweaver bow
+		itemid = 8029,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- silkweaver bow
+		itemid = 8029,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- yol's bow
+		itemid = 8028,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- yol's bow
+		itemid = 8028,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- composite hornbow
+		itemid = 8027,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- composite hornbow
+		itemid = 8027,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- warsinger bow
+		itemid = 8026,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- warsinger bow
+		itemid = 8026,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ironworker
+		itemid = 8025,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ironworker
+		itemid = 8025,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- devileye
+		itemid = 8024,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- devileye
+		itemid = 8024,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- royal crossbow
+		itemid = 8023,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- royal crossbow
+		itemid = 8023,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- chain bolter
+		itemid = 8022,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- chain bolter
+		itemid = 8022,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- modified crossbow
+		itemid = 8021,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- modified crossbow
+		itemid = 8021,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- witchhunter's coat
+		itemid = 7993,
+		type = "equip",
+		slot = "armor",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- witchhunter's coat
+		itemid = 7993,
+		type = "deequip",
+		slot = "armor",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- mage hat
+		itemid = 7992,
+		type = "equip",
+		slot = "head",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- mage hat
+		itemid = 7992,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- magician's robe
+		itemid = 7991,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- magician's robe
+		itemid = 7991,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- jagged sword
+		itemid = 7774,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- jagged sword
+		itemid = 7774,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- steel axe
+		itemid = 7773,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- steel axe
+		itemid = 7773,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- Jerom's family necklace
+		itemid = 7754,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- Jerom's family necklace
+		itemid = 7754,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- Koshei's ancient amulet
+		itemid = 7532,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- Koshei's ancient amulet
+		itemid = 7532,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- crimson sword
+		itemid = 860,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crimson sword
+		itemid = 860,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- shapeshifter ring
+		itemid = 908,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- shapeshifter ring
+		itemid = 908,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- shapeshifter ring
+		itemid = 907,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- shapeshifter ring
+		itemid = 904,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- jester hat
+		itemid = 894,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- jester hat
+		itemid = 894,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- terra hood
+		itemid = 830,
+		type = "equip",
+		slot = "head",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- terra hood
+		itemid = 830,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- glacier mask
+		itemid = 829,
+		type = "equip",
+		slot = "head",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- glacier mask
+		itemid = 829,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- lightning headband
+		itemid = 828,
+		type = "equip",
+		slot = "head",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- lightning headband
+		itemid = 828,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- magma monocle
+		itemid = 827,
+		type = "equip",
+		slot = "head",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- magma monocle
+		itemid = 827,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- magma coat
+		itemid = 826,
+		type = "equip",
+		slot = "armor",
+		level = 50,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- magma coat
+		itemid = 826,
+		type = "deequip",
+		slot = "armor",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- lightning robe
+		itemid = 825,
+		type = "equip",
+		slot = "armor",
+		level = 50,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- lightning robe
+		itemid = 825,
+		type = "deequip",
+		slot = "armor",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- glacier robe
+		itemid = 824,
+		type = "equip",
+		slot = "armor",
+		level = 50,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- glacier robe
+		itemid = 824,
+		type = "deequip",
+		slot = "armor",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- glacier kilt
+		itemid = 823,
+		type = "equip",
+		slot = "legs",
+		level = 40,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- glacier kilt
+		itemid = 823,
+		type = "deequip",
+		slot = "legs",
+		level = 40,
+		clientVersion = 0
+	},
+	{
+		-- lightning legs
+		itemid = 822,
+		type = "equip",
+		slot = "legs",
+		level = 40,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- lightning legs
+		itemid = 822,
+		type = "deequip",
+		slot = "legs",
+		level = 40,
+		clientVersion = 0
+	},
+	{
+		-- magma legs
+		itemid = 821,
+		type = "equip",
+		slot = "legs",
+		level = 40,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- magma legs
+		itemid = 821,
+		type = "deequip",
+		slot = "legs",
+		level = 40,
+		clientVersion = 0
+	},
+	{
+		-- lightning boots
+		itemid = 820,
+		type = "equip",
+		slot = "feet",
+		level = 35,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- lightning boots
+		itemid = 820,
+		type = "deequip",
+		slot = "feet",
+		level = 35,
+		clientVersion = 0
+	},
+	{
+		-- glacier shoes
+		itemid = 819,
+		type = "equip",
+		slot = "feet",
+		level = 35,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- glacier shoes
+		itemid = 819,
+		type = "deequip",
+		slot = "feet",
+		level = 35,
+		clientVersion = 0
+	},
+	{
+		-- magma boots
+		itemid = 818,
+		type = "equip",
+		slot = "feet",
+		level = 35,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- magma boots
+		itemid = 818,
+		type = "deequip",
+		slot = "feet",
+		level = 35,
+		clientVersion = 0
+	},
+	{
+		-- magma amulet
+		itemid = 817,
+		type = "equip",
+		slot = "necklace",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- magma amulet
+		itemid = 817,
+		type = "deequip",
+		slot = "necklace",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- lightning pendant
+		itemid = 816,
+		type = "equip",
+		slot = "necklace",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- lightning pendant
+		itemid = 816,
+		type = "deequip",
+		slot = "necklace",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- glacier amulet
+		itemid = 815,
+		type = "equip",
+		slot = "necklace",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- glacier amulet
+		itemid = 815,
+		type = "deequip",
+		slot = "necklace",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- terra amulet
+		itemid = 814,
+		type = "equip",
+		slot = "necklace",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- terra amulet
+		itemid = 814,
+		type = "deequip",
+		slot = "necklace",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- terra boots
+		itemid = 813,
+		type = "equip",
+		slot = "feet",
+		level = 35,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- terra boots
+		itemid = 813,
+		type = "deequip",
+		slot = "feet",
+		level = 35,
+		clientVersion = 0
+	},
+	{
+		-- terra legs
+		itemid = 812,
+		type = "equip",
+		slot = "legs",
+		level = 40,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- terra legs
+		itemid = 812,
+		type = "deequip",
+		slot = "legs",
+		level = 40,
+		clientVersion = 0
+	},
+	{
+		-- terra mantle
+		itemid = 811,
+		type = "equip",
+		slot = "armor",
+		level = 50,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- terra mantle
+		itemid = 811,
+		type = "deequip",
+		slot = "armor",
+		level = 50,
+		clientVersion = 0
+	},
+	{
+		-- energy war hammer
+		itemid = 810,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy war hammer
+		itemid = 810,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy orcish maul
+		itemid = 809,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy orcish maul
+		itemid = 809,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy cranial basher
+		itemid = 808,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy cranial basher
+		itemid = 808,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy crystal mace
+		itemid = 807,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy crystal mace
+		itemid = 807,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy clerical mace
+		itemid = 806,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy clerical mace
+		itemid = 806,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy war axe
+		itemid = 805,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy war axe
+		itemid = 805,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy headchopper
+		itemid = 804,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy headchopper
+		itemid = 804,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy heroic axe
+		itemid = 803,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy heroic axe
+		itemid = 803,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy knight axe
+		itemid = 802,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy knight axe
+		itemid = 802,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy barbarian axe
+		itemid = 801,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy barbarian axe
+		itemid = 801,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy dragon slayer
+		itemid = 798,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy dragon slayer
+		itemid = 798,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy blacksteel sword
+		itemid = 797,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy blacksteel sword
+		itemid = 797,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy mystic blade
+		itemid = 796,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy mystic blade
+		itemid = 796,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy relic sword
+		itemid = 795,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy relic sword
+		itemid = 795,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy spike sword
+		itemid = 794,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- energy spike sword
+		itemid = 794,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth war hammer
+		itemid = 793,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth war hammer
+		itemid = 793,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth orcish maul
+		itemid = 792,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth orcish maul
+		itemid = 792,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth cranial basher
+		itemid = 791,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth cranial basher
+		itemid = 791,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth crystal mace
+		itemid = 790,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth crystal mace
+		itemid = 790,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth clerical mace
+		itemid = 789,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth clerical mace
+		itemid = 789,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth war axe
+		itemid = 788,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth war axe
+		itemid = 788,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth headchopper
+		itemid = 787,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth headchopper
+		itemid = 787,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth heroic axe
+		itemid = 786,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth heroic axe
+		itemid = 786,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth knight axe
+		itemid = 785,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth knight axe
+		itemid = 785,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth barbarian axe
+		itemid = 784,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth barbarian axe
+		itemid = 784,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth dragon slayer
+		itemid = 783,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth dragon slayer
+		itemid = 783,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth blacksteel sword
+		itemid = 782,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth blacksteel sword
+		itemid = 782,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth mystic blade
+		itemid = 781,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth mystic blade
+		itemid = 781,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth relic sword
+		itemid = 780,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth relic sword
+		itemid = 780,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth spike sword
+		itemid = 779,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth spike sword
+		itemid = 779,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- earth arrow
+		itemid = 774,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- earth arrow
+		itemid = 774,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- flaming arrow
+		itemid = 763,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- flaming arrow
+		itemid = 763,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- shiver arrow
+		itemid = 762,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- shiver arrow
+		itemid = 762,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- flash arrow
+		itemid = 761,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- flash arrow
+		itemid = 761,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- icy war hammer
+		itemid = 693,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy war hammer
+		itemid = 693,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy orcish maul
+		itemid = 692,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy orcish maul
+		itemid = 692,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy cranial basher
+		itemid = 691,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy cranial basher
+		itemid = 691,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy crystal mace
+		itemid = 690,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy crystal mace
+		itemid = 690,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy clerical mace
+		itemid = 689,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy clerical mace
+		itemid = 689,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy war axe
+		itemid = 688,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy war axe
+		itemid = 688,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy headchopper
+		itemid = 687,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy headchopper
+		itemid = 687,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy heroic axe
+		itemid = 686,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy heroic axe
+		itemid = 686,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy knight axe
+		itemid = 685,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy knight axe
+		itemid = 685,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy barbarian axe
+		itemid = 684,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy barbarian axe
+		itemid = 684,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy dragon slayer
+		itemid = 683,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy dragon slayer
+		itemid = 683,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy blacksteel sword
+		itemid = 682,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy blacksteel sword
+		itemid = 682,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy mystic blade
+		itemid = 681,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy mystic blade
+		itemid = 681,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy relic sword
+		itemid = 680,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy relic sword
+		itemid = 680,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy spike sword
+		itemid = 679,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- icy spike sword
+		itemid = 679,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery war hammer
+		itemid = 674,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery war hammer
+		itemid = 674,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery orcish maul
+		itemid = 673,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery orcish maul
+		itemid = 673,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery cranial basher
+		itemid = 672,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery cranial basher
+		itemid = 672,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery crystal mace
+		itemid = 671,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery crystal mace
+		itemid = 671,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery clerical mace
+		itemid = 670,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery clerical mace
+		itemid = 670,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery war axe
+		itemid = 669,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery war axe
+		itemid = 669,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery headchopper
+		itemid = 668,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery headchopper
+		itemid = 668,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery heroic axe
+		itemid = 667,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery heroic axe
+		itemid = 667,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery knight axe
+		itemid = 666,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery knight axe
+		itemid = 666,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery barbarian axe
+		itemid = 665,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery barbarian axe
+		itemid = 665,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery dragon slayer
+		itemid = 664,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery dragon slayer
+		itemid = 664,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery blacksteel sword
+		itemid = 663,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery blacksteel sword
+		itemid = 663,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery mystic blade
+		itemid = 662,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery mystic blade
+		itemid = 662,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery relic sword
+		itemid = 661,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery relic sword
+		itemid = 661,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery spike sword
+		itemid = 660,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fiery spike sword
+		itemid = 660,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blue legs
+		itemid = 645,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- blue legs
+		itemid = 645,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- suspicious signet ring
+		itemid = 406,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- suspicious signet ring
+		itemid = 406,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- family signet ring
+		itemid = 349,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- family signet ring
+		itemid = 349,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- mining helmet
+		itemid = 139,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- mining helmet
+		itemid = 139,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- mammoth fur shorts
+		itemid = 7464,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- mammoth fur shorts
+		itemid = 7464,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- mammoth fur cape
+		itemid = 7463,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- mammoth fur cape
+		itemid = 7463,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- ragnir helmet
+		itemid = 7462,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- ragnir helmet
+		itemid = 7462,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- krimhorn helmet
+		itemid = 7461,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- krimhorn helmet
+		itemid = 7461,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- norse shield
+		itemid = 7460,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- norse shield
+		itemid = 7460,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- pair of earmuffs
+		itemid = 7459,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- pair of earmuffs
+		itemid = 7459,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- fur cap
+		itemid = 7458,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- fur cap
+		itemid = 7458,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- fur boots
+		itemid = 7457,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- fur boots
+		itemid = 7457,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- noble axe
+		itemid = 7456,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- noble axe
+		itemid = 7456,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mythril axe
+		itemid = 7455,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mythril axe
+		itemid = 7455,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- glorious axe
+		itemid = 7454,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- glorious axe
+		itemid = 7454,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- executioner
+		itemid = 7453,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- executioner
+		itemid = 7453,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- spiked squelcher
+		itemid = 7452,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- spiked squelcher
+		itemid = 7452,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- shadow sceptre
+		itemid = 7451,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- shadow sceptre
+		itemid = 7451,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hammer of prophecy
+		itemid = 7450,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hammer of prophecy
+		itemid = 7450,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crystal sword
+		itemid = 7449,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crystal sword
+		itemid = 7449,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- elvish bow
+		itemid = 7438,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- elvish bow
+		itemid = 7438,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sapphire hammer
+		itemid = 7437,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sapphire hammer
+		itemid = 7437,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- angelic axe
+		itemid = 7436,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- angelic axe
+		itemid = 7436,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- impaler
+		itemid = 7435,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- impaler
+		itemid = 7435,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- royal axe
+		itemid = 7434,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- royal axe
+		itemid = 7434,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ravenwing
+		itemid = 7433,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ravenwing
+		itemid = 7433,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- furry club
+		itemid = 7432,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- furry club
+		itemid = 7432,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- demonbone
+		itemid = 7431,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- demonbone
+		itemid = 7431,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dragonbone staff
+		itemid = 7430,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dragonbone staff
+		itemid = 7430,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blessed sceptre
+		itemid = 7429,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blessed sceptre
+		itemid = 7429,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bonebreaker
+		itemid = 7428,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bonebreaker
+		itemid = 7428,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- chaos mace
+		itemid = 7427,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- chaos mace
+		itemid = 7427,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- amber staff
+		itemid = 7426,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- amber staff
+		itemid = 7426,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- taurus mace
+		itemid = 7425,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- taurus mace
+		itemid = 7425,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- lunar staff
+		itemid = 7424,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- lunar staff
+		itemid = 7424,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- skullcrusher
+		itemid = 7423,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- skullcrusher
+		itemid = 7423,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- jade hammer
+		itemid = 7422,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- jade hammer
+		itemid = 7422,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- onyx flail
+		itemid = 7421,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- onyx flail
+		itemid = 7421,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- reaper's axe
+		itemid = 7420,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- reaper's axe
+		itemid = 7420,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dreaded cleaver
+		itemid = 7419,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dreaded cleaver
+		itemid = 7419,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- nightmare blade
+		itemid = 7418,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- nightmare blade
+		itemid = 7418,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- runed sword
+		itemid = 7417,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- runed sword
+		itemid = 7417,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bloody edge
+		itemid = 7416,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bloody edge
+		itemid = 7416,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- cranial basher
+		itemid = 7415,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- cranial basher
+		itemid = 7415,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- abyss hammer
+		itemid = 7414,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- abyss hammer
+		itemid = 7414,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- titan axe
+		itemid = 7413,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- titan axe
+		itemid = 7413,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- butcher's axe
+		itemid = 7412,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- butcher's axe
+		itemid = 7412,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornamented axe
+		itemid = 7411,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ornamented axe
+		itemid = 7411,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- queen's sceptre
+		itemid = 7410,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- queen's sceptre
+		itemid = 7410,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- northern star
+		itemid = 7409,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- northern star
+		itemid = 7409,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- wyvern fang
+		itemid = 7408,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- wyvern fang
+		itemid = 7408,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- haunted blade
+		itemid = 7407,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- haunted blade
+		itemid = 7407,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blacksteel sword
+		itemid = 7406,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- blacksteel sword
+		itemid = 7406,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- havoc blade
+		itemid = 7405,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- havoc blade
+		itemid = 7405,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- assassin dagger
+		itemid = 7404,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- assassin dagger
+		itemid = 7404,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- berserker
+		itemid = 7403,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- berserker
+		itemid = 7403,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dragon slayer
+		itemid = 7402,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dragon slayer
+		itemid = 7402,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- orcish maul
+		itemid = 7392,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- orcish maul
+		itemid = 7392,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- thaian sword
+		itemid = 7391,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- thaian sword
+		itemid = 7391,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- the justice seeker
+		itemid = 7390,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- the justice seeker
+		itemid = 7390,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- heroic axe
+		itemid = 7389,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- heroic axe
+		itemid = 7389,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- vile axe
+		itemid = 7388,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- vile axe
+		itemid = 7388,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- diamond sceptre
+		itemid = 7387,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- diamond sceptre
+		itemid = 7387,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mercenary sword
+		itemid = 7386,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mercenary sword
+		itemid = 7386,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crimson sword
+		itemid = 7385,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crimson sword
+		itemid = 7385,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mystic blade
+		itemid = 7384,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mystic blade
+		itemid = 7384,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- relic sword
+		itemid = 7383,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- relic sword
+		itemid = 7383,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- demonrage sword
+		itemid = 7382,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- demonrage sword
+		itemid = 7382,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mammoth whopper
+		itemid = 7381,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mammoth whopper
+		itemid = 7381,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- headchopper
+		itemid = 7380,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- headchopper
+		itemid = 7380,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- brutetamer's staff
+		itemid = 7379,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- brutetamer's staff
+		itemid = 7379,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- royal spear
+		itemid = 7378,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- royal spear
+		itemid = 7378,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- assassin star
+		itemid = 7368,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- assassin star
+		itemid = 7368,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- enchanted spear
+		itemid = 7367,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- enchanted spear
+		itemid = 7367,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- onyx arrow
+		itemid = 7365,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- onyx arrow
+		itemid = 7365,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- sniper arrow
+		itemid = 7364,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- sniper arrow
+		itemid = 7364,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- piercing bolt
+		itemid = 7363,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- piercing bolt
+		itemid = 7363,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- flame of life
+		itemid = 7360,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- flame of life
+		itemid = 7359,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- fur bag
+		itemid = 7343,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- fur bag
+		itemid = 7343,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- fur backpack
+		itemid = 7342,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- fur backpack
+		itemid = 7342,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- party hat
+		itemid = 6578,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- party hat
+		itemid = 6578,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- ruthless axe
+		itemid = 6553,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ruthless axe
+		itemid = 6553,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- santa hat
+		itemid = 6531,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- santa hat
+		itemid = 6531,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- infernal bolt
+		itemid = 6528,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- infernal bolt
+		itemid = 6528,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- the avenger
+		itemid = 6527,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- the avenger
+		itemid = 6527,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- necromancer shield
+		itemid = 6432,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- necromancer shield
+		itemid = 6432,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- nightmare shield
+		itemid = 6390,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- nightmare shield
+		itemid = 6390,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- death ring
+		itemid = 6300,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- death ring
+		itemid = 6300,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- death ring
+		itemid = 6299,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- death ring
+		itemid = 6299,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- pair of soft boots
+		itemid = 6529,
+		type = "equip",
+		slot = "feet",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- pair of soft boots
+		itemid = 6529,
+		type = "deequip",
+		slot = "feet",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- tortoise shield
+		itemid = 6131,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- tortoise shield
+		itemid = 6131,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- Dragha's spellbook
+		itemid = 6120,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- Dragha's spellbook
+		itemid = 6120,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- Ron the Ripper's sabre
+		itemid = 6101,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- Ron the Ripper's sabre
+		itemid = 6101,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- pirate hat
+		itemid = 6096,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- pirate hat
+		itemid = 6096,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- pirate shirt
+		itemid = 6095,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- pirate shirt
+		itemid = 6095,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- beach bag
+		itemid = 5950,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- beach bag
+		itemid = 5950,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- beach backpack
+		itemid = 5949,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- beach backpack
+		itemid = 5949,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- pirate bag
+		itemid = 5927,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- pirate bag
+		itemid = 5927,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- pirate backpack
+		itemid = 5926,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- pirate backpack
+		itemid = 5926,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- pirate knee breeches
+		itemid = 5918,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- pirate knee breeches
+		itemid = 5918,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- bandana
+		itemid = 5917,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- bandana
+		itemid = 5917,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- Ferumbras' hat
+		itemid = 5903,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- Ferumbras' hat
+		itemid = 5903,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- arbalest
+		itemid = 5803,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- arbalest
+		itemid = 5803,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- jewelled backpack
+		itemid = 5801,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- jewelled backpack
+		itemid = 5801,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- skull helmet
+		itemid = 5741,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- skull helmet
+		itemid = 5741,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- pirate boots
+		itemid = 5461,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- pirate boots
+		itemid = 5461,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- helmet of the deep
+		itemid = 5460,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- helmet of the deep
+		itemid = 5460,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- spectral dress
+		itemid = 4836,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- spectral dress
+		itemid = 4836,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- bast skirt
+		itemid = 3560,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- bast skirt
+		itemid = 3560,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- crocodile boots
+		itemid = 3556,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- crocodile boots
+		itemid = 3556,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- salamander shield
+		itemid = 3445,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- salamander shield
+		itemid = 3445,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- sentinel shield
+		itemid = 3444,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- sentinel shield
+		itemid = 3444,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- tusk shield
+		itemid = 3443,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- tusk shield
+		itemid = 3443,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- bonelord helmet
+		itemid = 3408,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- bonelord helmet
+		itemid = 3408,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- charmer's tiara
+		itemid = 3407,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- charmer's tiara
+		itemid = 3407,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- feather headdress
+		itemid = 3406,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- feather headdress
+		itemid = 3406,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- horseman helmet
+		itemid = 3405,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- horseman helmet
+		itemid = 3405,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- leopard armor
+		itemid = 3404,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- leopard armor
+		itemid = 3404,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- tribal mask
+		itemid = 3403,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- tribal mask
+		itemid = 3403,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- banana staff
+		itemid = 3348,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- banana staff
+		itemid = 3348,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hunting spear
+		itemid = 3347,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hunting spear
+		itemid = 3347,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ripper lance
+		itemid = 3346,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ripper lance
+		itemid = 3346,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- templar scytheblade
+		itemid = 3345,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- templar scytheblade
+		itemid = 3345,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- beastslayer axe
+		itemid = 3344,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- beastslayer axe
+		itemid = 3344,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- lich staff
+		itemid = 3343,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- lich staff
+		itemid = 3343,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- old and used backpack
+		itemid = 3244,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- old and used backpack
+		itemid = 3244,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- camouflage backpack
+		itemid = 2872,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- camouflage backpack
+		itemid = 2872,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- camouflage bag
+		itemid = 2864,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- camouflage bag
+		itemid = 2864,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- post officer's hat
+		itemid = 3576,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- post officer's hat
+		itemid = 3576,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- wood cape
+		itemid = 3575,
+		type = "equip",
+		slot = "head",
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wood cape
+		itemid = 3575,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- mystic turban
+		itemid = 3574,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- mystic turban
+		itemid = 3574,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- magician hat
+		itemid = 3573,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- magician hat
+		itemid = 3573,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- scarf
+		itemid = 3572,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- scarf
+		itemid = 3572,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- ranger's cloak
+		itemid = 3571,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- ranger's cloak
+		itemid = 3571,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- ball gown
+		itemid = 3570,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- ball gown
+		itemid = 3570,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- white dress
+		itemid = 3569,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- white dress
+		itemid = 3569,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- simple dress
+		itemid = 3568,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- simple dress
+		itemid = 3568,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- blue robe
+		itemid = 3567,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- blue robe
+		itemid = 3567,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- red robe
+		itemid = 3566,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- red robe
+		itemid = 3566,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- cape
+		itemid = 3565,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- cape
+		itemid = 3565,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- red tunic
+		itemid = 3564,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- red tunic
+		itemid = 3564,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- green tunic
+		itemid = 3563,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- green tunic
+		itemid = 3563,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- coat
+		itemid = 3562,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- coat
+		itemid = 3562,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- jacket
+		itemid = 3561,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- jacket
+		itemid = 3561,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- leather legs
+		itemid = 3559,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- leather legs
+		itemid = 3559,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- chain legs
+		itemid = 3558,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- chain legs
+		itemid = 3558,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- plate legs
+		itemid = 3557,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- plate legs
+		itemid = 3557,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- golden boots
+		itemid = 3555,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- golden boots
+		itemid = 3555,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- steel boots
+		itemid = 3554,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- steel boots
+		itemid = 3554,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- bunnyslippers
+		itemid = 3553,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- bunnyslippers
+		itemid = 3553,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- leather boots
+		itemid = 3552,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- leather boots
+		itemid = 3552,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- sandals
+		itemid = 3551,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- sandals
+		itemid = 3551,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- patched boots
+		itemid = 3550,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- patched boots
+		itemid = 3550,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- pair of soft boots
+		itemid = 3549,
+		type = "equip",
+		slot = "feet",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- pair of soft boots
+		itemid = 3549,
+		type = "deequip",
+		slot = "feet",
+		level = 180,
+		clientVersion = 0
+	},
+	{
+		-- scythe
+		itemid = 3453,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- scythe
+		itemid = 3453,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- power bolt
+		itemid = 3450,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- power bolt
+		itemid = 3450,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- arrow
+		itemid = 3447,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- arrow
+		itemid = 3447,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- bolt
+		itemid = 3446,
+		type = "equip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- bolt
+		itemid = 3446,
+		type = "deequip",
+		slot = "ammo",
+		clientVersion = 0
+	},
+	{
+		-- tempest shield
+		itemid = 3442,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- tempest shield
+		itemid = 3442,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- bone shield
+		itemid = 3441,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- bone shield
+		itemid = 3441,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- scarab shield
+		itemid = 3440,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- scarab shield
+		itemid = 3440,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- phoenix shield
+		itemid = 3439,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- phoenix shield
+		itemid = 3439,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- eagle shield
+		itemid = 3438,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- eagle shield
+		itemid = 3438,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- amazon shield
+		itemid = 3437,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- amazon shield
+		itemid = 3437,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- medusa shield
+		itemid = 3436,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- medusa shield
+		itemid = 3436,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- castle shield
+		itemid = 3435,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- castle shield
+		itemid = 3435,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- vampire shield
+		itemid = 3434,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- vampire shield
+		itemid = 3434,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- griffin shield
+		itemid = 3433,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- griffin shield
+		itemid = 3433,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- ancient shield
+		itemid = 3432,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- ancient shield
+		itemid = 3432,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- viking shield
+		itemid = 3431,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- viking shield
+		itemid = 3431,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- copper shield
+		itemid = 3430,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- copper shield
+		itemid = 3430,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- black shield
+		itemid = 3429,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- black shield
+		itemid = 3429,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- tower shield
+		itemid = 3428,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- tower shield
+		itemid = 3428,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- rose shield
+		itemid = 3427,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- rose shield
+		itemid = 3427,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- studded shield
+		itemid = 3426,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- studded shield
+		itemid = 3426,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- dwarven shield
+		itemid = 3425,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- dwarven shield
+		itemid = 3425,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- ornamented shield
+		itemid = 3424,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- ornamented shield
+		itemid = 3424,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- blessed shield
+		itemid = 3423,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- blessed shield
+		itemid = 3423,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- great shield
+		itemid = 3422,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- great shield
+		itemid = 3422,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- dark shield
+		itemid = 3421,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- dark shield
+		itemid = 3421,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- demon shield
+		itemid = 3420,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- demon shield
+		itemid = 3420,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- crown shield
+		itemid = 3419,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- crown shield
+		itemid = 3419,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- bonelord shield
+		itemid = 3418,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- bonelord shield
+		itemid = 3418,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- shield of honour
+		itemid = 3417,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- shield of honour
+		itemid = 3417,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- dragon shield
+		itemid = 3416,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- dragon shield
+		itemid = 3416,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- guardian shield
+		itemid = 3415,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- guardian shield
+		itemid = 3415,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- mastermind shield
+		itemid = 3414,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- mastermind shield
+		itemid = 3414,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- battle shield
+		itemid = 3413,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- battle shield
+		itemid = 3413,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- wooden shield
+		itemid = 3412,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- wooden shield
+		itemid = 3412,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- brass shield
+		itemid = 3411,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- brass shield
+		itemid = 3411,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- plate shield
+		itemid = 3410,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- plate shield
+		itemid = 3410,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- steel shield
+		itemid = 3409,
+		type = "equip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- steel shield
+		itemid = 3409,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- native armor
+		itemid = 3402,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- native armor
+		itemid = 3402,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- elven legs
+		itemid = 3401,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- elven legs
+		itemid = 3401,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- dragon scale helmet
+		itemid = 3400,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- dragon scale helmet
+		itemid = 3400,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- elven mail
+		itemid = 3399,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- elven mail
+		itemid = 3399,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- dwarven legs
+		itemid = 3398,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- dwarven legs
+		itemid = 3398,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- dwarven armor
+		itemid = 3397,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- dwarven armor
+		itemid = 3397,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- dwarven helmet
+		itemid = 3396,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- dwarven helmet
+		itemid = 3396,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- ceremonial mask
+		itemid = 3395,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- ceremonial mask
+		itemid = 3395,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- amazon armor
+		itemid = 3394,
+		type = "equip",
+		slot = "armor",
+		level = 60,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- amazon armor
+		itemid = 3394,
+		type = "deequip",
+		slot = "armor",
+		level = 60,
+		clientVersion = 0
+	},
+	{
+		-- amazon helmet
+		itemid = 3393,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- amazon helmet
+		itemid = 3393,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- royal helmet
+		itemid = 3392,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- royal helmet
+		itemid = 3392,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- crusader helmet
+		itemid = 3391,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- crusader helmet
+		itemid = 3391,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- horned helmet
+		itemid = 3390,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- horned helmet
+		itemid = 3390,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- demon legs
+		itemid = 3389,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- demon legs
+		itemid = 3389,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- demon armor
+		itemid = 3388,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- demon armor
+		itemid = 3388,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- demon helmet
+		itemid = 3387,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- demon helmet
+		itemid = 3387,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- dragon scale mail
+		itemid = 3386,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- dragon scale mail
+		itemid = 3386,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- crown helmet
+		itemid = 3385,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- crown helmet
+		itemid = 3385,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- dark helmet
+		itemid = 3384,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- dark helmet
+		itemid = 3384,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- dark armor
+		itemid = 3383,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- dark armor
+		itemid = 3383,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- crown legs
+		itemid = 3382,
+		type = "equip",
+		slot = "legs",
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- crown legs
+		itemid = 3382,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- crown armor
+		itemid = 3381,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- crown armor
+		itemid = 3381,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- noble armor
+		itemid = 3380,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- noble armor
+		itemid = 3380,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- doublet
+		itemid = 3379,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- doublet
+		itemid = 3379,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- studded armor
+		itemid = 3378,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- studded armor
+		itemid = 3378,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- scale armor
+		itemid = 3377,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- scale armor
+		itemid = 3377,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- studded helmet
+		itemid = 3376,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- studded helmet
+		itemid = 3376,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- soldier helmet
+		itemid = 3375,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- soldier helmet
+		itemid = 3375,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- legion helmet
+		itemid = 3374,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- legion helmet
+		itemid = 3374,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- strange helmet
+		itemid = 3373,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- strange helmet
+		itemid = 3373,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- brass legs
+		itemid = 3372,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- brass legs
+		itemid = 3372,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- knight legs
+		itemid = 3371,
+		type = "equip",
+		slot = "legs",
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- knight legs
+		itemid = 3371,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- knight armor
+		itemid = 3370,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- knight armor
+		itemid = 3370,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- warrior helmet
+		itemid = 3369,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- warrior helmet
+		itemid = 3369,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- winged helmet
+		itemid = 3368,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- winged helmet
+		itemid = 3368,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- viking helmet
+		itemid = 3367,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- viking helmet
+		itemid = 3367,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- magic plate armor
+		itemid = 3366,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- magic plate armor
+		itemid = 3366,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- golden helmet
+		itemid = 3365,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- golden helmet
+		itemid = 3365,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- golden legs
+		itemid = 3364,
+		type = "equip",
+		slot = "legs",
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- golden legs
+		itemid = 3364,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- dragon scale legs
+		itemid = 3363,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- dragon scale legs
+		itemid = 3363,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- studded legs
+		itemid = 3362,
+		type = "equip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- studded legs
+		itemid = 3362,
+		type = "deequip",
+		slot = "legs",
+		clientVersion = 0
+	},
+	{
+		-- leather armor
+		itemid = 3361,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- leather armor
+		itemid = 3361,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- golden armor
+		itemid = 3360,
+		type = "equip",
+		slot = "armor",
+		vocation = {
+			{"Knight", true},
+			{"Paladin", true, true},
+			{"Elite Knight"},
+			{"Royal Paladin"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- golden armor
+		itemid = 3360,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- brass armor
+		itemid = 3359,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- brass armor
+		itemid = 3359,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- chain armor
+		itemid = 3358,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- chain armor
+		itemid = 3358,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- plate armor
+		itemid = 3357,
+		type = "equip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- plate armor
+		itemid = 3357,
+		type = "deequip",
+		slot = "armor",
+		clientVersion = 0
+	},
+	{
+		-- devil helmet
+		itemid = 3356,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- devil helmet
+		itemid = 3356,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- leather helmet
+		itemid = 3355,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- leather helmet
+		itemid = 3355,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- brass helmet
+		itemid = 3354,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- brass helmet
+		itemid = 3354,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- iron helmet
+		itemid = 3353,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- iron helmet
+		itemid = 3353,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- chain helmet
+		itemid = 3352,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- chain helmet
+		itemid = 3352,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- steel helmet
+		itemid = 3351,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- steel helmet
+		itemid = 3351,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- bow
+		itemid = 3350,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bow
+		itemid = 3350,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crossbow
+		itemid = 3349,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crossbow
+		itemid = 3349,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- war axe
+		itemid = 3342,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- war axe
+		itemid = 3342,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- arcane staff
+		itemid = 3341,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- arcane staff
+		itemid = 3341,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- heavy mace
+		itemid = 3340,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- heavy mace
+		itemid = 3340,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- djinn blade
+		itemid = 3339,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- djinn blade
+		itemid = 3339,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bone sword
+		itemid = 3338,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bone sword
+		itemid = 3338,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bone club
+		itemid = 3337,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bone club
+		itemid = 3337,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- studded club
+		itemid = 3336,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- studded club
+		itemid = 3336,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- twin axe
+		itemid = 3335,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- twin axe
+		itemid = 3335,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- pharaoh sword
+		itemid = 3334,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- pharaoh sword
+		itemid = 3334,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crystal mace
+		itemid = 3333,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crystal mace
+		itemid = 3333,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hammer of wrath
+		itemid = 3332,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hammer of wrath
+		itemid = 3332,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ravager's axe
+		itemid = 3331,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ravager's axe
+		itemid = 3331,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- heavy machete
+		itemid = 3330,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- heavy machete
+		itemid = 3330,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- daramian axe
+		itemid = 3329,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- daramian axe
+		itemid = 3329,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- daramian waraxe
+		itemid = 3328,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- daramian waraxe
+		itemid = 3328,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- daramian mace
+		itemid = 3327,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- daramian mace
+		itemid = 3327,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- epee
+		itemid = 3326,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- epee
+		itemid = 3326,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- light mace
+		itemid = 3325,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- light mace
+		itemid = 3325,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- skull staff
+		itemid = 3324,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- skull staff
+		itemid = 3324,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dwarven axe
+		itemid = 3323,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dwarven axe
+		itemid = 3323,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dragon hammer
+		itemid = 3322,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dragon hammer
+		itemid = 3322,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- enchanted staff
+		itemid = 3321,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- enchanted staff
+		itemid = 3321,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fire axe
+		itemid = 3320,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fire axe
+		itemid = 3320,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- stonecutter axe
+		itemid = 3319,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- stonecutter axe
+		itemid = 3319,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- knight axe
+		itemid = 3318,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- knight axe
+		itemid = 3318,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- barbarian axe
+		itemid = 3317,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- barbarian axe
+		itemid = 3317,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- orcish axe
+		itemid = 3316,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- orcish axe
+		itemid = 3316,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- guardian halberd
+		itemid = 3315,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- guardian halberd
+		itemid = 3315,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- naginata
+		itemid = 3314,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- naginata
+		itemid = 3314,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- obsidian lance
+		itemid = 3313,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- obsidian lance
+		itemid = 3313,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- silver mace
+		itemid = 3312,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- silver mace
+		itemid = 3312,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- clerical mace
+		itemid = 3311,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- clerical mace
+		itemid = 3311,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- iron hammer
+		itemid = 3310,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- iron hammer
+		itemid = 3310,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- thunder hammer
+		itemid = 3309,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- thunder hammer
+		itemid = 3309,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- machete
+		itemid = 3308,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- machete
+		itemid = 3308,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- scimitar
+		itemid = 3307,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- scimitar
+		itemid = 3307,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- golden sickle
+		itemid = 3306,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- golden sickle
+		itemid = 3306,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- battle hammer
+		itemid = 3305,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- battle hammer
+		itemid = 3305,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crowbar
+		itemid = 3304,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- crowbar
+		itemid = 3304,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- great axe
+		itemid = 3303,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- great axe
+		itemid = 3303,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dragon lance
+		itemid = 3302,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dragon lance
+		itemid = 3302,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- broadsword
+		itemid = 3301,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- broadsword
+		itemid = 3301,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- katana
+		itemid = 3300,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- katana
+		itemid = 3300,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- poison dagger
+		itemid = 3299,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- poison dagger
+		itemid = 3299,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- throwing knife
+		itemid = 3298,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- throwing knife
+		itemid = 3298,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- serpent sword
+		itemid = 3297,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- serpent sword
+		itemid = 3297,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- warlord sword
+		itemid = 3296,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- warlord sword
+		itemid = 3296,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bright sword
+		itemid = 3295,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- bright sword
+		itemid = 3295,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- short sword
+		itemid = 3294,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- short sword
+		itemid = 3294,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sickle
+		itemid = 3293,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sickle
+		itemid = 3293,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- combat knife
+		itemid = 3292,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- combat knife
+		itemid = 3292,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- knife
+		itemid = 3291,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- knife
+		itemid = 3291,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- silver dagger
+		itemid = 3290,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- silver dagger
+		itemid = 3290,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- staff
+		itemid = 3289,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- staff
+		itemid = 3289,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- magic sword
+		itemid = 3288,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- magic sword
+		itemid = 3288,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- throwing star
+		itemid = 3287,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- throwing star
+		itemid = 3287,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mace
+		itemid = 3286,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- mace
+		itemid = 3286,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- longsword
+		itemid = 3285,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- longsword
+		itemid = 3285,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ice rapier
+		itemid = 3284,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- ice rapier
+		itemid = 3284,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- carlin sword
+		itemid = 3283,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- carlin sword
+		itemid = 3283,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- morning star
+		itemid = 3282,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- morning star
+		itemid = 3282,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- giant sword
+		itemid = 3281,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- giant sword
+		itemid = 3281,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fire sword
+		itemid = 3280,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- fire sword
+		itemid = 3280,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- war hammer
+		itemid = 3279,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- war hammer
+		itemid = 3279,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- magic longsword
+		itemid = 3278,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- magic longsword
+		itemid = 3278,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- spear
+		itemid = 3277,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- spear
+		itemid = 3277,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hatchet
+		itemid = 3276,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hatchet
+		itemid = 3276,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- double axe
+		itemid = 3275,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- double axe
+		itemid = 3275,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- axe
+		itemid = 3274,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- axe
+		itemid = 3274,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sabre
+		itemid = 3273,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sabre
+		itemid = 3273,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- rapier
+		itemid = 3272,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- rapier
+		itemid = 3272,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- spike sword
+		itemid = 3271,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- spike sword
+		itemid = 3271,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- club
+		itemid = 3270,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- club
+		itemid = 3270,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- halberd
+		itemid = 3269,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- halberd
+		itemid = 3269,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hand axe
+		itemid = 3268,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- hand axe
+		itemid = 3268,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dagger
+		itemid = 3267,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- dagger
+		itemid = 3267,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- battle axe
+		itemid = 3266,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- battle axe
+		itemid = 3266,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- two handed sword
+		itemid = 3265,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- two handed sword
+		itemid = 3265,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sword
+		itemid = 3264,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- sword
+		itemid = 3264,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- backpack of holding
+		itemid = 3253,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- backpack of holding
+		itemid = 3253,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- boots of waterwalking
+		itemid = 3246,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- boots of waterwalking
+		itemid = 3246,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- ring of wishes
+		itemid = 3245,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- ring of wishes
+		itemid = 3245,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- helmet of the ancients
+		itemid = 3230,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- helmet of the ancients
+		itemid = 3230,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- helmet of the ancients
+		itemid = 3229,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- helmet of the ancients
+		itemid = 3229,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- damaged helmet
+		itemid = 3226,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- damaged helmet
+		itemid = 3226,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- hat of the mad
+		itemid = 3210,
+		type = "equip",
+		slot = "head",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- hat of the mad
+		itemid = 3210,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- giant smithhammer
+		itemid = 12510,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- giant smithhammer
+		itemid = 12510,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- paw amulet
+		itemid = 3102,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- paw amulet
+		itemid = 3102,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- ring of healing
+		itemid = 3100,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- ring of healing
+		itemid = 3100,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- dwarven ring
+		itemid = 3099,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- dwarven ring
+		itemid = 3099,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- ring of healing
+		itemid = 3098,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- ring of healing
+		itemid = 3098,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- dwarven ring
+		itemid = 3097,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- dwarven ring
+		itemid = 3097,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- club ring
+		itemid = 3096,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- club ring
+		itemid = 3096,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- axe ring
+		itemid = 3095,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- axe ring
+		itemid = 3095,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- sword ring
+		itemid = 3094,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- sword ring
+		itemid = 3094,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- club ring
+		itemid = 3093,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- club ring
+		itemid = 3093,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- axe ring
+		itemid = 3092,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- axe ring
+		itemid = 3092,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- sword ring
+		itemid = 3091,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- sword ring
+		itemid = 3091,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- time ring
+		itemid = 3090,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- time ring
+		itemid = 3090,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- life ring
+		itemid = 3089,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- life ring
+		itemid = 3089,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- energy ring
+		itemid = 3088,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- energy ring
+		itemid = 3088,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- power ring
+		itemid = 3087,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- power ring
+		itemid = 3087,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- stealth ring
+		itemid = 3086,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- stealth ring
+		itemid = 3086,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- dragon necklace
+		itemid = 3085,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- dragon necklace
+		itemid = 3085,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- protection amulet
+		itemid = 3084,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- protection amulet
+		itemid = 3084,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- garlic necklace
+		itemid = 3083,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- garlic necklace
+		itemid = 3083,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- elven amulet
+		itemid = 3082,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- elven amulet
+		itemid = 3082,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- stone skin amulet
+		itemid = 3081,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- stone skin amulet
+		itemid = 3081,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- amulet of life
+		itemid = 3080,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- amulet of life
+		itemid = 3080,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- boots of haste
+		itemid = 3079,
+		type = "equip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- boots of haste
+		itemid = 3079,
+		type = "deequip",
+		slot = "feet",
+		clientVersion = 0
+	},
+	{
+		-- wand of dragonbreath
+		itemid = 3075,
+		type = "equip",
+		slot = "hand",
+		level = 13,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of dragonbreath
+		itemid = 3075,
+		type = "deequip",
+		slot = "hand",
+		level = 13,
+		clientVersion = 0
+	},
+	{
+		-- wand of vortex
+		itemid = 3074,
+		type = "equip",
+		slot = "hand",
+		level = 6,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of vortex
+		itemid = 3074,
+		type = "deequip",
+		slot = "hand",
+		level = 6,
+		clientVersion = 0
+	},
+	{
+		-- wand of cosmic energy
+		itemid = 3073,
+		type = "equip",
+		slot = "hand",
+		level = 26,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of cosmic energy
+		itemid = 3073,
+		type = "deequip",
+		slot = "hand",
+		level = 26,
+		clientVersion = 0
+	},
+	{
+		-- wand of decay
+		itemid = 3072,
+		type = "equip",
+		slot = "hand",
+		level = 19,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of decay
+		itemid = 3072,
+		type = "deequip",
+		slot = "hand",
+		level = 19,
+		clientVersion = 0
+	},
+	{
+		-- wand of inferno
+		itemid = 3071,
+		type = "equip",
+		slot = "hand",
+		level = 33,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- wand of inferno
+		itemid = 3071,
+		type = "deequip",
+		slot = "hand",
+		level = 33,
+		clientVersion = 0
+	},
+	{
+		-- moonlight rod
+		itemid = 3070,
+		type = "equip",
+		slot = "hand",
+		level = 13,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- moonlight rod
+		itemid = 3070,
+		type = "deequip",
+		slot = "hand",
+		level = 13,
+		clientVersion = 0
+	},
+	{
+		-- necrotic rod
+		itemid = 3069,
+		type = "equip",
+		slot = "hand",
+		level = 19,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- necrotic rod
+		itemid = 3069,
+		type = "deequip",
+		slot = "hand",
+		level = 19,
+		clientVersion = 0
+	},
+	{
+		-- hailstorm rod
+		itemid = 3067,
+		type = "equip",
+		slot = "hand",
+		level = 33,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- hailstorm rod
+		itemid = 3067,
+		type = "deequip",
+		slot = "hand",
+		level = 33,
+		clientVersion = 0
+	},
+	{
+		-- snakebit rod
+		itemid = 3066,
+		type = "equip",
+		slot = "hand",
+		level = 6,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- snakebit rod
+		itemid = 3066,
+		type = "deequip",
+		slot = "hand",
+		level = 6,
+		clientVersion = 0
+	},
+	{
+		-- terra rod
+		itemid = 3065,
+		type = "equip",
+		slot = "hand",
+		level = 26,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- terra rod
+		itemid = 3065,
+		type = "deequip",
+		slot = "hand",
+		level = 26,
+		clientVersion = 0
+	},
+	{
+		-- gold ring
+		itemid = 3063,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- gold ring
+		itemid = 3063,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- spellbook
+		itemid = 3059,
+		type = "equip",
+		slot = "shield",
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		},
+		clientVersion = 0
+	},
+	{
+		-- spellbook
+		itemid = 3059,
+		type = "deequip",
+		slot = "shield",
+		clientVersion = 0
+	},
+	{
+		-- amulet of loss
+		itemid = 3057,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- amulet of loss
+		itemid = 3057,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- bronze amulet
+		itemid = 3056,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- bronze amulet
+		itemid = 3056,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- platinum amulet
+		itemid = 3055,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- platinum amulet
+		itemid = 3055,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- silver amulet
+		itemid = 3054,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- silver amulet
+		itemid = 3054,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- time ring
+		itemid = 3053,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- time ring
+		itemid = 3053,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- life ring
+		itemid = 3052,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- life ring
+		itemid = 3052,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- energy ring
+		itemid = 3051,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- energy ring
+		itemid = 3051,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- power ring
+		itemid = 3050,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- power ring
+		itemid = 3050,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- stealth ring
+		itemid = 3049,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- stealth ring
+		itemid = 3049,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- might ring
+		itemid = 3048,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- might ring
+		itemid = 3048,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- strange talisman
+		itemid = 3045,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- strange talisman
+		itemid = 3045,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- ancient amulet
+		itemid = 3025,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- ancient amulet
+		itemid = 3025,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- ancient tiara
+		itemid = 3022,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- ancient tiara
+		itemid = 3022,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- sapphire amulet
+		itemid = 3021,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- sapphire amulet
+		itemid = 3021,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- demonbone amulet
+		itemid = 3019,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- demonbone amulet
+		itemid = 3019,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- scarab amulet
+		itemid = 3018,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- scarab amulet
+		itemid = 3018,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- ruby necklace
+		itemid = 3016,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- ruby necklace
+		itemid = 3016,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- silver necklace
+		itemid = 3015,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- silver necklace
+		itemid = 3015,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- star amulet
+		itemid = 3014,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- star amulet
+		itemid = 3014,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- golden amulet
+		itemid = 3013,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- golden amulet
+		itemid = 3013,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- wolf tooth chain
+		itemid = 3012,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- wolf tooth chain
+		itemid = 3012,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- crown
+		itemid = 3011,
+		type = "equip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- crown
+		itemid = 3011,
+		type = "deequip",
+		slot = "head",
+		clientVersion = 0
+	},
+	{
+		-- bronze necklace
+		itemid = 3009,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- bronze necklace
+		itemid = 3009,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- crystal necklace
+		itemid = 3008,
+		type = "equip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- crystal necklace
+		itemid = 3008,
+		type = "deequip",
+		slot = "necklace",
+		clientVersion = 0
+	},
+	{
+		-- crystal ring
+		itemid = 3007,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- crystal ring
+		itemid = 3007,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- ring of the sky
+		itemid = 3006,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- ring of the sky
+		itemid = 3006,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- wedding ring
+		itemid = 3004,
+		type = "equip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- wedding ring
+		itemid = 3004,
+		type = "deequip",
+		slot = "ring",
+		clientVersion = 0
+	},
+	{
+		-- snowball
+		itemid = 2992,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- snowball
+		itemid = 2992,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- golden backpack
+		itemid = 2871,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- golden backpack
+		itemid = 2871,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- grey backpack
+		itemid = 2870,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- grey backpack
+		itemid = 2870,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- blue backpack
+		itemid = 2869,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- blue backpack
+		itemid = 2869,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- purple backpack
+		itemid = 2868,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- purple backpack
+		itemid = 2868,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- red backpack
+		itemid = 2867,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- red backpack
+		itemid = 2867,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- yellow backpack
+		itemid = 2866,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- yellow backpack
+		itemid = 2866,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- green backpack
+		itemid = 2865,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- green backpack
+		itemid = 2865,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- golden bag
+		itemid = 2863,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- golden bag
+		itemid = 2863,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- grey bag
+		itemid = 2862,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- grey bag
+		itemid = 2862,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- blue bag
+		itemid = 2861,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- blue bag
+		itemid = 2861,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- purple bag
+		itemid = 2860,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- purple bag
+		itemid = 2860,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- red bag
+		itemid = 2859,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- red bag
+		itemid = 2859,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- yellow bag
+		itemid = 2858,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- yellow bag
+		itemid = 2858,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- green bag
+		itemid = 2857,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- green bag
+		itemid = 2857,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- backpack
+		itemid = 2854,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- backpack
+		itemid = 2854,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- bag
+		itemid = 2853,
+		type = "equip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- bag
+		itemid = 2853,
+		type = "deequip",
+		slot = "backpack",
+		clientVersion = 0
+	},
+	{
+		-- searing fire
+		itemid = 2138,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- searing fire
+		itemid = 2138,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- searing fire
+		itemid = 2137,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- searing fire
+		itemid = 2137,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- smoke
+		itemid = 2136,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- smoke
+		itemid = 2136,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- energy field
+		itemid = 2135,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- energy field
+		itemid = 2135,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- poison gas
+		itemid = 2134,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- poison gas
+		itemid = 2134,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2133,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2133,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2132,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2132,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 21465,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 21465,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- rush wood
+		itemid = 2130,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- rush wood
+		itemid = 2130,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- magic wall
+		itemid = 2129,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- magic wall
+		itemid = 2129,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- magic wall
+		itemid = 2128,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- magic wall
+		itemid = 2128,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- poison field
+		itemid = 2121,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- poison field
+		itemid = 2121,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- energy field
+		itemid = 2126,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- energy field
+		itemid = 2126,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2125,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2125,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2124,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2124,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2123,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2123,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- energy field
+		itemid = 2122,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- energy field
+		itemid = 2122,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- poison field
+		itemid = 105,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- poison field
+		itemid = 105,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2120,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2120,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2119,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2119,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2118,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- fire field
+		itemid = 2118,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- campfire
+		itemid = 2000,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- campfire
+		itemid = 2000,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- campfire
+		itemid = 1999,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- campfire
+		itemid = 1999,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- campfire
+		itemid = 1998,
+		type = "stepin",
+		clientVersion = 0
+	},
+	{
+		-- campfire
+		itemid = 1998,
+		type = "additem",
+		clientVersion = 0
+	},
+	{
+		-- small stone
+		itemid = 1781,
+		type = "equip",
+		slot = "hand",
+		clientVersion = 0
+	},
+	{
+		-- small stone
+		itemid = 1781,
+		type = "deequip",
+		slot = "hand",
+		clientVersion = 0
+	}
 }
 
 for _, i in ipairs(items) do
-	if(CLIENT_VERSION >= i.client_version) then
+	if(CLIENT_VERSION >= i.clientVersion) then
 		local movement = MoveEvent()
 		movement:id(i.itemid)
 		if(i.type) then
